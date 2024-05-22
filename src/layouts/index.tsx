@@ -19,6 +19,7 @@ const _themes = {
   token: {
     colorPrimary: "#d4f66b",
     colorInfo: "#d4f66b",
+    fontFamily: 'HarmonyOS Sans',
   },
   components: {
     Button: {
