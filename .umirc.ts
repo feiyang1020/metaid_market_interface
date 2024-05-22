@@ -12,4 +12,5 @@ export default defineConfig({
   plugins: ["@umijs/plugins/dist/model", "@umijs/plugins/dist/request"],
   model: {},
   request: {},
+  jsMinifier: 'none',
 });
