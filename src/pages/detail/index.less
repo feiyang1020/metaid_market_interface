@@ -1,0 +1,121 @@
+.detailPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  padding-bottom: 60px;
+  .detailWrap {
+    display: flex;
+    .left {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 600px;
+      height: 600px;
+      border-radius: 18.86px;
+      opacity: 1;
+      border: 2px solid rgba(212, 246, 107, 0.1);
+      backdrop-filter: blur(23.58px);
+
+      .detailContent {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 356px;
+        height: 356px;
+        border-radius: 16px;
+        background: #0c0e09;
+        box-sizing: border-box;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        overflow: hidden;
+        word-break: break-all;
+        img {
+          width: 356px;
+          height: 356px;
+          object-fit: contain;
+        }
+      }
+    }
+    .right {
+      margin-left: 51px;
+      width: 549px;
+      .orderName {
+        font-size: 14px;
+        color: #d4f66b;
+      }
+      .titleWrap {
+        margin-top: 4px;
+        display: flex;
+        align-items: baseline;
+        .title {
+          font-size: 24px;
+          font-weight: bold;
+          color: #ffffff;
+        }
+        .subTitle {
+          margin-left: 2px;
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+      .userWrap {
+        margin: 15px 0 36px;
+        .name {
+          font-size: 12px;
+          color: #ffffff;
+        }
+      }
+      .priceWrap {
+        margin-bottom: 20px;
+        .label {
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.8);
+        }
+        .values {
+          margin-top: 4px;
+          display: flex;
+          align-items: center;
+          font-size: 20px;
+          font-weight: bold;
+          line-height: 28px;
+          color: #ffffff;
+          img {
+            width: 20px;
+            height: 20px;
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+  }
+  .pinDetail {
+    margin-top: 24px;
+    width: 549px;
+    padding: 26px 23px;
+    border-radius: 8px;
+    background: #121210;
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 28px;
+    }
+
+    .row {
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 24px 16px;
+      .label {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .value {
+        margin-top: 9px;
+        font-size: 10px;
+        color: #ffffff;
+        word-break: break-all;
+      }
+    }
+  }
+}

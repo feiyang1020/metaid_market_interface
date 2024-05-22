@@ -1,0 +1,147 @@
+import {
+  Avatar,
+  Button,
+  Card,
+  ConfigProvider,
+  Divider,
+  Menu,
+  MenuProps,
+  Space,
+} from "antd";
+import { HomeOutlined, EditOutlined, UserOutlined } from "@ant-design/icons";
+import { useMemo, useState } from "react";
+import "./order.less";
+import level from "@/assets/level.svg";
+import btc from "@/assets/logo_btc@2x.png";
+import { useModel, history } from "umi";
+import { formatSat } from "@/utils/utlis";
+type Props = {
+  item: API.Order;
+};
+export default ({ item }: Props) => {
+  const { connected, connect } = useModel("wallet");
+  const [isHovering, setHovering] = useState<boolean>(false);
+  const handleMouseOver = () => {
+    setHovering(true);
+  };
+
+  const handleMouseOut = () => {
+    setHovering(false);
+  };
+
+  const name = useMemo(() => {
+    if (item.seller && item.seller.name) return item.seller.name;
+    return item.sellerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2");
+  }, [item]);
+  return (
+    <Card styles={{ body: { padding: 0 } }} className="orderCard">
+      <div className="cardWrap">
+        <div className="contetn">
+          {item.info && item.info.contentTypeDetect.indexOf("image") > -1 && (
+            <img className="imageCont" src={item.content}></img>
+          )}
+
+          {item.textContent && (
+            <div className="textCont">{item.textContent}</div>
+          )}
+          <div className="assetNumber">
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    colorTextLightSolid: "#fff",
+                    primaryColor: "#fff",
+                    colorPrimary: `rgba(51, 51, 51, 0.38)`,
+                    colorPrimaryHover: `rgba(51, 51, 51, 0.38)`,
+                    colorPrimaryActive: `rgba(51, 51, 51, 0.38)`,
+                    lineWidth: 0,
+                    primaryShadow: "0 0px 0 rgba(0, 0, 0, 0)",
+                  },
+                },
+              }}
+            >
+              <Button type="primary">#{item.assetNumber}</Button>
+            </ConfigProvider>
+          </div>
+        </div>
+
+        <div className="desc">
+          <div className="number">#{item.assetNumber}</div>
+          <div className="path">
+            {item.info && (item.info.pinPath || item.info.path)}
+          </div>
+        </div>
+        <div className="user">
+          <div className="holderWrap">
+            <div className="label">Holder</div>
+            <Space className="holder">
+              <Avatar
+                style={{ backgroundColor: "#D4F66B" }}
+                icon={<UserOutlined />}
+                size={20}
+              />
+              <div className="name">{name}</div>
+            </Space>
+          </div>
+          <Divider type="vertical" />
+          <div className="holderWrap">
+            <div className="label">Pop</div>
+            <Space className="holder">
+              <div className="name">{item.assetPop}</div>
+              <div className="level">
+                {item.assetLevel !== "--" ? (
+                  <>
+                    <img src={level} alt="" />
+                    {item.assetLevel}
+                  </>
+                ) : (
+                  <span>{item.assetLevel}</span>
+                )}
+              </div>
+            </Space>
+          </div>
+        </div>
+        {!isHovering && (
+          <div
+            className="price"
+            onMouseOver={handleMouseOver}
+            onMouseLeave={handleMouseOut}
+          >
+            <img src={btc} className="btcLogo" alt="" /> {formatSat(item.sellPriceAmount) }{" "}
+            BTC
+          </div>
+        )}
+
+        {isHovering && (
+          <div
+            className="btn"
+            onMouseOver={handleMouseOver}
+            onMouseLeave={handleMouseOut}
+          >
+            {connected ? (
+              <Button
+                type="primary"
+                style={{ height: 40 }}
+                block
+                onClick={() => {
+                  history.push(`/order?id=${item.orderId}`);
+                }}
+              >
+                Buy
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                style={{ height: 40 }}
+                block
+                onClick={connect}
+              >
+                Connect Wallet
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+};

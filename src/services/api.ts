@@ -1,0 +1,157 @@
+import { request } from "umi";
+
+const getHost = (network: API.Network) => {
+  if (network === "mainnet") return "https://api.orders.exchange/api-bridge";
+  if (network === "testnet")
+    return "https://api.metaid.market/api-market-testnet";
+};
+
+export async function getOrders(
+  network: API.Network,
+  params: {
+    assetType: string;
+    orderState: number;
+    address?: string;
+    sortKey: string;
+    sortType: number;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.Order>>(
+    `${getHost(network)}/api/v1/market/orders`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function getAssets(
+  network: API.Network,
+  params: {
+    assetType: string;
+    address?: string;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.Asset>>(
+    `${getHost(network)}/api/v1/market/address/assets`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function getOrder(
+  network: API.Network,
+  params: {
+    orderId: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.Order>>(
+    `${getHost(network)}/api/v1/market/order/detail`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function getOrderPsbt(
+  network: API.Network,
+  params: {
+    orderId: string;
+    buyerAddress: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.Order>>(
+    `${getHost(network)}/api/v1/market/order/psbt`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function sellOrder(
+  network: API.Network,
+  params: {
+    assetType: string;
+    assetId: string;
+    address: string;
+    psbtRaw: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: string;
+      assetType: "pins";
+      assetId: string;
+      orderState: 1;
+    }>
+  >(`${getHost(network)}/api/v1/market/order/push`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}
+
+export async function buyOrder(
+  network: API.Network,
+  params: {
+    orderId: string;
+    takerPsbtRaw: string;
+    networkFeeRate: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: string;
+      assetType: string;
+      assetId: string;
+      orderState: 3;
+      txId: string;
+    }>
+  >(`${getHost(network)}/api/v1/market/order/take`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}
+
+export async function getContent(
+  url: string,
+  options?: { [key: string]: any }
+) {
+  return request<string>(url, {
+    method: "GET",
+    ...(options || {}),
+  });
+}
+
+export async function getRawTx(
+  network: API.Network,
+  params: { txid: string },
+  options?: { [key: string]: any }
+) {
+  const { txid } = params;
+  const url = `https://www.orders.exchange/api-book/common/tx/raw`;
+  return request<API.Ret<{ rawTx: string }>>(url, {
+    method: "GET",
+    params: { net: network, txId: txid },
+    ...(options || {}),
+  });
+}

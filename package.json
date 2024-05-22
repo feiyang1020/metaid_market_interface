@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "author": "feiyang1020 <feiyangl1020@163.com>",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.3.7",
+    "@mempool/mempool.js": "^2.3.0",
+    "@metaid/metaid": "^1.1.9",
+    "antd": "^5.17.3",
+    "bignumber.js": "^9.1.2",
+    "bitcoinjs-lib": "^6.1.5",
+    "compressorjs": "^1.2.1",
+    "crypto-js": "^4.2.0",
+    "decimal.js": "^10.4.3",
+    "umi": "^4.2.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
+    "@umijs/plugins": "^4.2.5",
+    "typescript": "^5.0.3"
+  }
+}
