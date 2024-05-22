@@ -61,3 +61,21 @@ p {
   padding: 0;
   margin: 0;
 }
+
+.animation-slide-bottom {
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-name: slide-bottom;
+}
+@keyframes slide-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

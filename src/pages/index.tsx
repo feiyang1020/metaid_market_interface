@@ -32,7 +32,7 @@ export default () => {
   };
 
   return (
-    <div className="indexPage">
+    <div className="indexPage animation-slide-bottom">
       <Button type="link">PIN</Button>
       <div className="actions">
         <div className="left">All Personal Information Nodes</div>

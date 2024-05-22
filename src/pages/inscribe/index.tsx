@@ -18,7 +18,7 @@ const { Dragger } = Upload;
 const { TextArea } = Input;
 
 export default () => {
-  const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("Buzz");
+  const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("File");
   const [submiting, setSubmiting] = useState(false);
   const [feeRate, setFeeRate] = useState<number>();
   const { btcConnector, connected, connect, feeRates } = useModel("wallet");
@@ -39,7 +39,7 @@ export default () => {
     setBuzz(e.target.value);
   };
   const submit = async () => {
-    if (!feeRate) return;
+    if (!feeRate||fileList.length === 0) return;
     try {
       setSubmiting(true);
       const images = fileList.length !== 0 ? await image2Attach(fileList) : [];
@@ -119,7 +119,7 @@ export default () => {
     },
   };
   return (
-    <div className="inscribePage">
+    <div className="inscribePage animation-slide-bottom">
       <div className="title">Inscribe PINs</div>
       <div className="subTitle">Inscribe your PINs to Bitcoin</div>
       <div className="tabs">
@@ -138,7 +138,7 @@ export default () => {
         </Space>
       </div>
       {tab === "File" && (
-        <div className="form">
+        <div className="form animation-slide-bottom">
           <div className="inputWrap">
             <div className="label">File Name</div>
             <Input
@@ -174,7 +174,7 @@ export default () => {
         </div>
       )}
       {tab === "Buzz" && (
-        <div className="form2">
+        <div className="form2 animation-slide-bottom">
           <div className="textareaWrap">
             <div className="label">Buzz</div>
             <TextArea

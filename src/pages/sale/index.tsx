@@ -78,7 +78,7 @@ export default () => {
     }
   };
   return (
-    <div className="salePage">
+    <div className="salePage animation-slide-bottom">
       <div
         className="title"
         onClick={() => {

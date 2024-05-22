@@ -44,7 +44,7 @@ export default () => {
     setShow(true);
   };
   return (
-    <div className="detailPage">
+    <div className="detailPage animation-slide-bottom">
       <Spin spinning={loading} className="detailWrap">
         {order && (
           <div className="detailWrap">
@@ -119,12 +119,12 @@ export default () => {
                         {order.info.popSummary || "--"}
                       </div>
                     </Col>
-                    <Col span={12}>
+                    {/* <Col span={12}>
                       <div className="label">Root-TxID</div>
                       <div className="value">
                         { "--"}
                       </div>
-                    </Col>
+                    </Col> */}
                     <Col span={12}>
                       <div className="label">MetaID</div>
                       <div className="value">{order.info.metaid || "--"}</div>
