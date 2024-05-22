@@ -61,7 +61,6 @@ export default () => {
     setBtcConnector(_btcConnector);
     console.log(_btcConnector);
     setConnected(true);
-    setMetaid(_btcConnector.metaid);
     setBTCAddress(_btcConnector.wallet.address);
     setAddressType(
       determineAddressInfo(_btcConnector.wallet.address).toUpperCase()
@@ -98,6 +97,11 @@ export default () => {
           ..._walletParams,
           internal: window.metaidwallet,
         });
+        const btcAddress = await window.metaidwallet.btc.getAddress();
+        if(btcAddress!==_walletParams.address){
+          disConnect();
+          return
+        }
         const _network = (await window.metaidwallet.getNetwork()).network;
         console.log(_network);
         setNetwork(_network);
