@@ -89,13 +89,13 @@ export default ({ item }: Props) => {
             <Space className="holder">
               <div className="name">{item.assetPop}</div>
               <div className="level">
-                {item.assetLevel !== "--" ? (
+                {item.assetLevel !== "--" &&item.assetPop!=='--' ? (
                   <>
                     <img src={level} alt="" />
                     {item.assetLevel}
                   </>
                 ) : (
-                  <span>{item.assetLevel}</span>
+                  <span>--</span>
                 )}
               </div>
             </Space>

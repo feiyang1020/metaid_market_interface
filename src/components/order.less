@@ -1,7 +1,6 @@
 .orderCard {
   padding: 0;
-  max-width: 282px;
-  min-width: 282px;
+
   .cardWrap {
     position: relative;
   }
@@ -11,7 +10,7 @@
   .contetn {
     position: relative;
     z-index: 1;
-    width: 280px;
+    width: 100%;
     height: 280px;
     color: #fff;
     display: flex;
@@ -21,13 +20,14 @@
     border-radius: 8px 8px 0 0;
     background: #0c0e09;
     .imageCont {
-      width: 280px;
-      height: 280px;
+      display: block;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
     }
     .textCont {
       word-break: break-all;
-      height: 260px;
-      max-width: 260px;
+      padding: 10px;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -45,11 +45,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 256px;
+
     height: 59px;
     border-radius: 4px;
     background: #232422;
-    margin: 6px auto;
+    margin: 6px 12px;
     padding: 8px 12px;
     .label {
       font-size: 10px;
