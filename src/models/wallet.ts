@@ -49,6 +49,8 @@ export default () => {
     const _wallet = await MetaletWalletForBtc.create();
     console.log(_wallet);
     if (!_wallet.address) return;
+    const { network } = await window.metaidwallet.getNetwork();
+    setNetwork(network);
     const _btcConnector: IMetaletWalletForBtc = await btcConnect({
       wallet: _wallet,
       network,
@@ -60,7 +62,6 @@ export default () => {
     };
     sessionStorage.setItem("walletParams", JSON.stringify(_walletParams));
     setBtcConnector(_btcConnector);
-    console.log(_btcConnector);
     setConnected(true);
     setBTCAddress(_btcConnector.wallet.address);
     setAddressType(
