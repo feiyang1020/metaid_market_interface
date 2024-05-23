@@ -7,6 +7,7 @@ import {
 } from "@metaid/metaid";
 import { determineAddressInfo, formatSat } from "@/utils/utlis";
 import { getFeeRate } from "@/utils/mempool";
+import { getHostByNet } from "@/config";
 
 export type Network = "mainnet" | "testnet";
 type WalletName = "metalet";
@@ -67,7 +68,7 @@ export default () => {
     );
     const bal = await _btcConnector.wallet.getBalance();
     setUserBal(formatSat(bal.total));
-    setAvatar(_btcConnector.user.avatar);
+    setAvatar(`${getHostByNet(network)}${_btcConnector.user.avatar}`);
   };
 
   const disConnect = async () => {
@@ -78,9 +79,9 @@ export default () => {
     setMVCAddress("");
     setBTCAddress("");
     setUserBal("");
-    setBtcConnector(undefined)
-    setAddressType(undefined)
-    setAvatar('')
+    setBtcConnector(undefined);
+    setAddressType(undefined);
+    setAvatar("");
     sessionStorage.removeItem("walletParams");
   };
 
@@ -101,9 +102,9 @@ export default () => {
           internal: window.metaidwallet,
         });
         const btcAddress = await window.metaidwallet.btc.getAddress();
-        if(btcAddress!==_walletParams.address){
+        if (btcAddress !== _walletParams.address) {
           disConnect();
-          return
+          return;
         }
         const _network = (await window.metaidwallet.getNetwork()).network;
         console.log(_network);
