@@ -2,17 +2,27 @@ import Order from "@/components/Order";
 import { sellOrder } from "@/services/api";
 import { buildAskLimit } from "@/utils/orders";
 import { Button, Card, ConfigProvider, InputNumber, List, message } from "antd";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useModel } from "umi";
 import "./index.less";
-import { ArrowLeftOutlined, CheckOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  CheckOutlined,
+  LeftOutlined,
+} from "@ant-design/icons";
 import { formatSat } from "@/utils/utlis";
+import SuccessModal, {
+  DefaultSuccessProps,
+  SuccessProps,
+} from "@/components/SuccessModal";
 
 export default () => {
   const { btcAddress, connect, connected, network } = useModel("wallet");
-  const { orders, loading } = useModel("sale");
+  const { orders, loading, updateOrders, setLoading } = useModel("sale");
   const [sellPrices, setSellPrices] = useState<Record<string, number>>({});
   const [checkList, setCheckList] = useState<string[]>([]);
+  const [successProp, setSuccessProp] =
+    useState<SuccessProps>(DefaultSuccessProps);
   const onInputChange = (assetId: string, amount: number) => {
     setSellPrices((prev) => {
       return {
@@ -29,20 +39,24 @@ export default () => {
     }
   };
 
+  useEffect(() => {
+    setLoading(true);
+    updateOrders();
+  }, []);
+
   const totalStas = useMemo(() => {
     const total = checkList.reduce((a, b) => {
       return a + sellPrices[b] || 0;
     }, 0);
     return total;
   }, [checkList, sellPrices]);
-  const listOrder = async (utxoId:string,assetId: string, price: number) => {
+  const listOrder = async (utxoId: string, assetId: string, price: number) => {
     if (!btcAddress || !network) return;
 
     const ret = await buildAskLimit({
       total: price,
       utxoId,
       network,
-      btcAddress,
     });
     const res = await sellOrder(network, {
       assetId,
@@ -69,13 +83,25 @@ export default () => {
       const order = orders.find((item) => item.assetId === checkList[i]);
       try {
         await listOrder(order?.utxoId, checkList[i], sellPrices[checkList[i]]);
-
         message.success(`#${order?.assetNumber} list success`);
       } catch (err: any) {
+        console.log(err);
         message.error(`#${order?.assetNumber}: ${err.message}`);
+        await updateOrders();
         return;
       }
     }
+    setSuccessProp({
+      show: true,
+      onClose: () => setSuccessProp(DefaultSuccessProps),
+      onDown: () => setSuccessProp(DefaultSuccessProps),
+      title: "List for sale",
+      tip: "Successful",
+      children: <div className="saleSuccess"></div>,
+    });
+    setSellPrices({});
+    setCheckList([]);
+    await updateOrders();
   };
   return (
     <div className="salePage animation-slide-bottom">
@@ -85,7 +111,7 @@ export default () => {
           history.back();
         }}
       >
-        <ArrowLeftOutlined /> List for sale
+        <LeftOutlined /> List for sale
       </div>
       <List
         className="listWrap"
@@ -104,7 +130,10 @@ export default () => {
               }
             >
               <div className="cardWrap">
-                <div className="contetn" onClick={() => handleCheck(item.assetId)}>
+                <div
+                  className="contetn"
+                  onClick={() => handleCheck(item.assetId)}
+                >
                   {item.info &&
                     item.info.contentTypeDetect.indexOf("image") > -1 && (
                       <img className="imageCont" src={item.content}></img>
@@ -132,10 +161,7 @@ export default () => {
                       <Button type="primary">#{item.assetNumber}</Button>
                     </ConfigProvider>
                   </div>
-                  <div
-                    className="checkBox"
-                    
-                  >
+                  <div className="checkBox">
                     {checkList.includes(item.assetId) ? (
                       <div className="checked">
                         <CheckOutlined />
@@ -178,7 +204,11 @@ export default () => {
             <div className="btc">{formatSat(totalStas)}BTC</div>
           </div>
           {connected ? (
-            <Button type="primary" onClick={handleSale}>
+            <Button
+              type="primary"
+              disabled={totalStas === 0}
+              onClick={handleSale}
+            >
               List for sale
             </Button>
           ) : (
@@ -188,6 +218,7 @@ export default () => {
           )}
         </div>
       </div>
+      <SuccessModal {...successProp}></SuccessModal>
     </div>
   );
 };

@@ -7,6 +7,8 @@ export default defineConfig({
     { path: "/inscribe", component: "inscribe" },
     { path: "/sale", component: "sale" },
     { path: "/order", component: "detail" },
+    { path: "/history", component: "history" },
+    { path: "/pending", component: "pending" },
   ],
   npmClient: 'pnpm',
   plugins: ["@umijs/plugins/dist/model", "@umijs/plugins/dist/request"],

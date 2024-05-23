@@ -13,25 +13,47 @@ import {
   message,
   theme,
 } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  DownOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 const _themes = {
   token: {
     colorPrimary: "#d4f66b",
     colorInfo: "#d4f66b",
-    fontFamily: 'HarmonyOS Sans',
+    fontFamily: "HarmonyOS Sans",
   },
   components: {
     Button: {
       primaryColor: "rgb(0, 0, 0)",
       colorTextLightSolid: "rgb(0, 0, 0)",
     },
+    Table: {
+      colorBgContainer: "rgb(0, 0, 0)",
+      controlItemBgActive: "rgb(0, 0, 0)",
+      headerBg: "rgb(0, 0, 0)",
+      colorText: "rgb(255, 255, 255)",
+      colorLink: "rgb(255, 255, 255)",
+      borderColor: "rgb(0, 0, 0)",
+      headerSplitColor: "rgba(255, 251, 251, 0.08)",
+      headerColor: "rgba(255, 255, 255, 0.6)",
+    },
   },
 };
 
 export default function Layout() {
-  const { connect, connected, metaid, userBal, avatar, disConnect } =
-    useModel("wallet");
+  const {
+    connect,
+    connected,
+    metaid,
+    userName,
+    btcAddress,
+    userBal,
+    avatar,
+    disConnect,
+  } = useModel("wallet");
   console.log(userBal, avatar);
   return (
     <ConfigProvider
@@ -66,10 +88,55 @@ export default function Layout() {
                   List for sale
                 </Button>
                 <Dropdown
+                  arrow
                   dropdownRender={() => (
                     <div className="walletInfo">
-                      <div className={`item active`} onClick={disConnect}>
-                        <span className="name">Disconnect</span>
+                      <div className="userInfo">
+                        <Avatar
+                          src={
+                            <img src={avatar || defaultAvatar} alt="avatar" />
+                          }
+                          style={{ width: 46, height: 46 }}
+                        ></Avatar>
+                        <div className="nameWrap">
+                          <div className="name">
+                            {userName ||
+                              (btcAddress &&
+                                btcAddress.replace(
+                                  /(\w{4})\w+(\w{3})/,
+                                  "$1...$2"
+                                ))}
+                          </div>
+                          {metaid && (
+                            <div className="metaId">
+                              MetaID:
+                              {metaid.replace(/(\w{4})\w+(\w{3})/, "$1...$2")}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="links">
+                        <div
+                          className="item"
+                          onClick={() => {
+                            history.push("/history");
+                          }}
+                        >
+                          <div className="path">Transaction History</div>
+                          <RightOutlined />
+                        </div>
+                        <div
+                          className="item"
+                          onClick={() => {
+                            history.push("/pending");
+                          }}
+                        >
+                          <div className="path">Pending Order</div>
+                          <RightOutlined />
+                        </div>
+                      </div>
+                      <div className="disConnect" onClick={disConnect}>
+                        Disconnect
                       </div>
                     </div>
                   )}

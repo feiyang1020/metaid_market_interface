@@ -54,11 +54,12 @@ export default () => {
               </div>
             </div>
             <div className="right">
-              <div className="orderName">Rune Stone</div>
-              <div className="titleWrap">
+              <div className="orderName">#{order.assetNumber}</div>
+              <div className="path">#{order.info.path}</div>
+              {/* <div className="titleWrap">
                 <div className="title">Inscription </div>
-                <div className="subTitle">#{order.assetNumber} </div>
-              </div>
+                <div className="subTitle"> </div>
+              </div> */}
               <div className="userWrap">
                 <Space className="holder">
                   <Avatar
@@ -81,6 +82,7 @@ export default () => {
                   style={{ width: 337, height: 48 }}
                   type="primary"
                   onClick={handelBuy}
+                  disabled={order.orderState !== 1}
                 >
                   Buy
                 </Button>
@@ -94,9 +96,9 @@ export default () => {
                 </Button>
               )}
               <div className="pinDetail">
-                <div className="title">PINDetails</div>
+                <div className="title">PIN Details</div>
                 <div className="detailInfo">
-                  <Row className="row" gutter={[16,16]}>
+                  <Row className="row" gutter={[16, 16]}>
                     <Col span={12}>
                       <div className="label">Operation</div>
                       <div className="value">
@@ -193,7 +195,6 @@ export default () => {
                         {order.info.genesisTransaction || "--"}
                       </div>
                     </Col>
-                    
                   </Row>
                 </div>
               </div>
@@ -205,7 +206,10 @@ export default () => {
         <BuyModel
           order={order}
           show={show}
-          onClose={() => setShow(false)}
+          onClose={() => {
+            fetchPin();
+            setShow(false);
+          }}
         ></BuyModel>
       )}
     </div>

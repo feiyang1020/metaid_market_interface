@@ -6,16 +6,18 @@ import {
   payments,
   address as libAddress,
   TxOutput,
+  initEccLib,
 } from "bitcoinjs-lib";
 import { isTaprootInput } from "bitcoinjs-lib/src/psbt/bip371";
+import * as ecc from "@bitcoin-js/tiny-secp256k1-asmjs";
 import { Output } from "bitcoinjs-lib/src/transaction";
 import Decimal from "decimal.js";
+import { determineAddressInfo } from "./utlis";
 
 export type SimpleUtxo = {
   txId: string;
   satoshis: number;
   outputIndex: number;
-  addressType: any;
   confirmed?: boolean;
 };
 export interface TransactionOutput {
@@ -32,7 +34,7 @@ export const MS_BRC20_UTXO_VALUE = 1000;
 export const SIGHASH_ALL_ANYONECANPAY = 0x81;
 export const USE_UTXO_COUNT_LIMIT = 5;
 export const SIGHASH_ALL = 0x01;
-export const BUY_PAY_INPUT_INDEX = 4
+export const BUY_PAY_INPUT_INDEX = 4;
 const TX_EMPTY_SIZE = 4 + 1 + 1 + 4;
 const TX_INPUT_BASE = 32 + 4 + 1 + 4; // 41
 const TX_INPUT_PUBKEYHASH = 107;
@@ -199,6 +201,12 @@ export const raise = (err: string): never => {
   throw new Error(err);
 };
 
+function getWitnessUtxo(out: any): any {
+  delete out.address;
+  out.script = Buffer.from(out.script, "hex");
+  return out;
+}
+
 export async function exclusiveChange({
   psbt,
   extraSize,
@@ -211,7 +219,6 @@ export async function exclusiveChange({
   partialPay = false,
   cutFrom = 1,
   feeb,
-  address,
   network,
 }: {
   psbt: Psbt;
@@ -225,13 +232,12 @@ export async function exclusiveChange({
   partialPay?: boolean;
   cutFrom?: number;
   feeb: number;
-  address: string;
   network: API.Network;
 }) {
   // check if feeb is set
 
   // check if address is set
-
+  initEccLib(ecc);
   // check if useSize is set but maxUtxosCount is larger than 1
   if (useSize && maxUtxosCount > 1) {
     throw new Error(
@@ -240,6 +246,7 @@ export async function exclusiveChange({
   }
 
   // Add payment input
+  const address = await window.metaidwallet.btc.getAddress();
   const filtered = await window.metaidwallet.btc.getUtxos();
   const pubKey = await window.metaidwallet.btc.getPublicKey();
   const paymentUtxos = filtered
@@ -337,12 +344,15 @@ export async function exclusiveChange({
   // Add in one by one until we have enough value to pay
   // multiple change
   console.log({ paymentUtxos });
+  const addressType = determineAddressInfo(address).toUpperCase();
+  console.log(addressType, "addressType");
   for (let i = 0; i < paymentUtxos.length; i++) {
     const paymentUtxo = paymentUtxos[i];
     const paymentWitnessUtxo = {
       value: paymentUtxo.satoshis,
       script: paymentPrevOutputScript,
     };
+
     const toUseSighashType =
       i > 0 && otherSighashType ? otherSighashType : sighashType;
     const paymentInput = {
@@ -351,6 +361,18 @@ export async function exclusiveChange({
       witnessUtxo: paymentWitnessUtxo,
       sighashType: toUseSighashType,
     };
+    // if (["P2WPKH"].includes(addressType)) {
+    //   paymentInput["witnessUtxo"] = getWitnessUtxo(
+    //     tx.outs[paymentUtxo.vout || paymentUtxo.outputIndex]
+    //   );
+    // }
+    if (["P2PKH"].includes(addressType)) {
+      const {
+        data: { rawTx },
+      } = await getRawTx(network, { txid: paymentUtxo.txId });
+      const tx = Transaction.fromHex(rawTx);
+      paymentInput["nonWitnessUtxo"] = tx.toBuffer();
+    }
     fillInternalKey(paymentInput, address, pubKey);
 
     psbt.addInput(paymentInput);
@@ -392,7 +414,7 @@ export async function exclusiveChange({
     }
 
     const changeValue = totalInput - totalOutput - fee + (extraInputValue || 0);
-
+    debugger;
     if (changeValue < 0) {
       // if we run out of utxos, throw an error
       if (paymentUtxo === paymentUtxos[paymentUtxos.length - 1]) {
@@ -433,23 +455,22 @@ export async function buildAskLimit({
   total,
   utxoId,
   network,
-  btcAddress,
 }: {
   total: number;
   utxoId: string;
   network: API.Network;
-  btcAddress: string;
 }) {
+  initEccLib(ecc);
   // Get address
   // Step 1: Get the ordinal utxo as input
   // if testnet, we use a cardinal utxo as a fake one
+  const btcAddress = await window.metaidwallet.btc.getAddress();
   let ordinalUtxo: SimpleUtxo;
-  const ordinalTxId = utxoId.slice(0, -2);
+
   ordinalUtxo = {
-    txId: ordinalTxId,
+    txId: utxoId.split("_")[0],
     satoshis: 546,
-    outputIndex: 0,
-    addressType: 2,
+    outputIndex: Number(utxoId.split("_")[1]),
   };
 
   // fetch and decode rawTx of the utxo\
@@ -472,16 +493,17 @@ export async function buildAskLimit({
     } catch (e: any) {}
   }
   const pubKey = await window.metaidwallet.btc.getPublicKey();
-  const input = fillInternalKey(
-    {
-      hash: ordinalUtxo.txId,
-      index: ordinalUtxo.outputIndex,
-      witnessUtxo: ordinalPreTx.outs[ordinalUtxo.outputIndex],
-      sighashType: SIGHASH_SINGLE_ANYONECANPAY,
-    },
-    btcAddress,
-    pubKey
-  );
+  const psbtInput = {
+    hash: ordinalUtxo.txId,
+    index: ordinalUtxo.outputIndex,
+    witnessUtxo: ordinalPreTx.outs[ordinalUtxo.outputIndex],
+    sighashType: SIGHASH_SINGLE_ANYONECANPAY,
+  };
+  const addressType = determineAddressInfo(btcAddress).toUpperCase();
+  if (["P2PKH"].includes(addressType)) {
+    psbtInput["nonWitnessUtxo"] = ordinalPreTx.toBuffer();
+  }
+  const input = fillInternalKey(psbtInput, btcAddress, pubKey);
   ask.addInput(input);
 
   // Step 2: Build output as what the seller want (BTC)
@@ -492,7 +514,11 @@ export async function buildAskLimit({
 
   const signed = await window.metaidwallet.btc.signPsbt({
     psbtHex: ask.toHex(),
+    options:{
+      autoFinalized: [ "P2PKH"].includes(addressType),
+    }
   });
+  debugger;
   if (typeof signed === "object") {
     if (signed.status === "canceled") throw new Error("canceled");
     throw new Error("");
@@ -502,7 +528,6 @@ export async function buildAskLimit({
 
 export async function buildBuyTake({
   order,
-  address,
   network,
   takePsbtRaw,
   feeRate,
@@ -512,7 +537,6 @@ export async function buildBuyTake({
     feeAmount: number;
     price: number;
   };
-  address: string;
   network: API.Network;
   takePsbtRaw: string;
   feeRate: number;
@@ -536,7 +560,6 @@ export async function buildBuyTake({
     maxUtxosCount: USE_UTXO_COUNT_LIMIT,
     sighashType: SIGHASH_ALL,
     feeb: feeRate,
-    address,
     network,
   });
   const totalSpent = order.feeAmount + order.price + fee;

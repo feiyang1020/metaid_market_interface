@@ -1,4 +1,4 @@
-import { Button, Modal, message } from "antd";
+import { Button, InputNumber, Modal, Tooltip, message } from "antd";
 import { useModel, history } from "umi";
 import Popup from "../ResponPopup";
 import { useCallback, useEffect, useState } from "react";
@@ -8,27 +8,37 @@ import "./index.less";
 import { BUY_PAY_INPUT_INDEX, SIGHASH_ALL, buildBuyTake } from "@/utils/orders";
 import { buyOrder, getOrderPsbt } from "@/services/api";
 import { Psbt } from "bitcoinjs-lib";
+import SuccessModal, {
+  DefaultSuccessProps,
+  SuccessProps,
+} from "../SuccessModal";
 type Props = {
   order: API.Order;
   show: boolean;
   onClose: () => void;
 };
 export default ({ order, show, onClose }: Props) => {
-  const { feeRates, userBal, network, btcAddress } = useModel("wallet");
+  const { feeRates, userBal, network, btcAddress, addressType } =
+    useModel("wallet");
   const [submiting, setSubmiting] = useState<boolean>(false);
+  const [customRate, setCustomRate] = useState<string | number>();
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
   const [feeRate, setFeeRate] = useState<number>();
   const [totalSpent, setTotalSpent] = useState<number>();
+  const [successProp, setSuccessProp] =
+    useState<SuccessProps>(DefaultSuccessProps);
 
   const [buyPsbt, setBuyPsbt] = useState<Psbt>();
   const fetchTakePsbt = useCallback(async () => {
-    if (!order || !btcAddress) return;
+    if (!order) return;
+    const address = await window.metaidwallet.btc.getAddress();
+    if (order.orderState !== 1) return;
     const { data } = await getOrderPsbt(network, {
       orderId: order.orderId,
-      buyerAddress: btcAddress,
+      buyerAddress: address,
     });
     setOrderWithPsbt(data);
-  }, [network, order, btcAddress]);
+  }, [network, order]);
   useEffect(() => {
     fetchTakePsbt();
   }, [fetchTakePsbt]);
@@ -53,7 +63,6 @@ export default ({ order, show, onClose }: Props) => {
             feeAmount: orderWithPsbt.fee,
             price: orderWithPsbt.sellPriceAmount,
           },
-          address: btcAddress,
           network,
           takePsbtRaw: orderWithPsbt.takePsbt,
           feeRate,
@@ -73,7 +82,7 @@ export default ({ order, show, onClose }: Props) => {
   }, [orderWithPsbt, network, btcAddress, feeRate]);
 
   const handleBuy = async () => {
-    if (!btcAddress || !feeRate || !orderWithPsbt) return;
+    if (!feeRate || !orderWithPsbt || !addressType) return;
     setSubmiting(true);
     try {
       const { order: orderPsbt, totalSpent } = await buildBuyTake({
@@ -82,17 +91,17 @@ export default ({ order, show, onClose }: Props) => {
           feeAmount: orderWithPsbt.fee,
           price: orderWithPsbt.sellPriceAmount,
         },
-        address: btcAddress,
         network,
         takePsbtRaw: orderWithPsbt.takePsbt,
         feeRate,
       });
+      const address = await window.metaidwallet.btc.getAddress();
       const inputsCount = orderPsbt.data.inputs.length;
       const toSignInputs = [];
       for (let i = BUY_PAY_INPUT_INDEX; i < inputsCount; i++) {
         toSignInputs.push({
           index: i,
-          address: btcAddress,
+          address,
           sighashTypes: [SIGHASH_ALL],
         });
       }
@@ -100,7 +109,7 @@ export default ({ order, show, onClose }: Props) => {
       const signed = await window.metaidwallet.btc.signPsbt({
         psbtHex: orderPsbt.toHex(),
         options: {
-          autoFinalized: false,
+          autoFinalized: [ "P2PKH"].includes(addressType),
           toSignInputs,
         },
       });
@@ -108,106 +117,184 @@ export default ({ order, show, onClose }: Props) => {
         if (signed.status === "canceled") throw new Error("canceled");
         throw new Error("");
       }
-      await buyOrder(network, {
+      const ret = await buyOrder(network, {
         orderId: order.orderId,
         takerPsbtRaw: signed,
         networkFeeRate: feeRate,
       });
+      if (ret.code !== 0) {
+        throw new Error(ret.message);
+      }
+      onClose()
+      setSuccessProp({
+        show: true,
+        onClose: () => setSuccessProp(DefaultSuccessProps),
+        onDown: () => setSuccessProp(DefaultSuccessProps),
+        title: "Buy",
+        tip: "Payment Successful",
+        children: (
+          <div className="buySuccess">
+            <div className="orderInfo">
+              <div className="info">
+                {order.info &&
+                  order.info.contentTypeDetect.indexOf("image") > -1 && (
+                    <img className="imageCont" src={order.content}></img>
+                  )}
+
+                {order.textContent && (
+                  <div className="textCont">{order.textContent}</div>
+                )}
+              </div>
+              <div className="dess">
+                <div className="renu">#{order.assetNumber}</div>
+                <div className="number">{order.info.path}</div>
+              </div>
+            </div>
+            <div className="res">
+              <div className="item">
+                <div className="label">Transaction Price</div>
+                <div className="value">
+                  <img src={btcIcon}></img> {formatSat(totalSpent)}
+                </div>
+              </div>
+              <div className="item">
+                <div className="label">Tarde Hash</div>
+                <div className="value">
+                  <Tooltip title={ret.data.txId}>
+                    <a
+                      style={{ color: "#fff", textDecoration: "underline" }}
+                      target="_blank"
+                      href={
+                        network === "testnet"
+                          ? `https://mempool.space/testnet/tx/${ret.data.txId}`
+                          : `https://mempool.space/tx/${ret.data.txId}`
+                      }
+                    >
+                      {ret.data.txId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                    </a>
+                  </Tooltip>
+                </div>
+              </div>
+            </div>
+          </div>
+        ),
+      });
     } catch (err) {
+      console.log(err);
       message.error(err.message);
     }
     setSubmiting(false);
   };
   return (
-    <Popup
-      title="Buy Now"
-      modalWidth={600}
-      show={show}
-      onClose={onClose}
-      closable={true}
-      bodyStyle={{ padding: "28px 25px" }}
-      className="buyModal"
-    >
-      <div className="buyWrap">
-        <div className="orderInfo">
-          <div className="info">
-            {order.info &&
-              order.info.contentTypeDetect.indexOf("image") > -1 && (
-                <img className="imageCont" src={order.content}></img>
+    <>
+      <Popup
+        title="Buy Now"
+        modalWidth={600}
+        show={show}
+        onClose={onClose}
+        closable={true}
+        bodyStyle={{ padding: "28px 25px" }}
+        className="buyModal"
+      >
+        <div className="buyWrap">
+          <div className="orderInfo">
+            <div className="info">
+              {order.info &&
+                order.info.contentTypeDetect.indexOf("image") > -1 && (
+                  <img className="imageCont" src={order.content}></img>
+                )}
+
+              {order.textContent && (
+                <div className="textCont">{order.textContent}</div>
               )}
-
-            {order.textContent && (
-              <div className="textCont">{order.textContent}</div>
-            )}
-          </div>
-          <div className="dess">
-            <div className="renu">Renu</div>
-            <div className="Inscripton">Inscripton</div>
-            <div className="number">#{order.assetNumber}</div>
-          </div>
-        </div>
-        <div className="fees">
-          <div className="feeItem">
-            <div className="label">Price</div>
-            <div className="value">{order.sellPriceAmount} sats</div>
-          </div>
-          <div className="feeItem">
-            <div className="label">
-              Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
             </div>
-            <div className="value">{formatSat(order.fee)}BTC</div>
+            <div className="dess">
+              <div className="renu">#{order.assetNumber}</div>
+              <div className="number">{order.info.path}</div>
+            </div>
           </div>
-        </div>
-        <div className="netFee">
-          <div className="netFeeTitle">Network Fee</div>
-          <div className="netFeeOpts">
-            {feeRates.map((item) => (
-              <div
-                onClick={() => setFeeRate(item.value)}
-                className={`feeRateItem ${
-                  item.value === feeRate ? "active" : ""
-                }`}
-                key={item.label}
-              >
-                <div className="label">{item.label}</div>
-                <div className="value">{item.value} sat/vB</div>
-                <div className="time">{item.time}</div>
+          <div className="fees">
+            <div className="feeItem">
+              <div className="label">Price</div>
+              <div className="value">{order.sellPriceAmount} sats</div>
+            </div>
+            <div className="feeItem">
+              <div className="label">
+                Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
               </div>
-            ))}
+              <div className="value">{formatSat(order.fee)}BTC</div>
+            </div>
           </div>
-        </div>
-        <div className="payInfo">
-          <div className="label">You Pay</div>
-          <div className="value">
-            <img src={btcIcon} alt="" className="btc" />
-            <span>{formatSat(totalSpent || 0)}BTC</span>
+          <div className="netFee">
+            <div className="netFeeTitle">Network Fee</div>
+            <div className="netFeeOpts">
+              {feeRates.map((item) => (
+                <div
+                  onClick={() => setFeeRate(item.value)}
+                  className={`feeRateItem ${
+                    item.value === feeRate ? "active" : ""
+                  }`}
+                  key={item.label}
+                >
+                  <div className="label">{item.label}</div>
+                  <div className="value">{item.value} sat/vB</div>
+                  <div className="time">{item.time}</div>
+                </div>
+              ))}
+              <div
+                className={`feeRateItem ${
+                  customRate === feeRate ? "active" : ""
+                }`}
+                onClick={() => {
+                  customRate && setFeeRate(Number(customRate));
+                }}
+              >
+                <div className="label">Custom rates</div>
+                <div className="value">
+                  <InputNumber
+                    value={customRate}
+                    onChange={setCustomRate}
+                    suffix="sat/vB"
+                  />{" "}
+                </div>
+                <div className="time"></div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="avail">
-          <div className="label">Available balance</div>
-          <div className="value">{userBal} BTC</div>
-        </div>
+          <div className="payInfo">
+            <div className="label">You Pay</div>
+            <div className="value">
+              <img src={btcIcon} alt="" className="btc" />
+              <span>{formatSat(totalSpent || 0)}BTC</span>
+            </div>
+          </div>
+          <div className="avail">
+            <div className="label">Available balance</div>
+            <div className="value">{userBal} BTC</div>
+          </div>
 
-        <div className="btns">
-          <Button
-            style={{ height: 48 }}
-            className="item"
-            type="primary"
-            onClick={handleBuy}
-            loading={submiting}
-          >
-            Confirm
-          </Button>
-          <Button
-            style={{ height: 48 }}
-            className="item"
-            type="link"
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
+          <div className="btns">
+            <Button
+              style={{ height: 48 }}
+              className="item"
+              type="primary"
+              onClick={handleBuy}
+              loading={submiting}
+            >
+              Confirm
+            </Button>
+            <Button
+              style={{ height: 48 }}
+              className="item"
+              type="link"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
-      </div>
-    </Popup>
+      </Popup>
+      <SuccessModal {...successProp} />
+    </>
   );
 };

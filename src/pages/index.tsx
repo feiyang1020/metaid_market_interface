@@ -4,6 +4,7 @@ import "./index.less";
 import { useModel } from "umi";
 import Order from "@/components/Order";
 import SortArrow from "@/components/SortArrow";
+import { useEffect } from "react";
 
 const { useBreakpoint } = Grid;
 
@@ -30,6 +31,11 @@ export default () => {
     }
     setLoading(true);
   };
+
+  useEffect(() => {
+    setLoading(true);
+    updateOrders();
+  }, []);
 
   return (
     <div className="indexPage animation-slide-bottom">

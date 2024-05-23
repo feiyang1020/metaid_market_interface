@@ -39,7 +39,7 @@ export default () => {
     setBuzz(e.target.value);
   };
   const submit = async () => {
-    if (!feeRate||fileList.length === 0) return;
+    if (!feeRate || fileList.length === 0) return;
     try {
       setSubmiting(true);
       const images = fileList.length !== 0 ? await image2Attach(fileList) : [];
@@ -77,6 +77,7 @@ export default () => {
         noBroadcast: "no",
         feeRate: feeRate,
       });
+      console.log(createRes)
       message.success("inscribe success");
       setBuzz("");
     } catch (err) {
@@ -141,42 +142,49 @@ export default () => {
         <div className="form animation-slide-bottom">
           <div className="inputWrap">
             <div className="label">File Name</div>
-            <Input
-              className="input"
-              placeholder=""
-              variant="borderless"
-            />
+            <Input className="input" placeholder="" variant="borderless" />
           </div>
           <div className="uploadWrap">
-            <Dragger {...props}>
-              <p className="ant-upload-text">Upload file</p>
-              <p className="ant-upload-hint">Any file type. Max 300kb</p>
-              <p className="ant-upload-drag-icon">
-                <img src={uploadIcon} alt="" />
-              </p>
-            </Dragger>
+            <div className="label"></div>
+            <div className="upload">
+              <Dragger {...props} className="uploadInput">
+                <p className="ant-upload-text">Upload file</p>
+                <p className="ant-upload-hint">Any file type. Max 300kb</p>
+                <p className="ant-upload-drag-icon">
+                  <img src={uploadIcon} alt="" />
+                </p>
+              </Dragger>
+              {!connected ? (
+                <Button
+                  block
+                  className="submit"
+                  size="large"
+                  type="primary"
+                  onClick={connect}
+                >
+                  Connect Wallet
+                </Button>
+              ) : (
+                <Button
+                  block
+                  size="large"
+                  loading={submiting}
+                  type="primary"
+                  onClick={submit}
+                  className="submit"
+                >
+                  Submit
+                </Button>
+              )}
+            </div>
           </div>
-          {!connected ? (
-            <Button block size="large" type="primary" onClick={connect}>
-              Connect Wallet
-            </Button>
-          ) : (
-            <Button
-              block
-              size="large"
-              loading={submiting}
-              type="primary"
-              onClick={submit}
-            >
-              Submit
-            </Button>
-          )}
         </div>
       )}
       {tab === "Buzz" && (
         <div className="form2 animation-slide-bottom">
+          <div className="label">Buzz</div>
           <div className="textareaWrap">
-            <div className="label">Buzz</div>
+            
             <TextArea
               placeholder=""
               allowClear
@@ -186,28 +194,28 @@ export default () => {
               style={{ height: 422 }}
               value={buzz}
             />
-          </div>
-          {!connected ? (
-            <Button block size="large" type="primary" onClick={connect}>
-              Connect Wallet
-            </Button>
-          ) : (
-            <Button
-              block
-              size="large"
-              loading={submiting}
-              type="primary"
-              onClick={submitBuzz}
-            >
-              Submit
-            </Button>
-          )}
-          <div className="tips">
-            You can view your buzz in{" "}
-            <a href="https://www.bitbuzz.io/" target="_blank">
-              bitbuzz.io
-            </a>{" "}
-            affer inscription
+            {!connected ? (
+              <Button block size="large" type="primary" onClick={connect}>
+                Connect Wallet
+              </Button>
+            ) : (
+              <Button
+                block
+                size="large"
+                loading={submiting}
+                type="primary"
+                onClick={submitBuzz}
+              >
+                Submit
+              </Button>
+            )}
+            <div className="tips">
+              You can view your buzz in{" "}
+              <a href="https://www.bitbuzz.io/" target="_blank">
+                bitbuzz.io
+              </a>{" "}
+              affer inscription
+            </div>
           </div>
         </div>
       )}

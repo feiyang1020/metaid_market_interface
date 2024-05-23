@@ -40,21 +40,22 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 52px;
-      border-radius: 8px;
-      opacity: 1;
-      background: rgba(25, 27, 24, 0.84);
       margin-bottom: 24px;
 
       .label {
-        padding-left: 19px;
-        min-width: 173px;
+        padding-right: 19px;
+        min-width: 93px;
         font-size: 16px;
-        text-align: left;
+        text-align: right;
       }
       .input {
         flex-grow: 1;
         text-align: right;
+        height: 52px;
+        border-radius: 8px;
+        opacity: 1;
+        background: rgba(25, 27, 24, 0.84);
+
         input {
           text-align: right;
         }
@@ -63,6 +64,24 @@
     .uploadWrap {
       height: 434px;
       margin-bottom: 50px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .label {
+        padding-left: 19px;
+        min-width: 93px;
+        font-size: 16px;
+        text-align: left;
+      }
+      .upload {
+        flex-grow: 1;
+        height: 100%;
+
+        .submit {
+          margin-top: 50px;
+        }
+      }
       .ant-upload-drag-icon {
         margin-top: 84px;
       }
@@ -71,22 +90,26 @@
   .form2 {
     width: 632px;
     max-width: 100vw;
-    
+    display: flex;
+
+    .label {
+      padding-right: 19px;
+      min-width: 93px;
+      font-size: 16px;
+      text-align: right;
+    }
+
     .textareaWrap {
-      box-sizing: border-box;
-      width: 100%;
-      background: #151714;
-      padding: 18px 24px 35px;
-      margin-bottom: 50px;
-      border-radius: 4px;
-      .label {
-        font-size: 16px;
-        color: #ffffff;
-        text-align: left;
-        margin-bottom: 15px;
-      }
+      flex-grow: 1;
+
       .textarea {
         height: 422px;
+        box-sizing: border-box;
+        width: 100%;
+        background: #151714;
+        padding: 18px 24px 35px;
+        margin-bottom: 50px;
+        border-radius: 4px;
       }
     }
     .tips {

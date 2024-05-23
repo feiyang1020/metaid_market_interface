@@ -33,6 +33,7 @@ export default () => {
   const [connected, setConnected] = useState<boolean>(false);
   const [userBal, setUserBal] = useState<string>("0");
   const [avatar, setAvatar] = useState<string>("");
+  const [userName, setUserName] = useState<string>();
   const [walletParams, setWalletParams] = useState(
     sessionStorage.getItem("walletParams") || ""
   );
@@ -67,9 +68,19 @@ export default () => {
     setAddressType(
       determineAddressInfo(_btcConnector.wallet.address).toUpperCase()
     );
+    console.log(
+      _btcConnector.user,
+      "determineAddressInfo(_btcConnector.wallet.address).toUpperCase()"
+    );
     const bal = await _btcConnector.wallet.getBalance();
     setUserBal(formatSat(bal.total));
-    setAvatar(`${getHostByNet(network)}${_btcConnector.user.avatar}`);
+    setAvatar(
+      _btcConnector.user.avatar
+        ? `${getHostByNet(network)}${_btcConnector.user.avatar}`
+        : ""
+    );
+    setMetaid(_btcConnector.user.metaid);
+    setUserName(_btcConnector.user.name);
   };
 
   const disConnect = async () => {
@@ -83,6 +94,8 @@ export default () => {
     setBtcConnector(undefined);
     setAddressType(undefined);
     setAvatar("");
+    setMetaid('');
+    setUserName('')
     sessionStorage.removeItem("walletParams");
   };
 
@@ -125,7 +138,13 @@ export default () => {
         );
         const bal = await _btcConnector.wallet.getBalance();
         setUserBal(formatSat(bal.total));
-        setAvatar(_btcConnector.user.avatar);
+        setAvatar(
+          _btcConnector.user.avatar
+            ? `${getHostByNet(network)}${_btcConnector.user.avatar}`
+            : ""
+        );
+        setMetaid(_btcConnector.user.metaid);
+        setUserName(_btcConnector.user.name);
       }
     }
   }, [walletName, walletParams]);
@@ -174,6 +193,7 @@ export default () => {
     metaid,
     btcConnector,
     avatar,
+    userName,
     feeRates,
   };
 };

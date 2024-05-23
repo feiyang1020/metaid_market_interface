@@ -2,8 +2,9 @@ lockfileVersion: 5.4
 
 specifiers:
   '@ant-design/icons': ^5.3.7
+  '@bitcoin-js/tiny-secp256k1-asmjs': ^2.2.3
   '@mempool/mempool.js': ^2.3.0
-  '@metaid/metaid': ^1.1.9
+  '@metaid/metaid': 1.2.7
   '@types/react': ^18.0.33
   '@types/react-dom': ^18.0.11
   '@umijs/plugins': ^4.2.5
@@ -12,19 +13,22 @@ specifiers:
   bitcoinjs-lib: ^6.1.5
   compressorjs: ^1.2.1
   crypto-js: ^4.2.0
+  dayjs: ^1.11.11
   decimal.js: ^10.4.3
   typescript: ^5.0.3
   umi: ^4.2.5
 
 dependencies:
   '@ant-design/icons': registry.npmjs.org/@ant-design/icons/5.3.7
+  '@bitcoin-js/tiny-secp256k1-asmjs': registry.npmjs.org/@bitcoin-js/tiny-secp256k1-asmjs/2.2.3
   '@mempool/mempool.js': registry.npmjs.org/@mempool/mempool.js/2.3.0
-  '@metaid/metaid': registry.npmjs.org/@metaid/metaid/1.1.9
+  '@metaid/metaid': registry.npmjs.org/@metaid/metaid/1.2.7
   antd: registry.npmjs.org/antd/5.17.3
   bignumber.js: registry.npmjs.org/bignumber.js/9.1.2
   bitcoinjs-lib: registry.npmjs.org/bitcoinjs-lib/6.1.5
   compressorjs: registry.npmjs.org/compressorjs/1.2.1
   crypto-js: registry.npmjs.org/crypto-js/4.2.0
+  dayjs: registry.npmjs.org/dayjs/1.11.11
   decimal.js: registry.npmjs.org/decimal.js/10.4.3
   umi: registry.npmjs.org/umi/4.2.5_r4uv52uoodtokbnpjpecx56sry
 
@@ -2071,10 +2075,10 @@ packages:
       inquirer: registry.npmjs.org/inquirer/9.2.22
     dev: false
 
-  registry.npmjs.org/@metaid/metaid/1.1.9:
-    resolution: {integrity: sha512-G+KsxffPY+0whYhXSHgNeOBLhXFt3TD8KYIPNWSyco+aDPCNUoc06CPuAtmwS8enR4mVZnUCLQcqC7B1O7kgQw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@metaid/metaid/-/metaid-1.1.9.tgz}
+  registry.npmjs.org/@metaid/metaid/1.2.7:
+    resolution: {integrity: sha512-5nKJIJvN5+111RUIGRT5yFxo3jlP8GXOBpr0PfxZfzBjmDJATo8bkewJuegvExgsp+Rm1WQC6eG0ih01c/P5mg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@metaid/metaid/-/metaid-1.2.7.tgz}
     name: '@metaid/metaid'
-    version: 1.1.9
+    version: 1.2.7
     dependencies:
       '@bitcoin-js/tiny-secp256k1-asmjs': registry.npmjs.org/@bitcoin-js/tiny-secp256k1-asmjs/2.2.3
       '@metaid/metaid-cli': registry.npmjs.org/@metaid/metaid-cli/0.0.2
