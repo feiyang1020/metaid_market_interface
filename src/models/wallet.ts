@@ -78,6 +78,9 @@ export default () => {
     setMVCAddress("");
     setBTCAddress("");
     setUserBal("");
+    setBtcConnector(undefined)
+    setAddressType(undefined)
+    setAvatar('')
     sessionStorage.removeItem("walletParams");
   };
 
