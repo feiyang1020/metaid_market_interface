@@ -29,7 +29,6 @@ export default () => {
             cursor: cursor * size,
             size,
           });
-          console.log(ret);
           const list: API.Asset[] = ret.data.list.map((item) => {
             return {
               ...item,
@@ -45,7 +44,6 @@ export default () => {
               list[i].textContent = JSON.stringify(cont);
             }
           }
-          console.log(list);
           setOrders(list);
           setTotal(ret.data.total);
           setLoading(false);

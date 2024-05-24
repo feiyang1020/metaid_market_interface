@@ -54,7 +54,6 @@ export default function Layout() {
     avatar,
     disConnect,
   } = useModel("wallet");
-  console.log(userBal, avatar);
   return (
     <ConfigProvider
       theme={{
