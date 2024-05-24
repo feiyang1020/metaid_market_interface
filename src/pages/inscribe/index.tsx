@@ -235,7 +235,7 @@ export default () => {
         <div className="form animation-slide-bottom">
           <div className="inputWrap">
             <div className="label">File Name</div>
-            <Input className="input" placeholder="" variant="borderless" />
+            <Input className="input" placeholder="" variant='filled' />
           </div>
           <div className="uploadWrap">
             <div className="label"></div>
