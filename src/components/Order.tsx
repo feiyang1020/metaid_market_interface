@@ -18,8 +18,9 @@ import { formatSat } from "@/utils/utlis";
 import MetaIdAvatar from "./MetaIdAvatar";
 type Props = {
   item: API.Order;
+  handleBuy: (order: API.Order) => void;
 };
-export default ({ item }: Props) => {
+export default ({ item, handleBuy }: Props) => {
   const { connected, connect } = useModel("wallet");
   const [isHovering, setHovering] = useState<boolean>(false);
   const handleMouseOver = () => {
@@ -37,7 +38,12 @@ export default ({ item }: Props) => {
   return (
     <Card styles={{ body: { padding: 0 } }} className="orderCard">
       <div className="cardWrap">
-        <div className="contetn">
+        <div
+          className="contetn"
+          onClick={() => {
+            history.push(`/order?id=${item.orderId}`);
+          }}
+        >
           {item.info && item.info.contentTypeDetect.indexOf("image") > -1 && (
             <img className="imageCont" src={item.content}></img>
           )}
@@ -125,7 +131,7 @@ export default ({ item }: Props) => {
                 style={{ height: 40 }}
                 block
                 onClick={() => {
-                  history.push(`/order?id=${item.orderId}`);
+                  handleBuy(item);
                 }}
               >
                 Buy

@@ -13,7 +13,7 @@ import SuccessModal, {
   SuccessProps,
 } from "../SuccessModal";
 type Props = {
-  order: API.Order;
+  order: API.Order | undefined;
   show: boolean;
   onClose: () => void;
 };
@@ -109,7 +109,7 @@ export default ({ order, show, onClose }: Props) => {
       const signed = await window.metaidwallet.btc.signPsbt({
         psbtHex: orderPsbt.toHex(),
         options: {
-          autoFinalized: [ "P2PKH"].includes(addressType),
+          autoFinalized: ["P2PKH"].includes(addressType),
           toSignInputs,
         },
       });
@@ -125,7 +125,7 @@ export default ({ order, show, onClose }: Props) => {
       if (ret.code !== 0) {
         throw new Error(ret.message);
       }
-      onClose()
+      onClose();
       setSuccessProp({
         show: true,
         onClose: () => setSuccessProp(DefaultSuccessProps),
@@ -185,115 +185,119 @@ export default ({ order, show, onClose }: Props) => {
     }
     setSubmiting(false);
   };
+
   return (
     <>
-      <Popup
-        title="Buy Now"
-        modalWidth={600}
-        show={show}
-        onClose={onClose}
-        closable={true}
-        bodyStyle={{ padding: "28px 25px" }}
-        className="buyModal"
-      >
-        <div className="buyWrap">
-          <div className="orderInfo">
-            <div className="info">
-              {order.info &&
-                order.info.contentTypeDetect.indexOf("image") > -1 && (
-                  <img className="imageCont" src={order.content}></img>
+      {order && (
+        <Popup
+          title="Buy Now"
+          modalWidth={600}
+          show={show}
+          onClose={onClose}
+          closable={true}
+          bodyStyle={{ padding: "28px 25px" }}
+          className="buyModal"
+        >
+          <div className="buyWrap">
+            <div className="orderInfo">
+              <div className="info">
+                {order.info &&
+                  order.info.contentTypeDetect.indexOf("image") > -1 && (
+                    <img className="imageCont" src={order.content}></img>
+                  )}
+
+                {order.textContent && (
+                  <div className="textCont">{order.textContent}</div>
                 )}
-
-              {order.textContent && (
-                <div className="textCont">{order.textContent}</div>
-              )}
-            </div>
-            <div className="dess">
-              <div className="renu">#{order.assetNumber}</div>
-              <div className="number">{order.info.path}</div>
-            </div>
-          </div>
-          <div className="fees">
-            <div className="feeItem">
-              <div className="label">Price</div>
-              <div className="value">{order.sellPriceAmount} sats</div>
-            </div>
-            <div className="feeItem">
-              <div className="label">
-                Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
               </div>
-              <div className="value">{formatSat(order.fee)}BTC</div>
+              <div className="dess">
+                <div className="renu">#{order.assetNumber}</div>
+                <div className="number">{order.info.path}</div>
+              </div>
             </div>
-          </div>
-          <div className="netFee">
-            <div className="netFeeTitle">Network Fee</div>
-            <div className="netFeeOpts">
-              {feeRates.map((item) => (
+            <div className="fees">
+              <div className="feeItem">
+                <div className="label">Price</div>
+                <div className="value">{order.sellPriceAmount} sats</div>
+              </div>
+              <div className="feeItem">
+                <div className="label">
+                  Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
+                </div>
+                <div className="value">{formatSat(order.fee)}BTC</div>
+              </div>
+            </div>
+            <div className="netFee">
+              <div className="netFeeTitle">Network Fee</div>
+              <div className="netFeeOpts">
+                {feeRates.map((item) => (
+                  <div
+                    onClick={() => setFeeRate(item.value)}
+                    className={`feeRateItem ${
+                      item.value === feeRate ? "active" : ""
+                    }`}
+                    key={item.label}
+                  >
+                    <div className="label">{item.label}</div>
+                    <div className="value">{item.value} sat/vB</div>
+                    <div className="time">{item.time}</div>
+                  </div>
+                ))}
                 <div
-                  onClick={() => setFeeRate(item.value)}
                   className={`feeRateItem ${
-                    item.value === feeRate ? "active" : ""
+                    customRate === feeRate ? "active" : ""
                   }`}
-                  key={item.label}
+                  onClick={() => {
+                    customRate && setFeeRate(Number(customRate));
+                  }}
                 >
-                  <div className="label">{item.label}</div>
-                  <div className="value">{item.value} sat/vB</div>
-                  <div className="time">{item.time}</div>
+                  <div className="label">Custom rates</div>
+                  <div className="value">
+                    <InputNumber
+                      value={customRate}
+                      onChange={setCustomRate}
+                      suffix="sat/vB"
+                    />{" "}
+                  </div>
+                  <div className="time"></div>
                 </div>
-              ))}
-              <div
-                className={`feeRateItem ${
-                  customRate === feeRate ? "active" : ""
-                }`}
-                onClick={() => {
-                  customRate && setFeeRate(Number(customRate));
-                }}
-              >
-                <div className="label">Custom rates</div>
-                <div className="value">
-                  <InputNumber
-                    value={customRate}
-                    onChange={setCustomRate}
-                    suffix="sat/vB"
-                  />{" "}
-                </div>
-                <div className="time"></div>
               </div>
             </div>
-          </div>
-          <div className="payInfo">
-            <div className="label">You Pay</div>
-            <div className="value">
-              <img src={btcIcon} alt="" className="btc" />
-              <span>{formatSat(totalSpent || 0)}BTC</span>
+            <div className="payInfo">
+              <div className="label">You Pay</div>
+              <div className="value">
+                <img src={btcIcon} alt="" className="btc" />
+                <span>{formatSat(totalSpent || 0)}BTC</span>
+              </div>
+            </div>
+            <div className="avail">
+              <div className="label">Available balance</div>
+              <div className="value">{userBal} BTC</div>
+            </div>
+
+            <div className="btns">
+              <Button
+                style={{ height: 48 }}
+                className="item"
+                type="primary"
+                onClick={handleBuy}
+                loading={submiting}
+              >
+                Confirm
+              </Button>
+              <Button
+                style={{ height: 48 }}
+                className="item"
+                type="link"
+                onClick={onClose}
+              >
+                Cancel
+              </Button>
             </div>
           </div>
-          <div className="avail">
-            <div className="label">Available balance</div>
-            <div className="value">{userBal} BTC</div>
-          </div>
+        </Popup>
+      )}
 
-          <div className="btns">
-            <Button
-              style={{ height: 48 }}
-              className="item"
-              type="primary"
-              onClick={handleBuy}
-              loading={submiting}
-            >
-              Confirm
-            </Button>
-            <Button
-              style={{ height: 48 }}
-              className="item"
-              type="link"
-              onClick={onClose}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
-      </Popup>
       <SuccessModal {...successProp} />
     </>
   );

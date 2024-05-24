@@ -4,7 +4,8 @@ import "./index.less";
 import { useModel } from "umi";
 import Order from "@/components/Order";
 import SortArrow from "@/components/SortArrow";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import BuyModel from "@/components/BuyModel";
 
 const { useBreakpoint } = Grid;
 
@@ -22,6 +23,8 @@ export default () => {
     updateOrders,
     setCursor,
   } = useModel("orders");
+  const [curOrder, setCurOrder] = useState<API.Order>();
+  const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
   const handleSort = (key: string) => {
     if (sortKey === key) {
       setSortType(sortType === 1 ? -1 : 1);
@@ -98,7 +101,13 @@ export default () => {
           dataSource={orders}
           renderItem={(item) => (
             <List.Item>
-              <Order item={item} />
+              <Order
+                item={item}
+                handleBuy={(order) => {
+                  setCurOrder(order);
+                  setBuyModalVisible(true);
+                }}
+              />
             </List.Item>
           )}
           rowKey={"orderId"}
@@ -114,6 +123,14 @@ export default () => {
           }}
         />
       </div>
+      <BuyModel
+        order={curOrder}
+        show={buyModalVisible}
+        onClose={() => {
+          setBuyModalVisible(false);
+          setCurOrder(undefined);
+        }}
+      />
     </div>
   );
 };

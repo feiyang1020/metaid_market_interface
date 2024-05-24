@@ -62,7 +62,7 @@ const Popup: React.FC<Props> = ({
       maskClosable={maskClosable}
       style={{ padding: 0, ...style }}
       className={"hayPopup" + " " + className}
-      getContainer={false}
+      
     >
       {children}
     </Modal>
