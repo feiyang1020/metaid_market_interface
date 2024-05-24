@@ -6,7 +6,7 @@ import "./index.less";
 import { formatSat } from "@/utils/utlis";
 import { useEffect, useMemo, useState } from "react";
 import Popup from "@/components/ResponPopup";
-import { cancelOrder } from "@/services/api";
+import { authTest, cancelOrder } from "@/services/api";
 
 export default () => {
   const { btcAddress, network } = useModel("wallet");
@@ -22,16 +22,27 @@ export default () => {
     updateOrders();
   }, []);
   const handleCancel = async () => {
-    if (!curOrder) return;
+    if (!curOrder || !btcAddress) return;
     setSubmiting(true);
     try {
       // 'X-Signature': credential.signature,
       // 'X-Public-Key': credential.publicKey,
       const publicKey = await window.metaidwallet.btc.getPublicKey();
       const publicKeySign = await window.metaidwallet.btc.signMessage(
-        publicKey
+        "metaid.market"
       );
       if (publicKeySign.status === "canceled") throw new Error("canceled");
+      const testret = await authTest(
+        network,
+        { address: btcAddress },
+        {
+          headers: {
+            "X-Signature": publicKeySign,
+            "X-Public-Key": publicKey,
+          },
+        }
+      );
+      console.log(testret,'testret')
       const ret = await cancelOrder(
         network,
         { orderId: curOrder.orderId },

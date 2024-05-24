@@ -153,6 +153,27 @@ export async function cancelOrder(
   });
 }
 
+export async function authTest(
+  network: API.Network,
+  params: {
+    address: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: "7818c13ce41b6f16184f3a84fe7269cbf7e128c1f299188f00e7613587328677";
+      assetType: "pins";
+      assetId: "fa387e936bd347b1f22a3d5f9989ae3b5d1a7726da00a4c5462a624387467014i0";
+      orderState: 2;
+    }>
+  >(`${getHost(network)}/api/v1/auth/test`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}
+
 export async function getContent(
   url: string,
   options?: { [key: string]: any }
