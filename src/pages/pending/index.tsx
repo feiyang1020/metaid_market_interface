@@ -25,7 +25,23 @@ export default () => {
     if (!curOrder) return;
     setSubmiting(true);
     try {
-      const ret = await cancelOrder(network, { orderId: curOrder.orderId });
+      // 'X-Signature': credential.signature,
+      // 'X-Public-Key': credential.publicKey,
+      const publicKey = await window.metaidwallet.btc.getPublicKey();
+      const publicKeySign = await window.metaidwallet.btc.signMessage(
+        publicKey
+      );
+      if (publicKeySign.status === "canceled") throw new Error("canceled");
+      const ret = await cancelOrder(
+        network,
+        { orderId: curOrder.orderId },
+        {
+          headers: {
+            "X-Signature": publicKeySign,
+            "X-Public-Key": publicKey,
+          },
+        }
+      );
       if (ret.code !== 0) throw new Error(ret.message);
       setLoading(true);
       await updateOrders();
@@ -150,7 +166,7 @@ export default () => {
           </div>
           <div className="buttons">
             <Button
-              type='default'
+              type="default"
               onClick={() => {
                 setShow(false);
               }}
