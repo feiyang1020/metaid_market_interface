@@ -21,6 +21,7 @@ const checkExtension = () => {
   }
   return true;
 };
+type AuthParams = { "X-Signature": string; "X-Public-Key": string };
 export default () => {
   const [walletName, setWalletName] = useState<WalletName>("metalet");
   const [mvcAddress, setMVCAddress] = useState<string>();
@@ -34,6 +35,7 @@ export default () => {
   const [userBal, setUserBal] = useState<string>("0");
   const [avatar, setAvatar] = useState<string>("");
   const [userName, setUserName] = useState<string>();
+  const [authParams, setAuthParams] = useState<AuthParams>();
   const [walletParams, setWalletParams] = useState(
     sessionStorage.getItem("walletParams") || ""
   );
@@ -52,11 +54,23 @@ export default () => {
     if (!_wallet.address) return;
     const { network } = await window.metaidwallet.getNetwork();
     setNetwork(network);
+    const publicKey = await window.metaidwallet.btc.getPublicKey();
+    const publicKeySign = await window.metaidwallet.btc.signMessage(
+      "metaid.market"
+    );
+    if (publicKeySign.status) return;
+    setAuthParams({ "X-Public-Key": publicKey, "X-Signature": publicKeySign });
+    sessionStorage.setItem(
+      "authParams",
+      JSON.stringify({
+        "X-Public-Key": publicKey,
+        "X-Signature": publicKeySign,
+      })
+    );
     const _btcConnector: IMetaletWalletForBtc = await btcConnect({
       wallet: _wallet,
       network,
     });
-
     const _walletParams = {
       address: _wallet.address,
       pub: _wallet.pub,
@@ -67,10 +81,6 @@ export default () => {
     setBTCAddress(_btcConnector.wallet.address);
     setAddressType(
       determineAddressInfo(_btcConnector.wallet.address).toUpperCase()
-    );
-    console.log(
-      _btcConnector.user,
-      "determineAddressInfo(_btcConnector.wallet.address).toUpperCase()"
     );
     const bal = await _btcConnector.wallet.getBalance();
     setUserBal(formatSat(bal.total));
@@ -84,9 +94,6 @@ export default () => {
   };
 
   const disConnect = async () => {
-    if (!checkExtension()) return;
-    // const ret = await window.metaidwallet.disconnect();
-    // if (ret.status === "canceled") return;
     setConnected(false);
     setMVCAddress("");
     setBTCAddress("");
@@ -94,9 +101,11 @@ export default () => {
     setBtcConnector(undefined);
     setAddressType(undefined);
     setAvatar("");
-    setMetaid('');
-    setUserName('')
+    setMetaid("");
+    setUserName("");
+    setAuthParams(undefined);
     sessionStorage.removeItem("walletParams");
+    sessionStorage.removeItem("authParams");
   };
 
   const fetchFeeRate = useCallback(async () => {
@@ -107,29 +116,46 @@ export default () => {
   }, [network]);
 
   const init = useCallback(async () => {
-    console.log("init", walletName, window.metaidwallet);
     if (walletName === "metalet" && window.metaidwallet) {
+      const _network = (await window.metaidwallet.getNetwork()).network;
+      setNetwork(_network);
       if (walletParams) {
+        let _authParams: AuthParams | undefined = undefined;
+        if (sessionStorage.getItem("authParams")) {
+          _authParams = JSON.parse(
+            sessionStorage.getItem("authParams") || ""
+          ) as AuthParams;
+        }
+        if (!_authParams) {
+          disConnect();
+          return;
+        }
         const _walletParams = JSON.parse(walletParams);
+        if (_authParams && _authParams["X-Public-Key"] !== _walletParams.pub) {
+          disConnect();
+          return;
+        }
         const _wallet = MetaletWalletForBtc.restore({
           ..._walletParams,
           internal: window.metaidwallet,
         });
         const btcAddress = await window.metaidwallet.btc.getAddress();
+        const pubKey = await window.metaidwallet.btc.getPublicKey();
         if (btcAddress !== _walletParams.address) {
           disConnect();
           return;
         }
-        const _network = (await window.metaidwallet.getNetwork()).network;
-        console.log(_network);
-        setNetwork(_network);
+        if (pubKey !== _walletParams.pub) {
+          disConnect();
+          return;
+        }
+        setAuthParams(_authParams);
         const _btcConnector: IMetaletWalletForBtc = await btcConnect({
           wallet: _wallet,
           network: _network,
         });
 
         setBtcConnector(_btcConnector);
-        console.log(_btcConnector);
         setConnected(true);
         setMetaid(_btcConnector.metaid);
         setBTCAddress(_btcConnector.wallet.address);
@@ -195,5 +221,6 @@ export default () => {
     avatar,
     userName,
     feeRates,
+    authParams,
   };
 };

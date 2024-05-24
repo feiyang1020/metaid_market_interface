@@ -9,7 +9,7 @@ import Popup from "@/components/ResponPopup";
 import { authTest, cancelOrder } from "@/services/api";
 
 export default () => {
-  const { btcAddress, network } = useModel("wallet");
+  const { btcAddress, network, authParams } = useModel("wallet");
   const { orders, loading, updateOrders, setLoading } = useModel("userOrders");
   const [show, setShow] = useState<boolean>(false);
   const [submiting, setSubmiting] = useState<boolean>(false);
@@ -25,31 +25,12 @@ export default () => {
     if (!curOrder || !btcAddress) return;
     setSubmiting(true);
     try {
-      // 'X-Signature': credential.signature,
-      // 'X-Public-Key': credential.publicKey,
-      const publicKey = await window.metaidwallet.btc.getPublicKey();
-      const publicKeySign = await window.metaidwallet.btc.signMessage(
-        "metaid.market"
-      );
-      if (publicKeySign.status === "canceled") throw new Error("canceled");
-      const testret = await authTest(
-        network,
-        { address: btcAddress },
-        {
-          headers: {
-            "X-Signature": publicKeySign,
-            "X-Public-Key": publicKey,
-          },
-        }
-      );
-      console.log(testret,'testret')
       const ret = await cancelOrder(
         network,
         { orderId: curOrder.orderId },
         {
           headers: {
-            "X-Signature": publicKeySign,
-            "X-Public-Key": publicKey,
+            ...authParams,
           },
         }
       );

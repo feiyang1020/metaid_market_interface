@@ -18,8 +18,15 @@ type Props = {
   onClose: () => void;
 };
 export default ({ order, show, onClose }: Props) => {
-  const { feeRates, userBal, network, btcAddress, addressType } =
-    useModel("wallet");
+  const {
+    feeRates,
+    userBal,
+    network,
+    btcAddress,
+    addressType,
+    authParams,
+    connected,
+  } = useModel("wallet");
   const [submiting, setSubmiting] = useState<boolean>(false);
   const [customRate, setCustomRate] = useState<string | number>();
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
@@ -30,15 +37,26 @@ export default ({ order, show, onClose }: Props) => {
 
   const [buyPsbt, setBuyPsbt] = useState<Psbt>();
   const fetchTakePsbt = useCallback(async () => {
-    if (!order) return;
+    if (!order || !connected || !authParams) {
+      setOrderWithPsbt(undefined);
+      return;
+    }
     const address = await window.metaidwallet.btc.getAddress();
     if (order.orderState !== 1) return;
-    const { data } = await getOrderPsbt(network, {
-      orderId: order.orderId,
-      buyerAddress: address,
-    });
+    const { data } = await getOrderPsbt(
+      network,
+      {
+        orderId: order.orderId,
+        buyerAddress: address,
+      },
+      {
+        headers: {
+          ...authParams,
+        },
+      }
+    );
     setOrderWithPsbt(data);
-  }, [network, order]);
+  }, [network, order, connected, authParams]);
   useEffect(() => {
     fetchTakePsbt();
   }, [fetchTakePsbt]);
@@ -82,7 +100,7 @@ export default ({ order, show, onClose }: Props) => {
   }, [orderWithPsbt, network, btcAddress, feeRate]);
 
   const handleBuy = async () => {
-    if (!feeRate || !orderWithPsbt || !addressType) return;
+    if (!feeRate || !orderWithPsbt || !addressType || !connected) return;
     setSubmiting(true);
     try {
       const { order: orderPsbt, totalSpent } = await buildBuyTake({
@@ -117,11 +135,19 @@ export default ({ order, show, onClose }: Props) => {
         if (signed.status === "canceled") throw new Error("canceled");
         throw new Error("");
       }
-      const ret = await buyOrder(network, {
-        orderId: order.orderId,
-        takerPsbtRaw: signed,
-        networkFeeRate: feeRate,
-      });
+      const ret = await buyOrder(
+        network,
+        {
+          orderId: order.orderId,
+          takerPsbtRaw: signed,
+          networkFeeRate: feeRate,
+        },
+        {
+          headers: {
+            ...authParams,
+          },
+        }
+      );
       if (ret.code !== 0) {
         throw new Error(ret.message);
       }

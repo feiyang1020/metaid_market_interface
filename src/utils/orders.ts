@@ -414,7 +414,6 @@ export async function exclusiveChange({
     }
 
     const changeValue = totalInput - totalOutput - fee + (extraInputValue || 0);
-    debugger;
     if (changeValue < 0) {
       // if we run out of utxos, throw an error
       if (paymentUtxo === paymentUtxos[paymentUtxos.length - 1]) {
@@ -516,7 +515,6 @@ export async function buildAskLimit({
     psbtHex: ask.toHex(),
     
   });
-  debugger;
   if (typeof signed === "object") {
     if (signed.status === "canceled") throw new Error("canceled");
     throw new Error("");

@@ -17,7 +17,8 @@ import SuccessModal, {
 } from "@/components/SuccessModal";
 
 export default () => {
-  const { btcAddress, connect, connected, network } = useModel("wallet");
+  const { btcAddress, connect, connected, network, authParams } =
+    useModel("wallet");
   const { orders, loading, updateOrders, setLoading } = useModel("sale");
   const [sellPrices, setSellPrices] = useState<Record<string, number>>({});
   const [checkList, setCheckList] = useState<string[]>([]);
@@ -58,12 +59,20 @@ export default () => {
       utxoId,
       network,
     });
-    const res = await sellOrder(network, {
-      assetId,
-      assetType: "pins",
-      address: btcAddress,
-      psbtRaw: ret,
-    });
+    const res = await sellOrder(
+      network,
+      {
+        assetId,
+        assetType: "pins",
+        address: btcAddress,
+        psbtRaw: ret,
+      },
+      {
+        headers: {
+          ...authParams,
+        },
+      }
+    );
     if (res.code !== 0) {
       throw new Error(res.message);
     }
@@ -83,7 +92,6 @@ export default () => {
       const order = orders.find((item) => item.assetId === checkList[i]);
       try {
         await listOrder(order?.utxoId, checkList[i], sellPrices[checkList[i]]);
-       
       } catch (err: any) {
         console.log(err);
         message.error(`#${order?.assetNumber}: ${err.message}`);
