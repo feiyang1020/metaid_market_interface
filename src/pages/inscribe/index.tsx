@@ -39,7 +39,7 @@ type FeeRateProps = {
 
 const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
   const { feeRates, network } = useModel("wallet");
-  const [customRate, setCustomRate] = useState<string | number>();
+  const [customRate, setCustomRate] = useState<string | number>(0);
   return (
     <div className="FeeRateWrap">
       <Row gutter={[24, 24]}>
@@ -66,16 +66,16 @@ const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
         <Col span={24} style={{ textAlign: "left" }}>
           Customize fee rate
         </Col>
-        <Col span={24}>
-          {" "}
+        <Col span={24} style={{ textAlign: "left" }}>
           <InputNumber
             value={customRate}
             onChange={setCustomRate}
-            style={{ width: "100%" }}
+            style={{ width: "80px", textAlign: "right" }}
+            className="customInput"
             variant="borderless"
-            suffix="sat/vB"
             controls={false}
           />
+          sat/vB
         </Col>
       </Row>
     </div>
@@ -89,6 +89,8 @@ export default () => {
     useModel("wallet");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [buzz, setBuzz] = useState<string>("");
+  const [payload, setPayload] = useState<string>("");
+  const [path, setPath] = useState<string>("");
   useEffect(() => {
     const find = feeRates.find((item) => item.label === "Avg");
     if (find) {
@@ -233,26 +235,41 @@ export default () => {
       </div>
       {tab === "File" && (
         <div className="form animation-slide-bottom">
-          <div className="inputWrap">
-            <div className="label">File Name</div>
-            <Input className="input" placeholder="" variant='filled' />
-          </div>
-          <div className="uploadWrap">
-            <div className="label"></div>
-            <div className="upload">
-              <Dragger {...props} className="uploadInput">
-                <p className="ant-upload-text">Upload file</p>
-                <p className="ant-upload-hint">Any file type. Max 300kb</p>
-                <p className="ant-upload-drag-icon">
-                  <img src={uploadIcon} alt="" />
-                </p>
-              </Dragger>
-            </div>
-          </div>
-          <Row gutter={[24,24]}>
+          <Form
+            {...formItemLayout}
+            variant="filled"
+            style={{ maxWidth: "100vw", width: 632 }}
+          >
+            <Form.Item label="File Name" name="Input">
+              <Input size="large" placeholder="" />
+            </Form.Item>
+          </Form>
+          <Row>
             <Col offset={4} span={20}>
-              <SeleceFeeRate feeRate={feeRate} setFeeRate={setFeeRate} />
+              <div className="uploadWrap">
+                <div className="label"></div>
+                <div className="upload">
+                  <Dragger {...props} className="uploadInput">
+                    <p className="ant-upload-text">Upload file</p>
+                    <p className="ant-upload-hint">Any file type. Max 300kb</p>
+                    <p className="ant-upload-drag-icon">
+                      <img src={uploadIcon} alt="" />
+                    </p>
+                  </Dragger>
+                </div>
+              </div>
             </Col>
+          </Row>
+          <Form
+            {...formItemLayout}
+            variant="filled"
+            style={{ maxWidth: "100vw", width: 632 }}
+          >
+            <Form.Item label="Fee Rate" name="Input">
+              <SeleceFeeRate feeRate={feeRate} setFeeRate={setFeeRate} />
+            </Form.Item>
+          </Form>
+          <Row gutter={[0, 0]}>
             <Col offset={4} span={20}>
               {!connected ? (
                 <Button
@@ -271,6 +288,7 @@ export default () => {
                   loading={submiting}
                   type="primary"
                   onClick={submit}
+                  disabled={!feeRate || fileList.length === 0}
                   className="submit"
                 >
                   Submit
@@ -315,6 +333,7 @@ export default () => {
                   loading={submiting}
                   type="primary"
                   onClick={submitBuzz}
+                  disabled={!feeRate || !buzz}
                 >
                   Submit
                 </Button>
@@ -333,18 +352,24 @@ export default () => {
         </div>
       )}
       {tab === "PINs" && (
-        <div className="form2 animation-slide-bottom">
+        <div className="form4 animation-slide-bottom">
           <Form
             {...formItemLayout}
             variant="filled"
             style={{ maxWidth: "100vw", width: 632 }}
           >
             <Form.Item label="Path" name="Input">
-              <Input size="large" />
+              <Input
+                size="large"
+                value={path}
+                onChange={(e) => {
+                  setPath(e.target.value);
+                }}
+              />
             </Form.Item>
 
             <Form.Item label="InputNumber" name="InputNumber">
-              <Input size="large" />
+              <Input size="large" defaultValue="text/plain" disabled />
             </Form.Item>
 
             <Form.Item label="Payload" name="TextArea">
@@ -352,12 +377,44 @@ export default () => {
                 size="large"
                 autoSize={false}
                 style={{ height: 222 }}
+                value={payload}
+                onChange={(e) => {
+                  setPayload(e.target.value);
+                }}
               />
             </Form.Item>
             <Form.Item label="Fee Rate" name="TextArea">
               <SeleceFeeRate feeRate={feeRate} setFeeRate={setFeeRate} />
             </Form.Item>
           </Form>
+
+          <Row gutter={[0, 0]}>
+            <Col offset={4} span={20}>
+              {!connected ? (
+                <Button
+                  block
+                  className="submit"
+                  size="large"
+                  type="primary"
+                  onClick={connect}
+                >
+                  Connect Wallet
+                </Button>
+              ) : (
+                <Button
+                  block
+                  size="large"
+                  loading={submiting}
+                  type="primary"
+                  onClick={submit}
+                  disabled={!feeRate || !path || !payload}
+                  className="submit"
+                >
+                  Submit
+                </Button>
+              )}
+            </Col>
+          </Row>
         </div>
       )}
     </div>
