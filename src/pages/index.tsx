@@ -113,6 +113,7 @@ export default () => {
           rowKey={"orderId"}
           pagination={{
             onChange: (page) => {
+              setLoading(true);
               setCursor(page - 1);
             },
             position: "bottom",
