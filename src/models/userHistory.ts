@@ -14,7 +14,10 @@ export default () => {
   const [loading, setLoading] = useState<boolean>(true);
   const fetchOrders = useCallback(
     async (retry: boolean = true) => {
-      if (!btcAddress) return;
+      if (!btcAddress) {
+        setLoading(false);
+        return;
+      }
       if (network) {
         try {
           const ret = await getOrders(network, {

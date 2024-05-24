@@ -54,7 +54,9 @@ export default () => {
             fetchOrders(false);
           }
         }
+        
       }
+      setLoading(false);
     },
     [network, sortKey, sortType, cursor, btcAddress, connected]
   );
