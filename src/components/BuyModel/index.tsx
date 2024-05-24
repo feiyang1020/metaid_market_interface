@@ -293,7 +293,7 @@ export default ({ order, show, onClose }: Props) => {
               <div className="label">You Pay</div>
               <div className="value">
                 <img src={btcIcon} alt="" className="btc" />
-                <span>{formatSat(totalSpent || 0)}BTC</span>
+                <span>{totalSpent ? formatSat(totalSpent || 0) : "--"}BTC</span>
               </div>
             </div>
             <div className="avail">
