@@ -6,18 +6,24 @@ import {
   InputNumber,
   Row,
   Space,
+  Tooltip,
   Upload,
   UploadFile,
   UploadProps,
   message,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./index.less";
-import { FileToAttachmentItem, image2Attach } from "@/utils/utlis";
+import btcIcon from "@/assets/logo_btc@2x.png";
+import { FileToAttachmentItem, formatSat, image2Attach } from "@/utils/utlis";
 import { useModel } from "umi";
 import { CreateOptions, IBtcConnector, IBtcEntity } from "@metaid/metaid";
 import uploadIcon from "@/assets/upload.svg";
 import { getCreatePinFeeByNet } from "@/config";
+import SuccessModal, {
+  DefaultSuccessProps,
+  SuccessProps,
+} from "@/components/SuccessModal";
 const items = ["File", "Buzz", "PINs"];
 const { Dragger } = Upload;
 const { TextArea } = Input;
@@ -30,6 +36,17 @@ const formItemLayout = {
     xs: { span: 24 },
     sm: { span: 20 },
   },
+};
+
+type Operation = "init" | "create" | "modify";
+type InscribeOptions = {
+  operation: Operation;
+  body?: string | Buffer;
+  path?: string;
+  contentType?: string;
+  encryption?: "0" | "1" | "2";
+  version?: string;
+  encoding?: BufferEncoding;
 };
 
 type FeeRateProps = {
@@ -90,7 +107,14 @@ export default () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [buzz, setBuzz] = useState<string>("");
   const [payload, setPayload] = useState<string>("");
-  const [path, setPath] = useState<string>("");
+  const [path, setPath] = useState<string>("/protocols");
+  const [successProp, setSuccessProp] =
+    useState<SuccessProps>(DefaultSuccessProps);
+  const checkPath = useMemo(() => {
+    const regex = /^\/[a-zA-Z0-9]+(\/[a-zA-Z0-9]+)*\/?$/;
+
+    return regex.test(path);
+  }, [path]);
   useEffect(() => {
     const find = feeRates.find((item) => item.label === "Avg");
     if (find) {
@@ -136,15 +160,57 @@ export default () => {
         });
       }
 
-      const imageRes = await fileEntity.create({
+      const ret = await fileEntity.create({
         options: fileOptions,
         noBroadcast: "no",
         feeRate: feeRate,
         service: getCreatePinFeeByNet(network),
       });
-      console.log(imageRes);
-      message.success("inscribe success");
-      setFileList([]);
+      if (ret.status) throw new Error(ret.status);
+      if (ret.commitTxId) {
+        setSuccessProp({
+          show: true,
+          onClose: () => setSuccessProp(DefaultSuccessProps),
+          onDown: () => {
+            setSuccessProp(DefaultSuccessProps);
+            setFileList([]);
+          },
+          title: "Inscribe",
+          tip: "Successful",
+          children: (
+            <div className="inscribeSuccess">
+              <div className="res">
+                <div className="item">
+                  <div className="label">Transaction Cost</div>
+                  <div className="value">
+                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                  </div>
+                </div>
+                <div className="item">
+                  <div className="label">Tarde Hash</div>
+                  <div className="value">
+                    <Tooltip title={ret.commitTxId}>
+                      <a
+                        style={{ color: "#fff", textDecoration: "underline" }}
+                        target="_blank"
+                        href={
+                          network === "testnet"
+                            ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
+                            : `https://mempool.space/tx/${ret.commitTxId}`
+                        }
+                      >
+                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                      </a>
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ),
+        });
+      } else {
+        throw new Error("unknow error");
+      }
     } catch (err) {
       console.log(err);
       message.error(err.message);
@@ -157,7 +223,7 @@ export default () => {
     setSubmiting(true);
     try {
       const buzzEntity = await btcConnector!.use("buzz");
-      const createRes = await buzzEntity!.create({
+      const ret = await buzzEntity!.create({
         options: [
           {
             body: JSON.stringify({ content: buzz }),
@@ -169,9 +235,120 @@ export default () => {
         feeRate: feeRate,
         service: getCreatePinFeeByNet(network),
       });
-      console.log(createRes);
-      message.success("inscribe success");
-      setBuzz("");
+      if (ret.status) throw new Error(ret.status);
+      if (ret.commitTxId) {
+        setSuccessProp({
+          show: true,
+          onClose: () => setSuccessProp(DefaultSuccessProps),
+          onDown: () => {
+            setSuccessProp(DefaultSuccessProps);
+            setBuzz("");
+          },
+          title: "Inscribe",
+          tip: "Successful",
+          children: (
+            <div className="inscribeSuccess">
+              <div className="res">
+                <div className="item">
+                  <div className="label">Transaction Cost</div>
+                  <div className="value">
+                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                  </div>
+                </div>
+                <div className="item">
+                  <div className="label">Tarde Hash</div>
+                  <div className="value">
+                    <Tooltip title={ret.commitTxId}>
+                      <a
+                        style={{ color: "#fff", textDecoration: "underline" }}
+                        target="_blank"
+                        href={
+                          network === "testnet"
+                            ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
+                            : `https://mempool.space/tx/${ret.commitTxId}`
+                        }
+                      >
+                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                      </a>
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ),
+        });
+      } else {
+        throw new Error("unknow error");
+      }
+    } catch (err) {
+      message.error(err.message);
+    }
+    setSubmiting(false);
+  };
+
+  const inscribe = async () => {
+    if (!btcConnector || !path || !payload || !checkPath) return;
+    setSubmiting(true);
+    try {
+      const metaidData: InscribeOptions = {
+        operation: "create",
+        body: payload,
+        path: path,
+        contentType: "text/plain",
+        flag: network === "mainnet" ? "metaid" : "testid",
+      };
+
+      const ret = await btcConnector.inscribe(
+        [metaidData],
+        "no",
+        feeRate,
+        getCreatePinFeeByNet(network)
+      );
+      if (ret.status) throw new Error(ret.status);
+      if (ret.commitTxId) {
+        setSuccessProp({
+          show: true,
+          onClose: () => setSuccessProp(DefaultSuccessProps),
+          onDown: () => {
+            setSuccessProp(DefaultSuccessProps);
+            setPayload("");
+          },
+          title: "Inscribe",
+          tip: "Successful",
+          children: (
+            <div className="inscribeSuccess">
+              <div className="res">
+                <div className="item">
+                  <div className="label">Transaction Cost</div>
+                  <div className="value">
+                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                  </div>
+                </div>
+                <div className="item">
+                  <div className="label">Tarde Hash</div>
+                  <div className="value">
+                    <Tooltip title={ret.commitTxId}>
+                      <a
+                        style={{ color: "#fff", textDecoration: "underline" }}
+                        target="_blank"
+                        href={
+                          network === "testnet"
+                            ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
+                            : `https://mempool.space/tx/${ret.commitTxId}`
+                        }
+                      >
+                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                      </a>
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ),
+        });
+      } else {
+        throw new Error("unknow error");
+      }
     } catch (err) {
       message.error(err.message);
     }
@@ -358,9 +535,11 @@ export default () => {
             variant="filled"
             style={{ maxWidth: "100vw", width: 632 }}
           >
-            <Form.Item label="Path" name="Input">
+            <Form.Item label="Path" name="path">
               <Input
                 size="large"
+                status={checkPath ? "" : "error"}
+                defaultValue="/protocols"
                 value={path}
                 onChange={(e) => {
                   setPath(e.target.value);
@@ -406,7 +585,7 @@ export default () => {
                   size="large"
                   loading={submiting}
                   type="primary"
-                  onClick={submit}
+                  onClick={inscribe}
                   disabled={!feeRate || !path || !payload}
                   className="submit"
                 >
@@ -417,6 +596,7 @@ export default () => {
           </Row>
         </div>
       )}
+      <SuccessModal {...successProp}></SuccessModal>
     </div>
   );
 };

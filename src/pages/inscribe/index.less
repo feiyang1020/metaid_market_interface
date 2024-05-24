@@ -32,6 +32,15 @@
     margin-top: 32px;
     margin-bottom: 32px;
   }
+  .tips {
+    font-weight: 300;
+    margin-top: 22px;
+    font-size: 16px;
+    color: #ffffff;
+    a {
+      color: #ffffff;
+    }
+  }
   .form {
     width: 632px;
     max-width: 100vw;
@@ -107,15 +116,7 @@
         border-radius: 4px;
       }
     }
-    .tips {
-      font-weight: 300;
-      margin-top: 22px;
-      font-size: 16px;
-      color: #ffffff;
-      a {
-        color: #ffffff;
-      }
-    }
+    
   }
   .FeeRateWrap {
     background-color: rgba(255, 255, 255, 0.08);
@@ -159,19 +160,45 @@
       border: 1.19px solid rgba(255, 255, 255, 0.2);
       padding: 22px 18px;
       cursor: pointer;
-      .customInput{
-        input{
+      .customInput {
+        input {
           text-align: right;
         }
       }
       &.active {
         border: 1.19px solid #d4f66b;
         color: #d4f66b;
-        .customInput{
-          input{
+        .customInput {
+          input {
             text-align: right;
             color: #d4f66b;
           }
+        }
+      }
+    }
+  }
+}
+.inscribeSuccess {
+  width: 100%;
+  .res {
+    width: 100%;
+    margin-top: 20px;
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
+      color: #ffffff;
+      &.item {
+        margin-bottom: 24px;
+      }
+      .value {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+          width: 16px;
+          height: 16px;
         }
       }
     }

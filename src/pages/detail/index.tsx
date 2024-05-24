@@ -1,5 +1,5 @@
 import { getContent, getOrder, getOrderPsbt } from "@/services/api";
-import { Avatar, Button, Col, Row, Space, Spin } from "antd";
+import { Avatar, Button, Col, Row, Space, Spin, Typography } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useModel, useSearchParams } from "umi";
 import "./index.less";
@@ -13,6 +13,7 @@ export default () => {
   const { network, connect, connected, btcAddress, addressType } =
     useModel("wallet");
   const [loading, setLoading] = useState<boolean>(true);
+  const [expanded, setExpanded] = useState(false);
   const [show, setShow] = useState<boolean>(false);
   const [order, setOrder] = useState<API.Order>();
   const [query] = useSearchParams();
@@ -93,6 +94,24 @@ export default () => {
                   Connect Wallet
                 </Button>
               )}
+              {order.textContent && (
+                <div className="pinDetail">
+                  <div className="title">Content</div>
+                  <Typography.Paragraph
+                    ellipsis={{
+                      rows: 3,
+                      expandable: "collapsible",
+                      expanded,
+                      onExpand: (_, info) => setExpanded(info.expanded),
+                    }}
+                    copyable
+                    style={{ color: "color: rgba(255, 255, 255, 0.5)" }}
+                  >
+                    {order.textContent}
+                  </Typography.Paragraph>
+                </div>
+              )}
+
               <div className="pinDetail">
                 <div className="title">PIN Details</div>
                 <div className="detailInfo">

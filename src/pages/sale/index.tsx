@@ -83,7 +83,7 @@ export default () => {
       const order = orders.find((item) => item.assetId === checkList[i]);
       try {
         await listOrder(order?.utxoId, checkList[i], sellPrices[checkList[i]]);
-        message.success(`#${order?.assetNumber} list success`);
+       
       } catch (err: any) {
         console.log(err);
         message.error(`#${order?.assetNumber}: ${err.message}`);
