@@ -62,11 +62,11 @@ export default () => {
                 <div className="subTitle"> </div>
               </div> */}
               <div className="userWrap">
-                <Space className="holder">
+                <div className="holder">
                   <MetaIdAvatar avatar={order.seller.avatar} size={20} />
 
                   <div className="name">{name}</div>
-                </Space>
+                </div>
               </div>
               <div className="priceWrap">
                 <div className="label">Price</div>
