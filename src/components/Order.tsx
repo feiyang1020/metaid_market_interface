@@ -38,38 +38,42 @@ export default ({ item, handleBuy }: Props) => {
   return (
     <Card styles={{ body: { padding: 0 } }} className="orderCard">
       <div className="cardWrap">
+        <div className="contentWrap"></div>
         <div
           className="contetn"
           onClick={() => {
             history.push(`/order?id=${item.orderId}`);
           }}
+          style={{
+            backgroundImage:
+              item.info && item.info.contentTypeDetect.indexOf("image") > -1
+                ? `url(${item.content})`
+                : "none",
+          }}
         >
-          {item.info && item.info.contentTypeDetect.indexOf("image") > -1 && (
-            <img className="imageCont" src={item.content}></img>
-          )}
-
-          {item.textContent && (
-            <div className="textCont">{item.textContent}</div>
-          )}
-          <div className="assetNumber">
-            <ConfigProvider
-              theme={{
-                components: {
-                  Button: {
-                    colorTextLightSolid: "#fff",
-                    primaryColor: "#fff",
-                    colorPrimary: `rgba(51, 51, 51, 0.38)`,
-                    colorPrimaryHover: `rgba(51, 51, 51, 0.38)`,
-                    colorPrimaryActive: `rgba(51, 51, 51, 0.38)`,
-                    lineWidth: 0,
-                    primaryShadow: "0 0px 0 rgba(0, 0, 0, 0)",
-                  },
+          <div
+            className="textContent"
+            dangerouslySetInnerHTML={{ __html: item.textContent }}
+          ></div>
+        </div>
+        <div className="assetNumber">
+          <ConfigProvider
+            theme={{
+              components: {
+                Button: {
+                  colorTextLightSolid: "#fff",
+                  primaryColor: "#fff",
+                  colorPrimary: `rgba(51, 51, 51, 0.38)`,
+                  colorPrimaryHover: `rgba(51, 51, 51, 0.38)`,
+                  colorPrimaryActive: `rgba(51, 51, 51, 0.38)`,
+                  lineWidth: 0,
+                  primaryShadow: "0 0px 0 rgba(0, 0, 0, 0)",
                 },
-              }}
-            >
-              <Button type="primary">#{item.assetNumber}</Button>
-            </ConfigProvider>
-          </div>
+              },
+            }}
+          >
+            <Button type="primary">#{item.assetNumber}</Button>
+          </ConfigProvider>
         </div>
 
         <div className="desc">

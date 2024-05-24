@@ -12,7 +12,8 @@
     position: relative;
     z-index: 1;
     width: 100%;
-    height: 280px;
+    height: 0;
+    padding-bottom: 100%;
     color: #fff;
     display: flex;
     align-items: center;
@@ -20,18 +21,29 @@
     overflow: hidden;
     border-radius: 8px 8px 0 0;
     background: #0c0e09;
+    background-size: 100% 100%;
+    background-size: cover;
     .imageCont {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       display: block;
-      min-width: 100%;
-      min-height: 100%;
       object-fit: cover;
     }
-    .textCont {
+    .textContent {
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       word-break: break-all;
       padding: 10px;
-      overflow: hidden;
       display: flex;
       align-items: center;
+      justify-content: center;
     }
   }
   .assetNumber {
