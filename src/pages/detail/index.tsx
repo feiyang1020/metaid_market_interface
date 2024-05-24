@@ -8,6 +8,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { buyOrder } from "@/utils/psbtBuild";
 import BuyModel from "@/components/BuyModel";
 import { formatSat } from "@/utils/utlis";
+import MetaIdAvatar from "@/components/MetaIdAvatar";
 export default () => {
   const { network, connect, connected, btcAddress, addressType } =
     useModel("wallet");
@@ -62,11 +63,8 @@ export default () => {
               </div> */}
               <div className="userWrap">
                 <Space className="holder">
-                  <Avatar
-                    style={{ backgroundColor: "#D4F66B" }}
-                    icon={<UserOutlined />}
-                    size={20}
-                  />
+                  <MetaIdAvatar avatar={order.seller.avatar} size={20} />
+
                   <div className="name">{name}</div>
                 </Space>
               </div>

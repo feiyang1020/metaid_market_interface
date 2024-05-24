@@ -41,12 +41,10 @@
   }
 
   .user {
-    box-sizing: border-box;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    height: 59px;
     border-radius: 4px;
     background: #232422;
     margin: 6px 12px;
@@ -60,7 +58,7 @@
     .name {
       font-size: 12px;
       color: #fff;
-      max-width: 76px;
+      flex-grow: 1;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -74,14 +72,23 @@
       align-items: baseline;
       padding: 1px 4px;
       font-size: 10.59px;
+      min-width: 20px;
+      justify-content: center;
       span {
         color: rgba(255, 255, 255, 0.4);
       }
     }
     .holderWrap {
+      position: relative;
+      width: 45%;
+      flex-grow: 1;
       .holder {
         display: flex;
         align-items: center;
+        max-width: 100%;
+
+        gap: 10px;
+        justify-content: space-between;
       }
     }
   }

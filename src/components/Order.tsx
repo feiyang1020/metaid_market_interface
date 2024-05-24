@@ -15,6 +15,7 @@ import level from "@/assets/level.svg";
 import btc from "@/assets/logo_btc@2x.png";
 import { useModel, history } from "umi";
 import { formatSat } from "@/utils/utlis";
+import MetaIdAvatar from "./MetaIdAvatar";
 type Props = {
   item: API.Order;
 };
@@ -74,22 +75,22 @@ export default ({ item }: Props) => {
         <div className="user">
           <div className="holderWrap">
             <div className="label">Holder</div>
-            <Space className="holder">
-              <Avatar
-                style={{ backgroundColor: "#D4F66B" }}
-                icon={<UserOutlined />}
+            <div className="holder">
+              <MetaIdAvatar
+                avatar={item.seller.avatar}
                 size={20}
+                style={{ minWidth: 20 }}
               />
               <div className="name">{name}</div>
-            </Space>
+            </div>
           </div>
           <Divider type="vertical" />
           <div className="holderWrap">
             <div className="label">Pop</div>
-            <Space className="holder">
+            <div className="holder pop">
               <div className="name">{item.assetPop}</div>
               <div className="level">
-                {item.assetLevel !== "--" &&item.assetPop!=='--' ? (
+                {item.assetLevel !== "--" && item.assetPop !== "--" ? (
                   <>
                     <img src={level} alt="" />
                     {item.assetLevel}
@@ -98,7 +99,7 @@ export default ({ item }: Props) => {
                   <span>--</span>
                 )}
               </div>
-            </Space>
+            </div>
           </div>
         </div>
         {!isHovering && (
@@ -107,8 +108,8 @@ export default ({ item }: Props) => {
             onMouseOver={handleMouseOver}
             onMouseLeave={handleMouseOut}
           >
-            <img src={btc} className="btcLogo" alt="" /> {formatSat(item.sellPriceAmount) }{" "}
-            BTC
+            <img src={btc} className="btcLogo" alt="" />{" "}
+            {formatSat(item.sellPriceAmount)} BTC
           </div>
         )}
 

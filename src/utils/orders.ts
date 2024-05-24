@@ -514,9 +514,7 @@ export async function buildAskLimit({
 
   const signed = await window.metaidwallet.btc.signPsbt({
     psbtHex: ask.toHex(),
-    // options:{
-    //   autoFinalized: [ "P2PKH"].includes(addressType),
-    // }
+    
   });
   debugger;
   if (typeof signed === "object") {

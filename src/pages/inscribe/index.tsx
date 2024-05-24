@@ -21,7 +21,8 @@ export default () => {
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("File");
   const [submiting, setSubmiting] = useState(false);
   const [feeRate, setFeeRate] = useState<number>();
-  const { btcConnector, connected, connect, feeRates } = useModel("wallet");
+  const { btcConnector, connected, connect, feeRates, network } =
+    useModel("wallet");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [buzz, setBuzz] = useState<string>("");
   useEffect(() => {
@@ -42,16 +43,16 @@ export default () => {
     if (!feeRate || fileList.length === 0) return;
     try {
       setSubmiting(true);
-      const images = fileList.length !== 0 ? await image2Attach(fileList) : [];
+      const images = await image2Attach(fileList);
 
       const fileEntity = await btcConnector!.use("file");
       const fileOptions: CreateOptions[] = [];
       for (const image of images) {
-        // console.log("image.data", Buffer.from(image.data, "hex").toString("base64"));
         fileOptions.push({
           body: Buffer.from(image.data, "hex").toString("base64"),
           contentType: "image/jpeg",
           encoding: "base64",
+          flag: network === "mainnet" ? "metaid" : "testid",
         });
       }
       const imageRes = await fileEntity.create({
@@ -73,11 +74,17 @@ export default () => {
     try {
       const buzzEntity = await btcConnector!.use("buzz");
       const createRes = await buzzEntity!.create({
-        options: [{ body: JSON.stringify({ content: buzz }) }],
+        options: [
+          {
+            body: JSON.stringify({ content: buzz }),
+            contentType: "text/plain",
+            flag: network === "mainnet" ? "metaid" : "testid",
+          },
+        ],
         noBroadcast: "no",
         feeRate: feeRate,
       });
-      console.log(createRes)
+      console.log(createRes);
       message.success("inscribe success");
       setBuzz("");
     } catch (err) {
@@ -184,7 +191,6 @@ export default () => {
         <div className="form2 animation-slide-bottom">
           <div className="label">Buzz</div>
           <div className="textareaWrap">
-            
             <TextArea
               placeholder=""
               allowClear
