@@ -29,6 +29,7 @@ export interface PsbtTxOutput extends TransactionOutput {
 }
 
 export const SIGHASH_SINGLE_ANYONECANPAY = 0x83;
+export const SIGHASH_SINGLE = 0x03
 export const DUST_UTXO_VALUE = 546;
 export const MS_BRC20_UTXO_VALUE = 1000;
 export const SIGHASH_ALL_ANYONECANPAY = 0x81;
@@ -499,10 +500,12 @@ export async function buildAskLimit({
     sighashType: SIGHASH_SINGLE_ANYONECANPAY,
   };
   const addressType = determineAddressInfo(btcAddress).toUpperCase();
+  
+  const input = fillInternalKey(psbtInput, btcAddress, pubKey);
   if (["P2PKH"].includes(addressType)) {
+    delete psbtInput.witnessUtxo;
     psbtInput["nonWitnessUtxo"] = ordinalPreTx.toBuffer();
   }
-  const input = fillInternalKey(psbtInput, btcAddress, pubKey);
   ask.addInput(input);
 
   // Step 2: Build output as what the seller want (BTC)
