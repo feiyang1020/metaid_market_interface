@@ -15,6 +15,8 @@ export default () => {
   const fetchOrders = useCallback(
     async (retry: boolean = true) => {
       if (!btcAddress) {
+        setOrders([]);
+        setTotal(0);
         setLoading(false);
         return;
       }

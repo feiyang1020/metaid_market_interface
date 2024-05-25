@@ -73,7 +73,7 @@ export default ({ order, show, onClose }: Props) => {
   useEffect(() => {
     let didCancel = false;
     const calc = async () => {
-      if (!orderWithPsbt || !btcAddress || !feeRate) return;
+      if (!orderWithPsbt || !connected || !feeRate) return;
       try {
         const { order, totalSpent } = await buildBuyTake({
           order: {
@@ -97,7 +97,7 @@ export default ({ order, show, onClose }: Props) => {
     return () => {
       didCancel = true;
     };
-  }, [orderWithPsbt, network, btcAddress, feeRate]);
+  }, [orderWithPsbt, network, connected, feeRate]);
 
   const handleBuy = async () => {
     if (!feeRate || !orderWithPsbt || !addressType || !connected) return;

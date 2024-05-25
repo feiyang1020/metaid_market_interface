@@ -8,6 +8,7 @@ import {
 import { determineAddressInfo, formatSat } from "@/utils/utlis";
 import { getFeeRate } from "@/utils/mempool";
 import { getHostByNet } from "@/config";
+import useIntervalAsync from "@/hooks/useIntervalAsync";
 
 export type Network = "mainnet" | "testnet";
 type WalletName = "metalet";
@@ -24,21 +25,17 @@ const checkExtension = () => {
 type AuthParams = { "X-Signature": string; "X-Public-Key": string };
 export default () => {
   const [walletName, setWalletName] = useState<WalletName>("metalet");
-  const [mvcAddress, setMVCAddress] = useState<string>();
   const [addressType, setAddressType] = useState<string>();
   const [metaid, setMetaid] = useState<string>();
   const [btcAddress, setBTCAddress] = useState<string>();
   const [btcConnector, setBtcConnector] = useState<IMetaletWalletForBtc>();
-  const [loginModalShow, setLoginModalShow] = useState<boolean>(false);
   const [network, setNetwork] = useState<Network>("testnet");
   const [connected, setConnected] = useState<boolean>(false);
   const [userBal, setUserBal] = useState<string>("0");
   const [avatar, setAvatar] = useState<string>("");
   const [userName, setUserName] = useState<string>();
   const [authParams, setAuthParams] = useState<AuthParams>();
-  const [walletParams, setWalletParams] = useState(
-    sessionStorage.getItem("walletParams") || ""
-  );
+
   const [feeRates, setFeeRates] = useState<
     {
       label: string;
@@ -50,7 +47,6 @@ export default () => {
   const connect = async () => {
     if (!checkExtension()) return;
     const _wallet = await MetaletWalletForBtc.create();
-    console.log(_wallet);
     if (!_wallet.address) return;
     const { network } = await window.metaidwallet.getNetwork();
     setNetwork(network);
@@ -95,7 +91,6 @@ export default () => {
 
   const disConnect = async () => {
     setConnected(false);
-    setMVCAddress("");
     setBTCAddress("");
     setUserBal("");
     setBtcConnector(undefined);
@@ -119,6 +114,7 @@ export default () => {
     if (walletName === "metalet" && window.metaidwallet) {
       const _network = (await window.metaidwallet.getNetwork()).network;
       setNetwork(_network);
+      const walletParams = sessionStorage.getItem("walletParams");
       if (walletParams) {
         let _authParams: AuthParams | undefined = undefined;
         if (sessionStorage.getItem("authParams")) {
@@ -149,7 +145,15 @@ export default () => {
           disConnect();
           return;
         }
-        setAuthParams(_authParams);
+        setAuthParams((prev) => {
+          if (!prev) {
+            return _authParams;
+          }
+          if (prev["X-Public-Key"] === _authParams?.["X-Public-Key"]) {
+            return prev;
+          }
+          return _authParams;
+        });
         const _btcConnector: IMetaletWalletForBtc = await btcConnect({
           wallet: _wallet,
           network: _network,
@@ -173,14 +177,13 @@ export default () => {
         setUserName(_btcConnector.user.name);
       }
     }
-  }, [walletName, walletParams]);
+  }, [walletName]);
   useEffect(() => {
     //
     setTimeout(() => {
       init();
-      fetchFeeRate();
     }, 500);
-  }, [init, fetchFeeRate]);
+  }, [init]);
 
   useEffect(() => {
     const handleAccountChange = (newAccount: any) => {
@@ -205,16 +208,16 @@ export default () => {
     };
   }, [walletName, connected]);
 
+  const updateWalletInfo = useIntervalAsync(init, 60000);
+  const updateFeeRate = useIntervalAsync(fetchFeeRate, 60000);
+
   return {
-    mvcAddress,
     btcAddress,
     network,
     connected,
     connect,
     userBal,
-    setLoginModalShow,
     addressType,
-    loginModalShow,
     disConnect,
     metaid,
     btcConnector,
@@ -222,5 +225,7 @@ export default () => {
     userName,
     feeRates,
     authParams,
+    updateWalletInfo,
+    updateFeeRate,
   };
 };

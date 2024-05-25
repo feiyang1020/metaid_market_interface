@@ -55,7 +55,7 @@ type FeeRateProps = {
 };
 
 const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
-  const { feeRates, network } = useModel("wallet");
+  const { feeRates } = useModel("wallet");
   const [customRate, setCustomRate] = useState<string | number>(0);
   return (
     <div className="FeeRateWrap">
@@ -99,10 +99,10 @@ const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
   );
 };
 export default () => {
-  const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("PINs");
+  const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("File");
   const [submiting, setSubmiting] = useState(false);
   const [feeRate, setFeeRate] = useState<number>();
-  const { btcConnector, connected, connect, feeRates, network } =
+  const { btcConnector, connected, connect, feeRates, network, disConnect } =
     useModel("wallet");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [buzz, setBuzz] = useState<string>("");
@@ -129,10 +129,22 @@ export default () => {
   ) => {
     setBuzz(e.target.value);
   };
+
+  const checkWallet = async () => {
+    if (!btcConnector) return false;
+    const address = await window.metaidwallet.btc.getAddress();
+    if (address !== btcConnector.wallet.address) {
+      disConnect();
+      return false;
+    }
+    return true;
+  };
   const submit = async () => {
-    if (!feeRate || fileList.length === 0) return;
+    if (!feeRate || fileList.length === 0 || !btcConnector) return;
     try {
       setSubmiting(true);
+      const pass = await checkWallet();
+      if (!pass) throw new Error("Account change");
       console.log(fileList, "fileList");
       const file = fileList[0];
       const fileEntity = await btcConnector!.use("file");
@@ -219,9 +231,11 @@ export default () => {
   };
 
   const submitBuzz = async () => {
-    if (!buzz || !feeRate) return;
+    if (!buzz || !feeRate || !btcConnector) return;
     setSubmiting(true);
     try {
+      const pass = await checkWallet();
+      if (!pass) throw new Error("Account change");
       const buzzEntity = await btcConnector!.use("buzz");
       const ret = await buzzEntity!.create({
         options: [
@@ -288,8 +302,11 @@ export default () => {
 
   const inscribe = async () => {
     if (!btcConnector || !path || !payload || !checkPath) return;
-    setSubmiting(true);
+
     try {
+      setSubmiting(true);
+      const pass = await checkWallet();
+      if (!pass) throw new Error("Account change");
       const metaidData: InscribeOptions = {
         operation: "create",
         body: payload,
@@ -371,7 +388,7 @@ export default () => {
       console.log(file);
       const isLt300k = file.size / 1024 / 1024 < 0.3;
       if (!isLt300k) {
-        message.error("Image must smaller than 300k!");
+        message.error("file must smaller than 300k!");
         return false;
       }
       setFileList([...fileList, file]);
@@ -534,12 +551,12 @@ export default () => {
             {...formItemLayout}
             variant="filled"
             style={{ maxWidth: "100vw", width: 632 }}
+            initialValues={{ path: "/protocols", contentType: "text/plain" }}
           >
             <Form.Item label="Path" name="path">
               <Input
                 size="large"
                 status={checkPath ? "" : "error"}
-                defaultValue="/protocols"
                 value={path}
                 onChange={(e) => {
                   setPath(e.target.value);
@@ -547,8 +564,8 @@ export default () => {
               />
             </Form.Item>
 
-            <Form.Item label="InputNumber" name="InputNumber">
-              <Input size="large" defaultValue="text/plain" disabled />
+            <Form.Item label="Content-type" name="contentType">
+              <Input size="large" disabled />
             </Form.Item>
 
             <Form.Item label="Payload" name="TextArea">
