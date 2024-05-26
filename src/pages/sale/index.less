@@ -1,5 +1,6 @@
 .salePage {
   height: 100%;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -142,6 +143,10 @@
     }
   }
   .totalPrice {
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
+    // right: 0;
     height: 80px;
     background: #1f2216;
     display: flex;
@@ -165,4 +170,26 @@
 }
 .saleSuccess {
   margin-top: 30px;
+}
+
+@media screen and (max-width: 767px) {
+  .salePage {
+    .listWrap {
+      padding: 20px;
+    }
+
+    .title {
+      padding: 20px;
+    }
+    .totalPrice {
+      padding: 0 20px;
+      font-size: 14px;
+      .aciotns {
+        .prices {
+          font-size: 14px;
+
+        }
+      }
+    }
+  }
 }
