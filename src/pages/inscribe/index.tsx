@@ -11,6 +11,7 @@ import {
   UploadFile,
   UploadProps,
   message,
+  Grid,
 } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import "./index.less";
@@ -37,6 +38,7 @@ const formItemLayout = {
     sm: { span: 20 },
   },
 };
+const { useBreakpoint } = Grid;
 
 type Operation = "init" | "create" | "modify";
 type InscribeOptions = {
@@ -59,7 +61,7 @@ const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
   const [customRate, setCustomRate] = useState<string | number>(0);
   return (
     <div className="FeeRateWrap">
-      <Row gutter={[24, 24]}>
+      <Row gutter={[12, 12]}>
         {feeRates.map((item) => (
           <Col span={8} onClick={() => setFeeRate(item.value)} key={item.label}>
             <div
@@ -99,6 +101,7 @@ const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
   );
 };
 export default () => {
+  const {sm}=useBreakpoint()
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("File");
   const [submiting, setSubmiting] = useState(false);
   const [feeRate, setFeeRate] = useState<number>();
@@ -428,18 +431,18 @@ export default () => {
         </Space>
       </div>
       {tab === "File" && (
-        <div className="form animation-slide-bottom">
+        <div className=" animation-slide-bottom">
           <Form
             {...formItemLayout}
             variant="filled"
-            style={{ maxWidth: "100vw", width: 632 }}
+            style={{ maxWidth: "96vw", width: 632 }}
           >
             <Form.Item label="File Name" name="Input">
               <Input size="large" placeholder="" />
             </Form.Item>
           </Form>
           <Row>
-            <Col offset={4} span={20}>
+            <Col offset={sm?4:0} span={sm?20:24}>
               <div className="uploadWrap">
                 <div className="label"></div>
                 <div className="upload">
@@ -457,14 +460,14 @@ export default () => {
           <Form
             {...formItemLayout}
             variant="filled"
-            style={{ maxWidth: "100vw", width: 632 }}
+            style={{ maxWidth: "96vw", width: 632 }}
           >
             <Form.Item label="Fee Rate" name="Input">
               <SeleceFeeRate feeRate={feeRate} setFeeRate={setFeeRate} />
             </Form.Item>
           </Form>
           <Row gutter={[0, 0]}>
-            <Col offset={4} span={20}>
+            <Col offset={sm?4:0} span={sm?20:24}>
               {!connected ? (
                 <Button
                   block
@@ -497,7 +500,7 @@ export default () => {
           <Form
             {...formItemLayout}
             variant="filled"
-            style={{ maxWidth: "100vw", width: 632 }}
+            style={{ maxWidth: "96vw", width: 632 }}
           >
             <Form.Item label="Buzz" name="TextArea">
               <TextArea
@@ -515,7 +518,7 @@ export default () => {
             </Form.Item>
           </Form>
           <Row>
-            <Col offset={4} span={20}>
+            <Col offset={sm?4:0} span={sm?20:24}>
               {!connected ? (
                 <Button block size="large" type="primary" onClick={connect}>
                   Connect Wallet
@@ -550,7 +553,7 @@ export default () => {
           <Form
             {...formItemLayout}
             variant="filled"
-            style={{ maxWidth: "100vw", width: 632 }}
+            style={{ maxWidth: "96vw", width: 632 }}
             initialValues={{ path: "/protocols", contentType: "text/plain" }}
           >
             <Form.Item label="Path" name="path">
@@ -585,7 +588,7 @@ export default () => {
           </Form>
 
           <Row gutter={[0, 0]}>
-            <Col offset={4} span={20}>
+            <Col offset={sm?4:0} span={sm?20:24}>
               {!connected ? (
                 <Button
                   block
