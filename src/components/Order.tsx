@@ -39,7 +39,7 @@ export default ({ item, handleBuy }: Props) => {
   const handleMouseOver = () => {
     setHovering(true);
   };
-  console.log(item.textContent, typeof item.textContent);
+  
 
   const handleMouseOut = () => {
     setHovering(false);
