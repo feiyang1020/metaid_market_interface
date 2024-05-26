@@ -83,6 +83,7 @@ export default function Layout() {
                   onClick={() => {
                     history.push("/sale");
                   }}
+                  className="listforsale"
                 >
                   List for sale
                 </Button>
@@ -115,6 +116,15 @@ export default function Layout() {
                         </div>
                       </div>
                       <div className="links">
+                      <div
+                          className="item forsale"
+                          onClick={() => {
+                            history.push("/sale");
+                          }}
+                        >
+                          <div className="path">List for sale</div>
+                          <RightOutlined />
+                        </div>
                         <div
                           className="item"
                           onClick={() => {

@@ -5,9 +5,15 @@
   align-items: center;
   justify-content: space-between;
   width: 100vw;
-  height: 100vh;
+  
   min-height: 100vh;
   .header {
+    position: sticky;
+    background: #05001c;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
     box-sizing: border-box;
     width: 100vw;
     padding: 20px 71px;
@@ -97,6 +103,9 @@
   .links {
     border-top: 1px solid rgba(255, 255, 255, 0.02);
     border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    .forsale{
+      display: none;
+    }
     .item {
       display: flex;
       align-items: center;
@@ -116,5 +125,37 @@
     line-height: 50px;
     padding-bottom: 5px;
     cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .page {
+    .header {
+      padding: 10px 20px;
+      .navs{
+        gap: 10px;
+        .nav{
+          font-size: 14px;
+        }
+        
+        img{
+          display: none;
+          
+        }
+      }
+      .listforsale{
+        display: none;
+      }
+      .userInfo{
+        .bal{
+          display: none;
+        }
+      }
+    }
+  }
+  .walletInfo{
+    .forsale{
+      display: flex;
+    }
   }
 }
