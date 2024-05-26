@@ -156,13 +156,14 @@ export default () => {
           </Space>
         </div>
         <Table
+          scroll={{x:1000}}
           rowKey={"txId"}
           loading={loading}
           columns={columns}
           dataSource={list}
           pagination={{
             onChange: (page) => {
-              setTab('')
+              setTab("");
               setLoading(true);
               setCursor(page - 1);
             },

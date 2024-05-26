@@ -103,6 +103,8 @@ export default () => {
       title: "",
       dataIndex: "txId",
       key: "txId",
+      fixed:'right',
+  
       render: (text, record) => (
         <Button
           type="primary"
@@ -128,6 +130,7 @@ export default () => {
       </div>
       <div className="tableWrap">
         <Table
+         scroll={{ x: 1000 }}
           rowKey={"txId"}
           loading={loading}
           columns={columns}
