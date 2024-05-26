@@ -49,13 +49,35 @@ export default () => {
     <div className="detailPage animation-slide-bottom">
       <Spin spinning={loading} className="detailWrap">
         {order && (
-          <Row align={'top'} justify={'center'} className="detailWrap" gutter={[50,50]}>
+          <Row
+            align={"top"}
+            justify={"center"}
+            className="detailWrap"
+            gutter={[50, 50]}
+          >
             <Col
               {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
               className="left"
             >
-              <div className="detailContent">
-                {order.textContent || <img src={order.content}></img>}
+              <div
+                className="detailContent"
+                style={{
+                  backgroundImage:
+                    order.info &&
+                    order.info.contentTypeDetect.indexOf("image") > -1
+                      ? `url(${order.content})`
+                      : "none",
+                }}
+              >
+                {order.textContent && (
+                  <Typography.Paragraph
+                    ellipsis={{
+                      rows: 15,
+                    }}
+                  >
+                    {order.textContent || ""}
+                  </Typography.Paragraph>
+                )}
               </div>
             </Col>
             <Col
@@ -122,23 +144,31 @@ export default () => {
                 <div className="title">PIN Details</div>
                 <div className="detailInfo">
                   <Row className="row" gutter={[16, 16]}>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Operation</div>
                       <div className="value">
                         {order.info.operation || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Address</div>
                       <div className="value">
                         {order.info.createAddress || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">ID</div>
                       <div className="value">{order.info.pinId || "--"}</div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">PoP</div>
                       <div className="value">
                         {order.info.popSummary || "--"}
@@ -150,69 +180,95 @@ export default () => {
                         { "--"}
                       </div>
                     </Col> */}
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">MetaID</div>
                       <div className="value">{order.info.metaid || "--"}</div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Path</div>
                       <div className="value">{order.info.path || "--"}</div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Original-Path</div>
                       <div className="value">
                         {order.info.originalPath || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Version</div>
                       <div className="value">{order.info.version || "--"}</div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Encryption</div>
                       <div className="value">
                         {order.info.encryption || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Output-Value</div>
                       <div className="value">
                         {order.info.outputValue || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Content-Length</div>
                       <div className="value">
                         {order.info.contentLength || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Preview</div>
                       <div className="value">{order.preview || "--"}</div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Content</div>
                       <div className="value">{order.content || "--"}</div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Content-Type</div>
                       <div className="value">
                         {order.info.contentTypeDetect || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Time(UTC)</div>
                       <div className="value">
                         {order.info.timestamp || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Genesis-Height</div>
                       <div className="value">
                         {order.info.genesisHeight || "--"}
                       </div>
                     </Col>
-                    <Col {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}>
+                    <Col
+                      {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
+                    >
                       <div className="label">Genesis-Transaction:</div>
                       <div className="value">
                         {order.info.genesisTransaction || "--"}

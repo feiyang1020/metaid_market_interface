@@ -6,7 +6,7 @@ import {
   Divider,
   Menu,
   MenuProps,
-  Space,
+  Typography,
 } from "antd";
 import { HomeOutlined, EditOutlined, UserOutlined } from "@ant-design/icons";
 import { useMemo, useState } from "react";
@@ -20,12 +20,26 @@ type Props = {
   item: API.Order;
   handleBuy: (order: API.Order) => void;
 };
+const { Text } = Typography;
+const EllipsisMiddle: React.FC<{ suffixCount: number; children: string }> = ({
+  suffixCount,
+  children,
+}) => {
+  const start = children.slice(0, children.length - suffixCount);
+  const suffix = children.slice(-suffixCount).trim();
+  return (
+    <Text style={{ maxWidth: "100%" }} ellipsis={{ suffix }}>
+      {start}
+    </Text>
+  );
+};
 export default ({ item, handleBuy }: Props) => {
   const { connected, connect } = useModel("wallet");
   const [isHovering, setHovering] = useState<boolean>(false);
   const handleMouseOver = () => {
     setHovering(true);
   };
+  console.log(item.textContent, typeof item.textContent);
 
   const handleMouseOut = () => {
     setHovering(false);
@@ -53,8 +67,16 @@ export default ({ item, handleBuy }: Props) => {
         >
           <div
             className="textContent"
-            dangerouslySetInnerHTML={{ __html: item.textContent }}
-          ></div>
+            // dangerouslySetInnerHTML={{ __html: item.textContent }}
+          >
+            <Typography.Paragraph
+              ellipsis={{
+                rows: 5,
+              }}
+            >
+              {item.textContent || ""}
+            </Typography.Paragraph>
+          </div>
         </div>
         <div className="assetNumber">
           <ConfigProvider
