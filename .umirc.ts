@@ -2,7 +2,7 @@ import { defineConfig } from "umi";
 
 export default defineConfig({
   routes: [
-    { path: "/", component: "index" },
+    { path: "/", component: "index",title:'' },
     { path: "/market", component: "index" },
     { path: "/inscribe", component: "inscribe" },
     { path: "/sale", component: "sale" },
@@ -10,6 +10,7 @@ export default defineConfig({
     { path: "/history", component: "history" },
     { path: "/pending", component: "pending" },
   ],
+  title: "MetaID-Market",
   npmClient: 'pnpm',
   plugins: ["@umijs/plugins/dist/model", "@umijs/plugins/dist/request"],
   model: {},
