@@ -156,7 +156,7 @@ export default () => {
           </Space>
         </div>
         <Table
-          scroll={{x:1000}}
+          scroll={{ x: 1000 }}
           rowKey={"txId"}
           loading={loading}
           columns={columns}

@@ -9,6 +9,7 @@ import { buyOrder } from "@/utils/psbtBuild";
 import BuyModel from "@/components/BuyModel";
 import { formatSat } from "@/utils/utlis";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
+import dayjs from "dayjs";
 export default () => {
   const { network, connect, connected, btcAddress, addressType } =
     useModel("wallet");
@@ -255,7 +256,7 @@ export default () => {
                     >
                       <div className="label">Time(UTC)</div>
                       <div className="value">
-                        {order.info.timestamp || "--"}
+                        {dayjs(order.info.timestamp*1000).format("YYYY/MM/DD,HH:mm") || "--"}
                       </div>
                     </Col>
                     <Col
