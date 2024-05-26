@@ -41,7 +41,7 @@ const Popup: React.FC<Props> = ({
               style={{padding:0,...style}}
               className={'hayPopup'+' '+className}
 
-              getContainer={false}
+              
           >
               {children}
           </Modal> :

@@ -36,7 +36,11 @@ export default () => {
           className={`nav ${path === item.key ? "active" : ""}`}
           key={item.key}
         >
-          <img className="icon" src={path === item.key ? item.activeIvon : item.icon} alt="" />{" "}
+          <img
+            className="icon"
+            src={path === item.key ? item.activeIvon : item.icon}
+            alt=""
+          />{" "}
           <span className="text">{item.label}</span>
         </div>
       ))}
