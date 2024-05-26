@@ -27,46 +27,46 @@ const Popup: React.FC<Props> = ({
   className = "",
   bodyStyle = {},
 }) => {
-  // const { md } = useBreakpoint()
-  // return (<>
-  //     {true ?
-  //         <Modal
-  //             open={show}
-  //             onCancel={onClose}
-  //             width={modalWidth || 420}
-  //             title={title}
-  //             footer={null}
-  //             closable={closable}
-  //             maskClosable={maskClosable}
-  //             style={{padding:0,...style}}
-  //             className={'hayPopup'+' '+className}
+  const { md } = useBreakpoint()
+  return (<>
+      {md ?
+          <Modal
+              open={show}
+              onCancel={onClose}
+              width={modalWidth || 420}
+              title={title}
+              footer={null}
+              closable={closable}
+              maskClosable={maskClosable}
+              style={{padding:0,...style}}
+              className={'hayPopup'+' '+className}
 
-  //             getContainer={false}
-  //         >
-  //             {children}
-  //         </Modal> :
-  //         <Drawer title={title} open={show} placement="bottom" onClose={onClose} closable={closable}  maskClosable={maskClosable} style={{ height: 'auto',...style }} bodyStyle={{ height: 'auto',maxHeight:'90vh',padding:10,...bodyStyle }} contentWrapperStyle={{ height: 'auto' }}>
-  //             {children}
-  //         </Drawer>
-  //     }
+              getContainer={false}
+          >
+              {children}
+          </Modal> :
+          <Drawer title={title} open={show} className={'hayPopup'+' '+className} placement="bottom" onClose={onClose} closable={closable}  maskClosable={maskClosable} style={{ height: 'auto',...style }} bodyStyle={{ height: 'auto',maxHeight:'90vh',padding:10,...bodyStyle }} contentWrapperStyle={{ height: 'auto' }}>
+              {children}
+          </Drawer>
+      }
 
-  // </>)
-  return (
-    <Modal
-      open={show}
-      onCancel={onClose}
-      width={modalWidth || 420}
-      title={title}
-      footer={null}
-      closable={closable}
-      maskClosable={maskClosable}
-      style={{ padding: 0, ...style }}
-      className={"hayPopup" + " " + className}
+  </>)
+  // return (
+  //   <Modal
+  //     open={show}
+  //     onCancel={onClose}
+  //     width={modalWidth || 420}
+  //     title={title}
+  //     footer={null}
+  //     closable={closable}
+  //     maskClosable={maskClosable}
+  //     style={{ padding: 0, ...style }}
+  //     className={"hayPopup" + " " + className}
       
-    >
-      {children}
-    </Modal>
-  );
+  //   >
+  //     {children}
+  //   </Modal>
+  // );
 };
 
 export default Popup;
