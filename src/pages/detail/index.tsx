@@ -49,7 +49,7 @@ export default () => {
     <div className="detailPage animation-slide-bottom">
       <Spin spinning={loading} className="detailWrap">
         {order && (
-          <Row className="detailWrap" gutter={[50,50]}>
+          <Row align={'top'} justify={'center'} className="detailWrap" gutter={[50,50]}>
             <Col
               {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
               className="left"
