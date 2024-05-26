@@ -2,6 +2,7 @@ import { getContent, getOrder, getOrderPsbt } from "@/services/api";
 import { Avatar, Button, Col, Row, Space, Spin, Typography } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useModel, useSearchParams } from "umi";
+import level from "@/assets/level.svg";
 import "./index.less";
 import btc from "@/assets/logo_btc@2x.png";
 import { UserOutlined } from "@ant-design/icons";
@@ -172,7 +173,18 @@ export default () => {
                     >
                       <div className="label">PoP</div>
                       <div className="value">
-                        {order.info.popSummary || "--"}
+                        {order.info.popSummary || "--"}{" "}
+                        <div className="level">
+                          {order.assetLevel !== "--" &&
+                          order.assetPop !== "--" ? (
+                            <>
+                              <img src={level} alt="" />
+                              {order.assetLevel}
+                            </>
+                          ) : (
+                            <span>--</span>
+                          )}
+                        </div>
                       </div>
                     </Col>
                     {/* <Col span={12}>
@@ -235,13 +247,22 @@ export default () => {
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
                       <div className="label">Preview</div>
-                      <div className="value">{order.preview || "--"}</div>
+                      <div className="value">
+                        <a href={order.preview} target="_blank">
+                          {order.preview || "--"}
+                        </a>
+                      </div>
                     </Col>
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
                       <div className="label">Content</div>
-                      <div className="value">{order.content || "--"}</div>
+                      <div className="value">
+                        {" "}
+                        <a href={order.content} target="_blank">
+                          {order.content || "--"}
+                        </a>{" "}
+                      </div>
                     </Col>
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
@@ -256,7 +277,9 @@ export default () => {
                     >
                       <div className="label">Time(UTC)</div>
                       <div className="value">
-                        {dayjs(order.info.timestamp*1000).format("YYYY/MM/DD,HH:mm") || "--"}
+                        {dayjs(order.info.timestamp * 1000).format(
+                          "YYYY/MM/DD,HH:mm"
+                        ) || "--"}
                       </div>
                     </Col>
                     <Col

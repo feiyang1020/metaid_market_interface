@@ -441,8 +441,8 @@ export default () => {
               <Input size="large" placeholder="" />
             </Form.Item>
           </Form>
-          <Row>
-            <Col offset={sm?4:0} span={sm?20:24}>
+          <Row >
+            <Col offset={sm?4:0} span={sm?20:24} style={{paddingBottom:24}}>
               <div className="uploadWrap">
                 <div className="label"></div>
                 <div className="upload">
@@ -509,7 +509,7 @@ export default () => {
                 onChange={onChange}
                 className="textarea"
                 autoSize={false}
-                style={{ height: 222 }}
+                style={{ height: 140 }}
                 value={buzz}
               />
             </Form.Item>
@@ -575,7 +575,7 @@ export default () => {
               <Input.TextArea
                 size="large"
                 autoSize={false}
-                style={{ height: 222 }}
+                style={{ height: 140 }}
                 value={payload}
                 onChange={(e) => {
                   setPayload(e.target.value);
