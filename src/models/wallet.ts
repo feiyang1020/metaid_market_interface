@@ -48,7 +48,14 @@ export default () => {
     if (!checkExtension()) return;
     const _wallet = await MetaletWalletForBtc.create();
     if (!_wallet.address) return;
+    const { network:_net } = await window.metaidwallet.getNetwork();
+    if (_net !== "testnet") {
+      await window.metaidwallet.switchNetwork("testnet");
+    }
     const { network } = await window.metaidwallet.getNetwork();
+    if (network !== "testnet") {
+      await window.metaidwallet.switchNetwork("testnet");
+    }
     setNetwork(network);
     const publicKey = await window.metaidwallet.btc.getPublicKey();
     const publicKeySign = await window.metaidwallet.btc.signMessage(
@@ -113,6 +120,10 @@ export default () => {
   const init = useCallback(async () => {
     if (walletName === "metalet" && window.metaidwallet) {
       const _network = (await window.metaidwallet.getNetwork()).network;
+      if (network !== "testnet") {
+        disConnect();
+        return
+      }
       setNetwork(_network);
       const walletParams = sessionStorage.getItem("walletParams");
       if (walletParams) {
