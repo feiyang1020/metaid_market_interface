@@ -374,6 +374,18 @@ export async function exclusiveChange({
       // delete paymentInput.witnessUtxo;
       paymentInput["nonWitnessUtxo"] = tx.toBuffer();
     }
+    if (["P2SH"].includes(addressType)) {
+      console.log("input.tapInternalKey");
+      const { redeem } = payments.p2sh({
+        redeem: payments.p2wpkh({
+          pubkey: Buffer.from(pubKey, "hex"),
+          network: btcNetwork,
+        }),
+        network: btcNetwork,
+      });
+      if(!redeem) throw new Error('redeemScript')
+      paymentInput.redeemScript = redeem.output;
+    }
     fillInternalKey(paymentInput, address, pubKey);
 
     psbt.addInput(paymentInput);

@@ -59,11 +59,17 @@ export default ({ order, show, onClose }: Props) => {
   }, [network, connected]);
   const [buyPsbt, setBuyPsbt] = useState<Psbt>();
   const fetchTakePsbt = useCallback(async () => {
+    console.log(order,connected,authParams,'authParams')
     if (!order || !connected || !authParams) {
       setOrderWithPsbt(undefined);
       return;
     }
     const address = await window.metaidwallet.btc.getAddress();
+    if (connected && window.metaidwallet) {
+      window.metaidwallet.btc.getBalance().then((ret) => {
+        setUserBalInfo(ret);
+      });
+    }
     if (order.orderState !== 1) return;
     const { data } = await getOrderPsbt(
       network,
