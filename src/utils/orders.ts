@@ -249,6 +249,7 @@ export async function exclusiveChange({
   // Add payment input
   const address = await window.metaidwallet.btc.getAddress();
   const filtered = await window.metaidwallet.btc.getUtxos();
+  console.log(filtered, "filtered");
   const pubKey = await window.metaidwallet.btc.getPublicKey();
   const paymentUtxos = filtered
     .sort((a, b) => {
@@ -368,11 +369,12 @@ export async function exclusiveChange({
     //   );
     // }
     if (["P2PKH"].includes(addressType)) {
+      console.log(i, "iiiiiii");
       const {
         data: { rawTx },
       } = await getRawTx(network, { txid: paymentUtxo.txId });
       const tx = Transaction.fromHex(rawTx);
-      delete paymentInput.witnessUtxo;
+      // delete paymentInput.witnessUtxo;
       paymentInput["nonWitnessUtxo"] = tx.toBuffer();
     }
     fillInternalKey(paymentInput, address, pubKey);
@@ -410,26 +412,25 @@ export async function exclusiveChange({
               "Input invalid. Please try again or contact customer service for assistance."
             );
           }
-          if (input.nonWitnessUtxo) {
-            const nonWitnessUtxoTx = Transaction.fromBuffer(
-              input.nonWitnessUtxo
-            );
-            console.log(nonWitnessUtxoTx, "nonWitnessUtxoTx");
-            input.value = nonWitnessUtxoTx.outs[0].value;
-            input.witnessUtxo=nonWitnessUtxoTx.outs[0]
+          if (input.witnessUtxo) {
+            return input.witnessUtxo;
           }
-          console.log(
-            input.witnessUtxo,
-            input.nonWitnessUtxo,
-            "input.nonWitnessUtxo"
-          );
-          return input.witnessUtxo || input.nonWitnessUtxo;
+          // if (input.nonWitnessUtxo) {
+          //   const nonWitnessUtxoTx = Transaction.fromBuffer(
+          //     input.nonWitnessUtxo
+          //   );
+          //   return nonWitnessUtxoTx.outs[0];
+          // }
         }) as any
       );
     }
-
+    if (isNaN(totalInput)) {
+      raise(
+        "Input invalid. Please try again or contact customer service for assistance."
+      );
+    }
     const changeValue = totalInput - totalOutput - fee + (extraInputValue || 0);
-    console.log(totalInput, fee, "feefeefeefeefee ");
+
     if (changeValue < 0) {
       // if we run out of utxos, throw an error
       if (paymentUtxo === paymentUtxos[paymentUtxos.length - 1]) {
