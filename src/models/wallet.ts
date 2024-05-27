@@ -49,7 +49,6 @@ export default () => {
     const _wallet = await MetaletWalletForBtc.create();
     if (!_wallet.address) return;
     const { network:_net } = await window.metaidwallet.getNetwork();
-    console.log(_net,'_net')
     if (_net !== "mainnet") {
       await window.metaidwallet.switchNetwork('livenet');
     }
