@@ -29,7 +29,7 @@ export interface PsbtTxOutput extends TransactionOutput {
 }
 
 export const SIGHASH_SINGLE_ANYONECANPAY = 0x83;
-export const SIGHASH_SINGLE = 0x03
+export const SIGHASH_SINGLE = 0x03;
 export const DUST_UTXO_VALUE = 546;
 export const MS_BRC20_UTXO_VALUE = 1000;
 export const SIGHASH_ALL_ANYONECANPAY = 0x81;
@@ -372,6 +372,7 @@ export async function exclusiveChange({
         data: { rawTx },
       } = await getRawTx(network, { txid: paymentUtxo.txId });
       const tx = Transaction.fromHex(rawTx);
+      delete paymentInput.witnessUtxo;
       paymentInput["nonWitnessUtxo"] = tx.toBuffer();
     }
     fillInternalKey(paymentInput, address, pubKey);
@@ -403,18 +404,32 @@ export async function exclusiveChange({
       // we pay for the whole transaction
       totalOutput = sumOrNaN(psbt.txOutputs);
       totalInput = sumOrNaN(
-        psbt.data.inputs.map(
-          (input) =>
-            input.witnessUtxo ||
-            input.nonWitnessUtxo ||
+        psbt.data.inputs.map((input) => {
+          if (!input.witnessUtxo && !input.nonWitnessUtxo) {
             raise(
               "Input invalid. Please try again or contact customer service for assistance."
-            )
-        ) as any
+            );
+          }
+          if (input.nonWitnessUtxo) {
+            const nonWitnessUtxoTx = Transaction.fromBuffer(
+              input.nonWitnessUtxo
+            );
+            console.log(nonWitnessUtxoTx, "nonWitnessUtxoTx");
+            input.value = nonWitnessUtxoTx.outs[0].value;
+            input.witnessUtxo=nonWitnessUtxoTx.outs[0]
+          }
+          console.log(
+            input.witnessUtxo,
+            input.nonWitnessUtxo,
+            "input.nonWitnessUtxo"
+          );
+          return input.witnessUtxo || input.nonWitnessUtxo;
+        }) as any
       );
     }
 
     const changeValue = totalInput - totalOutput - fee + (extraInputValue || 0);
+    console.log(totalInput, fee, "feefeefeefeefee ");
     if (changeValue < 0) {
       // if we run out of utxos, throw an error
       if (paymentUtxo === paymentUtxos[paymentUtxos.length - 1]) {
@@ -500,13 +515,56 @@ export async function buildAskLimit({
     sighashType: SIGHASH_SINGLE_ANYONECANPAY,
   };
   const addressType = determineAddressInfo(btcAddress).toUpperCase();
-  
+
   const input = fillInternalKey(psbtInput, btcAddress, pubKey);
   if (["P2PKH"].includes(addressType)) {
     delete psbtInput.witnessUtxo;
     psbtInput["nonWitnessUtxo"] = ordinalPreTx.toBuffer();
+
+    const fakeTxid =
+      "0000000000000000000000000000000000000000000000000000000000000000";
+    const fakeVout = 0;
+    ask.addInput({
+      hash: fakeTxid,
+      index: 0,
+      witnessUtxo: {
+        script: Buffer.from(
+          "76a914000000000000000000000000000000000000000088ac",
+          "hex"
+        ),
+        value: 0,
+      },
+      sighashType: SIGHASH_SINGLE_ANYONECANPAY,
+    });
+    ask.addInput({
+      hash: fakeTxid,
+      index: 1,
+      witnessUtxo: {
+        script: Buffer.from(
+          "76a914000000000000000000000000000000000000000088ac",
+          "hex"
+        ),
+        value: 0,
+      },
+      sighashType: SIGHASH_SINGLE_ANYONECANPAY,
+    });
+    ask.addInput(input);
+    const fakeOutScript = Buffer.from(
+      "76a914000000000000000000000000000000000000000088ac",
+      "hex"
+    );
+    ask.addOutput({
+      script: fakeOutScript,
+      value: 0,
+    });
+
+    ask.addOutput({
+      script: fakeOutScript,
+      value: 0,
+    });
+  } else {
+    ask.addInput(input);
   }
-  ask.addInput(input);
 
   // Step 2: Build output as what the seller want (BTC)
   ask.addOutput({
@@ -516,7 +574,9 @@ export async function buildAskLimit({
 
   const signed = await window.metaidwallet.btc.signPsbt({
     psbtHex: ask.toHex(),
-    
+    options: {
+      autoFinalized: false,
+    },
   });
   if (typeof signed === "object") {
     if (signed.status === "canceled") throw new Error("canceled");
