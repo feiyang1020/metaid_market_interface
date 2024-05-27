@@ -53,21 +53,32 @@ type InscribeOptions = {
 };
 
 type FeeRateProps = {
-  feeRate: number | undefined;
-  setFeeRate: (feeRate: number) => void;
+  customRate: number | undefined;
+  setCustomRate: (feeRate: number) => void;
+  feeRates: any[];
+  feeRateTab: string;
+  setFeeRateTab: (tab: string) => void;
 };
 
-const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
-  const { feeRates } = useModel("wallet");
-  const [customRate, setCustomRate] = useState<string | number>(0);
+const SeleceFeeRate = ({
+  customRate,
+  setCustomRate,
+  feeRates,
+  feeRateTab,
+  setFeeRateTab,
+}: FeeRateProps) => {
   return (
     <div className="FeeRateWrap">
       <Row gutter={[12, 12]}>
         {feeRates.map((item) => (
-          <Col span={8} onClick={() => setFeeRate(item.value)} key={item.label}>
+          <Col
+            span={8}
+            onClick={() => setFeeRateTab(item.label)}
+            key={item.label}
+          >
             <div
               className={`feeRateItem ${
-                item.value === feeRate ? "active" : ""
+                item.label === feeRateTab ? "active" : ""
               }`}
             >
               <div className="Feelabel">{item.label}</div>
@@ -78,9 +89,9 @@ const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
         ))}
       </Row>
       <Row
-        className={`custom ${customRate === feeRate ? "active" : ""}`}
+        className={`custom ${"custom" === feeRateTab ? "active" : ""}`}
         onClick={() => {
-          customRate && setFeeRate(Number(customRate));
+          setFeeRateTab("custom");
         }}
       >
         <Col span={24} style={{ textAlign: "left" }}>
@@ -105,7 +116,7 @@ export default () => {
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("File");
   const [submiting, setSubmiting] = useState(false);
-  const [feeRate, setFeeRate] = useState<number>();
+  // const [feeRate, setFeeRate] = useState<number>();
   const { btcConnector, connected, connect, feeRates, network, disConnect } =
     useModel("wallet");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -119,15 +130,27 @@ export default () => {
 
     return regex.test(path);
   }, [path]);
-  useEffect(() => {
-    const find = feeRates.find((item) => item.label === "Avg");
-    if (find) {
-      setFeeRate((prev) => {
-        if (!prev) return find.value;
-        return prev;
-      });
+  // useEffect(() => {
+  //   const find = feeRates.find((item) => item.label === "Avg");
+  //   if (find) {
+  //     setFeeRate((prev) => {
+  //       if (!prev) return find.value;
+  //       return prev;
+  //     });
+  //   }
+  // }, [feeRates]);
+
+  const [customRate, setCustomRate] = useState<string | number>(0);
+  const [feeRateTab, setFeeRateTab] = useState<string>("Avg");
+  const feeRate = useMemo(() => {
+    if (feeRateTab !== "custom") {
+      const find = feeRates.find((item) => item.label === feeRateTab);
+      if (find) return find.value;
+      return 0;
+    } else {
+      return customRate || 0;
     }
-  }, [feeRates]);
+  }, [feeRateTab, customRate]);
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -468,7 +491,13 @@ export default () => {
             style={{ maxWidth: "96vw", width: 632 }}
           >
             <Form.Item label="Fee Rate" name="Input">
-              <SeleceFeeRate feeRate={feeRate} setFeeRate={setFeeRate} />
+              <SeleceFeeRate
+                feeRates={feeRates}
+                customRate={customRate}
+                setCustomRate={setCustomRate}
+                feeRateTab={feeRateTab}
+                setFeeRateTab={setFeeRateTab}
+              />
             </Form.Item>
           </Form>
           <Row gutter={[0, 0]}>
@@ -519,7 +548,13 @@ export default () => {
               />
             </Form.Item>
             <Form.Item label="Fee Rate" name="TextArea">
-              <SeleceFeeRate feeRate={feeRate} setFeeRate={setFeeRate} />
+              <SeleceFeeRate
+                feeRates={feeRates}
+                customRate={customRate}
+                setCustomRate={setCustomRate}
+                feeRateTab={feeRateTab}
+                setFeeRateTab={setFeeRateTab}
+              />
             </Form.Item>
           </Form>
           <Row>
@@ -577,13 +612,18 @@ export default () => {
                   setPath(e.target.value);
                 }}
               /> */}
-              <Select size="large" style={{textAlign:"left"}} onChange={(e) => {
+              <Select
+                size="large"
+                style={{ textAlign: "left" }}
+                onChange={(e) => {
                   setPath(e);
-                }}>
-                <Select.Option value="/application/json">/application/json</Select.Option>
+                }}
+              >
+                <Select.Option value="/application/json">
+                  /application/json
+                </Select.Option>
                 <Select.Option value="/protocols">/protocols</Select.Option>
               </Select>
-              
             </Form.Item>
 
             <Form.Item label="Content-type" name="contentType">
@@ -602,7 +642,13 @@ export default () => {
               />
             </Form.Item>
             <Form.Item label="Fee Rate" name="TextArea">
-              <SeleceFeeRate feeRate={feeRate} setFeeRate={setFeeRate} />
+              <SeleceFeeRate
+                feeRates={feeRates}
+                customRate={customRate}
+                setCustomRate={setCustomRate}
+                feeRateTab={feeRateTab}
+                setFeeRateTab={setFeeRateTab}
+              />
             </Form.Item>
           </Form>
 
