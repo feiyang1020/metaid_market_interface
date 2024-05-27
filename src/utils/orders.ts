@@ -420,12 +420,13 @@ export async function exclusiveChange({
             const nonWitnessUtxoTx = Transaction.fromBuffer(
               input.nonWitnessUtxo
             );
-            console.log(nonWitnessUtxoTx.outs[0],'nonWitnessUtxoTx.outs[0]')
+            console.log(nonWitnessUtxoTx,nonWitnessUtxoTx.outs[0],'nonWitnessUtxoTx.outs[0]')
             return nonWitnessUtxoTx.outs[0];
           }
         }) as any
       );
     }
+    
     if (isNaN(totalInput)) {
       raise(
         "Input invalid. Please try again or contact customer service for assistance."
