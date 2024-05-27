@@ -1,4 +1,4 @@
-import { Button, InputNumber, Modal, Tooltip, message } from "antd";
+import { Alert, Button, InputNumber, Modal, Tooltip, message } from "antd";
 import { useModel, history } from "umi";
 import Popup from "../ResponPopup";
 import { useCallback, useEffect, useState } from "react";
@@ -32,6 +32,7 @@ export default ({ order, show, onClose }: Props) => {
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
   const [feeRate, setFeeRate] = useState<number>();
   const [totalSpent, setTotalSpent] = useState<number>();
+  const [errInfo, setErrInfo] = useState<string>();
   const [successProp, setSuccessProp] =
     useState<SuccessProps>(DefaultSuccessProps);
 
@@ -88,9 +89,12 @@ export default ({ order, show, onClose }: Props) => {
         console.log(order, totalSpent);
         if (didCancel) return;
         setTotalSpent(totalSpent);
+        setErrInfo(undefined);
         setBuyPsbt(order);
       } catch (err) {
         console.log(err);
+        if (didCancel) return;
+        setErrInfo(err.message || "unknow error");
       }
     };
     calc();
@@ -296,6 +300,8 @@ export default ({ order, show, onClose }: Props) => {
                 <span>{totalSpent ? formatSat(totalSpent || 0) : "--"}BTC</span>
               </div>
             </div>
+            {errInfo && <Alert message={errInfo} type="error" showIcon style={{marginTop:10}} />}
+
             <div className="avail">
               <div className="label">Available balance</div>
               <div className="value">{userBal} BTC</div>
@@ -308,6 +314,7 @@ export default ({ order, show, onClose }: Props) => {
                 type="primary"
                 onClick={handleBuy}
                 loading={submiting}
+                disabled={Boolean(errInfo)}
               >
                 Confirm
               </Button>
