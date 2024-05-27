@@ -9,7 +9,7 @@ import {
 } from "antd";
 import { useModel, history } from "umi";
 import Popup from "../ResponPopup";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
 import "./index.less";
@@ -39,7 +39,7 @@ export default ({ order, show, onClose }: Props) => {
   const [submiting, setSubmiting] = useState<boolean>(false);
   const [customRate, setCustomRate] = useState<string | number>();
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
-  const [feeRate, setFeeRate] = useState<number>();
+  // const [feeRate, setFeeRate] = useState<number>();
   const [totalSpent, setTotalSpent] = useState<number>();
   const [errInfo, setErrInfo] = useState<string>();
   const [userBalInfo, setUserBalInfo] = useState<{
@@ -47,6 +47,7 @@ export default ({ order, show, onClose }: Props) => {
     confirmed: number;
     unconfirmed: number;
   }>();
+  const [feeRateTab, setFeeRateTab] = useState<string>("Avg");
   const [successProp, setSuccessProp] =
     useState<SuccessProps>(DefaultSuccessProps);
 
@@ -59,7 +60,7 @@ export default ({ order, show, onClose }: Props) => {
   }, [network, connected]);
   const [buyPsbt, setBuyPsbt] = useState<Psbt>();
   const fetchTakePsbt = useCallback(async () => {
-    console.log(order,connected,authParams,'authParams')
+    console.log(order, connected, authParams, "authParams");
     if (!order || !connected || !authParams) {
       setOrderWithPsbt(undefined);
       return;
@@ -88,27 +89,37 @@ export default ({ order, show, onClose }: Props) => {
   useEffect(() => {
     fetchTakePsbt();
   }, [fetchTakePsbt]);
-  useEffect(() => {
-    const find = feeRates.find((item) => item.label === "Avg");
-    if (find) {
-      setFeeRate((prev) => {
-        if (!prev) return find.value;
-        return prev;
-      });
+  // useEffect(() => {
+  //   const find = feeRates.find((item) => item.label === "Avg");
+  //   if (find) {
+  //     setFeeRate((prev) => {
+  //       if (!prev) return find.value;
+  //       return prev;
+  //     });
+  //   }
+  // }, [feeRates]);
+
+  const feeRate = useMemo(() => {
+    if (feeRateTab !== "custom") {
+      const find = feeRates.find((item) => item.label === feeRateTab);
+      if (find) return find.value;
+      return 0;
+    } else {
+      return customRate || 0;
     }
-  }, [feeRates]);
+  }, [feeRateTab, customRate]);
 
   useEffect(() => {
     let didCancel = false;
     const calc = async () => {
-      if (!orderWithPsbt || !connected || !feeRate) return;
+      if (!orderWithPsbt || !connected ) return;
       try {
         const { order, totalSpent } = await buildBuyTake({
           order: {
             orderId: orderWithPsbt.orderId,
             feeAmount: orderWithPsbt.fee,
             price: orderWithPsbt.sellPriceAmount,
-            utxoId:orderWithPsbt.utxoId
+            utxoId: orderWithPsbt.utxoId,
           },
           network,
           takePsbtRaw: orderWithPsbt.takePsbt,
@@ -140,7 +151,7 @@ export default ({ order, show, onClose }: Props) => {
           orderId: orderWithPsbt.orderId,
           feeAmount: orderWithPsbt.fee,
           price: orderWithPsbt.sellPriceAmount,
-          utxoId:orderWithPsbt.utxoId
+          utxoId: orderWithPsbt.utxoId,
         },
         network,
         takePsbtRaw: orderWithPsbt.takePsbt,
@@ -160,7 +171,7 @@ export default ({ order, show, onClose }: Props) => {
       const signed = await window.metaidwallet.btc.signPsbt({
         psbtHex: orderPsbt.toHex(),
         options: {
-          autoFinalized: ["P2PKH","P2SH"].includes(addressType),
+          autoFinalized: ["P2PKH", "P2SH"].includes(addressType),
           toSignInputs,
         },
       });
@@ -291,9 +302,9 @@ export default ({ order, show, onClose }: Props) => {
               <div className="netFeeOpts">
                 {feeRates.map((item) => (
                   <div
-                    onClick={() => setFeeRate(item.value)}
+                    onClick={() => setFeeRateTab(item.label)}
                     className={`feeRateItem ${
-                      item.value === feeRate ? "active" : ""
+                      item.label === feeRateTab ? "active" : ""
                     }`}
                     key={item.label}
                   >
@@ -304,10 +315,10 @@ export default ({ order, show, onClose }: Props) => {
                 ))}
                 <div
                   className={`feeRateItem ${
-                    customRate === feeRate ? "active" : ""
+                    feeRateTab === 'custom' ? "active" : ""
                   }`}
                   onClick={() => {
-                    customRate && setFeeRate(Number(customRate));
+                     setFeeRateTab('custom');
                   }}
                 >
                   <div className="label">Custom rates</div>
@@ -315,7 +326,7 @@ export default ({ order, show, onClose }: Props) => {
                     <InputNumber
                       value={customRate}
                       onChange={setCustomRate}
-                        style={{textAlign:'center'}}
+                      style={{ textAlign: "center" }}
                       controls={false}
                     />
                   </div>
