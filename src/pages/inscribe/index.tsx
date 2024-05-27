@@ -12,6 +12,7 @@ import {
   UploadProps,
   message,
   Grid,
+  Select,
 } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import "./index.less";
@@ -101,7 +102,7 @@ const SeleceFeeRate = ({ feeRate, setFeeRate }: FeeRateProps) => {
   );
 };
 export default () => {
-  const {sm}=useBreakpoint()
+  const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("File");
   const [submiting, setSubmiting] = useState(false);
   const [feeRate, setFeeRate] = useState<number>();
@@ -437,12 +438,16 @@ export default () => {
             variant="filled"
             style={{ maxWidth: "96vw", width: 632 }}
           >
-            <Form.Item label="File Name" name="Input">
+            <Form.Item label="File" name="Input">
               <Input size="large" placeholder="" />
             </Form.Item>
           </Form>
-          <Row >
-            <Col offset={sm?4:0} span={sm?20:24} style={{paddingBottom:24}}>
+          <Row>
+            <Col
+              offset={sm ? 4 : 0}
+              span={sm ? 20 : 24}
+              style={{ paddingBottom: 24 }}
+            >
               <div className="uploadWrap">
                 <div className="label"></div>
                 <div className="upload">
@@ -467,7 +472,7 @@ export default () => {
             </Form.Item>
           </Form>
           <Row gutter={[0, 0]}>
-            <Col offset={sm?4:0} span={sm?20:24}>
+            <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
               {!connected ? (
                 <Button
                   block
@@ -518,7 +523,7 @@ export default () => {
             </Form.Item>
           </Form>
           <Row>
-            <Col offset={sm?4:0} span={sm?20:24}>
+            <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
               {!connected ? (
                 <Button block size="large" type="primary" onClick={connect}>
                   Connect Wallet
@@ -554,17 +559,31 @@ export default () => {
             {...formItemLayout}
             variant="filled"
             style={{ maxWidth: "96vw", width: 632 }}
-            initialValues={{ path: "/protocols", contentType: "text/plain" }}
+            initialValues={{
+              path: "/protocols",
+              contentType: "text/plain",
+              Operation: "Create",
+            }}
           >
+            <Form.Item label="Operation" name="Operation">
+              <Input size="large" disabled />
+            </Form.Item>
             <Form.Item label="Path" name="path">
-              <Input
+              {/* <Input
                 size="large"
                 status={checkPath ? "" : "error"}
                 value={path}
                 onChange={(e) => {
                   setPath(e.target.value);
                 }}
-              />
+              /> */}
+              <Select size="large" style={{textAlign:"left"}} onChange={(e) => {
+                  setPath(e);
+                }}>
+                <Select.Option value="/application/json">/application/json</Select.Option>
+                <Select.Option value="/protocols">/protocols</Select.Option>
+              </Select>
+              
             </Form.Item>
 
             <Form.Item label="Content-type" name="contentType">
@@ -588,7 +607,7 @@ export default () => {
           </Form>
 
           <Row gutter={[0, 0]}>
-            <Col offset={sm?4:0} span={sm?20:24}>
+            <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
               {!connected ? (
                 <Button
                   block

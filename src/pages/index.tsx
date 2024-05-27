@@ -97,7 +97,7 @@ export default () => {
       <div className="list">
         <List
           loading={loading}
-          grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 6 }}
+          grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 6, xxl: 6 }}
           dataSource={orders}
           renderItem={(item) => (
             <List.Item>

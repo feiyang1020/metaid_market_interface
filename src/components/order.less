@@ -127,7 +127,7 @@
       letter-spacing: 0px;
       font-variation-settings: "opsz" auto;
       color: rgba(255, 255, 255, 0.4);
-      
+
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -140,10 +140,16 @@
     display: flex;
     align-items: center;
     line-height: 40px;
+    flex-wrap: nowrap;
     .btcLogo {
       width: 28px;
       height: 28px;
       margin-right: 8px;
+    }
+    span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   .btn {

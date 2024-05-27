@@ -160,7 +160,7 @@ export default ({ order, show, onClose }: Props) => {
       const signed = await window.metaidwallet.btc.signPsbt({
         psbtHex: orderPsbt.toHex(),
         options: {
-          autoFinalized: ["P2PKH"].includes(addressType),
+          autoFinalized: ["P2PKH","P2SH"].includes(addressType),
           toSignInputs,
         },
       });
@@ -316,6 +316,7 @@ export default ({ order, show, onClose }: Props) => {
                       value={customRate}
                       onChange={setCustomRate}
                       suffix="sat/vB"
+                      controls={false}
                     />{" "}
                   </div>
                   <div className="time"></div>

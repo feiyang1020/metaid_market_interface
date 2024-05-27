@@ -39,7 +39,6 @@ export default ({ item, handleBuy }: Props) => {
   const handleMouseOver = () => {
     setHovering(true);
   };
-  
 
   const handleMouseOut = () => {
     setHovering(false);
@@ -141,7 +140,7 @@ export default ({ item, handleBuy }: Props) => {
             onMouseLeave={handleMouseOut}
           >
             <img src={btc} className="btcLogo" alt="" />{" "}
-            {formatSat(item.sellPriceAmount)} BTC
+            <span>{formatSat(item.sellPriceAmount)} BTC</span>
           </div>
         )}
 

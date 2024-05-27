@@ -9,6 +9,7 @@ import {
   ArrowLeftOutlined,
   CheckOutlined,
   LeftOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import { formatSat } from "@/utils/utlis";
 import SuccessModal, {
@@ -140,7 +141,9 @@ export default () => {
               <div className="cardWrap">
                 <div
                   className="contetn"
-                  onClick={() => handleCheck(item.assetId)}
+                  onClick={() => {
+                    item.pinStatus === 0 && handleCheck(item.assetId);
+                  }}
                 >
                   {item.info &&
                     item.info.contentTypeDetect.indexOf("image") > -1 && (
@@ -181,10 +184,13 @@ export default () => {
                 </div>
 
                 <div className="desc">
-                  <div className="number">#{item.assetNumber}</div>
-                  <div className="path">
-                    {item.info && (item.info.pinPath || item.info.path)}
+                  <div>
+                    <div className="number">#{item.assetNumber}</div>
+                    <div className="path">
+                      {item.info && (item.info.pinPath || item.info.path)}
+                    </div>
                   </div>
+                  {item.pinStatus === -9 && <div className="pinStatus">Pending <LoadingOutlined style={{ fontSize: 14, color: "#FF8F1F" }} spin /></div>}
                 </div>
 
                 <div className="inputWrap">
@@ -194,6 +200,7 @@ export default () => {
                     className="input"
                     value={sellPrices[item.assetId]}
                     suffix="sats"
+                    disabled={item.pinStatus !== 0}
                   />
                 </div>
                 <div className="btcAmount">
