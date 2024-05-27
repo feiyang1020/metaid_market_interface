@@ -11,6 +11,7 @@ import { getHostByNet } from "@/config";
 import useIntervalAsync from "@/hooks/useIntervalAsync";
 
 export type Network = "mainnet" | "testnet";
+const curNet = "testnet";
 type WalletName = "metalet";
 const { metaidwallet } = window;
 const checkExtension = () => {
@@ -29,7 +30,7 @@ export default () => {
   const [metaid, setMetaid] = useState<string>();
   const [btcAddress, setBTCAddress] = useState<string>();
   const [btcConnector, setBtcConnector] = useState<IMetaletWalletForBtc>();
-  const [network, setNetwork] = useState<Network>("mainnet");
+  const [network, setNetwork] = useState<Network>(curNet);
   const [connected, setConnected] = useState<boolean>(false);
   const [userBal, setUserBal] = useState<string>("0");
   const [avatar, setAvatar] = useState<string>("");
@@ -48,13 +49,13 @@ export default () => {
     if (!checkExtension()) return;
     const _wallet = await MetaletWalletForBtc.create();
     if (!_wallet.address) return;
-    const { network:_net } = await window.metaidwallet.getNetwork();
-    if (_net !== "mainnet") {
-      await window.metaidwallet.switchNetwork('livenet');
+    const { network: _net } = await window.metaidwallet.getNetwork();
+    if (_net !== curNet) {
+      await window.metaidwallet.switchNetwork(curNet);
     }
     const { network } = await window.metaidwallet.getNetwork();
-    if (network !== "mainnet") {
-      await window.metaidwallet.switchNetwork("livenet");
+    if (network !== curNet) {
+      await window.metaidwallet.switchNetwork(curNet);
     }
     setNetwork(network);
     const publicKey = await window.metaidwallet.btc.getPublicKey();
@@ -120,9 +121,9 @@ export default () => {
   const init = useCallback(async () => {
     if (walletName === "metalet" && window.metaidwallet) {
       const _network = (await window.metaidwallet.getNetwork()).network;
-      if (_network !== "mainnet") {
-        disConnect(); 
-        return
+      if (_network !== curNet) {
+        disConnect();
+        return;
       }
       setNetwork(_network);
       const walletParams = sessionStorage.getItem("walletParams");
