@@ -47,6 +47,13 @@ const TX_OUTPUT_SCRIPTHASH = 23;
 const TX_OUTPUT_SEGWIT = 22;
 const TX_OUTPUT_SEGWIT_SCRIPTHASH = 34;
 
+const TX_OUTPUT_SIZE = {
+  P2PKH: 34,
+  P2SH: 32,
+  P2WPKH: 31,
+  P2TR: 32,
+};
+
 type PsbtInput = (typeof Psbt.prototype.data.inputs)[0];
 type PsbtInputExtended = PsbtInput & {
   hash: string;
@@ -393,7 +400,7 @@ export async function exclusiveChange({
     // Add change output
     let fee = useSize
       ? Math.round(useSize * feeb)
-      : calcFee(psbt, feeb, extraSize);
+      : calcFee(psbt, feeb, TX_OUTPUT_SIZE[addressType] || 31);
     let totalInput, totalOutput;
     if (partialPay) {
       // we only pay for the fee and some extra value, not the whole transaction
@@ -604,7 +611,7 @@ export async function buildAskLimit({
   const signed = await window.metaidwallet.btc.signPsbt({
     psbtHex: ask.toHex(),
     options: {
-      autoFinalized:  !["P2PKH"].includes(addressType),
+      autoFinalized: !["P2PKH"].includes(addressType),
     },
   });
   if (typeof signed === "object") {

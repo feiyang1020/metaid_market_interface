@@ -5,7 +5,7 @@ import { useModel, useSearchParams } from "umi";
 import level from "@/assets/level.svg";
 import "./index.less";
 import btc from "@/assets/logo_btc@2x.png";
-import { UserOutlined } from "@ant-design/icons";
+import { LeftOutlined, UserOutlined } from "@ant-design/icons";
 import { buyOrder } from "@/utils/psbtBuild";
 import BuyModel from "@/components/BuyModel";
 import { formatSat } from "@/utils/utlis";
@@ -49,6 +49,14 @@ export default () => {
   };
   return (
     <div className="detailPage animation-slide-bottom">
+      <div
+        className="backTitle"
+        onClick={() => {
+          history.back();
+        }}
+      >
+        <LeftOutlined />
+      </div>
       <Spin spinning={loading} className="detailWrap">
         {order && (
           <Row

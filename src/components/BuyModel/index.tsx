@@ -315,11 +315,11 @@ export default ({ order, show, onClose }: Props) => {
                     <InputNumber
                       value={customRate}
                       onChange={setCustomRate}
-                      suffix="sat/vB"
+                        style={{textAlign:'center'}}
                       controls={false}
-                    />{" "}
+                    />
                   </div>
-                  <div className="time"></div>
+                  <div className="time">sat/vB</div>
                 </div>
               </div>
             </div>
