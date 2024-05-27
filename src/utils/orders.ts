@@ -413,12 +413,14 @@ export async function exclusiveChange({
             );
           }
           if (input.witnessUtxo) {
+            console.log(input.witnessUtxo,'witnessUtxo')
             return input.witnessUtxo;
           }
           if (input.nonWitnessUtxo) {
             const nonWitnessUtxoTx = Transaction.fromBuffer(
               input.nonWitnessUtxo
             );
+            console.log(nonWitnessUtxoTx.outs[0],'nonWitnessUtxoTx.outs[0]')
             return nonWitnessUtxoTx.outs[0];
           }
         }) as any
