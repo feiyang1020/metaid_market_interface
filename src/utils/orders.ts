@@ -383,7 +383,7 @@ export async function exclusiveChange({
         }),
         network: btcNetwork,
       });
-      if(!redeem) throw new Error('redeemScript')
+      if (!redeem) throw new Error("redeemScript");
       paymentInput.redeemScript = redeem.output;
     }
     fillInternalKey(paymentInput, address, pubKey);
@@ -580,6 +580,18 @@ export async function buildAskLimit({
       value: 0,
     });
   } else {
+    if (["P2SH"].includes(addressType)) {
+      console.log("input.tapInternalKey");
+      const { redeem } = payments.p2sh({
+        redeem: payments.p2wpkh({
+          pubkey: Buffer.from(pubKey, "hex"),
+          network: btcNetwork,
+        }),
+        network: btcNetwork,
+      });
+      if (!redeem) throw new Error("redeemScript");
+      input.redeemScript = redeem.output;
+    }
     ask.addInput(input);
   }
 
@@ -592,7 +604,7 @@ export async function buildAskLimit({
   const signed = await window.metaidwallet.btc.signPsbt({
     psbtHex: ask.toHex(),
     options: {
-      autoFinalized: !["P2PKH","P2SH"].includes(addressType),
+      autoFinalized:  ["P2PKH", "P2SH"].includes(addressType),
     },
   });
   if (typeof signed === "object") {
