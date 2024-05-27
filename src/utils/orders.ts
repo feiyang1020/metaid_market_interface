@@ -363,13 +363,8 @@ export async function exclusiveChange({
       witnessUtxo: paymentWitnessUtxo,
       sighashType: toUseSighashType,
     };
-    // if (["P2WPKH"].includes(addressType)) {
-    //   paymentInput["witnessUtxo"] = getWitnessUtxo(
-    //     tx.outs[paymentUtxo.vout || paymentUtxo.outputIndex]
-    //   );
-    // }
+    
     if (["P2PKH"].includes(addressType)) {
-      console.log(i, "iiiiiii");
       const {
         data: { rawTx },
       } = await getRawTx(network, { txid: paymentUtxo.txId });
