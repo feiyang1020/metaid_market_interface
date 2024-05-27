@@ -221,6 +221,7 @@ export async function exclusiveChange({
   cutFrom = 1,
   feeb,
   network,
+  utxoIndex,
 }: {
   psbt: Psbt;
   extraSize?: number;
@@ -234,6 +235,7 @@ export async function exclusiveChange({
   cutFrom?: number;
   feeb: number;
   network: API.Network;
+  utxoIndex: number;
 }) {
   // check if feeb is set
 
@@ -363,7 +365,7 @@ export async function exclusiveChange({
       witnessUtxo: paymentWitnessUtxo,
       sighashType: toUseSighashType,
     };
-    
+
     if (["P2PKH"].includes(addressType)) {
       const {
         data: { rawTx },
@@ -408,20 +410,24 @@ export async function exclusiveChange({
             );
           }
           if (input.witnessUtxo) {
-            console.log(input.witnessUtxo,'witnessUtxo')
             return input.witnessUtxo;
           }
           if (input.nonWitnessUtxo) {
             const nonWitnessUtxoTx = Transaction.fromBuffer(
               input.nonWitnessUtxo
             );
-            console.log(nonWitnessUtxoTx,nonWitnessUtxoTx.outs[0],'nonWitnessUtxoTx.outs[0]')
-            return nonWitnessUtxoTx.outs[0];
+
+            if (!nonWitnessUtxoTx.outs[utxoIndex]) {
+              raise(
+                "Input invalid. Please try again or contact customer service for assistance."
+              );
+            }
+            return nonWitnessUtxoTx.outs[utxoIndex];
           }
         }) as any
       );
     }
-    
+
     if (isNaN(totalInput)) {
       raise(
         "Input invalid. Please try again or contact customer service for assistance."
@@ -594,6 +600,7 @@ export async function buildBuyTake({
     orderId: string;
     feeAmount: number;
     price: number;
+    utxoId: string;
   };
   network: API.Network;
   takePsbtRaw: string;
@@ -619,6 +626,7 @@ export async function buildBuyTake({
     sighashType: SIGHASH_ALL,
     feeb: feeRate,
     network,
+    utxoIndex: Number(order.utxoId.split("_")[1]),
   });
   const totalSpent = order.feeAmount + order.price + fee;
 

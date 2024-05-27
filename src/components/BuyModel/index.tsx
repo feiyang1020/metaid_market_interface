@@ -102,6 +102,7 @@ export default ({ order, show, onClose }: Props) => {
             orderId: orderWithPsbt.orderId,
             feeAmount: orderWithPsbt.fee,
             price: orderWithPsbt.sellPriceAmount,
+            utxoId:orderWithPsbt.utxoId
           },
           network,
           takePsbtRaw: orderWithPsbt.takePsbt,
@@ -133,6 +134,7 @@ export default ({ order, show, onClose }: Props) => {
           orderId: orderWithPsbt.orderId,
           feeAmount: orderWithPsbt.fee,
           price: orderWithPsbt.sellPriceAmount,
+          utxoId:orderWithPsbt.utxoId
         },
         network,
         takePsbtRaw: orderWithPsbt.takePsbt,
