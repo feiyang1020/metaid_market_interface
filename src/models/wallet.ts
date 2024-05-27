@@ -29,7 +29,7 @@ export default () => {
   const [metaid, setMetaid] = useState<string>();
   const [btcAddress, setBTCAddress] = useState<string>();
   const [btcConnector, setBtcConnector] = useState<IMetaletWalletForBtc>();
-  const [network, setNetwork] = useState<Network>("testnet");
+  const [network, setNetwork] = useState<Network>("mainnet");
   const [connected, setConnected] = useState<boolean>(false);
   const [userBal, setUserBal] = useState<string>("0");
   const [avatar, setAvatar] = useState<string>("");
@@ -49,12 +49,13 @@ export default () => {
     const _wallet = await MetaletWalletForBtc.create();
     if (!_wallet.address) return;
     const { network:_net } = await window.metaidwallet.getNetwork();
-    if (_net !== "testnet") {
-      await window.metaidwallet.switchNetwork("testnet");
+    console.log(_net,'_net')
+    if (_net !== "mainnet") {
+      await window.metaidwallet.switchNetwork('livenet');
     }
     const { network } = await window.metaidwallet.getNetwork();
-    if (network !== "testnet") {
-      await window.metaidwallet.switchNetwork("testnet");
+    if (network !== "mainnet") {
+      await window.metaidwallet.switchNetwork("livenet");
     }
     setNetwork(network);
     const publicKey = await window.metaidwallet.btc.getPublicKey();
@@ -120,8 +121,8 @@ export default () => {
   const init = useCallback(async () => {
     if (walletName === "metalet" && window.metaidwallet) {
       const _network = (await window.metaidwallet.getNetwork()).network;
-      if (network !== "testnet") {
-        disConnect();
+      if (_network !== "mainnet") {
+        disConnect(); 
         return
       }
       setNetwork(_network);

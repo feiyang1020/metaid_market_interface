@@ -1,7 +1,7 @@
 import { request } from "umi";
 
 const getHost = (network: API.Network) => {
-  if (network === "mainnet") return "https://api.orders.exchange/api-bridge";
+  if (network === "mainnet") return "https://api.metaid.market/api-market";
   if (network === "testnet")
     return "https://api.metaid.market/api-market-testnet";
 };
