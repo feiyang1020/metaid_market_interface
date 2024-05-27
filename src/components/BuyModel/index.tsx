@@ -111,7 +111,7 @@ export default ({ order, show, onClose }: Props) => {
     } else {
       return customRate || 0;
     }
-  }, [feeRateTab, customRate]);
+  }, [feeRateTab, customRate,feeRates]);
 
   useEffect(() => {
     let didCancel = false;
