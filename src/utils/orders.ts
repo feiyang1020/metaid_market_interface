@@ -415,12 +415,12 @@ export async function exclusiveChange({
           if (input.witnessUtxo) {
             return input.witnessUtxo;
           }
-          // if (input.nonWitnessUtxo) {
-          //   const nonWitnessUtxoTx = Transaction.fromBuffer(
-          //     input.nonWitnessUtxo
-          //   );
-          //   return nonWitnessUtxoTx.outs[0];
-          // }
+          if (input.nonWitnessUtxo) {
+            const nonWitnessUtxoTx = Transaction.fromBuffer(
+              input.nonWitnessUtxo
+            );
+            return nonWitnessUtxoTx.outs[0];
+          }
         }) as any
       );
     }
