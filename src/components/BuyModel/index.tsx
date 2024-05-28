@@ -217,7 +217,7 @@ export default ({ order, show, onClose }: Props) => {
                   )}
 
                 {order.textContent && (
-                  <JSONView textContent={order.textContent} collapseStringsAfterLength={9} />
+                  <JSONView textContent={order.textContent} collapseStringsAfterLength={9} collapsed={0}/>
                 )}
               </div>
               <div className="dess">
@@ -282,7 +282,7 @@ export default ({ order, show, onClose }: Props) => {
                   )}
 
                 {order.textContent && (
-                  <JSONView textContent={order.textContent} collapseStringsAfterLength={9} />
+                  <JSONView textContent={order.textContent} collapseStringsAfterLength={9} collapsed={0}/>
                 )}
               </div>
               <div className="dess">

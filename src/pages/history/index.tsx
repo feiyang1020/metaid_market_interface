@@ -50,7 +50,7 @@ export default () => {
               )}
 
             {record.textContent && (
-              <JSONView textContent={record.textContent} />
+              <JSONView textContent={record.textContent} collapsed={0} />
             )}
           </div>
         );
