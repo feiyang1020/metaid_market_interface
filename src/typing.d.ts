@@ -80,4 +80,5 @@ declare interface Window {
       broadcast: boolean;
     }) => Promise<TransferResponse>;
   };
+  METAID_MARKET_NETWORK:API.Network
 }

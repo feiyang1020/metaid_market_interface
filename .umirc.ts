@@ -1,8 +1,7 @@
 import { defineConfig } from "umi";
-
 export default defineConfig({
   routes: [
-    { path: "/", component: "index",title:'' },
+    { path: "/", component: "index", title: "" },
     { path: "/market", component: "index" },
     { path: "/inscribe", component: "inscribe" },
     { path: "/sale", component: "sale" },
@@ -11,9 +10,12 @@ export default defineConfig({
     { path: "/pending", component: "pending" },
   ],
   title: "MetaID-Market",
-  npmClient: 'pnpm',
+  npmClient: "pnpm",
   plugins: ["@umijs/plugins/dist/model", "@umijs/plugins/dist/request"],
   model: {},
   request: {},
-  jsMinifier: 'none',
+  jsMinifier: "none",
+  define: {
+    "process.env.METAID_MARKET_NETWORK": process.env.METAID_MARKET_NETWORK,
+  },
 });
