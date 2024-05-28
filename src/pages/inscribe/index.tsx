@@ -123,6 +123,7 @@ export default () => {
   const [buzz, setBuzz] = useState<string>("");
   const [payload, setPayload] = useState<string>("");
   const [path, setPath] = useState<string>("/protocols");
+  const [contentType, setContentType] = useState<string>("text/plain");
   const [successProp, setSuccessProp] =
     useState<SuccessProps>(DefaultSuccessProps);
   const checkPath = useMemo(() => {
@@ -338,7 +339,7 @@ export default () => {
         operation: "create",
         body: payload,
         path: path,
-        contentType: "text/plain",
+        contentType: contentType,
         flag: network === "mainnet" ? "metaid" : "testid",
       };
 
@@ -456,7 +457,7 @@ export default () => {
       </div>
       {tab === "File" && (
         <div className=" animation-slide-bottom">
-          <Form
+          {/* <Form
             {...formItemLayout}
             variant="filled"
             style={{ maxWidth: "96vw", width: 632 }}
@@ -464,7 +465,7 @@ export default () => {
             <Form.Item label="File" name="Input">
               <Input size="large" placeholder="" />
             </Form.Item>
-          </Form>
+          </Form> */}
           <Row>
             <Col
               offset={sm ? 4 : 0}
@@ -536,7 +537,7 @@ export default () => {
             variant="filled"
             style={{ maxWidth: "96vw", width: 632 }}
           >
-            <Form.Item label="Buzz" name="TextArea">
+            <Form.Item label="Content" name="TextArea">
               <TextArea
                 placeholder=""
                 allowClear
@@ -604,30 +605,30 @@ export default () => {
               <Input size="large" disabled />
             </Form.Item>
             <Form.Item label="Path" name="path">
-              {/* <Input
+              <Input
                 size="large"
                 status={checkPath ? "" : "error"}
                 value={path}
                 onChange={(e) => {
                   setPath(e.target.value);
                 }}
-              /> */}
+              />
+              
+            </Form.Item>
+
+            <Form.Item label="Content-type" name="contentType">
               <Select
                 size="large"
                 style={{ textAlign: "left" }}
                 onChange={(e) => {
-                  setPath(e);
+                  setContentType(e);
                 }}
               >
-                <Select.Option value="/application/json">
-                  /application/json
+                <Select.Option value="application/json">
+                  application/json
                 </Select.Option>
-                <Select.Option value="/protocols">/protocols</Select.Option>
+                <Select.Option value="text/plain">text/plain</Select.Option>
               </Select>
-            </Form.Item>
-
-            <Form.Item label="Content-type" name="contentType">
-              <Input size="large" disabled />
             </Form.Item>
 
             <Form.Item label="Payload" name="TextArea">
