@@ -46,10 +46,10 @@ export default () => {
 
   const connect = async () => {
     if (!checkExtension()) return;
-    const _wallet1 = await MetaletWalletForBtc.create();
-    const { network: _net, status } = await window.metaidwallet.getNetwork();
+    let { network: _net, status } = await window.metaidwallet.getNetwork();
     if (status === "not-connected") {
       await MetaletWalletForBtc.create();
+      const { network: _net, status } = await window.metaidwallet.getNetwork();
     }
     console.log(_net, "_net");
     if (_net !== curNetwork) {
