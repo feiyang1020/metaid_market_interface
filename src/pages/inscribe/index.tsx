@@ -150,7 +150,7 @@ export default () => {
     } else {
       return customRate || 0;
     }
-  }, [feeRateTab, customRate]);
+  }, [feeRateTab, customRate,feeRates]);
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {

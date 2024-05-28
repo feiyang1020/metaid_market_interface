@@ -382,7 +382,6 @@ export async function exclusiveChange({
       paymentInput["nonWitnessUtxo"] = tx.toBuffer();
     }
     if (["P2SH"].includes(addressType)) {
-      console.log("input.tapInternalKey");
       const { redeem } = payments.p2sh({
         redeem: payments.p2wpkh({
           pubkey: Buffer.from(pubKey, "hex"),
@@ -390,7 +389,7 @@ export async function exclusiveChange({
         }),
         network: btcNetwork,
       });
-      if (!redeem) throw new Error("redeemScript");
+      if (!redeem) throw new Error("redeemScript error");
       paymentInput.redeemScript = redeem.output;
     }
     fillInternalKey(paymentInput, address, pubKey);

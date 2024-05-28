@@ -72,7 +72,7 @@ export default ({ order, show, onClose }: Props) => {
       });
     }
     if (order.orderState !== 1) return;
-    const { data } = await getOrderPsbt(
+    const { data, code, message } = await getOrderPsbt(
       network,
       {
         orderId: order.orderId,
@@ -84,6 +84,10 @@ export default ({ order, show, onClose }: Props) => {
         },
       }
     );
+    if (code !== 0) {
+      setErrInfo(message);
+      return;
+    }
     setOrderWithPsbt(data);
   }, [network, order, connected, authParams]);
   useEffect(() => {
@@ -107,12 +111,12 @@ export default ({ order, show, onClose }: Props) => {
     } else {
       return customRate || 0;
     }
-  }, [feeRateTab, customRate]);
+  }, [feeRateTab, customRate,feeRates]);
 
   useEffect(() => {
     let didCancel = false;
     const calc = async () => {
-      if (!orderWithPsbt || !connected ) return;
+      if (!orderWithPsbt || !connected) return;
       try {
         const { order, totalSpent } = await buildBuyTake({
           order: {
@@ -315,10 +319,10 @@ export default ({ order, show, onClose }: Props) => {
                 ))}
                 <div
                   className={`feeRateItem ${
-                    feeRateTab === 'custom' ? "active" : ""
+                    feeRateTab === "custom" ? "active" : ""
                   }`}
                   onClick={() => {
-                     setFeeRateTab('custom');
+                    setFeeRateTab("custom");
                   }}
                 >
                   <div className="label">Custom rates</div>

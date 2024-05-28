@@ -7,11 +7,10 @@ import {
 } from "@metaid/metaid";
 import { determineAddressInfo, formatSat } from "@/utils/utlis";
 import { getFeeRate } from "@/utils/mempool";
-import { getHostByNet } from "@/config";
+import { curNetwork, getHostByNet } from "@/config";
 import useIntervalAsync from "@/hooks/useIntervalAsync";
 
 export type Network = "mainnet" | "testnet";
-const curNet = "testnet";
 type WalletName = "metalet";
 const { metaidwallet } = window;
 const checkExtension = () => {
@@ -30,7 +29,7 @@ export default () => {
   const [metaid, setMetaid] = useState<string>();
   const [btcAddress, setBTCAddress] = useState<string>();
   const [btcConnector, setBtcConnector] = useState<IMetaletWalletForBtc>();
-  const [network, setNetwork] = useState<Network>(curNet);
+  const [network, setNetwork] = useState<Network>(curNetwork);
   const [connected, setConnected] = useState<boolean>(false);
   const [userBal, setUserBal] = useState<string>("0");
   const [avatar, setAvatar] = useState<string>("");
@@ -47,16 +46,19 @@ export default () => {
 
   const connect = async () => {
     if (!checkExtension()) return;
-    const _wallet = await MetaletWalletForBtc.create();
-    if (!_wallet.address) return;
-    const { network: _net } = await window.metaidwallet.getNetwork();
-    if (_net !== curNet) {
-      await window.metaidwallet.switchNetwork(curNet);
+    
+    const { network:_net } = await window.metaidwallet.getNetwork();
+    console.log(_net,'_net')
+    if (_net !== curNetwork) {
+      await window.metaidwallet.switchNetwork(curNetwork==='testnet'?'testnet':'livenet');
     }
     const { network } = await window.metaidwallet.getNetwork();
-    if (network !== curNet) {
-      await window.metaidwallet.switchNetwork(curNet);
+    if (network !== curNetwork) {
+      return
     }
+    const _wallet = await MetaletWalletForBtc.create();
+    console.log(_wallet)
+    if (!_wallet.address) return;
     setNetwork(network);
     const publicKey = await window.metaidwallet.btc.getPublicKey();
     const publicKeySign = await window.metaidwallet.btc.signMessage(
@@ -121,9 +123,9 @@ export default () => {
   const init = useCallback(async () => {
     if (walletName === "metalet" && window.metaidwallet) {
       const _network = (await window.metaidwallet.getNetwork()).network;
-      if (_network !== curNet) {
-        disConnect();
-        return;
+      if (_network !== curNetwork) {
+        disConnect(); 
+        return
       }
       setNetwork(_network);
       const walletParams = sessionStorage.getItem("walletParams");

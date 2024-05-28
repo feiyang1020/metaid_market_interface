@@ -5,6 +5,7 @@ import { Button, Card, ConfigProvider, InputNumber, List, message } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useModel } from "umi";
 import "./index.less";
+import level from "@/assets/level.svg";
 import {
   ArrowLeftOutlined,
   CheckOutlined,
@@ -190,7 +191,27 @@ export default () => {
                       {item.info && (item.info.pinPath || item.info.path)}
                     </div>
                   </div>
-                  {item.pinStatus === -9 && <div className="pinStatus">Pending <LoadingOutlined style={{ fontSize: 14, color: "#FF8F1F" }} spin /></div>}
+                  <div className="levelInfo">
+                    <div className="level">
+                      {item.assetLevel !== "--" && item.assetPop !== "--" ? (
+                        <>
+                          <img src={level} alt="" />
+                          {item.assetLevel}
+                        </>
+                      ) : (
+                        <span>--</span>
+                      )}
+                    </div>
+                    {item.pinStatus === -9 && (
+                      <div className="pinStatus">
+                        Pending{" "}
+                        <LoadingOutlined
+                          style={{ fontSize: 14, color: "#FF8F1F" }}
+                          spin
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="inputWrap">
@@ -201,6 +222,9 @@ export default () => {
                     value={sellPrices[item.assetId]}
                     suffix="sats"
                     disabled={item.pinStatus !== 0}
+                    onFocus={() => {
+                      handleCheck(item.assetId);
+                    }}
                   />
                 </div>
                 <div className="btcAmount">
