@@ -16,6 +16,8 @@ import btc from "@/assets/logo_btc@2x.png";
 import { useModel, history } from "umi";
 import { formatSat } from "@/utils/utlis";
 import MetaIdAvatar from "./MetaIdAvatar";
+import JSONView from "./JSONView";
+
 type Props = {
   item: API.Order;
   handleBuy: (order: API.Order) => void;
@@ -36,7 +38,6 @@ const EllipsisMiddle: React.FC<{ suffixCount: number; children: string }> = ({
 
 export default ({ item, handleBuy }: Props) => {
   const { connected, connect } = useModel("wallet");
-  
 
   const name = useMemo(() => {
     if (item.seller && item.seller.name) return item.seller.name;
@@ -58,18 +59,9 @@ export default ({ item, handleBuy }: Props) => {
                 : "none",
           }}
         >
-          <div
-            className="textContent"
-            // dangerouslySetInnerHTML={{ __html: item.textContent }}
-          >
-            <Typography.Paragraph
-              ellipsis={{
-                rows: 5,
-              }}
-            >
-              {item.textContent || ""}
-            </Typography.Paragraph>
-          </div>
+          {item.textContent && (
+            <JSONView textContent={item.textContent}/>
+          )}
         </div>
         <div className="assetNumber">
           <ConfigProvider

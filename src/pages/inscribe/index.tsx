@@ -131,6 +131,16 @@ export default () => {
 
     return regex.test(path);
   }, [path]);
+
+  const checkPayload = useMemo(() => {
+    if (contentType === "text/plain") return true;
+    try {
+      if (typeof JSON.parse(payload) === "object") {
+        return true;
+      }
+    } catch (err) {}
+    return false;
+  }, [payload, contentType]);
   // useEffect(() => {
   //   const find = feeRates.find((item) => item.label === "Avg");
   //   if (find) {
@@ -638,6 +648,7 @@ export default () => {
                 autoSize={false}
                 style={{ height: 140 }}
                 value={payload}
+                status={checkPayload ? "" : "error"}
                 onChange={(e) => {
                   setPayload(e.target.value);
                 }}
@@ -673,7 +684,9 @@ export default () => {
                   loading={submiting}
                   type="primary"
                   onClick={inscribe}
-                  disabled={!feeRate || !path || !payload}
+                  disabled={
+                    !feeRate || !path || !payload || !checkPayload || !checkPath
+                  }
                   className="submit"
                 >
                   Submit

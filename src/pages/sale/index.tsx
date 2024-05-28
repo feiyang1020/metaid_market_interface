@@ -17,6 +17,7 @@ import SuccessModal, {
   DefaultSuccessProps,
   SuccessProps,
 } from "@/components/SuccessModal";
+import JSONView from "@/components/JSONView";
 
 export default () => {
   const { btcAddress, connect, connected, network, authParams } =
@@ -152,7 +153,7 @@ export default () => {
                     )}
 
                   {item.textContent && (
-                    <div className="textCont">{item.textContent}</div>
+                    <JSONView textContent={item.textContent}/>
                   )}
                   <div className="assetNumber">
                     <ConfigProvider

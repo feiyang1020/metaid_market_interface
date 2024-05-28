@@ -11,6 +11,7 @@ import BuyModel from "@/components/BuyModel";
 import { formatSat } from "@/utils/utlis";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import dayjs from "dayjs";
+import JSONView from "@/components/JSONView";
 export default () => {
   const { network, connect, connected, btcAddress, addressType } =
     useModel("wallet");
@@ -34,7 +35,7 @@ export default () => {
     };
     if (data.info.contentTypeDetect.indexOf("text") > -1) {
       const cont = await getContent(data.content);
-      data.textContent = JSON.stringify(cont);
+      data.textContent = cont;
     }
     console.log(data.info, "Operation");
     setOrder(data);
@@ -80,13 +81,7 @@ export default () => {
                 }}
               >
                 {order.textContent && (
-                  <Typography.Paragraph
-                    ellipsis={{
-                      rows: 15,
-                    }}
-                  >
-                    {order.textContent || ""}
-                  </Typography.Paragraph>
+                  <JSONView textContent={order.textContent} />
                 )}
               </div>
             </Col>
@@ -145,7 +140,7 @@ export default () => {
                     copyable
                     style={{ color: "color: rgba(255, 255, 255, 0.5)" }}
                   >
-                    {order.textContent}
+                    {JSON.stringify(order.textContent)}
                   </Typography.Paragraph>
                 </div>
               )}

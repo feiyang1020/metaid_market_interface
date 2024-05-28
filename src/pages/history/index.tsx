@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import "./index.less";
 import { formatSat } from "@/utils/utlis";
 import { useEffect, useMemo, useState } from "react";
+import JSONView from "@/components/JSONView";
 const items = ["Activity", "Buy", "Sell"];
 export default () => {
   const { btcAddress, network } = useModel("wallet");
@@ -49,7 +50,7 @@ export default () => {
               )}
 
             {record.textContent && (
-              <div className="textCont">{record.textContent}</div>
+              <JSONView textContent={record.textContent} collapsed={0} />
             )}
           </div>
         );
