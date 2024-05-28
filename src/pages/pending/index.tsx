@@ -7,6 +7,7 @@ import { formatSat } from "@/utils/utlis";
 import { useEffect, useMemo, useState } from "react";
 import Popup from "@/components/ResponPopup";
 import { authTest, cancelOrder } from "@/services/api";
+import JSONView from "@/components/JSONView";
 
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
@@ -59,7 +60,7 @@ export default () => {
               )}
 
             {record.textContent && (
-              <div className="textCont">{record.textContent}</div>
+              <JSONView textContent={record.textContent}/>
             )}
           </div>
         );

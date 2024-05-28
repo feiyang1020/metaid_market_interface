@@ -21,6 +21,7 @@ import SuccessModal, {
   SuccessProps,
 } from "../SuccessModal";
 import { number } from "bitcoinjs-lib/src/script";
+import JSONView from "../JSONView";
 type Props = {
   order: API.Order | undefined;
   show: boolean;
@@ -111,7 +112,7 @@ export default ({ order, show, onClose }: Props) => {
     } else {
       return customRate || 0;
     }
-  }, [feeRateTab, customRate,feeRates]);
+  }, [feeRateTab, customRate, feeRates]);
 
   useEffect(() => {
     let didCancel = false;
@@ -147,7 +148,7 @@ export default ({ order, show, onClose }: Props) => {
   }, [orderWithPsbt, network, connected, feeRate]);
 
   const handleBuy = async () => {
-    if (!feeRate || !orderWithPsbt || !addressType || !connected) return;
+    if (!feeRate || !orderWithPsbt || !addressType || !connected||!order) return;
     setSubmiting(true);
     try {
       const { order: orderPsbt, totalSpent } = await buildBuyTake({
@@ -209,14 +210,14 @@ export default ({ order, show, onClose }: Props) => {
         children: (
           <div className="buySuccess">
             <div className="orderInfo">
-              <div className="info">
+            <div className="contetn">
                 {order.info &&
                   order.info.contentTypeDetect.indexOf("image") > -1 && (
                     <img className="imageCont" src={order.content}></img>
                   )}
 
                 {order.textContent && (
-                  <div className="textCont">{order.textContent}</div>
+                  <JSONView textContent={order.textContent} collapseStringsAfterLength={9} />
                 )}
               </div>
               <div className="dess">
@@ -274,14 +275,14 @@ export default ({ order, show, onClose }: Props) => {
         >
           <div className="buyWrap">
             <div className="orderInfo">
-              <div className="info">
+              <div className="contetn">
                 {order.info &&
                   order.info.contentTypeDetect.indexOf("image") > -1 && (
                     <img className="imageCont" src={order.content}></img>
                   )}
 
                 {order.textContent && (
-                  <div className="textCont">{order.textContent}</div>
+                  <JSONView textContent={order.textContent} collapseStringsAfterLength={9} />
                 )}
               </div>
               <div className="dess">

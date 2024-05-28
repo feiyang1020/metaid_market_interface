@@ -41,7 +41,7 @@ export default () => {
               list[i].info.contentTypeDetect.indexOf("text") > -1
             ) {
               const cont = await getContent(list[i].content);
-              list[i].textContent = JSON.stringify(cont);
+              list[i].textContent = cont;
             }
           }
           setOrders(list);

@@ -4,25 +4,35 @@
     .orderInfo {
       display: flex;
       align-items: center;
-      .info {
-        width: 100px;
-        height: 100px;
-        border-radius: 16px;
-        overflow: hidden;
-        margin-right: 13px;
-        background-color: #191b18;
-        text-align: center;
+      .contetn {
+        position: relative;
+        z-index: 1;
+        width: 88px;
+        height: 85px;
+        color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
-        word-break: break-all;
-        img {
-          width: 100px;
-          height: 100px;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #0c0e09;
+        border: 0.5px solid rgba(255, 255, 255, 0.21);
+        .imageCont {
+          display: block;
+          min-width: 100%;
+          min-height: 100%;
           object-fit: cover;
+        }
+        .textCont {
+          word-break: break-all;
+          padding: 10px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
         }
       }
       .dess {
+        margin-left: 10px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -166,39 +176,35 @@
   .orderInfo {
     display: flex;
     align-items: center;
-    .info {
-      width: 100px;
-      height: 100px;
-      border-radius: 16px;
-      overflow: hidden;
-      margin-right: 13px;
-      background-color: #191b18;
-      text-align: center;
+    .contetn {
+      position: relative;
+      z-index: 1;
+      width: 88px;
+      height: 85px;
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      word-break: break-all;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #0c0e09;
+      border: 0.5px solid rgba(255, 255, 255, 0.21);
+      .imageCont {
+        display: block;
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+      }
       .textCont {
+        word-break: break-all;
+        padding: 10px;
+        overflow: hidden;
         display: flex;
         align-items: center;
-        width: 100px;
-        height: 100px;
-        padding: 10px;
-        font-size: 10px;
-        overflow: hidden;
-        word-break: break-all;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-      }
-      img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
       }
     }
     .dess {
+      margin-left: 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;

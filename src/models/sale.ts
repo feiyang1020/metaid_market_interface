@@ -50,7 +50,7 @@ export default () => {
           ) {
             const cont = await getContent(list[i].content);
             list[i].textContent =
-              typeof cont === "object" ? JSON.stringify(cont) : cont;
+              typeof cont === "object" ? cont : cont;
           }
         }
         setOrders(list);

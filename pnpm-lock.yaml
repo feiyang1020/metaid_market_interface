@@ -15,6 +15,7 @@ specifiers:
   crypto-js: ^4.2.0
   dayjs: ^1.11.11
   decimal.js: ^10.4.3
+  react18-json-view: ^0.2.8
   typescript: ^5.0.3
   umi: ^4.2.5
 
@@ -30,6 +31,7 @@ dependencies:
   crypto-js: registry.npmjs.org/crypto-js/4.2.0
   dayjs: registry.npmjs.org/dayjs/1.11.11
   decimal.js: registry.npmjs.org/decimal.js/10.4.3
+  react18-json-view: registry.npmjs.org/react18-json-view/0.2.8
   umi: registry.npmjs.org/umi/4.2.5_r4uv52uoodtokbnpjpecx56sry
 
 devDependencies:
@@ -10762,6 +10764,14 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: registry.npmjs.org/loose-envify/1.4.0
+    dev: false
+
+  registry.npmjs.org/react18-json-view/0.2.8:
+    resolution: {integrity: sha512-uJlcf5PEDaba6yTqfcDAcMSYECZ15SLcpP94mLFTa/+fa1kZANjERqKzS7YxxsrGP4+jDxt6sIaglR0PbQcKPw==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/react18-json-view/-/react18-json-view-0.2.8.tgz}
+    name: react18-json-view
+    version: 0.2.8
+    peerDependencies:
+      react: '>=16.8.0'
     dev: false
 
   registry.npmjs.org/reactcss/1.2.3:
