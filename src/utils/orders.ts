@@ -69,7 +69,7 @@ function inputBytes(input: PsbtInput) {
   if (isTaprootInput(input)) {
     return TX_INPUT_BASE + TX_INPUT_TAPROOT;
   }
-
+  if (input.nonWitnessUtxo) return TX_INPUT_BASE + TX_INPUT_PUBKEYHASH;
   if (input.witnessUtxo) return TX_INPUT_BASE + TX_INPUT_SEGWIT;
 
   return TX_INPUT_BASE + TX_INPUT_PUBKEYHASH;
@@ -356,7 +356,6 @@ export async function exclusiveChange({
   // multiple change
   console.log({ paymentUtxos });
   const addressType = determineAddressInfo(address).toUpperCase();
-  console.log(addressType, "addressType");
   for (let i = 0; i < paymentUtxos.length; i++) {
     const paymentUtxo = paymentUtxos[i];
     const paymentWitnessUtxo = {
@@ -440,6 +439,7 @@ export async function exclusiveChange({
                 "Input invalid. Please try again or contact customer service for assistance."
               );
             }
+            console.log(nonWitnessUtxoTx)
             return nonWitnessUtxoTx.outs[utxoIndex];
           }
         }) as any
@@ -451,8 +451,9 @@ export async function exclusiveChange({
         "Input invalid. Please try again or contact customer service for assistance."
       );
     }
+    
     const changeValue = totalInput - totalOutput - fee + (extraInputValue || 0);
-
+    console.log(changeValue,totalInput,totalOutput,fee)
     if (changeValue < 0) {
       // if we run out of utxos, throw an error
       if (paymentUtxo === paymentUtxos[paymentUtxos.length - 1]) {
@@ -665,3 +666,4 @@ export async function buildBuyTake({
     totalSpent,
   };
 }
+
