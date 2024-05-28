@@ -33,23 +33,17 @@ const EllipsisMiddle: React.FC<{ suffixCount: number; children: string }> = ({
     </Text>
   );
 };
+
 export default ({ item, handleBuy }: Props) => {
   const { connected, connect } = useModel("wallet");
-  const [isHovering, setHovering] = useState<boolean>(false);
-  const handleMouseOver = () => {
-    setHovering(true);
-  };
-
-  const handleMouseOut = () => {
-    setHovering(false);
-  };
+  
 
   const name = useMemo(() => {
     if (item.seller && item.seller.name) return item.seller.name;
     return item.sellerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2");
   }, [item]);
   return (
-    <Card styles={{ body: { padding: 0 } }} className="orderCard">
+    <Card styles={{ body: { padding: 0 } }} hoverable className="orderCard">
       <div className="cardWrap">
         <div className="contentWrap"></div>
         <div
@@ -133,46 +127,35 @@ export default ({ item, handleBuy }: Props) => {
             </div>
           </div>
         </div>
-        {!isHovering && (
-          <div
-            className="price"
-            onMouseOver={handleMouseOver}
-            onMouseLeave={handleMouseOut}
-          >
-            <img src={btc} className="btcLogo" alt="" />{" "}
-            <span>{formatSat(item.sellPriceAmount)} BTC</span>
-          </div>
-        )}
 
-        {isHovering && (
-          <div
-            className="btn"
-            onMouseOver={handleMouseOver}
-            onMouseLeave={handleMouseOut}
-          >
-            {connected ? (
-              <Button
-                type="primary"
-                style={{ height: 40 }}
-                block
-                onClick={() => {
-                  handleBuy(item);
-                }}
-              >
-                Buy
-              </Button>
-            ) : (
-              <Button
-                type="primary"
-                style={{ height: 40 }}
-                block
-                onClick={connect}
-              >
-                Connect Wallet
-              </Button>
-            )}
-          </div>
-        )}
+        <div className="price">
+          <img src={btc} className="btcLogo" alt="" />{" "}
+          <span>{formatSat(item.sellPriceAmount)} BTC</span>
+        </div>
+
+        <div className="btn">
+          {connected ? (
+            <Button
+              type="primary"
+              style={{ height: 40 }}
+              block
+              onClick={() => {
+                handleBuy(item);
+              }}
+            >
+              Buy
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              style={{ height: 40 }}
+              block
+              onClick={connect}
+            >
+              Connect Wallet
+            </Button>
+          )}
+        </div>
       </div>
     </Card>
   );
