@@ -151,7 +151,7 @@ export default () => {
     } else {
       return customRate || 0;
     }
-  }, [feeRateTab, customRate,feeRates]);
+  }, [feeRateTab, customRate, feeRates]);
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -277,6 +277,7 @@ export default () => {
         feeRate: feeRate,
         service: getCreatePinFeeByNet(network),
       });
+      console.log(ret);
       if (ret.status) throw new Error(ret.status);
       if (ret.commitTxId) {
         setSuccessProp({
@@ -392,9 +393,10 @@ export default () => {
           ),
         });
       } else {
-        throw new Error("unknow error");
+        throw new Error(typeof ret === "string" ? ret : "unknow error");
       }
     } catch (err) {
+      console.log(err, "eeeeeee");
       message.error(err.message);
     }
     setSubmiting(false);
@@ -613,7 +615,6 @@ export default () => {
                   setPath(e.target.value);
                 }}
               />
-              
             </Form.Item>
 
             <Form.Item label="Content-type" name="contentType">
