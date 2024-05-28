@@ -201,6 +201,7 @@ export default () => {
                     value={sellPrices[item.assetId]}
                     suffix="sats"
                     disabled={item.pinStatus !== 0}
+                    onFocus={()=>{handleCheck(item.assetId)}}
                   />
                 </div>
                 <div className="btcAmount">

@@ -47,6 +47,7 @@ export default () => {
   const connect = async () => {
     if (!checkExtension()) return;
     const _wallet = await MetaletWalletForBtc.create();
+    console.log(_wallet)
     if (!_wallet.address) return;
     const { network:_net } = await window.metaidwallet.getNetwork();
     console.log(_net,'_net')
