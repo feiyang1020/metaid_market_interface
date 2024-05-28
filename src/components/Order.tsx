@@ -128,12 +128,12 @@ export default ({ item, handleBuy }: Props) => {
           </div>
         </div>
 
-        <div className="price">
+        <div className="price ">
           <img src={btc} className="btcLogo" alt="" />{" "}
           <span>{formatSat(item.sellPriceAmount)} BTC</span>
         </div>
 
-        <div className="btn">
+        <div className="btn animation-slide-bottom">
           {connected ? (
             <Button
               type="primary"
