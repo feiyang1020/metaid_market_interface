@@ -46,18 +46,23 @@ export default () => {
 
   const connect = async () => {
     if (!checkExtension()) return;
-    
-    const { network:_net } = await window.metaidwallet.getNetwork();
-    console.log(_net,'_net')
+    const _wallet1 = await MetaletWalletForBtc.create();
+    const { network: _net, status } = await window.metaidwallet.getNetwork();
+    if (status === "not-connected") {
+      await MetaletWalletForBtc.create();
+    }
+    console.log(_net, "_net");
     if (_net !== curNetwork) {
-      await window.metaidwallet.switchNetwork(curNetwork==='testnet'?'testnet':'livenet');
+      await window.metaidwallet.switchNetwork(
+        curNetwork === "testnet" ? "testnet" : "livenet"
+      );
     }
     const { network } = await window.metaidwallet.getNetwork();
     if (network !== curNetwork) {
-      return
+      return;
     }
     const _wallet = await MetaletWalletForBtc.create();
-    console.log(_wallet)
+    console.log(_wallet);
     if (!_wallet.address) return;
     setNetwork(network);
     const publicKey = await window.metaidwallet.btc.getPublicKey();
@@ -124,8 +129,8 @@ export default () => {
     if (walletName === "metalet" && window.metaidwallet) {
       const _network = (await window.metaidwallet.getNetwork()).network;
       if (_network !== curNetwork) {
-        disConnect(); 
-        return
+        disConnect();
+        return;
       }
       setNetwork(_network);
       const walletParams = sessionStorage.getItem("walletParams");
