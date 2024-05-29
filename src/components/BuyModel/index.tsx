@@ -23,6 +23,7 @@ import SuccessModal, {
 } from "../SuccessModal";
 import { number } from "bitcoinjs-lib/src/script";
 import JSONView from "../JSONView";
+import { curNetwork } from "@/config";
 type Props = {
   order: API.Order | undefined;
   show: boolean;
@@ -146,7 +147,7 @@ export default ({ order, show, onClose }: Props) => {
         if (didCancel) return;
         setCalcing(false);
         setTotalSpent(totalSpent);
-        setErrInfo(error || undefined);
+        if (error) setErrInfo(error || undefined);
         setBuyPsbt(order);
         setFee(fee);
       } catch (err: any) {
@@ -167,6 +168,10 @@ export default ({ order, show, onClose }: Props) => {
       return;
     setSubmiting(true);
     try {
+      const { network: _net } = await window.metaidwallet.getNetwork();
+      if (_net !== curNetwork || _net !== network) {
+        throw new Error("network error");
+      }
       const {
         order: orderPsbt,
         totalSpent,
@@ -184,6 +189,7 @@ export default ({ order, show, onClose }: Props) => {
       });
       if (error) throw new Error(error);
       const address = await window.metaidwallet.btc.getAddress();
+
       const inputsCount = orderPsbt.data.inputs.length;
       const toSignInputs = [];
       for (let i = BUY_PAY_INPUT_INDEX; i < inputsCount; i++) {
@@ -409,7 +415,7 @@ export default ({ order, show, onClose }: Props) => {
                 type="primary"
                 onClick={handleBuy}
                 loading={submiting}
-                disabled={Boolean(errInfo)||calcing}
+                disabled={Boolean(errInfo) || calcing}
               >
                 Confirm
               </Button>

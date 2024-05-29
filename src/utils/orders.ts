@@ -467,7 +467,7 @@ export async function exclusiveChange({
           feeb,
           changeValue,
           error:
-            '"Insufficient balance. Please ensure that the address has a sufficient balance and try again."',
+            'Insufficient balance. Please ensure that the address has a sufficient balance and try again.',
         };
       }
 
