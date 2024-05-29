@@ -4,6 +4,7 @@ import {
   InputNumber,
   Modal,
   Popover,
+  Spin,
   Tooltip,
   message,
 } from "antd";
@@ -40,8 +41,9 @@ export default ({ order, show, onClose }: Props) => {
   const [submiting, setSubmiting] = useState<boolean>(false);
   const [customRate, setCustomRate] = useState<string | number>();
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
-  // const [feeRate, setFeeRate] = useState<number>();
+  const [calcing, setCalcing] = useState<boolean>(false);
   const [totalSpent, setTotalSpent] = useState<number>();
+  const [fee, setFee] = useState<number>();
   const [errInfo, setErrInfo] = useState<string>();
   const [userBalInfo, setUserBalInfo] = useState<{
     total: number;
@@ -59,6 +61,15 @@ export default ({ order, show, onClose }: Props) => {
       });
     }
   }, [network, connected]);
+  useEffect(() => {
+    if (!show) {
+      setCalcing(false);
+      setTotalSpent(undefined);
+      setFee(undefined);
+      setErrInfo(undefined);
+      setOrderWithPsbt(undefined);
+    }
+  }, [show]);
   const [buyPsbt, setBuyPsbt] = useState<Psbt>();
   const fetchTakePsbt = useCallback(async () => {
     console.log(order, connected, authParams, "authParams");
@@ -119,7 +130,8 @@ export default ({ order, show, onClose }: Props) => {
     const calc = async () => {
       if (!orderWithPsbt || !connected) return;
       try {
-        const { order, totalSpent } = await buildBuyTake({
+        setCalcing(true);
+        const { order, totalSpent, fee, error } = await buildBuyTake({
           order: {
             orderId: orderWithPsbt.orderId,
             feeAmount: orderWithPsbt.fee,
@@ -128,14 +140,16 @@ export default ({ order, show, onClose }: Props) => {
           },
           network,
           takePsbtRaw: orderWithPsbt.takePsbt,
-          feeRate,
+          feeRate: Number(feeRate),
         });
         console.log(order, totalSpent);
         if (didCancel) return;
+        setCalcing(false);
         setTotalSpent(totalSpent);
-        setErrInfo(undefined);
+        setErrInfo(error || undefined);
         setBuyPsbt(order);
-      } catch (err) {
+        setFee(fee);
+      } catch (err: any) {
         console.log(err);
         if (didCancel) return;
         setErrInfo(err.message || "unknow error");
@@ -148,10 +162,15 @@ export default ({ order, show, onClose }: Props) => {
   }, [orderWithPsbt, network, connected, feeRate]);
 
   const handleBuy = async () => {
-    if (!feeRate || !orderWithPsbt || !addressType || !connected||!order) return;
+    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order)
+      return;
     setSubmiting(true);
     try {
-      const { order: orderPsbt, totalSpent } = await buildBuyTake({
+      const {
+        order: orderPsbt,
+        totalSpent,
+        error,
+      } = await buildBuyTake({
         order: {
           orderId: orderWithPsbt.orderId,
           feeAmount: orderWithPsbt.fee,
@@ -160,8 +179,9 @@ export default ({ order, show, onClose }: Props) => {
         },
         network,
         takePsbtRaw: orderWithPsbt.takePsbt,
-        feeRate,
+        feeRate: Number(feeRate),
       });
+      if (error) throw new Error(error);
       const address = await window.metaidwallet.btc.getAddress();
       const inputsCount = orderPsbt.data.inputs.length;
       const toSignInputs = [];
@@ -210,14 +230,18 @@ export default ({ order, show, onClose }: Props) => {
         children: (
           <div className="buySuccess">
             <div className="orderInfo">
-            <div className="contetn">
+              <div className="contetn">
                 {order.info &&
                   order.info.contentTypeDetect.indexOf("image") > -1 && (
                     <img className="imageCont" src={order.content}></img>
                   )}
 
                 {order.textContent && (
-                  <JSONView textContent={order.textContent} collapseStringsAfterLength={9} collapsed={0}/>
+                  <JSONView
+                    textContent={order.textContent}
+                    collapseStringsAfterLength={9}
+                    collapsed={0}
+                  />
                 )}
               </div>
               <div className="dess">
@@ -282,7 +306,11 @@ export default ({ order, show, onClose }: Props) => {
                   )}
 
                 {order.textContent && (
-                  <JSONView textContent={order.textContent} collapseStringsAfterLength={9} collapsed={0}/>
+                  <JSONView
+                    textContent={order.textContent}
+                    collapseStringsAfterLength={9}
+                    collapsed={0}
+                  />
                 )}
               </div>
               <div className="dess">
@@ -300,6 +328,12 @@ export default ({ order, show, onClose }: Props) => {
                   Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
                 </div>
                 <div className="value">{formatSat(order.fee)}BTC</div>
+              </div>
+              <div className="feeItem">
+                <div className="label">Transaction Fee</div>
+                <div className="value">
+                  <Spin spinning={calcing}>{formatSat(fee || "0")}BTC</Spin>
+                </div>
               </div>
             </div>
             <div className="netFee">
@@ -339,29 +373,33 @@ export default ({ order, show, onClose }: Props) => {
                 </div>
               </div>
             </div>
-            <div className="payInfo">
-              <div className="label">You Pay</div>
-              <div className="value">
-                <img src={btcIcon} alt="" className="btc" />
-                <span>{totalSpent ? formatSat(totalSpent || 0) : "--"}BTC</span>
+            <Spin spinning={calcing}>
+              <div className="payInfo">
+                <div className="label">You Pay</div>
+                <div className="value">
+                  <img src={btcIcon} alt="" className="btc" />
+                  <span>
+                    {totalSpent ? formatSat(totalSpent || 0) : "--"}BTC
+                  </span>
+                </div>
               </div>
-            </div>
-            {errInfo && (
-              <Alert
-                message={errInfo}
-                type="error"
-                showIcon
-                style={{ marginTop: 10 }}
-              />
-            )}
+              {errInfo && (
+                <Alert
+                  message={errInfo}
+                  type="error"
+                  showIcon
+                  style={{ marginTop: 10 }}
+                />
+              )}
 
-            <div className="avail">
-              <div className="label">Available balance</div>
+              <div className="avail">
+                <div className="label">Available balance</div>
 
-              <div className="value">
-                {userBalInfo && formatSat(userBalInfo.confirmed)} BTC
+                <div className="value">
+                  {userBalInfo && formatSat(userBalInfo.confirmed)} BTC
+                </div>
               </div>
-            </div>
+            </Spin>
 
             <div className="btns">
               <Button
@@ -370,7 +408,7 @@ export default ({ order, show, onClose }: Props) => {
                 type="primary"
                 onClick={handleBuy}
                 loading={submiting}
-                disabled={Boolean(errInfo)}
+                disabled={Boolean(errInfo)||calcing}
               >
                 Confirm
               </Button>

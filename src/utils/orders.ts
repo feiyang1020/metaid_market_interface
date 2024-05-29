@@ -439,7 +439,7 @@ export async function exclusiveChange({
                 "Input invalid. Please try again or contact customer service for assistance."
               );
             }
-            console.log(nonWitnessUtxoTx)
+            console.log(nonWitnessUtxoTx);
             return nonWitnessUtxoTx.outs[utxoIndex];
           }
         }) as any
@@ -451,15 +451,24 @@ export async function exclusiveChange({
         "Input invalid. Please try again or contact customer service for assistance."
       );
     }
-    
+
     const changeValue = totalInput - totalOutput - fee + (extraInputValue || 0);
-    console.log(changeValue,totalInput,totalOutput,fee)
+    console.log(changeValue, totalInput, totalOutput, fee);
     if (changeValue < 0) {
       // if we run out of utxos, throw an error
       if (paymentUtxo === paymentUtxos[paymentUtxos.length - 1]) {
-        throw new Error(
-          "Insufficient balance. Please ensure that the address has a sufficient balance and try again."
-        );
+        // throw new Error(
+        //   "Insufficient balance. Please ensure that the address has a sufficient balance and try again."
+        // );
+        return {
+          psbt,
+          fee,
+          paymentValue: paymentUtxo.satoshis,
+          feeb,
+          changeValue,
+          error:
+            '"Insufficient balance. Please ensure that the address has a sufficient balance and try again."',
+        };
       }
 
       // otherwise, continue
@@ -651,7 +660,7 @@ export async function buildBuyTake({
   // 🚓🚓 UPDATE: Since now the transaction structure is controlled by backend, we dont' have to add service fees outputs on our own
 
   // 3. pay for the order / service fees and gas and change
-  const { fee } = await exclusiveChange({
+  const { fee, error } = await exclusiveChange({
     psbt: buy,
     maxUtxosCount: USE_UTXO_COUNT_LIMIT,
     sighashType: SIGHASH_ALL,
@@ -664,6 +673,7 @@ export async function buildBuyTake({
   return {
     order: buy,
     totalSpent,
+    fee,
+    error,
   };
 }
-
