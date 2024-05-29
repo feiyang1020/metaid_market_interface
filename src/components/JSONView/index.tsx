@@ -14,8 +14,13 @@ export default ({
   style?: React.CSSProperties;
 }) => {
   return (
-    <div className="textContent" style={{ background: "#1E1E1E",overflow:'hidden',boxSizing:'border-box' }}>
-      <JsonView collapsed={collapsed} dark enableClipboard={false} src={textContent} collapseStringsAfterLength={collapseStringsAfterLength}  theme="a11y" style={{ ...style }} />
+    <div className="jsonContent" style={{ background: "#1E1E1E",boxSizing:'border-box' }}>
+      <div className="scroll-container">
+        <div className="scroll-content">
+        <JsonView collapsed={collapsed} dark enableClipboard={false} src={textContent} collapseStringsAfterLength={collapseStringsAfterLength}  theme="a11y" style={{ ...style }} />
+        </div>
+      </div>
+      
     </div>
   );
 };
