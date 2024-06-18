@@ -6,7 +6,6 @@ import level from "@/assets/level.svg";
 import "./index.less";
 import btc from "@/assets/logo_btc@2x.png";
 import { LeftOutlined, UserOutlined } from "@ant-design/icons";
-import { buyOrder } from "@/utils/psbtBuild";
 import BuyModel from "@/components/BuyModel";
 import { formatSat } from "@/utils/utlis";
 import MetaIdAvatar from "@/components/MetaIdAvatar";

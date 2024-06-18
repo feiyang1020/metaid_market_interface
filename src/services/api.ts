@@ -197,3 +197,41 @@ export async function getRawTx(
     ...(options || {}),
   });
 }
+
+export async function mintMrc20Pre(
+  network: API.Network,
+  params: API.MintMRC20PreReq,
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.MintMRC20PreRes>>(
+    `${getHost(network)}/api/v1/inscribe/mrc20/mint/pre`,
+    {
+      method: "POST",
+      data: params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function mintMrc20Commit(
+  network: API.Network,
+  params: {
+    orderId: string;
+    commitTxRaw: string;
+    commitTxOutIndex: number; //commit交易中RevealAddress的output索引
+    revealPrePsbtRaw: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: string;
+      commitTxId: string;
+      revealTxId: string;
+    }>
+  >(`${getHost(network)}/api/v1/inscribe/mrc20/mint/commit`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}

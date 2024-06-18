@@ -1,0 +1,26 @@
+.mrc20Form {
+  .customRadio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(25, 27, 24, 0.84);
+    backdrop-filter: blur(1000px);
+    padding: 31px 30px 38px;
+    gap:24px;
+    .customRadioItem{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        box-sizing: border-box;
+        border-radius: 8px;
+        padding: 21px 0;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        &.ant-radio-wrapper-checked{
+            border: 1px solid #C0F079;
+            background-color: #C0F079;
+            color: black;
+        }
+    }
+  }
+}

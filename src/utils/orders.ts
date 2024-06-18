@@ -677,3 +677,14 @@ export async function buildBuyTake({
     error,
   };
 }
+
+export const getPkScriprt =  (address: string, network: API.Network) => {
+  initEccLib(ecc);
+  const btcNetwork =
+    network === "mainnet" ? networks.bitcoin : networks.testnet;
+  const paymentPrevOutputScript = libAddress.toOutputScript(
+    address,
+    btcNetwork
+  );
+  return paymentPrevOutputScript;
+};

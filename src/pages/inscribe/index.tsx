@@ -26,7 +26,8 @@ import SuccessModal, {
   DefaultSuccessProps,
   SuccessProps,
 } from "@/components/SuccessModal";
-const items = ["File", "Buzz", "PINs"];
+import Mrc20Form from "./components/Mrc20Form";
+const items = ["File", "Buzz", "PINs",'MRC-20'];
 const { Dragger } = Upload;
 const { TextArea } = Input;
 const formItemLayout = {
@@ -114,7 +115,7 @@ const SeleceFeeRate = ({
 };
 export default () => {
   const { sm } = useBreakpoint();
-  const [tab, setTab] = useState<"File" | "Buzz" | "PINs">("File");
+  const [tab, setTab] = useState<"File" | "Buzz" | "PINs"|"MRC-20">("File");
   const [submiting, setSubmiting] = useState(false);
   // const [feeRate, setFeeRate] = useState<number>();
   const { btcConnector, connected, connect, feeRates, network, disConnect } =
@@ -696,6 +697,7 @@ export default () => {
           </Row>
         </div>
       )}
+      {tab === "MRC-20" && <Mrc20Form />}
       <SuccessModal {...successProp}></SuccessModal>
     </div>
   );

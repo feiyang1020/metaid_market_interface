@@ -63,7 +63,10 @@ declare namespace API {
     message: string;
     code: number;
   }
-
+  type Tx = {
+    address: string
+    value: number
+  }
   type UTXO = {
     txId: string;
     vout: number;
@@ -113,5 +116,31 @@ declare namespace API {
       pinPath: string;
     };
     textContent: string;
+  };
+
+  type MintMRC20PreReq = {
+    mintPins: {
+      address: string;
+      pinId: string;
+      pinUtxoOutValue: number;
+      pinUxtoIndex: number;
+      pinUxtoTxId: string;
+      pkScript: string;
+    }[];
+    networkFeeRate: number;
+    outAddress: string;
+    outValue: number;
+    tickerId: string;
+  };
+
+  type MintMRC20PreRes = {
+    orderId: string;
+    revealAddress: string;
+    revealFee: number;
+    revealInputIndex: number;
+    revealPrePsbtRaw: string;
+    serviceAddress: string;
+    serviceFee: number;
+    totalFee: number;
   };
 }
