@@ -9,7 +9,7 @@ import Decimal from "decimal.js";
 import mempoolJS from "@mempool/mempool.js";
 import * as ecc from "@bitcoin-js/tiny-secp256k1-asmjs";
 import { determineAddressInfo } from "./utlis";
-import { SIGHASH_ALL } from "./orders";
+import { SIGHASH_ALL, SIGHASH_ALL_ANYONECANPAY, SIGHASH_SINGLE_ANYONECANPAY } from "./orders";
 const DUST_SIZE = 546;
 type CommitPsbtParams = {
   addressType: string;
@@ -119,31 +119,47 @@ export const commitMintMRC20PSBT = async (
   const psbt = Psbt.fromHex(order.revealPrePsbtRaw, {
     network: btcNetwork,
   });
-  console.log(commitPsbt.extractTransaction().getHash(),commitPsbt.extractTransaction().getHash(true),txId,Buffer.from(txId,'hex').reverse(), "psbt.txInputs");
-  const psbt2 = new Psbt({ network: btcNetwork });
-  for (let i = 0; i < psbt.txInputs.length; i++) {
-    const txInput = psbt.txInputs[i];
-    psbt2.addInput({
-      hash: i === 1 ? txId : txInput.hash,
-      index: txInput.index,
-      sequence: txInput.sequence,
-      witnessUtxo: psbt.data.inputs[i].witnessUtxo,
-      sighashType: psbt.data.inputs[i].sighashType,
-    });
-  }
-  for (const txOutput of psbt.txOutputs) {
-    psbt2.addOutput(txOutput);
-  }
-  psbt2.updateInput(
-    0,
-    await fillInternalKey({
-      publicKey: Buffer.from(publicKey, "hex"),
-      addressType,
-      txId: pinUxtoTxId,
-    })
+
+  psbt.data.globalMap.unsignedTx.tx.ins[1].hash.write(txId,'hex')
+  console.log(
+    commitPsbt.extractTransaction().getHash(),
+    commitPsbt.extractTransaction().getHash(true),
+    txId,
+    Buffer.from(txId, "hex").reverse(),
+    "psbt.txInputs"
   );
- 
-  console.log(psbt2, psbt2.txInputs[1].hash, txId, "psbt after update");
+  // const psbt2 = new Psbt({ network: btcNetwork });
+  // console.log(psbt.data.inputs, "txInput");
+  // for (let i = 0; i < psbt.txInputs.length; i++) {
+  //   const txInput = psbt.txInputs[i];
+  //   console.log(psbt.data.inputs[i].witnessUtxo, "txInput");
+  //   const input: any = {
+  //     hash: i === 1 ? txId : txInput.hash,
+  //     index: txInput.index,
+  //     sequence: txInput.sequence,
+  //     sighashType: psbt.data.inputs[i].sighashType,
+  //   };
+  //   if (psbt.data.inputs[i].witnessUtxo) {
+  //     input["witnessUtxo"] = psbt.data.inputs[i].witnessUtxo;
+  //   }
+  //   if (psbt.data.inputs[i].nonWitnessUtxo) {
+  //     input["nonWitnessUtxo"] = psbt.data.inputs[i].nonWitnessUtxo;
+  //   }
+  //   psbt2.addInput(input);
+  // }
+  // for (const txOutput of psbt.txOutputs) {
+  //   psbt2.addOutput(txOutput);
+  // }
+  // psbt2.updateInput(
+  //   0,
+  //   await fillInternalKey({
+  //     publicKey: Buffer.from(publicKey, "hex"),
+  //     addressType,
+  //     txId: pinUxtoTxId,
+  //   })
+  // );
+
+  // console.log(psbt2, psbt2.txInputs[1].hash, txId, "psbt after update");
 
   const toSignInputs = [
     {
@@ -153,19 +169,19 @@ export const commitMintMRC20PSBT = async (
     },
   ];
   const revealPrePsbtRaw = await window.metaidwallet.btc.signPsbt({
-    psbtHex: psbt2.toHex(),
+    psbtHex: psbt.toHex(),
     options: {
       toSignInputs,
-      autoFinalized: true,
+      autoFinalized: false,
     },
   });
 
   if (typeof revealPrePsbtRaw === "object") {
     throw new Error("canceled");
   }
-  console.log(order.revealPrePsbtRaw, "order.revealPrePsbtRaw");
-  console.log(revealPrePsbtRaw, "revealPrePsbtRaw");
-  const test2 = Psbt.fromHex(revealPrePsbtRaw);
-  console.log(test2.txInputs, "test2");
+  // console.log(order.revealPrePsbtRaw, "order.revealPrePsbtRaw");
+  // console.log(revealPrePsbtRaw, "revealPrePsbtRaw");
+  // const test2 = Psbt.fromHex(revealPrePsbtRaw);
+  // console.log(test2.txInputs, "test2");
   return { rawTx, revealPrePsbtRaw };
 };

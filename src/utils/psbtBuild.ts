@@ -255,18 +255,18 @@ export async function fillInternalKey({
     payInput['tapInternalKey'] = tapInternalKey
   }
 
-  if (['P2PKH'].includes(addressType)&&txId) {
-    const mempoolReturn = mempoolJS({
-      hostname: 'mempool.space',
-      network: 'testnet',
-    })
-    const rawTx = await mempoolReturn.bitcoin.transactions.getTxHex({
-      txid: txId,
-    })
-    const tx = Transaction.fromHex(rawTx)
-    console.log('input.nonWitnessUtxo')
-    payInput['nonWitnessUtxo'] = tx.toBuffer()
-  }
+  // if (['P2PKH'].includes(addressType)&&txId) {
+  //   const mempoolReturn = mempoolJS({
+  //     hostname: 'mempool.space',
+  //     network: 'testnet',
+  //   })
+  //   const rawTx = await mempoolReturn.bitcoin.transactions.getTxHex({
+  //     txid: txId,
+  //   })
+  //   const tx = Transaction.fromHex(rawTx)
+  //   console.log('input.nonWitnessUtxo')
+  //   payInput['nonWitnessUtxo'] = tx.toBuffer()
+  // }
   
   if (['P2SH'].includes(addressType)) {
     console.log('input.tapInternalKey')
