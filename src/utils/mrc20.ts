@@ -120,12 +120,14 @@ export const commitMintMRC20PSBT = async (
     network: btcNetwork,
   });
 
-  psbt.data.globalMap.unsignedTx.tx.ins[1].hash.write(txId,'hex')
+  psbt.data.globalMap.unsignedTx.tx.ins[1].hash= Buffer.from(txId, "hex").reverse();
+  psbt.data.globalMap.unsignedTx.tx.ins[1].index= 0;
   console.log(
     commitPsbt.extractTransaction().getHash(),
     commitPsbt.extractTransaction().getHash(true),
     txId,
     Buffer.from(txId, "hex").reverse(),
+    psbt,
     "psbt.txInputs"
   );
   // const psbt2 = new Psbt({ network: btcNetwork });
