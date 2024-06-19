@@ -168,7 +168,6 @@ export async function buildTx<T>(
     total.minus(amount.add(estimatedFee)),
     false,
   )
-
   return {
     psbt,
     fee: total

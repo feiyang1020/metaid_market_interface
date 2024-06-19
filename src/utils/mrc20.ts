@@ -85,6 +85,11 @@ export const commitMintMRC20PSBT = async (
   pinUxtoTxId: string
 ) => {
   initEccLib(ecc);
+
+  const test = Psbt.fromHex(
+    "70736274ff01009a0200000002894873767db93a9fca981076dcaad7df528cb2351fc504b4603f48ca4cdeade80000000000ffffffff5cf41fd17ce93442228dd8ef51703c7a0fe74e59bf236eb01c73e4a5bb6050e20100000000ffffffff0222020000000000001600142153b6c9d77d1596de652cb45a7225305271a6f222020000000000001600142153b6c9d77d1596de652cb45a7225305271a6f2000000000001011f22020000000000001600142153b6c9d77d1596de652cb45a7225305271a6f201086c024830450221008f6d866174f46f3864f2b28ef101650079bdac4c0d92c16ae9ff49f9b431318a02202dc64e17646e1a74a10b68c84ba4640101df24884e9e13bc2c70437c5f8b906b012103699cfa8eeae59ef3e607e1e4d90efe9156110bb21234cff6bbd9fe47afcc40e10001012b28e1000000000000225120000339c6a40e259e56ca1296f4093f3a18ef8a7a77c0dbbaddf8c8c4b5ae026e01030401000000000000"
+  );
+  console.log(test.txInputs, "test");
   const { totalFee } = order;
   const utxos = (await window.metaidwallet.btc.getUtxos()).sort(
     (a, b) => b.satoshi - a.satoshi
@@ -110,15 +115,16 @@ export const commitMintMRC20PSBT = async (
     address,
     _commitMint
   );
-  const { rawTx, txId } = commitTx;
+  const { rawTx, txId, psbt: commitPsbt } = commitTx;
   const psbt = Psbt.fromHex(order.revealPrePsbtRaw, {
     network: btcNetwork,
   });
+  console.log(commitPsbt.extractTransaction().getHash(),commitPsbt.extractTransaction().getHash(true),txId,Buffer.from(txId,'hex').reverse(), "psbt.txInputs");
   const psbt2 = new Psbt({ network: btcNetwork });
   for (let i = 0; i < psbt.txInputs.length; i++) {
     const txInput = psbt.txInputs[i];
     psbt2.addInput({
-      hash: i === 1 ? Buffer.from(txId, "hex") : txInput.hash,
+      hash: i === 1 ? txId : txInput.hash,
       index: txInput.index,
       sequence: txInput.sequence,
       witnessUtxo: psbt.data.inputs[i].witnessUtxo,
@@ -136,7 +142,7 @@ export const commitMintMRC20PSBT = async (
       txId: pinUxtoTxId,
     })
   );
-
+ 
   console.log(psbt2, psbt2.txInputs[1].hash, txId, "psbt after update");
 
   const toSignInputs = [
@@ -153,56 +159,13 @@ export const commitMintMRC20PSBT = async (
       autoFinalized: true,
     },
   });
+
   if (typeof revealPrePsbtRaw === "object") {
     throw new Error("canceled");
   }
+  console.log(order.revealPrePsbtRaw, "order.revealPrePsbtRaw");
+  console.log(revealPrePsbtRaw, "revealPrePsbtRaw");
+  const test2 = Psbt.fromHex(revealPrePsbtRaw);
+  console.log(test2.txInputs, "test2");
   return { rawTx, revealPrePsbtRaw };
-};
-
-export const mintRevealPrePsbtRaw = async (
-  order: API.MintMRC20PreRes,
-  feeRate: number,
-  address: string,
-  network: API.Network,
-  txId: string,
-  pinUxtoTxId: string
-) => {
-  initEccLib(ecc);
-
-  const psbt = Psbt.fromHex(order.revealPrePsbtRaw, {
-    network: network === "mainnet" ? networks.bitcoin : networks.testnet,
-  });
-  const addressType = determineAddressInfo(address).toUpperCase();
-  const publicKey = await window.metaidwallet.btc.getPublicKey();
-  console.log(psbt, "psbt");
-  psbt.updateInput(
-    0,
-    await fillInternalKey({
-      publicKey: Buffer.from(publicKey, "hex"),
-      addressType,
-      txId: pinUxtoTxId,
-    })
-  );
-  psbt.txInputs[1].hash = Buffer.from(txId, "hex");
-  psbt.updateInput(1, { hash: txId, index: 1 });
-  console.log(psbt, psbt.txInputs[1].hash, txId, "psbt after update");
-
-  const toSignInputs = [
-    {
-      index: 0,
-      address: address,
-      sighashTypes: [SIGHASH_ALL],
-    },
-  ];
-  const revealPrePsbtRaw = await window.metaidwallet.btc.signPsbt({
-    psbtHex: psbt.toHex(),
-    options: {
-      toSignInputs,
-      autoFinalized: true,
-    },
-  });
-  if (typeof revealPrePsbtRaw === "object") {
-    throw new Error("canceled");
-  }
-  return revealPrePsbtRaw;
 };
