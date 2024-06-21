@@ -235,3 +235,77 @@ export async function mintMrc20Commit(
     ...(options || {}),
   });
 }
+
+export async function transfertMrc20Pre(
+  network: API.Network,
+  params: API.TransferMRC20PreReq,
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.TransferMRC20PreRes>>(
+    `${getHost(network)}/api/v1/inscribe/mrc20/transfer/pre`,
+    {
+      method: "POST",
+      data: params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function transferMrc20Commit(
+  network: API.Network,
+  params: {
+    orderId: string;
+    commitTxRaw: string;
+    commitTxOutIndex: number; //commit交易中RevealAddress的output索引
+    revealPrePsbtRaw: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: string;
+      commitTxId: string;
+      revealTxId: string;
+    }>
+  >(`${getHost(network)}/api/v1/inscribe/mrc20/transfer/commit`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}
+export async function getMrc20Info(
+  network: API.Network,
+  params: {
+    tickId: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.MRC20TickInfo>>(
+    `${getHost(network)}/api/v1/common/mrc20/tick/info`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function getMrc20AddressShovel(
+  network: API.Network,
+  params: {
+    address:string;
+    tickId: string;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.MRC20Shovel>>(
+    `${getHost(network)}/api/v1/common/mrc20/address/shovel`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}

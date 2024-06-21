@@ -123,8 +123,8 @@ declare namespace API {
       address: string;
       pinId: string;
       pinUtxoOutValue: number;
-      pinUxtoIndex: number;
-      pinUxtoTxId: string;
+      pinUtxoIndex: number;
+      pinUtxoTxId: string;
       pkScript: string;
     }[];
     networkFeeRate: number;
@@ -132,6 +132,41 @@ declare namespace API {
     outValue: number;
     tickerId: string;
   };
+
+  type TransferMRC20PreReq = {
+    changeAddress: string;
+    changeOutValue: number;
+    mrc20Outs: {
+      address: string;
+      amount: string;
+      outValue: number;
+      pkScript: string;
+    }[];
+    networkFeeRate: number;
+    tickerId: string;
+    transfers: {
+      address: string;
+      amount: string;
+      pkScript: string;
+      tickerId: string;
+      utxoIndex: number;
+      utxoOutValue: number;
+      utxoTxId: string;
+    }[];
+  };
+
+  type TransferMRC20PreRes = {
+    extra: string;
+    orderId: string;
+    revealAddress: string;
+    revealFee: number;
+    revealInputIndex: number;
+    revealPrePsbtRaw: string;
+    serviceAddress: string;
+    serviceFee: number;
+    totalFee: number;
+  };
+
 
   type MintMRC20PreRes = {
     orderId: string;
@@ -142,5 +177,59 @@ declare namespace API {
     serviceAddress: string;
     serviceFee: number;
     totalFee: number;
+  };
+  type MRC20TickInfo = {
+    amtPerMint: string;
+    blockHeight: string;
+    decimals: string;
+    metaData: string;
+    mintCount: string;
+    mrc20Id: string;
+    pinNumber: number;
+    qual: string;
+    tick: string;
+    tokenName: string;
+    totalMinted: number;
+    type: string;
+  };
+  type MRC20Shovel = {
+    address: string;
+    chainName: string;
+    content: string;
+    contentBody: string;
+    contentLength: number;
+    contentSummary: string;
+    contentType: string;
+    contentTypeDetect: string;
+    creator: string;
+    dataValue: number;
+    encryption: string;
+    genesisFee: number;
+    genesisHeight: number;
+    genesisTransaction: string;
+    id: string;
+    initialOwner: string;
+    isTransfered: boolean;
+    location: string;
+    metaid: string;
+    mrc20MintPin: string;
+    mrc20Minted: boolean;
+    number: number;
+    offset: number;
+    operation: string;
+    originalId: string;
+    originalPath: string;
+    output: string;
+    outputValue: number;
+    parentPath: string;
+    path: string;
+    pop: string;
+    popLv: number;
+    preview: string;
+    status: number;
+    timestamp: number;
+    txInIndex: number;
+    txIndex: number;
+    version: string;
   };
 }

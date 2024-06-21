@@ -115,7 +115,7 @@ const SeleceFeeRate = ({
 };
 export default () => {
   const { sm } = useBreakpoint();
-  const [tab, setTab] = useState<"File" | "Buzz" | "PINs"|"MRC-20">("File");
+  const [tab, setTab] = useState<"File" | "Buzz" | "PINs"|"MRC-20">("MRC-20");
   const [submiting, setSubmiting] = useState(false);
   // const [feeRate, setFeeRate] = useState<number>();
   const { btcConnector, connected, connect, feeRates, network, disConnect } =
