@@ -1,7 +1,7 @@
 import Order from "@/components/Order";
 import { sellOrder } from "@/services/api";
 import { buildAskLimit } from "@/utils/orders";
-import { Button, Card, ConfigProvider, InputNumber, List, message } from "antd";
+import { Button, Card, ConfigProvider, InputNumber, List, Space, message } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useModel } from "umi";
 import "./index.less";
@@ -18,11 +18,13 @@ import SuccessModal, {
   SuccessProps,
 } from "@/components/SuccessModal";
 import JSONView from "@/components/JSONView";
-
+import ListForMRC20 from "@/components/ListForMRC20";
+const items = ["PIN", 'MRC20'];
 export default () => {
   const { btcAddress, connect, connected, network, authParams } =
     useModel("wallet");
   const { orders, loading, updateOrders, setLoading } = useModel("sale");
+  const [tab, setTab] = useState<"PIN" | "MRC20">("MRC20");
   const [sellPrices, setSellPrices] = useState<Record<string, number>>({});
   const [checkList, setCheckList] = useState<string[]>([]);
   const [successProp, setSuccessProp] =
@@ -124,7 +126,22 @@ export default () => {
       >
         <LeftOutlined /> List for sale
       </div>
-      <List
+      <div className="tabs">
+        <Space>
+          {items.map((item) => (
+            <Button
+              key={item}
+              type={tab === item ? "link" : "text"}
+              onClick={() => setTab(item)}
+              size="large"
+            >
+              {item}
+            </Button>
+          ))}
+        </Space>
+      </div>
+      {
+        tab==="PIN" && <> <List
         className="listWrap"
         loading={loading}
         grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 6 }}
@@ -257,7 +274,11 @@ export default () => {
             </Button>
           )}
         </div>
-      </div>
+      </div></>
+
+      }
+      {tab==="MRC20" && <ListForMRC20/>}
+     
       <SuccessModal {...successProp}></SuccessModal>
     </div>
   );

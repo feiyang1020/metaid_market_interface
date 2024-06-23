@@ -27,7 +27,8 @@ import SuccessModal, {
   SuccessProps,
 } from "@/components/SuccessModal";
 import Mrc20Form from "./components/Mrc20Form";
-const items = ["File", "Buzz", "PINs",'MRC-20'];
+import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
+const items = ["File", "Buzz", "PINs", 'MRC-20'];
 const { Dragger } = Upload;
 const { TextArea } = Input;
 const formItemLayout = {
@@ -78,9 +79,8 @@ const SeleceFeeRate = ({
             key={item.label}
           >
             <div
-              className={`feeRateItem ${
-                item.label === feeRateTab ? "active" : ""
-              }`}
+              className={`feeRateItem ${item.label === feeRateTab ? "active" : ""
+                }`}
             >
               <div className="Feelabel">{item.label}</div>
               <div className="Feevalue">{item.value} sat/vB</div>
@@ -115,7 +115,7 @@ const SeleceFeeRate = ({
 };
 export default () => {
   const { sm } = useBreakpoint();
-  const [tab, setTab] = useState<"File" | "Buzz" | "PINs"|"MRC-20">("MRC-20");
+  const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("MRC-20");
   const [submiting, setSubmiting] = useState(false);
   // const [feeRate, setFeeRate] = useState<number>();
   const { btcConnector, connected, connect, feeRates, network, disConnect } =
@@ -139,7 +139,7 @@ export default () => {
       if (typeof JSON.parse(payload) === "object") {
         return true;
       }
-    } catch (err) {}
+    } catch (err) { }
     return false;
   }, [payload, contentType]);
   // useEffect(() => {
@@ -277,16 +277,16 @@ export default () => {
       if (!pass) throw new Error("Account change");
       const buzzEntity = await btcConnector!.use("buzz");
       const ret = await buzzEntity!.create({
-        options: [
-          {
-            body: JSON.stringify({ content: buzz }),
-            contentType: "text/plain",
-            flag: network === "mainnet" ? "metaid" : "testid",
-          },
-        ],
-        noBroadcast: "no",
-        feeRate: feeRate,
-        service: getCreatePinFeeByNet(network),
+        dataArray: [{
+          body: JSON.stringify({ content: buzz }), contentType: "text/plain",
+          flag: network === "mainnet" ? "metaid" : "testid",
+        }],
+        options: {
+          noBroadcast: "no",
+          feeRate: Number(feeRate),
+          service: getCreatePinFeeByNet(network),
+        },
+
       });
       console.log(ret);
       if (ret.status) throw new Error(ret.status);
@@ -335,6 +335,7 @@ export default () => {
         throw new Error("unknow error");
       }
     } catch (err) {
+      console.log(err)
       message.error(err.message);
     }
     setSubmiting(false);
@@ -347,7 +348,7 @@ export default () => {
       setSubmiting(true);
       const pass = await checkWallet();
       if (!pass) throw new Error("Account change");
-      const metaidData: InscribeOptions = {
+      const metaidData: InscribeData = {
         operation: "create",
         body: payload,
         path: path,
@@ -355,11 +356,14 @@ export default () => {
         flag: network === "mainnet" ? "metaid" : "testid",
       };
 
-      const ret = await btcConnector.inscribe(
-        [metaidData],
-        "no",
-        feeRate,
-        getCreatePinFeeByNet(network)
+      const ret = await btcConnector.inscribe({
+        inscribeDataArray: [metaidData],
+        options: {
+          noBroadcast: "no",
+          feeRate: Number(feeRate),
+          service: getCreatePinFeeByNet(network),
+        }
+      }
       );
       if (ret.status) throw new Error(ret.status);
       if (ret.commitTxId) {

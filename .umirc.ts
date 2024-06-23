@@ -8,6 +8,7 @@ export default defineConfig({
     { path: "/order", component: "detail" },
     { path: "/history", component: "history" },
     { path: "/pending", component: "pending" },
+    { path: "/mrc20/:mrc20Id", component: "mrc20" },
   ],
   title: "MetaID-Market",
   npmClient: "pnpm",

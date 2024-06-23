@@ -232,4 +232,128 @@ declare namespace API {
     txIndex: number;
     version: string;
   };
+
+  type Mrc20AddressUtxo = {
+    address: string;
+    blockHeight: number;
+    chain: string;
+    mrc20s: {
+      amount: string;
+      decimals: string;
+      mrc20Id: string;
+      tick: string;
+      txPoint: string;
+    }[];
+    outputIndex: number;
+    satoshi: number;
+    satoshis: number;
+    scriptPk: string;
+    timestamp: number;
+    txId: string;
+    vout: number;
+  };
+
+  type MRC20Info = {
+    amtPerMint: string;
+    blockHeight: string;
+    change24h: string;
+    decimals: string;
+    deployTime: number;
+    deployerAddress: string;
+    deployerMetaId: string;
+    deployerUserInfo: {
+      avatar: string;
+      name: string;
+    };
+    holders: number;
+    marketCap: string;
+    metaData: string;
+    mintCount: string;
+    mintable: boolean;
+    mrc20Id: string;
+    pinNumber: number;
+    price: string;
+    priceUsd: string;
+    qual: string;
+    remaining: string;
+    supply: string;
+    tick: string;
+    tokenName: string;
+    totalMinted: number;
+    totalSupply: string;
+    txCount: number;
+    type: string;
+  };
+
+  type UserMrc20Asset = {
+    balance: string;
+    decimals: string;
+    mrc20Id: string;
+    tick: string;
+    tokenName: string;
+  };
+  type Mrc20Order = {
+    orderId: string;
+    utxoId: string;
+    outValue: number;
+    assetType: string;
+    orderState: number;
+    sellerAddress: string;
+    seller: {
+      name: string;
+      avatar: string;
+    };
+    buyerAddress: string;
+    buyer: null;
+    tickId: string;
+    tick: string;
+    tokenName: string;
+    decimals: number;
+    chain: string;
+    amount: number;
+    amountStr: string;
+    tokenPriceRate: number;
+    tokenPriceRateStr: string;
+    priceAmount: number;
+    priceDecimal: number;
+    priceCoin: string;
+    fee: number;
+    feeRate: number;
+    takePsbt: string;
+    blockHeight: number;
+    confirmationState: number;
+    dealTime: number;
+    txId: string;
+  };
+
+  type BuyOrderPsbtRes = {
+    orderId: string;
+    utxoId: string;
+    outValue: number;
+    assetType: string;
+    orderState: number;
+    sellerAddress: string;
+    seller: null;
+    buyerAddress: string;
+    buyer: null;
+    tickId: string;
+    tick: string;
+    tokenName: string;
+    decimals: number;
+    chain: string;
+    amount: number;
+    amountStr: string;
+    tokenPriceRate: number;
+    tokenPriceRateStr: string;
+    priceAmount: number;
+    priceDecimal: number;
+    priceCoin: string;
+    fee: number;
+    feeRate: number;
+    takePsbt: string;
+    blockHeight: number;
+    confirmationState: number;
+    dealTime: number;
+    txId: string;
+  };
 }

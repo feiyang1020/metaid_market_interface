@@ -12,7 +12,7 @@
     "@ant-design/icons": "^5.3.7",
     "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
     "@mempool/mempool.js": "^2.3.0",
-    "@metaid/metaid": "1.2.7",
+    "@metaid/metaid": "1.4.0",
     "antd": "^5.17.3",
     "bignumber.js": "^9.1.2",
     "bitcoinjs-lib": "^6.1.5",
@@ -20,6 +20,7 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.11",
     "decimal.js": "^10.4.3",
+    "react18-json-view": "^0.2.8",
     "umi": "^4.2.5"
   },
   "devDependencies": {

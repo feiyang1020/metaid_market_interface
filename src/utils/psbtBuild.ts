@@ -168,6 +168,9 @@ export async function buildTx<T>(
     total.minus(amount.add(estimatedFee)),
     false,
   )
+  console.log(estimatedFee,total
+    .minus(psbt.txOutputs.reduce((acc, cur) => acc + Number(cur.value), 0))
+    .toString())
   return {
     psbt,
     fee: total

@@ -6,6 +6,7 @@
     background: rgba(25, 27, 24, 0.84);
     backdrop-filter: blur(1000px);
     padding: 31px 30px 38px;
+    border-radius: 8px;
     gap: 24px;
     .customRadioItem {
       display: flex;
@@ -22,7 +23,6 @@
         color: black;
       }
     }
-    
   }
   .customCheckbox {
     background: rgba(25, 27, 24, 0.84);
@@ -38,5 +38,43 @@
   }
   .ant-checkbox-wrapper:after {
     display: none !important;
+  }
+  .ant-collapse-ghost
+    > .ant-collapse-item
+    > .ant-collapse-content
+    > .ant-collapse-content-box {
+    padding: 0;
+  }
+  .collapsePanel {
+    &::before {
+      content: 'Show';
+     
+    }
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #c0f079;
+    .collapseIcon {
+      transform: rotate(0deg);
+      transition: transform 0.3s;
+    }
+  }
+  .ant-collapse-item-active {
+    .ant-collapse-header-text {
+      .collapsePanel {
+        &::before {
+          content: 'Hide';
+         
+        }
+        display: flex;
+          .collapseIcon {
+            transform: rotate(-180deg);
+            transition: transform 0.3s;
+          }
+        
+      }
+    }
   }
 }

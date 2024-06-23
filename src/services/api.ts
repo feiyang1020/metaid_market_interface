@@ -293,7 +293,7 @@ export async function getMrc20Info(
 export async function getMrc20AddressShovel(
   network: API.Network,
   params: {
-    address:string;
+    address: string;
     tickId: string;
     cursor: number;
     size: number;
@@ -308,4 +308,154 @@ export async function getMrc20AddressShovel(
       ...(options || {}),
     }
   );
+}
+
+export async function getMrc20AddressUtxo(
+  network: API.Network,
+  params: {
+    address: string;
+    tickId: string;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.Mrc20AddressUtxo>>(
+    `${getHost(network)}/api/v1/common/mrc20/address/utxo`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function getMrc20List(
+  network: API.Network,
+  params: {
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.MRC20Info>>(
+    `${getHost(network)}/api/v1/common/mrc20/tick/info-list`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function getUserMrc20List(
+  network: API.Network,
+  params: {
+    address?: string;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  if (!params.address)
+    return Promise.resolve({ code: 0, data: { list: [], total: 0 } });
+  return request<API.ListRet<API.UserMrc20Asset>>(
+    `${getHost(network)}/api/v1/common/mrc20/address/balance-list`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function sellMRC20Order(
+  network: API.Network,
+  params: {
+    assetType: string;
+    tickId: string;
+    address: string;
+    psbtRaw: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: string;
+      assetType: "pins";
+      tickId: string;
+      orderState: 1;
+    }>
+  >(`${getHost(network)}/api/v1/market/mrc20/order/push`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}
+
+export async function getMrc20Orders(
+  network: API.Network,
+  params: {
+    assetType: string;
+    orderState: number; //1-create, 2-cancel, 3-finish
+    tickId: string;
+    sortKey: string; //priceAmount/timestamp/tokenPriceRate, default:timestamp
+    sortType: number; //1-asc, -1-desc, default:-1
+    address?: string;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.Mrc20Order>>(
+    `${getHost(network)}/api/v1/market/mrc20/orders`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function getMrc20OrderPsbt(
+  network: API.Network,
+  params: {
+    orderId: string;
+    buyerAddress: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.BuyOrderPsbtRes>>(
+    `${getHost(network)}/api/v1/market/mrc20/order/psbt`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+
+export async function buyMrc20OrderTake(
+  network: API.Network,
+  params: {
+    orderId: string;
+    takerPsbtRaw: string;
+    networkFeeRate: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: string;
+      assetType: string;
+      assetId: string;
+      orderState: 3;
+      txId: string;
+    }>
+  >(`${getHost(network)}/api/v1/market/mrc20/order/take`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
 }

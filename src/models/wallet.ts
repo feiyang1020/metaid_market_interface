@@ -28,7 +28,7 @@ export default () => {
   const [addressType, setAddressType] = useState<string>();
   const [metaid, setMetaid] = useState<string>();
   const [btcAddress, setBTCAddress] = useState<string>();
-  const [btcConnector, setBtcConnector] = useState<IMetaletWalletForBtc>();
+  const [btcConnector, setBtcConnector] = useState<IBtcConnector>();
   const [network, setNetwork] = useState<Network>(curNetwork);
   const [connected, setConnected] = useState<boolean>(false);
   const [userBal, setUserBal] = useState<string>("0");
@@ -78,7 +78,7 @@ export default () => {
         "X-Signature": publicKeySign,
       })
     );
-    const _btcConnector: IMetaletWalletForBtc = await btcConnect({
+    const _btcConnector: IBtcConnector = await btcConnect({
       wallet: _wallet,
       network,
     });
@@ -173,7 +173,7 @@ export default () => {
           }
           return _authParams;
         });
-        const _btcConnector: IMetaletWalletForBtc = await btcConnect({
+        const _btcConnector: IBtcConnector = await btcConnect({
           wallet: _wallet,
           network: _network,
         });
