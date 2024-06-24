@@ -247,6 +247,7 @@ export const listMrc20Order = async (
   const input = fillInternalKey2(psbtInput, address, publicKey);
   if (["P2PKH"].includes(addressType)) {
     delete psbtInput.witnessUtxo;
+    console.log(ordinalPreTx.toBuffer(),'P2PKH')
     psbtInput["nonWitnessUtxo"] = ordinalPreTx.toBuffer();
 
     const fakeTxid =
@@ -287,6 +288,7 @@ export const listMrc20Order = async (
     }
     ask.addInput(input);
   }
+  console.log(ask, 'ask')
   ask.addOutput({ address, value: price });
   const signed = await window.metaidwallet.btc.signPsbt({
     psbtHex: ask.toHex(),

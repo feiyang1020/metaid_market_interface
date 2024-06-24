@@ -71,7 +71,6 @@ export default ({ mrc20Id }: { mrc20Id: string }) => {
                                     <div className="textContent">
                                         {item.amount} {item.tick}
                                     </div>
-
                                 </div>
                                 <div className="assetNumber">
                                     <ConfigProvider
@@ -102,14 +101,21 @@ export default ({ mrc20Id }: { mrc20Id: string }) => {
                                             TokenID: {item.tickId.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}
                                         </div>
                                     </div>
-                                    <div className="seller">
-                                        <MetaIdAvatar
-                                            avatar={item.seller.avatar}
-                                            size={20}
-                                            style={{ minWidth: 20 }}
-                                        />
-                                        <div className="name">{item.seller.name}</div>
+                                    <div className="sellerWrap">
+                                        <div className="seller">
+
+                                            <MetaIdAvatar
+                                                avatar={item.seller.avatar}
+                                                size={20}
+                                                style={{ minWidth: 20 }}
+                                            />
+                                            <div className="name">{item.seller.name}</div>
+                                        </div>
+                                        <div className="tokenId">
+                                        MetaID : {item.sellerAddress.replace(/(\w{5})\w+(\w{5})/, "$1...")}
+                                        </div>
                                     </div>
+
                                 </div>
 
 

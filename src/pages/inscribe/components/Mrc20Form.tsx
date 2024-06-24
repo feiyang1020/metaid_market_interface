@@ -1,20 +1,21 @@
 import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Radio, Row, Select, Spin, Tooltip, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 const { useBreakpoint } = Grid;
-import { useModel, useSearchParams } from "umi";
+import { useModel, useSearchParams,history } from "umi";
 import "./index.less";
 import SeleceFeeRateItem from "./SeleceFeeRateItem";
 import { getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
-import { commitMintMRC20PSBT, mintRevealPrePsbtRaw, transferMRC20PSBT } from "@/utils/mrc20";
+import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
 import { Psbt, networks } from "bitcoinjs-lib";
 import level from "@/assets/level.svg";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
 import { getCreatePinFeeByNet } from "@/config";
-import { DownOutlined, FileTextOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DownOutlined, FileTextOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
+import PopLvl from "@/components/PopLvl";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -95,7 +96,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         setMintInfoStatus('error')
         setMintMrc20Info(undefined)
 
-    }, [mintTokenID])
+    }, [mintTokenID,btcAddress, network])
 
     const fetchShovels = useCallback(async () => {
 
@@ -544,16 +545,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         <Row>
                                                             {shovel?.map(item => {
                                                                 return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
-                                                                    <div className="value">#{item.number} <div className="level">
-                                                                        {String(item.popLv) !== "--" && item.pop !== "--" ? (
-                                                                            <>
-                                                                                <img src={level} alt="" />
-                                                                                {item.popLv}
-                                                                            </>
-                                                                        ) : (
-                                                                            <span>--</span>
-                                                                        )}</div>
-                                                                    </div></Checkbox></Col>
+                                                                    <div className="value">#{item.number} <a href={`https://man${network==='mainnet'?'':'-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{color:'rgba(255, 255, 255, 0.5)',transform: 'rotate(-0.125turn)'}}/></a> </div></Checkbox></Col>
                                                             })}
 
                                                         </Row></Checkbox.Group>
