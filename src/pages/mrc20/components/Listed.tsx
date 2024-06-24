@@ -1,13 +1,14 @@
 import { useModel } from "umi";
 import { getMrc20OrderPsbt, getMrc20Orders } from "@/services/api";
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, ConfigProvider, Divider, List, Tooltip } from "antd";
+import { Avatar, Button, Card, ConfigProvider, Divider, List, Tooltip } from "antd";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import btc from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
 import "./index.less";
 import { buildBuyMrc20TakePsbt } from "@/utils/mrc20";
 import BuyMrc20Modal from "@/components/BuyMrc20Modal";
+import NumberFormat from "@/components/NumberFormat";
 export default ({ mrc20Id }: { mrc20Id: string }) => {
     const { network, connected, connect, btcAddress, authParams } = useModel('wallet')
     const [list, setList] = useState<API.Mrc20Order[]>([]);
@@ -69,10 +70,20 @@ export default ({ mrc20Id }: { mrc20Id: string }) => {
 
                                 >
                                     <div className="textContent">
-                                        {item.amount} {item.tick}
+                                        <div className="amont">
+                                            <Avatar>{item.tokenName}</Avatar>  {item.amount} {item.tick}
+                                        </div>
+                                        <div className="units">
+
+                                            <span className="colorPrimary">
+                                                <NumberFormat value={item.priceAmount / item.amount} />
+                                            </span> sats/{item.tick}
+                                        </div>
+
+
                                     </div>
                                 </div>
-                               
+
 
                                 <div className="mrc20info">
                                     <div className="token">
