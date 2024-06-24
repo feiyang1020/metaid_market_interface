@@ -4,14 +4,14 @@ const { useBreakpoint } = Grid;
 import { useModel } from "umi";
 import "./index.less";
 import SeleceFeeRateItem from "./SeleceFeeRateItem";
-import { getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
+import { getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { commitMintMRC20PSBT, mintRevealPrePsbtRaw, transferMRC20PSBT } from "@/utils/mrc20";
 import { Psbt, networks } from "bitcoinjs-lib";
 import level from "@/assets/level.svg";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
 import { getCreatePinFeeByNet } from "@/config";
-import { DownOutlined } from "@ant-design/icons";
+import { DownOutlined, FileTextOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
@@ -25,7 +25,7 @@ const formItemLayout = {
         sm: { span: 19 },
     },
 };
-export default () => {
+export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
     const [mintTokenID, setMintTokenID] = useState<string>('');
@@ -33,6 +33,7 @@ export default () => {
     const [mintInfoStatus, setMintInfoStatus] = useState('');
     const [mintMrc20Info, setMintMrc20Info] = useState<API.MRC20TickInfo>();
     const [shovel, setShowel] = useState<API.MRC20Shovel[]>();
+    const [list, setList] = useState<API.UserMrc20Asset[]>([])
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
     const [submiting, setSubmiting] = useState(false);
@@ -57,7 +58,6 @@ export default () => {
         setMintInfoLoading(true)
         setMintInfoStatus('validating')
         const { code, message, data } = await getMrc20Info(network, { tickId: mintTokenID });
-        if (!btcAddress || !mintTokenID) return;
         if (btcAddress) {
             const { data: ret } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
             if (ret.list) {
@@ -81,6 +81,15 @@ export default () => {
     const fetchShovels = useCallback(async () => {
 
     }, [btcAddress, mintTokenID])
+
+    const fetchList = useCallback(async () => {
+        if (!btcAddress) return;
+        const { data } = await getUserMrc20List(network, { address: btcAddress, cursor: 0, size: 50 });
+        setList(data.list);
+    }, [btcAddress, network])
+    useEffect(() => {
+        fetchList()
+    }, [fetchList])
 
     useEffect(() => {
         fetchMrc20Info()
@@ -185,10 +194,12 @@ export default () => {
         const { type, feeRate, tickerId, pins, transferTickerId, amount, recipient } = form.getFieldsValue();
         // const tickerId = '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0'
         try {
+
             if (type === 'deploy') {
                 await deploy();
             }
             if (type === 'mint') {
+                if (!mintMrc20Info) return
                 const mintPins = pins.map((pinId) => {
                     const pin = shovel?.find(item => item.id === pinId);
                     if (!pin) return;
@@ -201,6 +212,9 @@ export default () => {
                         pkScript: getPkScriprt(btcAddress, network).toString('hex'),
                     }
                 })
+                if (mintMrc20Info.premineCount && mintPins.length < 2) {
+                    throw new Error('Select at Least Two PINs')
+                }
                 const { code, message, data, } = await mintMrc20Pre(network, {
                     mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId,
                 }, {
@@ -286,10 +300,10 @@ export default () => {
             variant="filled"
             style={{ maxWidth: "96vw", width: 632 }}
             initialValues={{
-                type: 'transfer',
-                transferTickerId: '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0',
-                recipient: 'mwKUTvJF43BqGqANeVdrtpRwd2zxNFvnWQ',
-                amount: 200
+                // type: 'transfer',
+                // transferTickerId: '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0',
+                // recipient: 'mwKUTvJF43BqGqANeVdrtpRwd2zxNFvnWQ',
+                // amount: 200
             }}
             form={form}
         >
@@ -410,19 +424,28 @@ export default () => {
                         if (type === 'transfer') {
                             return <>
                                 <Form.Item label="Token ID" name="transferTickerId"
+                                    rules={[{ required: true }]}
                                 >
-                                    <Input
-                                        size="large"
+                                    <Select
 
-                                    />
+                                        showSearch
+
+                                        style={{ textAlign: 'left' }} size="large"
+                                        placeholder="Select a token"
+                                        options={list.map(item => {
+                                            return { label: <div><span style={{ color: 'var(--primary)' }}>{item.balance}</span> {item.tick}</div>, value: item.mrc20Id }
+                                        })}
+                                    >
+
+                                    </Select>
                                 </Form.Item>
-                                <Form.Item label="Amount" name="amount">
+                                <Form.Item label="Amount" name="amount" rules={[{ required: true }]}>
                                     <InputNumber
                                         size="large"
                                         style={{ width: '100%' }}
                                     />
                                 </Form.Item>
-                                <Form.Item label="Recipient address" name="recipient">
+                                <Form.Item label="Recipient address" name="recipient" rules={[{ required: true }]}>
                                     <Input
                                         size="large"
                                     />
@@ -431,7 +454,7 @@ export default () => {
                         if (type === 'mint') {
                             return <>
 
-                                <Form.Item label="Token ID" name="tickerId" validateStatus={mintInfoStatus}
+                                <Form.Item label="Token ID" name="tickerId" rules={[{ required: true }]} validateStatus={mintInfoStatus}
                                     help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}>This token ID does not correspond to any MRC 20; Please re-enter.</div> : <></>} >
                                     <Input
                                         size="large"
@@ -442,7 +465,7 @@ export default () => {
                                     <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading}>
 
                                         {
-                                            mintMrc20Info && <> <div style={{ color: 'var(--primary)' }}>Detail</div><Card bordered={false} style={{ marginBottom: 20 }} >
+                                            mintMrc20Info && <> <div style={{ color: 'var(--primary)',marginBottom:20 }}>Detail</div><Card bordered={false} style={{ marginBottom: 20 }} >
                                                 <Descriptions column={1}
                                                     labelStyle={{ color: '#FFFFFF' }}
                                                     contentStyle={{ flexGrow: 1, justifyContent: 'flex-end', color: 'rgba(255, 255, 255, 0.5)' }}
@@ -488,27 +511,37 @@ export default () => {
                                     </Spin>
                                     </Col>
                                 </Row>
-                                {shovel && shovel.length > 0 &&
-                                    <Form.Item label="PINs" name="pins"
-                                        help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}>This token ID does not correspond to any MRC 20; Please re-enter.</div> : <></>} >
-                                        <Checkbox.Group>
-                                            <Row>
-                                                {shovel?.map(item => {
-                                                    return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
-                                                        <div className="value">#{item.number} <div className="level">
-                                                            {String(item.popLv) !== "--" && item.pop !== "--" ? (
-                                                                <>
-                                                                    <img src={level} alt="" />
-                                                                    {item.popLv}
-                                                                </>
-                                                            ) : (
-                                                                <span>--</span>
-                                                            )}</div>
-                                                        </div></Checkbox></Col>
-                                                })}
+                                {mintMrc20Info && <>
+                                    {(shovel && shovel.length > 0) ?
+                                        <Row gutter={[0, 0]}>
+                                            <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
+                                                <Form.Item label={<div>PINs {mintMrc20Info.premineCount && '(Select at Least 2 PINs)'}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
 
-                                            </Row></Checkbox.Group>
-                                    </Form.Item>}
+                                                >
+                                                    <Checkbox.Group>
+                                                        <Row>
+                                                            {shovel?.map(item => {
+                                                                return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
+                                                                    <div className="value">#{item.number} <div className="level">
+                                                                        {String(item.popLv) !== "--" && item.pop !== "--" ? (
+                                                                            <>
+                                                                                <img src={level} alt="" />
+                                                                                {item.popLv}
+                                                                            </>
+                                                                        ) : (
+                                                                            <span>--</span>
+                                                                        )}</div>
+                                                                    </div></Checkbox></Col>
+                                                            })}
+
+                                                        </Row></Checkbox.Group>
+                                                </Form.Item></Col></Row> : <Row gutter={[0, 0]}>
+                                            <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { setTab('PINs') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
+                                                No PIN. GO get it
+                                            </div></div></Col></Row>
+                                    }
+                                </>}
+
                             </>
                         }
                         return null;

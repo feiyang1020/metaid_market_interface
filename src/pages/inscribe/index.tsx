@@ -701,7 +701,7 @@ export default () => {
           </Row>
         </div>
       )}
-      {tab === "MRC-20" && <Mrc20Form />}
+      {tab === "MRC-20" && <Mrc20Form setTab={setTab}/>}
       <SuccessModal {...successProp}></SuccessModal>
     </div>
   );
