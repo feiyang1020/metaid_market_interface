@@ -1,6 +1,6 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
 import { getMrc20Info } from '@/services/api';
-import { Avatar, Button, ConfigProvider, Progress, Statistic, Tabs, TabsProps } from 'antd';
+import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography } from 'antd';
 import { useCallback, useState } from 'react';
 import { useMatch, useModel, history } from 'umi';
 import './index.less'
@@ -9,6 +9,7 @@ import NumberFormat from '@/components/NumberFormat';
 import { LeftOutlined } from '@ant-design/icons';
 import Activeity from './components/Activeity';
 import MyActiveity from './components/MyActiveity';
+import MetaIdAvatar from '@/components/MetaIdAvatar';
 
 const items: TabsProps['items'] = [
     {
@@ -52,17 +53,29 @@ export default () => {
                 <div className='left'>
                     <Avatar size={102} src={mrc20Info.metaData} >{mrc20Info.tokenName}</Avatar>
                     <div className="info">
-                        <div className="name">{mrc20Info.tick}</div>
-                        <div className="detail">
-                            <Button
-                                type='link'
-                                size='small'
-                                className='btn'
-                            >
-                                Mrc-20
-                            </Button>
-                            <span>Detail</span>
+                        <div className="top">
+                            <div className="nameWrap">
+                                <div className="name">
+                                    {mrc20Info.tick}
+                                    <Button
+                                        type='link'
+                                        size='small'
+                                        className='btn'
+                                        style={{ fontSize: 10 }}
+                                    >
+                                        Mrc-20
+                                    </Button>
+                                </div>
+                                <Typography.Text className="token" copyable={{ text: mrc20Info.mrc20Id }}>TokenID: {mrc20Info.mrc20Id.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}</Typography.Text>
+                            </div>
+
+                            <div className="detail">
+                                <span className='avatars'><MetaIdAvatar size={20} avatar={mrc20Info.deployerUserInfo.avatar} /> {mrc20Info.deployerUserInfo.name || mrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                                <span className='metaid'>MetaID : {mrc20Info.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
+                            </div>
                         </div>
+
+
                         <div className="mint colorPrimary">
                             <span>Minted : <NumberFormat value={mrc20Info.totalMinted} /> </span>
                             <span>Supply : <NumberFormat value={mrc20Info.totalSupply} /> </span>
@@ -71,6 +84,7 @@ export default () => {
                             <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false} />
                         </div>
                     </div>
+                    <Divider type='vertical' style={{height:75}} />
                     <div className="desc">
                         <Statistic title="Total volume" value={'--'} />
                         <Statistic title="Market Cap" value={mrc20Info.marketCap} />

@@ -1,7 +1,7 @@
 import { useModel } from "umi";
 import { getMrc20OrderPsbt, getMrc20Orders } from "@/services/api";
 import { useCallback, useEffect, useState } from "react";
-import { Button, Card, ConfigProvider, Divider, List } from "antd";
+import { Button, Card, ConfigProvider, Divider, List, Tooltip } from "antd";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import btc from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
@@ -72,25 +72,7 @@ export default ({ mrc20Id }: { mrc20Id: string }) => {
                                         {item.amount} {item.tick}
                                     </div>
                                 </div>
-                                <div className="assetNumber">
-                                    <ConfigProvider
-                                        theme={{
-                                            components: {
-                                                Button: {
-                                                    colorTextLightSolid: "#fff",
-                                                    primaryColor: "#fff",
-                                                    colorPrimary: `rgba(51, 51, 51, 0.38)`,
-                                                    colorPrimaryHover: `rgba(51, 51, 51, 0.38)`,
-                                                    colorPrimaryActive: `rgba(51, 51, 51, 0.38)`,
-                                                    lineWidth: 0,
-                                                    primaryShadow: "0 0px 0 rgba(0, 0, 0, 0)",
-                                                },
-                                            },
-                                        }}
-                                    >
-                                        <Button type="primary">#{item.tick}</Button>
-                                    </ConfigProvider>
-                                </div>
+                               
 
                                 <div className="mrc20info">
                                     <div className="token">
@@ -112,7 +94,10 @@ export default ({ mrc20Id }: { mrc20Id: string }) => {
                                             <div className="name">{item.seller.name}</div>
                                         </div>
                                         <div className="tokenId">
-                                        MetaID : {item.sellerAddress.replace(/(\w{5})\w+(\w{5})/, "$1...")}
+                                            <Tooltip title={item.sellerMetaId}>
+                                                MetaID : {item.sellerMetaId.replace(/(\w{5})\w+(\w{5})/, "$1...")}
+                                            </Tooltip>
+
                                         </div>
                                     </div>
 
