@@ -24,7 +24,7 @@ export default () => {
     updateOrders,
     setCursor,
   } = useModel("orders");
-  const [tab, setTab] = useState<"PIN" | "MRC20">("MRC20");
+  const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const [curOrder, setCurOrder] = useState<API.Order>();
   const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
   const handleSort = (key: string) => {

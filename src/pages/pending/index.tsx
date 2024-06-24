@@ -8,11 +8,13 @@ import { useEffect, useMemo, useState } from "react";
 import Popup from "@/components/ResponPopup";
 import { authTest, cancelOrder } from "@/services/api";
 import JSONView from "@/components/JSONView";
-
+import Mrc20Order from "./components/Mrc20Order";
+const items = ["PIN", 'MRC20'];
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
   const { orders, loading, updateOrders, setLoading } = useModel("userOrders");
   const [show, setShow] = useState<boolean>(false);
+  const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const [submiting, setSubmiting] = useState<boolean>(false);
   const [curOrder, setCurOrder] = useState<API.Order>();
   const list = useMemo(() => {
@@ -60,7 +62,7 @@ export default () => {
               )}
 
             {record.textContent && (
-              <JSONView textContent={record.textContent} collapsed={0}/>
+              <JSONView textContent={record.textContent} collapsed={0} />
             )}
           </div>
         );
@@ -104,8 +106,8 @@ export default () => {
       title: "",
       dataIndex: "txId",
       key: "txId",
-      fixed:'right',
-  
+      fixed: 'right',
+
       render: (text, record) => (
         <Button
           type="primary"
@@ -129,17 +131,35 @@ export default () => {
       >
         <LeftOutlined /> Pending Order
       </div>
-      <div className="tableWrap">
-        <Table
-         scroll={{ x: 1000 }}
-          rowKey={"txId"}
-          loading={loading}
-          columns={columns}
-          dataSource={list}
-          pagination={{ position: ["none", "none"] }}
-          bordered
-        />
+
+      <div className="tabs">
+        <Space>
+          {items.map((item) => (
+            <Button
+              key={item}
+              type={tab === item ? "link" : "text"}
+              onClick={() => setTab(item)}
+              size="large"
+            >
+              {item}
+            </Button>
+          ))}
+        </Space>
       </div>
+      {
+        tab === 'PIN' ? <div className="tableWrap">
+          <Table
+            scroll={{ x: 1000 }}
+            rowKey={"txId"}
+            loading={loading}
+            columns={columns}
+            dataSource={list}
+            pagination={{ position: ["none", "none"] }}
+            bordered
+          />
+        </div> : <Mrc20Order />
+      }
+
 
       <Popup
         title=""

@@ -64,8 +64,8 @@ export default () => {
                             <span>Detail</span>
                         </div>
                         <div className="mint colorPrimary">
-                            <span>Minted:<NumberFormat value={mrc20Info.totalMinted} /> </span>
-                            <span>Supply:<NumberFormat value={mrc20Info.totalSupply} /> </span>
+                            <span>Minted : <NumberFormat value={mrc20Info.totalMinted} /> </span>
+                            <span>Supply : <NumberFormat value={mrc20Info.totalSupply} /> </span>
                         </div>
                         <div className="slider">
                             <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false} />

@@ -24,7 +24,7 @@ export default () => {
   const { btcAddress, connect, connected, network, authParams } =
     useModel("wallet");
   const { orders, loading, updateOrders, setLoading } = useModel("sale");
-  const [tab, setTab] = useState<"PIN" | "MRC20">("MRC20");
+  const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const [sellPrices, setSellPrices] = useState<Record<string, number>>({});
   const [checkList, setCheckList] = useState<string[]>([]);
   const [successProp, setSuccessProp] =
@@ -126,7 +126,7 @@ export default () => {
       >
         <LeftOutlined /> List for sale
       </div>
-      <div>
+      <div className="saleContent">
         <div className="tabs">
           <Space>
             {items.map((item) => (
@@ -247,7 +247,7 @@ export default () => {
                       />
                     </div>
                     <div className="btcAmount">
-                      {formatSat(sellPrices[item.assetId] || 0)} BTC
+                      {formatSat(sellPrices[item.assetId] || 0)} {" "} BTC
                     </div>
                   </div>
                 </Card>

@@ -400,9 +400,9 @@ export async function getMrc20Orders(
   params: {
     assetType: string;
     orderState: number; //1-create, 2-cancel, 3-finish
-    tickId: string;
-    sortKey: string; //priceAmount/timestamp/tokenPriceRate, default:timestamp
-    sortType: number; //1-asc, -1-desc, default:-1
+    tickId?: string;
+    sortKey?: string; //priceAmount/timestamp/tokenPriceRate, default:timestamp
+    sortType?: number; //1-asc, -1-desc, default:-1
     address?: string;
     cursor: number;
     size: number;
@@ -455,6 +455,27 @@ export async function buyMrc20OrderTake(
       txId: string;
     }>
   >(`${getHost(network)}/api/v1/market/mrc20/order/take`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}
+
+export async function cancelMRC20Order(
+  network: API.Network,
+  params: {
+    orderId: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: "7818c13ce41b6f16184f3a84fe7269cbf7e128c1f299188f00e7613587328677";
+      assetType: "pins";
+      assetId: "fa387e936bd347b1f22a3d5f9989ae3b5d1a7726da00a4c5462a624387467014i0";
+      orderState: 2;
+    }>
+  >(`${getHost(network)}/api/v1/market/mrc20/order/cancel`, {
     method: "POST",
     data: params,
     ...(options || {}),
