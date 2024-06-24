@@ -24,7 +24,7 @@ const ListForMRC20 = () => {
         setLoading(true);
         const { data } = await getUserMrc20List(network, { address: btcAddress, cursor: 0, size: 50 });
         const _list = []
-        if (data.list && data.list.length > 0) {
+        if (data&&data.list && data.list.length > 0) {
             for (let i = 0; i < data.list.length; i++) {
                 const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: data.list[i].mrc20Id, cursor: 0, size: 100 }, {
                     headers: {

@@ -75,8 +75,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         setMintInfoStatus('validating')
         const { code, message, data } = await getMrc20Info(network, { tickId: mintTokenID });
         if (btcAddress) {
-            const { data: ret } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
-            if (ret.list) {
+            const { data: ret,code } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
+            if (code===0&&ret&&ret.list) {
                 setShowel(ret.list.filter(item => {
                     if (data && data.qual && data.qual.path) {
                         if (item.path !== data.qual.path) return false
@@ -104,7 +104,10 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const fetchList = useCallback(async () => {
         if (!btcAddress) return;
         const { data } = await getUserMrc20List(network, { address: btcAddress, cursor: 0, size: 50 });
-        setList(data.list);
+        if (data && data.list) {
+            setList(data.list);
+        }
+
     }, [btcAddress, network])
     useEffect(() => {
         fetchList()
@@ -512,7 +515,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         {
                                                             key: 'Path',
                                                             label: 'Path',
-                                                            children: <>{mintMrc20Info.qual.path || '--'}</>
+                                                            children:<Tooltip title={mintMrc20Info.qual.path}>{mintMrc20Info.qual.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip> 
                                                         },
                                                         {
                                                             key: 'Difficultylevel',

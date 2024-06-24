@@ -251,27 +251,27 @@ export const listMrc20Order = async (
 
     const fakeTxid =
       "0000000000000000000000000000000000000000000000000000000000000000";
-    ask.addInput({
-      hash: fakeTxid,
-      index: 0,
-      witnessUtxo: {
-        script: Buffer.from(
-          "76a914000000000000000000000000000000000000000088ac",
-          "hex"
-        ),
-        value: 0,
-      },
-      sighashType: SIGHASH_SINGLE_ANYONECANPAY,
-    });
+    // ask.addInput({
+    //   hash: fakeTxid,
+    //   index: 0,
+    //   witnessUtxo: {
+    //     script: Buffer.from(
+    //       "76a914000000000000000000000000000000000000000088ac",
+    //       "hex"
+    //     ),
+    //     value: 0,
+    //   },
+    //   sighashType: SIGHASH_SINGLE_ANYONECANPAY,
+    // });
 
     const fakeOutScript = Buffer.from(
       "76a914000000000000000000000000000000000000000088ac",
       "hex"
     );
-    ask.addOutput({
-      script: fakeOutScript,
-      value: 0,
-    });
+    // ask.addOutput({
+    //   script: fakeOutScript,
+    //   value: 0,
+    // });
   } else {
     if (["P2SH"].includes(addressType)) {
       console.log("input.tapInternalKey");

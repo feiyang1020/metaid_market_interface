@@ -18,7 +18,7 @@ import { useEffect, useMemo, useState } from "react";
 import "./index.less";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { FileToAttachmentItem, formatSat, image2Attach } from "@/utils/utlis";
-import { useModel } from "umi";
+import { useModel, useSearchParams } from "umi";
 import { CreateOptions, IBtcConnector, IBtcEntity } from "@metaid/metaid";
 import uploadIcon from "@/assets/upload.svg";
 import { getCreatePinFeeByNet } from "@/config";
@@ -114,6 +114,8 @@ const SeleceFeeRate = ({
   );
 };
 export default () => {
+  const [query] = useSearchParams();
+  const _tab = query.get('tab');
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("File");
   const [submiting, setSubmiting] = useState(false);
@@ -142,6 +144,13 @@ export default () => {
     } catch (err) { }
     return false;
   }, [payload, contentType]);
+
+  useEffect(() => {
+    if (_tab) {
+      setTab(_tab)
+    }
+
+  }, [_tab])
   // useEffect(() => {
   //   const find = feeRates.find((item) => item.label === "Avg");
   //   if (find) {
@@ -212,10 +221,13 @@ export default () => {
       }
 
       const ret = await fileEntity.create({
-        options: fileOptions,
-        noBroadcast: "no",
-        feeRate: feeRate,
-        service: getCreatePinFeeByNet(network),
+        dataArray: fileOptions,
+        options: {
+          noBroadcast: "no",
+          feeRate: Number(feeRate),
+          service: getCreatePinFeeByNet(network),
+        }
+
       });
       if (ret.status) throw new Error(ret.status);
       if (ret.commitTxId) {
@@ -701,7 +713,7 @@ export default () => {
           </Row>
         </div>
       )}
-      {tab === "MRC-20" && <Mrc20Form setTab={setTab}/>}
+      {tab === "MRC-20" && <Mrc20Form setTab={setTab} />}
       <SuccessModal {...successProp}></SuccessModal>
     </div>
   );
