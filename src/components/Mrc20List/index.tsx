@@ -2,6 +2,7 @@ import { ConfigProvider, Tabs, TabsProps, Grid } from "antd"
 import AllList from "./AllList";
 
 import "./index.less";
+import Minting from "./Minting";
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -12,7 +13,7 @@ const items: TabsProps['items'] = [
     {
         key: '2',
         label: 'Minting',
-        children: 'Content of Tab Pane 2',
+        children: <Minting />,
     },
 
 ];

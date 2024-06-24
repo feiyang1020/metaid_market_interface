@@ -335,6 +335,8 @@ export async function getMrc20List(
   params: {
     cursor: number;
     size: number;
+    completed?: boolean;
+    orderBy?: string; //pinnumber/totalminted/holders/txcount
   },
   options?: { [key: string]: any }
 ) {
@@ -434,7 +436,6 @@ export async function getMrc20OrderPsbt(
     }
   );
 }
-
 
 export async function buyMrc20OrderTake(
   network: API.Network,

@@ -1,7 +1,7 @@
 import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Radio, Row, Select, Spin, Tooltip, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 const { useBreakpoint } = Grid;
-import { useModel } from "umi";
+import { useModel, useSearchParams } from "umi";
 import "./index.less";
 import SeleceFeeRateItem from "./SeleceFeeRateItem";
 import { getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
@@ -26,8 +26,13 @@ const formItemLayout = {
     },
 };
 export default ({ setTab }: { setTab: (tab: string) => void }) => {
+
+    const [query] = useSearchParams();
+
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
+    const _tab = query.get('tab');
+    const _tickerId = query.get('tickerId');
     const [mintTokenID, setMintTokenID] = useState<string>('');
     const [mintInfoLoading, setMintInfoLoading] = useState(false);
     const [mintInfoStatus, setMintInfoStatus] = useState('');
@@ -49,6 +54,17 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         return true;
     };
 
+    useEffect(() => {
+        if (_tab === 'MRC-20') {
+            setTab('MRC-20')
+            if (_tickerId) {
+                setMintTokenID(_tickerId)
+                form.setFieldsValue({ type: 'mint', tickerId: _tickerId })
+            }
+        }
+
+    }, [_tab, _tickerId])
+
     const handleMintTokenIDChange = (e) => {
         setMintTokenID(e.target.value);
     };
@@ -62,8 +78,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             const { data: ret } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
             if (ret.list) {
                 setShowel(ret.list.filter(item => {
-                    if(data && data.qual && data.qual.path){
-                        if(item.path !== data.qual.path) return false
+                    if (data && data.qual && data.qual.path) {
+                        if (item.path !== data.qual.path) return false
                     }
                     return item.popLv >= data.qual.lvl
                 }))
@@ -215,7 +231,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         pkScript: getPkScriprt(btcAddress, network).toString('hex'),
                     }
                 })
-                if (Number(mintMrc20Info.qual.count)&& mintPins.length < Number(mintMrc20Info.qual.count)) {
+                if (Number(mintMrc20Info.qual.count) && mintPins.length < Number(mintMrc20Info.qual.count)) {
                     throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
                 }
                 const { code, message, data, } = await mintMrc20Pre(network, {
@@ -468,7 +484,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading}>
 
                                         {
-                                            mintMrc20Info && <> <div style={{ color: 'var(--primary)',marginBottom:20 }}>Detail</div><Card bordered={false} style={{ marginBottom: 20 }} >
+                                            mintMrc20Info && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><Card bordered={false} style={{ marginBottom: 20 }} >
                                                 <Descriptions column={1}
                                                     labelStyle={{ color: '#FFFFFF' }}
                                                     contentStyle={{ flexGrow: 1, justifyContent: 'flex-end', color: 'rgba(255, 255, 255, 0.5)' }}
@@ -518,7 +534,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     {(shovel && shovel.length > 0) ?
                                         <Row gutter={[0, 0]}>
                                             <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
-                                                <Form.Item label={<div>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.coun} PINs)`}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
+                                                <Form.Item label={<div>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
 
                                                 >
                                                     <Checkbox.Group>

@@ -274,7 +274,11 @@ declare namespace API {
     pinNumber: number;
     price: string;
     priceUsd: string;
-    qual: string;
+    qual: {
+      count:string;
+      lvl:string;
+      path:string;
+    };
     remaining: string;
     supply: string;
     tick: string;

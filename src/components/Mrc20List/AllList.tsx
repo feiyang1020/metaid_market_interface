@@ -2,6 +2,8 @@ import usePageList from "@/hooks/usePageList"
 import { getMrc20List } from "@/services/api"
 import { ConfigProvider, Table, TableColumnsType, Grid } from "antd"
 import { useModel, history } from "umi"
+import NumberFormat from "../NumberFormat";
+import Item from "./Item";
 const { useBreakpoint } = Grid;
 export default () => {
     const screens = useBreakpoint();
@@ -11,27 +13,41 @@ export default () => {
         {
             title: 'Token',
             dataIndex: 'tick',
-
+            render: (_, record) => {
+                return <Item info={record} />
+            }
         },
         {
             title: 'Price',
             dataIndex: 'price',
             sorter: true,
+            render: (price) => {
+                return <NumberFormat value={price} suffix=' sats' />
+            }
         },
         {
             title: 'Change 24H',
             dataIndex: 'change24h',
             sorter: true,
+            render: (item) => {
+                return <div style={{ color: item[0] === '+' ? '#40BA68' : '#B94041' }}>{item}</div>
+            }
         },
         {
             title: 'MarketCap',
             dataIndex: 'marketCap',
             sorter: true,
+            render: (price) => {
+                return <NumberFormat value={price} decimal={8} suffix=' BTC' />
+            }
         },
         {
             title: 'Total Supply',
             dataIndex: 'totalSupply',
             sorter: true,
+            render: (price) => {
+                return <NumberFormat value={price} />
+            }
         },
         {
             title: 'Holders',
