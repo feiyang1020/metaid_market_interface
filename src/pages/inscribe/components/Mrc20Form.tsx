@@ -1,13 +1,13 @@
 import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Radio, Row, Select, Spin, Tooltip, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 const { useBreakpoint } = Grid;
-import { useModel, useSearchParams,history } from "umi";
+import { useModel, useSearchParams, history } from "umi";
 import "./index.less";
 import SeleceFeeRateItem from "./SeleceFeeRateItem";
-import { getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
+import { broadcastBTCTx, broadcastTx, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
-import { Psbt, networks } from "bitcoinjs-lib";
+import { Psbt, Transaction, networks, address as addressLib } from "bitcoinjs-lib";
 import level from "@/assets/level.svg";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
 import { getCreatePinFeeByNet } from "@/config";
@@ -76,8 +76,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         setMintInfoStatus('validating')
         const { code, message, data } = await getMrc20Info(network, { tickId: mintTokenID });
         if (btcAddress) {
-            const { data: ret,code } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
-            if (code===0&&ret&&ret.list) {
+            const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
+            if (code === 0 && ret && ret.list) {
                 setShowel(ret.list.filter(item => {
                     if (data && data.qual && data.qual.path) {
                         if (item.path !== data.qual.path) return false
@@ -96,7 +96,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         setMintInfoStatus('error')
         setMintMrc20Info(undefined)
 
-    }, [mintTokenID,btcAddress, network])
+    }, [mintTokenID, btcAddress, network])
 
     const fetchShovels = useCallback(async () => {
 
@@ -148,17 +148,52 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             flag: network === "mainnet" ? "metaid" : "testid",
         };
 
-        const ret = await btcConnector.inscribe({
-            inscribeDataArray: [metaidData],
-            options: {
-                noBroadcast: "no",
-                feeRate: Number(feeRate),
-                service: getCreatePinFeeByNet(network),
+        const ret = await window.metaidwallet.btc.deployMRC20({
+            flag: network === "mainnet" ? "metaid" : "testid",
+            commitFeeRate: Number(feeRate),
+            revealFeeRate: Number(feeRate),
+            body: {
+                tick: deployTicker, // no less than 2-24 characters
+                tokenName: deployTokenName, // token full name, 1-48 characters
+                decimals: String(deployDecimals), // 0-12
+                amtPerMint: String(deployAmountPerMint),
+                mintCount: String(deployMaxMintCount),
+                premineCount: String(deployPremineCount),
+                blockheight: '',
+                qual: {
+                    path: deployPath,
+                    count: String(deployCount),
+                    lvl: String(deployDifficultyLevel)
+                },
             }
-        });
-        if (ret.status) throw new Error(ret.status);
+        })
         console.log(ret, 'ret');
-        success('Deploy', ret)
+        // if (deployPremineCount) {
+        //     const script = addressLib.toOutputScript(btcAddress, network === 'mainnet' ? networks.bitcoin : networks.testnet);
+        //     const revealTx = Transaction.fromHex(ret.revealTx.rawTx);
+        //     revealTx.addOutput(script, 546);
+        //     console.log(revealTx, 'revealTx')
+        // }
+        const commitRes = await broadcastBTCTx(network, ret.commitTx.rawTx)
+        const revealRes = await broadcastBTCTx(network, ret.revealTx.rawTx)
+
+        console.log(commitRes, 'commitRes', revealRes, 'revealRes')
+
+
+
+
+
+        // const ret = await btcConnector.inscribe({
+        //     inscribeDataArray: [metaidData],
+        //     options: {
+        //         noBroadcast: "no",
+        //         feeRate: Number(feeRate),
+        //         service: getCreatePinFeeByNet(network),
+        //     }
+        // });
+        // if (ret.status) throw new Error(ret.status);
+        console.log(ret, 'ret');
+        success('Deploy', { commitTxId: ret.commitTx.txId })
     }
 
     const success = (title: string, ret: any) => {
@@ -516,7 +551,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         {
                                                             key: 'Path',
                                                             label: 'Path',
-                                                            children:<Tooltip title={mintMrc20Info.qual.path}>{mintMrc20Info.qual.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip> 
+                                                            children: <Tooltip title={mintMrc20Info.qual.path}>{mintMrc20Info.qual.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip>
                                                         },
                                                         {
                                                             key: 'Difficultylevel',
@@ -545,7 +580,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         <Row>
                                                             {shovel?.map(item => {
                                                                 return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
-                                                                    <div className="value">#{item.number} <a href={`https://man${network==='mainnet'?'':'-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{color:'rgba(255, 255, 255, 0.5)',transform: 'rotate(-0.125turn)'}}/></a> </div></Checkbox></Col>
+                                                                    <div className="value">#{item.number} <a href={`https://man${network === 'mainnet' ? '' : '-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{ color: 'rgba(255, 255, 255, 0.5)', transform: 'rotate(-0.125turn)' }} /></a> </div></Checkbox></Col>
                                                             })}
 
                                                         </Row></Checkbox.Group>

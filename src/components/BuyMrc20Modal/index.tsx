@@ -185,7 +185,7 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buySuccess">
             <div className="orderInfo">
               <div className="contetn">
-
+                {order.tokenName}
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>
@@ -243,11 +243,11 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buyWrap">
             <div className="orderInfo">
               <div className="contetn">
-
+                {order.tokenName}
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>
-                <div className="number">{order.tickId}</div>
+                <div className="number"></div>
               </div>
             </div>
             <div className="fees">

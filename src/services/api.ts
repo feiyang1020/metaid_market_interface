@@ -1,5 +1,5 @@
 import { request } from "umi";
-
+import mempoolJS from "@mempool/mempool.js";
 const getHost = (network: API.Network) => {
   if (network === "mainnet") return "https://api.metaid.market/api-market";
   if (network === "testnet")
@@ -479,5 +479,36 @@ export async function cancelMRC20Order(
     method: "POST",
     data: params,
     ...(options || {}),
+  });
+}
+
+export async function broadcastTx(
+  network: API.Network,
+  params: {
+    txHex: string;
+  },
+  options?: { [key: string]: any }
+) {
+  const {
+    bitcoin: { transactions },
+  } = mempoolJS({
+    hostname: "mempool.space",
+    network: network === "mainnet" ? "main" : "testnet",
+  });
+  const txid = await transactions.postTx({ txhex: params.txHex });
+  return txid;
+}
+
+export async function broadcastBTCTx(
+  network: API.Network,
+  rawTx: string,
+): Promise<string> {
+  return request<string>(`https://www.orders.exchange/api-book/common/tx/broadcast`, {
+    method: "POST",
+    data: {
+      chain: "btc",
+      net: network === "mainnet" ? "livenet" : "testnet",
+      rawTx,
+    },
   });
 }

@@ -12,6 +12,7 @@ export default () => {
   const [total, setTotal] = useState<number>(0);
   const [orders, setOrders] = useState<API.Asset[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const fetchOrders = useCallback(
     async (retry: boolean = true) => {
       if (network) {
@@ -65,5 +66,7 @@ export default () => {
     setSortKey,
     loading,
     setLoading,
+    tab,
+    setTab,
   };
 };

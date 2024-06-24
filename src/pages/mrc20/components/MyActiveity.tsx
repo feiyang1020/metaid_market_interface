@@ -47,7 +47,7 @@ export default ({ mrc20Id }: Props) => {
             title: 'Type',
             dataIndex: 'buyerAddress',
             render: (item) => {
-                return btcAddress===item?'Buy':'Sell'
+                return btcAddress === item ? 'Buy' : 'Sell'
             }
         },
         {
@@ -55,49 +55,49 @@ export default ({ mrc20Id }: Props) => {
             dataIndex: "sellerAddress",
             key: "sellerAddress",
             render: (text, record) => (
-              <div className="detail">
-                <span className='avatars'><MetaIdAvatar size={20} avatar={record.seller.avatar} /> {record.seller.name || record.sellerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
-                <span className='metaid'>MetaID : {record.sellerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
-              </div>
+                <div className="detail">
+                    <span className='avatars'><MetaIdAvatar size={20} avatar={record.seller.avatar} /> {record.seller.name || record.sellerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                    <span className='metaid'>MetaID : {record.sellerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
+                </div>
             ),
-          },
-          {
+        },
+        {
             title: "To",
             dataIndex: "buyerAddress",
             key: "buyerAddress",
             render: (text, record) => (
-              <div className="detail">
-                <span className='avatars'><MetaIdAvatar size={20} avatar={record.buyer.avatar} /> {record.buyer.name || record.buyerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
-                <span className='metaid'>MetaID : {record.buyerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
-              </div>
+                <div className="detail">
+                    <span className='avatars'><MetaIdAvatar size={20} avatar={record.buyer.avatar} /> {record.buyer.name || record.buyerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                    <span className='metaid'>MetaID : {record.buyerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
+                </div>
             ),
-          },
-          {
+        },
+        {
             title: "Time",
             dataIndex: "dealTime",
             key: "dealTime",
             render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
-          },
-          {
+        },
+        {
             title: "Hash",
             dataIndex: "txId",
             key: "txId",
             render: (text, record) => (
-              <Tooltip title={text}>
-                <a
-                  style={{ color: "#fff", textDecoration: "underline" }}
-                  target="_blank"
-                  href={
-                    network === "testnet"
-                      ? `https://mempool.space/testnet/tx/${text}`
-                      : `https://mempool.space/tx/${text}`
-                  }
-                >
-                  {text.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
-                </a>
-              </Tooltip>
+                <Tooltip title={text}>
+                    <a
+                        style={{ color: "#fff", textDecoration: "underline" }}
+                        target="_blank"
+                        href={
+                            network === "testnet"
+                                ? `https://mempool.space/testnet/tx/${text}`
+                                : `https://mempool.space/tx/${text}`
+                        }
+                    >
+                        {text.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
+                    </a>
+                </Tooltip>
             ),
-          },
+        },
     ]
 
     return <ConfigProvider
@@ -114,7 +114,7 @@ export default ({ mrc20Id }: Props) => {
                 }
             },
         }}><Table
-        className="activeityTable"
+            className="activeityTable"
             columns={columns}
             rowKey={(record) => record.orderId}
             dataSource={list}
