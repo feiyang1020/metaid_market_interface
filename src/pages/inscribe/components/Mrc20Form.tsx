@@ -62,6 +62,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             const { data: ret } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
             if (ret.list) {
                 setShowel(ret.list.filter(item => {
+                    if(data && data.qual && data.qual.path){
+                        if(item.path !== data.qual.path) return false
+                    }
                     return item.popLv >= data.qual.lvl
                 }))
             }
@@ -212,8 +215,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         pkScript: getPkScriprt(btcAddress, network).toString('hex'),
                     }
                 })
-                if (mintMrc20Info.premineCount && mintPins.length < 2) {
-                    throw new Error('Select at Least Two PINs')
+                if (Number(mintMrc20Info.qual.count)&& mintPins.length < Number(mintMrc20Info.qual.count)) {
+                    throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
                 }
                 const { code, message, data, } = await mintMrc20Pre(network, {
                     mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId,
@@ -515,7 +518,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     {(shovel && shovel.length > 0) ?
                                         <Row gutter={[0, 0]}>
                                             <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
-                                                <Form.Item label={<div>PINs {mintMrc20Info.premineCount && '(Select at Least 2 PINs)'}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
+                                                <Form.Item label={<div>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.coun} PINs)`}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
 
                                                 >
                                                     <Checkbox.Group>
