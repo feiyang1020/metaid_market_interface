@@ -1,18 +1,66 @@
-.mrc20Page{
-    .mrc20Info{
+.mrc20Page {
+  padding: 20px 71px;
+  .pageBack {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+  .mrc20Info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 35px;
+      flex-wrap: wrap;
+      .info {
+        .name {
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 6px;
+        }
+        .detail {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 14px;
+          margin-bottom: 11px;
+          .btn {
+            font-size: 10px;
+          }
+        }
+        .mint {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .slider {
+          width: 432px;
+          max-width: 90vw;
+          font-size: 14px;
+          .ant-progress-bg {
+            height: 4px !important;
+          }
+        }
+      }
+      .desc {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        .left{
-            display: flex;
-            align-items: center;
-            gap:35px;
-            .desc{
-                display: flex;
-                align-items: center;
-                gap:30px;
-            }
-        }
+        gap: 30px;
+      }
     }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .mrc20Page {
+    padding: 20px;
+  }
 }

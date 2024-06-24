@@ -14,11 +14,11 @@ export default () => {
     const screens = useBreakpoint();
     const { network } = useModel("wallet")
 
-    const [list, setList] = useState<R[]>([]);
+    const [list, setList] = useState<API.MRC20Info[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(0);
-    const [size, setSize] = useState<number>(5);
+    const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({});
     const fetchData = useCallback(async () => {
         console.log(network, page, size, params)
@@ -53,9 +53,9 @@ export default () => {
             title: 'Deployer',
             dataIndex: 'deployerUserInfo',
             render: (deployerUserInfo, record) => {
-                return <div>
+                return <div className="deployer">
                     <div>
-                        <MetaIdAvatar avatar={record.deployerUserInfo.avatar} /> {record.deployerUserInfo.name}
+                        <MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /> {record.deployerUserInfo.name||record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
                     </div>
                     <div className="MetaId">
                         MetaID:{record.deployerMetaId.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}
@@ -63,20 +63,20 @@ export default () => {
                 </div>
             }
         },
-        {
-            title: 'Pending',
-            dataIndex: 'Pending',
-            sorter: true,
-            render: (price) => {
-                return <NumberFormat value={price} suffix=' sats' />
-            }
-        },
+        // {
+        //     title: 'Pending',
+        //     dataIndex: 'Pending',
+        //     sorter: true,
+        //     render: (price) => {
+        //         return <NumberFormat value={price} suffix=' sats' />
+        //     }
+        // },
         {
             title: 'Minted',
-            dataIndex: 'txCount',
+            dataIndex: 'totalMinted',
             sorter: true,
-            render: (price) => {
-                return <NumberFormat value={price} />
+            render: (totalMinted) => {
+                return <NumberFormat value={totalMinted} />
             }
         },
         {
@@ -108,7 +108,7 @@ export default () => {
 
             render: (price, record) => {
                 const percent = Number(record.supply / record.totalSupply) * 100
-                return <div>
+                return <div className="progress">
                     <NumberFormat value={percent} precision={2} suffix='%' />
                     <Progress className="Progress" percent={percent > 1 ? percent : 1} showInfo={false}>
 
@@ -121,7 +121,7 @@ export default () => {
             dataIndex: 'mint',
 
             render: (_, record) => {
-                return <Button onClick={(e) => { e.stopPropagation(); history.push('/inscribe?tab=MRC-20&tickerId=' + record.mrc20Id) }} type='primary'>Mint</Button>
+                return <Button size='small' onClick={(e) => { e.stopPropagation(); history.push('/inscribe?tab=MRC-20&tickerId=' + record.mrc20Id) }} type='primary'>Mint</Button>
             }
         },
 

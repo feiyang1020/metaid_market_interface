@@ -126,159 +126,162 @@ export default () => {
       >
         <LeftOutlined /> List for sale
       </div>
-      <div className="tabs">
-        <Space>
-          {items.map((item) => (
-            <Button
-              key={item}
-              type={tab === item ? "link" : "text"}
-              onClick={() => setTab(item)}
-              size="large"
-            >
-              {item}
-            </Button>
-          ))}
-        </Space>
-      </div>
-      {
-        tab==="PIN" && <> <List
-        className="listWrap"
-        loading={loading}
-        grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 6 }}
-        dataSource={orders}
-        rowKey={"assetId"}
-        renderItem={(item) => (
-          <List.Item>
-            <Card
-              styles={{ body: { padding: 0 } }}
-              className={
-                checkList.includes(item.assetId)
-                  ? "sellCard checked"
-                  : "sellCard"
-              }
-            >
-              <div className="cardWrap">
-                <div
-                  className="contetn"
-                  onClick={() => {
-                    item.pinStatus === 0 && handleCheck(item.assetId);
-                  }}
+      <div>
+        <div className="tabs">
+          <Space>
+            {items.map((item) => (
+              <Button
+                key={item}
+                type={tab === item ? "link" : "text"}
+                onClick={() => setTab(item)}
+                size="large"
+              >
+                {item}
+              </Button>
+            ))}
+          </Space>
+        </div>
+        {
+          tab === "PIN" && <> <List
+            className="listWrap"
+            loading={loading}
+            grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 6 }}
+            dataSource={orders}
+            rowKey={"assetId"}
+            renderItem={(item) => (
+              <List.Item>
+                <Card
+                  styles={{ body: { padding: 0 } }}
+                  className={
+                    checkList.includes(item.assetId)
+                      ? "sellCard checked"
+                      : "sellCard"
+                  }
                 >
-                  {item.info &&
-                    item.info.contentTypeDetect.indexOf("image") > -1 && (
-                      <img className="imageCont" src={item.content}></img>
-                    )}
-
-                  {item.textContent && (
-                    <JSONView textContent={item.textContent}/>
-                  )}
-                  <div className="assetNumber">
-                    <ConfigProvider
-                      theme={{
-                        components: {
-                          Button: {
-                            colorTextLightSolid: "#fff",
-                            primaryColor: "#fff",
-                            colorPrimary: `rgba(51, 51, 51, 0.38)`,
-                            colorPrimaryHover: `rgba(51, 51, 51, 0.38)`,
-                            colorPrimaryActive: `rgba(51, 51, 51, 0.38)`,
-                            lineWidth: 0,
-                            primaryShadow: "0 0px 0 rgba(0, 0, 0, 0)",
-                          },
-                        },
+                  <div className="cardWrap">
+                    <div
+                      className="contetn"
+                      onClick={() => {
+                        item.pinStatus === 0 && handleCheck(item.assetId);
                       }}
                     >
-                      <Button type="primary">#{item.assetNumber}</Button>
-                    </ConfigProvider>
-                  </div>
-                  <div className="checkBox">
-                    {checkList.includes(item.assetId) ? (
-                      <div className="checked">
-                        <CheckOutlined />
-                      </div>
-                    ) : (
-                      <div className="unchecked"></div>
-                    )}
-                  </div>
-                </div>
+                      {item.info &&
+                        item.info.contentTypeDetect.indexOf("image") > -1 && (
+                          <img className="imageCont" src={item.content}></img>
+                        )}
 
-                <div className="desc">
-                  <div>
-                    <div className="number">#{item.assetNumber}</div>
-                    <div className="path">
-                      {item.info && (item.info.pinPath || item.info.path)}
-                    </div>
-                  </div>
-                  <div className="levelInfo">
-                    <div className="level">
-                      {item.assetLevel !== "--" && item.assetPop !== "--" ? (
-                        <>
-                          <img src={level} alt="" />
-                          {item.assetLevel}
-                        </>
-                      ) : (
-                        <span>--</span>
+                      {item.textContent && (
+                        <JSONView textContent={item.textContent} />
                       )}
-                    </div>
-                    {item.pinStatus === -9 && (
-                      <div className="pinStatus">
-                        Pending{" "}
-                        <LoadingOutlined
-                          style={{ fontSize: 14, color: "#FF8F1F" }}
-                          spin
-                        />
+                      <div className="assetNumber">
+                        <ConfigProvider
+                          theme={{
+                            components: {
+                              Button: {
+                                colorTextLightSolid: "#fff",
+                                primaryColor: "#fff",
+                                colorPrimary: `rgba(51, 51, 51, 0.38)`,
+                                colorPrimaryHover: `rgba(51, 51, 51, 0.38)`,
+                                colorPrimaryActive: `rgba(51, 51, 51, 0.38)`,
+                                lineWidth: 0,
+                                primaryShadow: "0 0px 0 rgba(0, 0, 0, 0)",
+                              },
+                            },
+                          }}
+                        >
+                          <Button type="primary">#{item.assetNumber}</Button>
+                        </ConfigProvider>
                       </div>
-                    )}
+                      <div className="checkBox">
+                        {checkList.includes(item.assetId) ? (
+                          <div className="checked">
+                            <CheckOutlined />
+                          </div>
+                        ) : (
+                          <div className="unchecked"></div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="desc">
+                      <div>
+                        <div className="number">#{item.assetNumber}</div>
+                        <div className="path">
+                          {item.info && (item.info.pinPath || item.info.path)}
+                        </div>
+                      </div>
+                      <div className="levelInfo">
+                        <div className="level">
+                          {item.assetLevel !== "--" && item.assetPop !== "--" ? (
+                            <>
+                              <img src={level} alt="" />
+                              {item.assetLevel}
+                            </>
+                          ) : (
+                            <span>--</span>
+                          )}
+                        </div>
+                        {item.pinStatus === -9 && (
+                          <div className="pinStatus">
+                            Pending{" "}
+                            <LoadingOutlined
+                              style={{ fontSize: 14, color: "#FF8F1F" }}
+                              spin
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="inputWrap">
+                      <InputNumber
+                        onChange={(value) => onInputChange(item.assetId, value)}
+                        controls={false}
+                        className="input"
+                        value={sellPrices[item.assetId]}
+                        suffix="sats"
+                        disabled={item.pinStatus !== 0}
+                        onFocus={() => {
+                          handleCheck(item.assetId);
+                        }}
+                      />
+                    </div>
+                    <div className="btcAmount">
+                      {formatSat(sellPrices[item.assetId] || 0)} BTC
+                    </div>
                   </div>
+                </Card>
+              </List.Item>
+            )}
+          />
+            <div className="totalPrice">
+              <div className="label">Total Price</div>
+              <div className="aciotns">
+                <div className="prices">
+                  <div className="sats">{totalStas}sats</div>
+                  <div className="btc">{formatSat(totalStas)}BTC</div>
                 </div>
-
-                <div className="inputWrap">
-                  <InputNumber
-                    onChange={(value) => onInputChange(item.assetId, value)}
-                    controls={false}
-                    className="input"
-                    value={sellPrices[item.assetId]}
-                    suffix="sats"
-                    disabled={item.pinStatus !== 0}
-                    onFocus={() => {
-                      handleCheck(item.assetId);
-                    }}
-                  />
-                </div>
-                <div className="btcAmount">
-                  {formatSat(sellPrices[item.assetId] || 0)} BTC
-                </div>
+                {connected ? (
+                  <Button
+                    type="primary"
+                    disabled={totalStas === 0}
+                    onClick={handleSale}
+                  >
+                    List for sale
+                  </Button>
+                ) : (
+                  <Button type="primary" onClick={connect}>
+                    Connect Wallet
+                  </Button>
+                )}
               </div>
-            </Card>
-          </List.Item>
-        )}
-      />
-      <div className="totalPrice">
-        <div className="label">Total Price</div>
-        <div className="aciotns">
-          <div className="prices">
-            <div className="sats">{totalStas}sats</div>
-            <div className="btc">{formatSat(totalStas)}BTC</div>
-          </div>
-          {connected ? (
-            <Button
-              type="primary"
-              disabled={totalStas === 0}
-              onClick={handleSale}
-            >
-              List for sale
-            </Button>
-          ) : (
-            <Button type="primary" onClick={connect}>
-              Connect Wallet
-            </Button>
-          )}
-        </div>
-      </div></>
+            </div></>
 
-      }
-      {tab==="MRC20" && <ListForMRC20/>}
-     
+        }
+        {tab === "MRC20" && <ListForMRC20 />}
+      </div>
+
+
       <SuccessModal {...successProp}></SuccessModal>
     </div>
   );
