@@ -97,7 +97,7 @@ export default () => {
         {
             title: 'Deployed',
             dataIndex: 'deployTime',
-            sorter: true,
+            // sorter: true,
             render: (price) => {
                 return dayjs(price * 1000).format('MM/DD/YYYY,HH:mm')
             }
@@ -145,16 +145,20 @@ export default () => {
             columns={columns}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}
-            size='small'
+            // size='small'
             pagination={{
                 pageSize: size,
                 current: page + 1,
                 total
             }}
+            scroll={{ x: 1000 }}
             loading={loading}
             onChange={({ current, ...params }, _, sorter) => {
                 console.log(sorter, 'params')
-                if (!current) current = 1
+                if (!current) current = 1;
+                if (sorter.field === 'holders') {
+                    setParams({ ...params, orderBy: 'holders' })
+                }
                 setPage(current - 1)
             }}
             onRow={(record) => {
