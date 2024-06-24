@@ -1,3 +1,4 @@
+import MetaIdAvatar from "@/components/MetaIdAvatar";
 import NumberFormat from "@/components/NumberFormat";
 import { getMrc20Orders } from "@/services/api";
 import { ConfigProvider, Table, TableColumnsType, Tooltip } from "antd";
@@ -54,9 +55,10 @@ export default ({ mrc20Id }: Props) => {
             dataIndex: "sellerAddress",
             key: "sellerAddress",
             render: (text, record) => (
-              <Tooltip title={text}>
-                {text.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
-              </Tooltip>
+              <div className="detail">
+                <span className='avatars'><MetaIdAvatar size={20} avatar={record.seller.avatar} /> {record.seller.name || record.sellerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                <span className='metaid'>MetaID : {record.sellerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
+              </div>
             ),
           },
           {
@@ -64,9 +66,10 @@ export default ({ mrc20Id }: Props) => {
             dataIndex: "buyerAddress",
             key: "buyerAddress",
             render: (text, record) => (
-              <Tooltip title={text}>
-                {text.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
-              </Tooltip>
+              <div className="detail">
+                <span className='avatars'><MetaIdAvatar size={20} avatar={record.buyer.avatar} /> {record.buyer.name || record.buyerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                <span className='metaid'>MetaID : {record.buyerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
+              </div>
             ),
           },
           {
@@ -111,7 +114,7 @@ export default ({ mrc20Id }: Props) => {
                 }
             },
         }}><Table
-
+        className="activeityTable"
             columns={columns}
             rowKey={(record) => record.orderId}
             dataSource={list}
