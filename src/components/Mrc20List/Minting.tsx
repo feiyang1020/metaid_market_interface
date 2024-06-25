@@ -44,7 +44,8 @@ export default () => {
         {
             title: 'Token',
             dataIndex: 'tick',
-            width: 250,
+            fixed: 'left',
+            width: 220,
             render: (_, record) => {
                 return <Item info={record} />
             }
@@ -141,7 +142,7 @@ export default () => {
                 }
             },
         }}><Table
-            style={{ margin: screens.md ? '0 200px' : '0 20px' }}
+            style={{ margin: screens.lg ? '0 200px' : '0 20px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}
