@@ -141,7 +141,7 @@ const ListForMRC20 = () => {
             loading={loading}
             grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 6 }}
             dataSource={list}
-            rowKey={"mrc20Id"}
+            rowKey={"txPoint"}
             renderItem={(item) => (
                 <List.Item>
                     <Card
