@@ -259,6 +259,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }
             if (type === 'mint') {
                 if (!mintMrc20Info) return
+                if(!pins||pins.lenght===0){
+                    throw new Error(`Select at Least 1 PINs`)
+                }
                 const mintPins = pins.map((pinId) => {
                     const pin = shovel?.find(item => item.id === pinId);
                     if (!pin) return;
