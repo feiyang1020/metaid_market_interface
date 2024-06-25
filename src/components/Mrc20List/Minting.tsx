@@ -141,7 +141,8 @@ export default () => {
 
                 },
                 "Table": {
-                    "borderColor": "rgba(240, 240, 240, 0)"
+                    "borderColor": "rgba(240, 240, 240, 0)",
+                    "rowHoverBg": "rgba(110, 208, 63, 0.13)"
                 }
             },
         }}><Table
