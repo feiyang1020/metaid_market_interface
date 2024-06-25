@@ -11,7 +11,7 @@ import { Psbt, Transaction, networks, address as addressLib } from "bitcoinjs-li
 import level from "@/assets/level.svg";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
 import { getCreatePinFeeByNet } from "@/config";
-import { ArrowRightOutlined, DownOutlined, FileTextOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DownOutlined, FileTextOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
@@ -123,8 +123,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         await form.validateFields();
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName,deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
-        const payload:any = {
+        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
+        const payload: any = {
             tick: deployTicker, // no less than 2-24 characters
             tokenName: deployTokenName, // token full name, 1-48 characters
             decimals: String(deployDecimals), // 0-12
@@ -138,8 +138,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 lvl: String(deployDifficultyLevel)
             },
         }
-        if(deployIcon){
-            payload.metadata=JSON.stringify({icon:deployIcon})
+        if (deployIcon) {
+            payload.metadata = JSON.stringify({ icon: deployIcon })
         }
 
         const ret = await window.metaidwallet.btc.deployMRC20({
@@ -240,7 +240,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }
             if (type === 'mint') {
                 if (!mintMrc20Info) return
-                if(!pins||pins.lenght===0){
+                if (!pins || pins.lenght === 0) {
                     throw new Error(`Select at Least 1 PINs`)
                 }
                 const mintPins = pins.map((pinId) => {
@@ -376,18 +376,15 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                 >
                                     <Input
                                         size="large"
-
+                                        suffix={
+                                            <Tooltip title="Token Name">
+                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                            </Tooltip>
+                                        }
                                     />
                                 </Form.Item>
 
-                                <Form.Item label="Icon" name="deployIcon"
 
-                                >
-                                    <Input
-                                        size="large"
-
-                                    />
-                                </Form.Item>
 
                                 <Form.Item rules={[{ required: true }]} label="Max mint Count" name="deployMaxMintCount"
 
@@ -416,17 +413,26 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         </div></Col></Row>,
 
                                         showArrow: false,
-                                        children: <> <Form.Item rules={[{ required: true }]} label="Decimals" name="deployDecimals"
+                                        children: <>
+                                            <Form.Item label="Icon" name="deployIcon"
 
-                                        >
-                                            <InputNumber
-                                                size="large"
-                                                style={{ width: '100%' }}
-                                                min={0}
-                                                max={12}
+                                            >
+                                                <Input
+                                                    size="large"
 
-                                            />
-                                        </Form.Item>
+                                                />
+                                            </Form.Item>
+                                            <Form.Item rules={[{ required: true }]} label="Decimals" name="deployDecimals"
+
+                                            >
+                                                <InputNumber
+                                                    size="large"
+                                                    style={{ width: '100%' }}
+                                                    min={0}
+                                                    max={12}
+
+                                                />
+                                            </Form.Item>
 
                                             <Form.Item rules={[{ required: true }]} label="Premine Count" name="deployPremineCount"
 
@@ -436,6 +442,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     style={{ width: '100%' }}
                                                 />
                                             </Form.Item>
+                                            <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}><Tooltip title='Difficulty Settings'> Difficulty Settings <QuestionCircleOutlined /></Tooltip></Col></Row>
+
 
                                             <Form.Item rules={[{ required: true }]} label="Path" name="deployPath"
 
@@ -570,7 +578,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 <Form.Item label={<div>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
 
                                                 >
-                                                    <Checkbox.Group style={{display:'flex'}}>
+                                                    <Checkbox.Group style={{ display: 'flex' }}>
                                                         <Row>
                                                             {shovel?.map(item => {
                                                                 return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
