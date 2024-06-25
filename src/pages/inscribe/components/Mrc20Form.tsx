@@ -589,7 +589,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                         </Row></Checkbox.Group>
                                                 </Form.Item></Col></Row> : <Row gutter={[0, 0]}>
-                                            <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { setTab('PINs') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
+                                            <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
                                                 No PIN. GO get it
                                             </div></div></Col></Row>
                                     }
