@@ -123,49 +123,30 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         await form.validateFields();
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
-        const payload = {
-            tick: deployTicker,
-            tokenName: deployTokenName,
-            decimals: String(deployDecimals),
+        const { deployTicker, deployTokenName,deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
+        const payload:any = {
+            tick: deployTicker, // no less than 2-24 characters
+            tokenName: deployTokenName, // token full name, 1-48 characters
+            decimals: String(deployDecimals), // 0-12
             amtPerMint: String(deployAmountPerMint),
             mintCount: String(deployMaxMintCount),
             premineCount: String(deployPremineCount),
+            blockheight: '',
             qual: {
                 path: deployPath,
                 count: String(deployCount),
                 lvl: String(deployDifficultyLevel)
-            }
-
+            },
         }
-        const metaidData: InscribeData = {
-            operation: "create",
-            body: JSON.stringify(payload),
-            encryption: '0',
-            version: '1.0.0',
-            path: '/ft/mrc20/deploy',
-            contentType: 'application/json',
-            flag: network === "mainnet" ? "metaid" : "testid",
-        };
+        if(deployIcon){
+            payload.metadata=JSON.stringify({icon:deployIcon})
+        }
 
         const ret = await window.metaidwallet.btc.deployMRC20({
             flag: network === "mainnet" ? "metaid" : "testid",
             commitFeeRate: Number(feeRate),
             revealFeeRate: Number(feeRate),
-            body: {
-                tick: deployTicker, // no less than 2-24 characters
-                tokenName: deployTokenName, // token full name, 1-48 characters
-                decimals: String(deployDecimals), // 0-12
-                amtPerMint: String(deployAmountPerMint),
-                mintCount: String(deployMaxMintCount),
-                premineCount: String(deployPremineCount),
-                blockheight: '',
-                qual: {
-                    path: deployPath,
-                    count: String(deployCount),
-                    lvl: String(deployDifficultyLevel)
-                },
-            }
+            body: payload
         })
         console.log(ret, 'ret');
         // if (deployPremineCount) {
@@ -391,6 +372,15 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     />
                                 </Form.Item>
                                 <Form.Item label="Token Name" name="deployTokenName"
+
+                                >
+                                    <Input
+                                        size="large"
+
+                                    />
+                                </Form.Item>
+
+                                <Form.Item label="Icon" name="deployIcon"
 
                                 >
                                     <Input
