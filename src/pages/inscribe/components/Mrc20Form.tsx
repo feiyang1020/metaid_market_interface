@@ -174,6 +174,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         //     revealTx.addOutput(script, 546);
         //     console.log(revealTx, 'revealTx')
         // }
+        // debugger
         const commitRes = await broadcastBTCTx(network, ret.commitTx.rawTx)
         const revealRes = await broadcastBTCTx(network, ret.revealTx.rawTx)
 

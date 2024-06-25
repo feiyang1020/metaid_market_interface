@@ -499,16 +499,35 @@ export async function broadcastTx(
   return txid;
 }
 
+// export async function broadcastBTCTx(
+//   network: API.Network,
+//   rawTx: string
+// ): Promise<string> {
+//   return request<string>(
+//     `https://www.orders.exchange/api-book/common/tx/broadcast`,
+//     {
+//       method: "POST",
+//       data: {
+//         chain: "btc",
+//         net: network === "mainnet" ? "livenet" : "testnet",
+//         rawTx,
+//       },
+//     }
+//   );
+// }
+
 export async function broadcastBTCTx(
   network: API.Network,
-  rawTx: string,
-): Promise<string> {
-  return request<string>(`https://www.orders.exchange/api-book/common/tx/broadcast`, {
+  txHex: string,
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      txId: string;
+    }>
+  >(`${getHost(network)}/api/v1/common/tx/broadcast`, {
     method: "POST",
-    data: {
-      chain: "btc",
-      net: network === "mainnet" ? "livenet" : "testnet",
-      rawTx,
-    },
+    data: { txHex },
+    ...(options || {}),
   });
 }
