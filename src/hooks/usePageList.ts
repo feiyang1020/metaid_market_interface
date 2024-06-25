@@ -13,7 +13,7 @@ const usePageList = <R = unknown>(
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0);
-  const [size, setSize] = useState<number>(5);
+  const [size, setSize] = useState<number>(10);
   const [params, setParams] = useState<Record<string, any>>({});
   const fetchData = useCallback(async () => {
     console.log(network, page, size, params)
