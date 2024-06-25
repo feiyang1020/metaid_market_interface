@@ -247,7 +247,6 @@ export const listMrc20Order = async (
   const input = fillInternalKey2(psbtInput, address, publicKey);
   if (["P2PKH"].includes(addressType)) {
     delete psbtInput.witnessUtxo;
-    console.log(ordinalPreTx.toBuffer(),'P2PKH')
     psbtInput["nonWitnessUtxo"] = ordinalPreTx.toBuffer();
 
     const fakeTxid =
