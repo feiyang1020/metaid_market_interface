@@ -18,10 +18,30 @@
       border-radius: 8px;
       padding: 21px 0px;
       border: 1px solid rgba(255, 255, 255, 0.5);
+      &:hover {
+        border: 1px solid #c0f079;
+      }
       &.ant-radio-wrapper-checked {
         border: 1px solid #c0f079;
         background-color: #c0f079;
         color: black;
+      }
+      &.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+        border-color: #000;
+        background-color: #000;
+      }
+      &.ant-radio-wrapper .ant-radio-inner::after {
+        // display: none;
+        transform: scale(0.75);
+        background-image: url(../../../assets/line.svg);
+        background-size: 100% 100%;
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-position: top center;
+        margin-block-start: -10px;
+      }
+      &.ant-radio-wrapper .ant-radio-checked::after {
+        border: 1px solid #000;
       }
     }
   }
@@ -49,8 +69,7 @@
   }
   .collapsePanel {
     &::before {
-      content: 'Show';
-     
+      content: "Show";
     }
     margin-bottom: 20px;
     display: flex;
@@ -67,26 +86,24 @@
     .ant-collapse-header-text {
       .collapsePanel {
         &::before {
-          content: 'Hide';
-         
+          content: "Hide";
         }
         display: flex;
-          .collapseIcon {
-            transform: rotate(-180deg);
-            transition: transform 0.3s;
-          }
-        
+        .collapseIcon {
+          transform: rotate(-180deg);
+          transition: transform 0.3s;
+        }
       }
     }
   }
-  .noPins{
+  .noPins {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center ;
+    justify-content: center;
     margin-bottom: 20px;
-    color:#c0f079;
-    gap:8px;
+    color: #c0f079;
+    gap: 8px;
     cursor: pointer;
   }
 }
