@@ -27,6 +27,9 @@ export default ({ mrc20Id }: { mrc20Id: string }) => {
         if (data.list) {
             setList(data.list)
             setTotal(data.total);
+        }else{
+            setList([])
+            setTotal(0)
         }
         setLoading(false);
     }, [mrc20Id, network])
@@ -166,8 +169,10 @@ export default ({ mrc20Id }: { mrc20Id: string }) => {
             order={curOrder}
             show={buyModalVisible}
             onClose={() => {
+
                 setBuyModalVisible(false);
                 setCurOrder(undefined);
+                fetchOrders()
             }}
         />
     </div>
