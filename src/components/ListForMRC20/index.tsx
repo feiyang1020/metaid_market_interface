@@ -7,6 +7,7 @@ import { CheckOutlined } from "@ant-design/icons"
 import { formatSat } from "@/utils/utlis"
 import { listMrc20Order } from "@/utils/mrc20"
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "../SuccessModal"
+import MRC20Icon from "../MRC20Icon"
 
 const ListForMRC20 = () => {
     const { btcAddress, connect, connected, network, authParams } =
@@ -164,25 +165,7 @@ const ListForMRC20 = () => {
                                 }}
                             >
 
-                                <div className="assetNumber">
-                                    <ConfigProvider
-                                        theme={{
-                                            components: {
-                                                Button: {
-                                                    colorTextLightSolid: "#fff",
-                                                    primaryColor: "#fff",
-                                                    colorPrimary: `rgba(51, 51, 51, 0.38)`,
-                                                    colorPrimaryHover: `rgba(51, 51, 51, 0.38)`,
-                                                    colorPrimaryActive: `rgba(51, 51, 51, 0.38)`,
-                                                    lineWidth: 0,
-                                                    primaryShadow: "0 0px 0 rgba(0, 0, 0, 0)",
-                                                },
-                                            },
-                                        }}
-                                    >
-                                        <Button type="primary">#{item.tick}</Button>
-                                    </ConfigProvider>
-                                </div>
+
                                 <div className="checkBox">
                                     {checkList.includes(item.txPoint) ? (
                                         <div className="checked">
@@ -192,16 +175,10 @@ const ListForMRC20 = () => {
                                         <div className="unchecked"></div>
                                     )}
                                 </div>
-                                <div>{item.amount} {item.tick}</div>
+                                <div className="info"><MRC20Icon size={32} tick={item.tick} /> {item.amount} {item.tick}</div>
                             </div>
 
-                            <div className="desc">
-                                <div>
-                                    <div className="number">#{item.tick}</div>
-
-                                </div>
-
-                            </div>
+                           
 
                             <div className="inputWrap">
                                 <InputNumber
