@@ -27,11 +27,12 @@ const ListForMRC20 = () => {
         const _list = []
         if (data && data.list && data.list.length > 0) {
             for (let i = 0; i < data.list.length; i++) {
-                const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: data.list[i].mrc20Id, cursor: 0, size: 100 }, {
+                const { data: utxoList,code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: data.list[i].mrc20Id, cursor: 0, size: 100 }, {
                     headers: {
                         ...authParams,
                     },
                 });
+                if(code !== 0) {continue }
 
                 utxoList.list.forEach((item) => {
                     item.mrc20s.forEach((mrc20) => {
