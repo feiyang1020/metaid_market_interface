@@ -273,7 +273,6 @@ export const listMrc20Order = async (
       script: fakeOutScript,
       value: 0,
     });
-   
   } else {
     if (["P2SH"].includes(addressType)) {
       console.log("input.tapInternalKey");
@@ -289,7 +288,7 @@ export const listMrc20Order = async (
     }
     ask.addInput(input);
   }
-  console.log(ask, 'ask')
+  console.log(ask, "ask");
   ask.addOutput({ address, value: price });
   const signed = await window.metaidwallet.btc.signPsbt({
     psbtHex: ask.toHex(),
@@ -341,6 +340,7 @@ const _buildBuyMrc20TakePsbt = async (
       publicKey,
       script,
     });
+    psbtInput.sighashType = SIGHASH_ALL;
     psbt.addInput(psbtInput);
     toSignInputs.push({
       index: toSignIndex,
