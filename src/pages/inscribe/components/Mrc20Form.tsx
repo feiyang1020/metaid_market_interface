@@ -577,7 +577,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 <Form.Item label={<div>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
 
                                                 >
-                                                    <Checkbox.Group>
+                                                    <Checkbox.Group style={{display:'flex'}}>
                                                         <Row>
                                                             {shovel?.map(item => {
                                                                 return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>

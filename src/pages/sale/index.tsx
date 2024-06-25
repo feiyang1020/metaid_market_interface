@@ -27,6 +27,7 @@ export default () => {
   const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const [sellPrices, setSellPrices] = useState<Record<string, number>>({});
   const [checkList, setCheckList] = useState<string[]>([]);
+  const [submiting, setSubmiting] = useState<boolean>(false);
   const [successProp, setSuccessProp] =
     useState<SuccessProps>(DefaultSuccessProps);
   const onInputChange = (assetId: string, amount: number) => {
@@ -93,6 +94,7 @@ export default () => {
         return;
       }
     }
+    setSubmiting(true)
     for (let i = 0; i < checkList.length; i++) {
       const order = orders.find((item) => item.assetId === checkList[i]);
       try {
@@ -101,9 +103,11 @@ export default () => {
         console.log(err);
         message.error(`#${order?.assetNumber}: ${err.message}`);
         await updateOrders();
+        setSubmiting(false)
         return;
       }
     }
+    setSubmiting(false)
     setSuccessProp({
       show: true,
       onClose: () => setSuccessProp(DefaultSuccessProps),
@@ -266,6 +270,7 @@ export default () => {
                     type="primary"
                     disabled={totalStas === 0}
                     onClick={handleSale}
+                    loading={submiting}
                   >
                     List for sale
                   </Button>

@@ -19,12 +19,13 @@ const ListForMRC20 = () => {
 
     const [checkList, setCheckList] = useState<string[]>([]);
     const [sellPrices, setSellPrices] = useState<Record<string, number>>({});
+    const [submiting, setSubmiting] = useState<boolean>(false);
     const fetchList = useCallback(async () => {
         if (!btcAddress) return;
         setLoading(true);
         const { data } = await getUserMrc20List(network, { address: btcAddress, cursor: 0, size: 50 });
         const _list = []
-        if (data&&data.list && data.list.length > 0) {
+        if (data && data.list && data.list.length > 0) {
             for (let i = 0; i < data.list.length; i++) {
                 const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: data.list[i].mrc20Id, cursor: 0, size: 100 }, {
                     headers: {
@@ -65,12 +66,7 @@ const ListForMRC20 = () => {
             };
         });
     };
-    // useEffect(() => {
-    //     if (btcAddress) {
-    //         setParams({ address: btcAddress })
-    //         console.log('btcAddress', btcAddress)
-    //     }
-    // }, [btcAddress])
+
 
     const totalStas = useMemo(() => {
         const total = checkList.reduce((a, b) => {
@@ -79,7 +75,7 @@ const ListForMRC20 = () => {
         return total;
     }, [checkList, sellPrices]);
 
-    const listItem = async (txPoint: string, mrc20Id: string,price:number) => {
+    const listItem = async (txPoint: string, mrc20Id: string, price: number) => {
         if (!btcAddress) return
         const utxo: API.UTXO = {
             txId: txPoint.split(':')[0],
@@ -91,14 +87,14 @@ const ListForMRC20 = () => {
         }
         const psbtRaw = await listMrc20Order(utxo, price, network, btcAddress);
         console.log('psbtRaw', psbtRaw)
-        const {code ,message}=await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
+        const { code, message } = await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
             headers: {
                 ...authParams,
             },
         })
-        if(code!==0){
+        if (code !== 0) {
             throw new Error(message)
-        }   
+        }
     }
 
     const handleSale = async () => {
@@ -110,15 +106,17 @@ const ListForMRC20 = () => {
                 return;
             }
         }
+        setSubmiting(true)
         for (let i = 0; i < checkList.length; i++) {
             const order = list.find((item) => item.txPoint === checkList[i]);
-            if(!order)continue
+            if (!order) continue
             try {
                 await listItem(order.txPoint, order.mrc20Id, sellPrices[checkList[i]]);
             } catch (err: any) {
                 console.log(err);
                 message.error(`${order!.amount} ${order!.tick}: ${err.message}`);
                 await fetchList();
+                setSubmiting(false)
                 return;
             }
         }
@@ -132,6 +130,7 @@ const ListForMRC20 = () => {
         });
         setSellPrices({});
         setCheckList([]);
+        setSubmiting(false)
         await fetchList();
     };
 
@@ -232,6 +231,7 @@ const ListForMRC20 = () => {
                         type="primary"
                         disabled={totalStas === 0}
                         onClick={handleSale}
+                        loading={submiting}
                     >
                         List for sale
                     </Button>
