@@ -9,6 +9,7 @@ import "./index.less";
 import { buildBuyMrc20TakePsbt } from "@/utils/mrc20";
 import BuyMrc20Modal from "@/components/BuyMrc20Modal";
 import NumberFormat from "@/components/NumberFormat";
+import MRC20Icon from "@/components/MRC20Icon";
 export default ({ mrc20Id }: { mrc20Id: string }) => {
     const { network, connected, connect, btcAddress, authParams } = useModel('wallet')
     const [list, setList] = useState<API.Mrc20Order[]>([]);
@@ -74,7 +75,7 @@ export default ({ mrc20Id }: { mrc20Id: string }) => {
                                 >
                                     <div className="textContent">
                                         <div className="amont">
-                                            <Avatar>{item.tokenName}</Avatar>  {item.amount} {item.tick}
+                                           <MRC20Icon tick={item.tick}/>  {item.amount} {item.tick}
                                         </div>
                                         <div className="units">
 

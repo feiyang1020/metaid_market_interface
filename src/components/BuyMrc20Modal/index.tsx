@@ -24,6 +24,7 @@ import SuccessModal, {
 import { number } from "bitcoinjs-lib/src/script";
 import JSONView from "../JSONView";
 import { buildBuyMrc20TakePsbt, buyMrc20Order } from "@/utils/mrc20";
+import MRC20Icon from "../MRC20Icon";
 type Props = {
   order: API.Mrc20Order | undefined;
   show: boolean;
@@ -185,11 +186,11 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buySuccess">
             <div className="orderInfo">
               <div className="contetn">
-                {order.tokenName}
+                <MRC20Icon size={80} tick={order.tick} />
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>
-                <div className="number">{order.tickId}</div>
+                {/* <div className="number">{order.tickId}</div> */}
               </div>
             </div>
             <div className="res">
@@ -243,7 +244,7 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buyWrap">
             <div className="orderInfo">
               <div className="contetn">
-                {order.tokenName}
+                <MRC20Icon size={80} tick={order.tick} />
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>

@@ -10,6 +10,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import Activeity from './components/Activeity';
 import MyActiveity from './components/MyActiveity';
 import MetaIdAvatar from '@/components/MetaIdAvatar';
+import MRC20Icon from '@/components/MRC20Icon';
 
 const items: TabsProps['items'] = [
     {
@@ -51,7 +52,8 @@ export default () => {
         {
             mrc20Info && <div className='mrc20Info'>
                 <div className='left'>
-                    <Avatar size={102} src={mrc20Info.metaData} >{mrc20Info.tokenName}</Avatar>
+                    <MRC20Icon size={102} tick={mrc20Info.tick} />
+                    
                     <div className="info">
                         <div className="top">
                             <div className="nameWrap">

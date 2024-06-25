@@ -1,8 +1,9 @@
 import { Avatar, Typography } from "antd"
+import MRC20Icon from "../MRC20Icon"
 
 export default ({ info }: { info: API.MRC20Info }) => {
     return <div className="mrc20-item">
-        <Avatar size={40}>{info.tokenName}</Avatar>
+        <MRC20Icon tick={info.tick} />
         <div className="tick">
             <div className="tickName">
                 {info.tick}

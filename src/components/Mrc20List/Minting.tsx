@@ -53,6 +53,7 @@ export default () => {
         {
             title: 'Deployer',
             dataIndex: 'deployerUserInfo',
+            width: 160,
             render: (deployerUserInfo, record) => {
                 return <div className="deployer">
                     <div>
@@ -91,6 +92,7 @@ export default () => {
         {
             title: 'condition',
             dataIndex: 'qual',
+            width: 200,
             render: (qual, record) => {
                 return <div className="condition"><PopLvl lvl={record.qual.lvl} /> <Tooltip title={record.qual.path}>path:{record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip> <span className="colorPrimary"> X {record.qual.count || '1'}</span></div>
             }
@@ -99,6 +101,7 @@ export default () => {
             title: 'Deployed',
             dataIndex: 'deployTime',
             // sorter: true,
+            width: 200,
             render: (price) => {
                 return dayjs(price * 1000).format('MM/DD/YYYY,HH:mm')
             }
@@ -106,7 +109,7 @@ export default () => {
         {
             title: 'Progress%',
             dataIndex: 'totalSupply',
-
+            width: 200,
             render: (price, record) => {
                 const percent = Number(record.supply / record.totalSupply) * 100
                 return <div className="progress">
