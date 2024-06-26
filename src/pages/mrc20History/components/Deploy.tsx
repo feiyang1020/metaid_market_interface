@@ -11,127 +11,143 @@ import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
 const items = ["PIN", 'MRC20'];
 export default () => {
-  const { btcAddress, network, authParams } = useModel("wallet");
-  const [show, setShow] = useState<boolean>(false);
+    const { btcAddress, network, authParams } = useModel("wallet");
+    const [show, setShow] = useState<boolean>(false);
 
-  const [submiting, setSubmiting] = useState<boolean>(false);
-  const [list, setList] = useState<API.Mrc20InscribeOrder[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(0);
-  const [total, setTotal] = useState<number>(0);
-  const [size, setSize] = useState<number>(12);
+    const [submiting, setSubmiting] = useState<boolean>(false);
+    const [list, setList] = useState<API.Mrc20InscribeOrder[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [page, setPage] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [size, setSize] = useState<number>(12);
 
-  const fetchOrders = useCallback(async () => {
-    if(!btcAddress) return;
-    setLoading(true);
-    const { data } = await getMrc20InscribeOrders(network, { opOrderType:'deploy', address: btcAddress,   cursor: page * size, size });
-    if (data.list) {
-      setList(data.list)
-      setTotal(data.total);
-    }
-    setLoading(false);
-  }, [network, btcAddress])
-  useEffect(() => { fetchOrders() }, [fetchOrders]);
- 
-  const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
-    {
-      title: 'Name',
-      dataIndex: 'tick',
-      render:(_,record)=><Item info={record} />
-  },
-  
-  {
-      title: 'Price',
-      dataIndex: 'amount',
-      sorter: true,
-      render: (price) => {
-          return <NumberFormat value={price} suffix=' sats' />
-      }
-  },
-  {
-      title: 'Type',
-      dataIndex: 'buyerAddress',
-      render: (item) => {
-          return btcAddress===item?'Buy':'Sell'
-      }
-  },
-  
-    {
-      title: "",
-      dataIndex: "txId",
-      key: "txId",
-      fixed: 'right',
+    const fetchOrders = useCallback(async () => {
+        if (!btcAddress) return;
+        setLoading(true);
+        const { data } = await getMrc20InscribeOrders(network, { opOrderType: 'deploy', address: btcAddress, cursor: page * size, size });
+        if (data.list) {
+            setList(data.list.map((item) => {
+                if (item.qual) {
+                    try {
+                        item.qual = JSON.parse(item.qual)
+                    } catch (e) { item.qual = {} }
 
-      render: (text, record) => (
-        <Button
-          type="primary"
-          onClick={() => {
-            setCurOrder(record);
-            setShow(true);
-          }}
-        >
-          Cancel listing{" "}
-        </Button>
-      ),
-    },
-  ];
-  return (
-    <>
+                };
+                return item
+            }))
+            setTotal(data.total);
+        }
+        setLoading(false);
+    }, [network, btcAddress])
+    useEffect(() => { fetchOrders() }, [fetchOrders]);
 
-      <div className="tableWrap">
-        <Table
-          scroll={{ x: 1000 }}
-          rowKey={"txId"}
-          loading={loading}
-          columns={columns}
-          dataSource={list}
-          pagination={{ position: ["none", "none"] }}
-          bordered
-        />
-      </div>
+    const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
+        {
+            title: 'Name',
+            dataIndex: 'tick',
+            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId }}
+            />
+        },
 
-      <Popup
-        title=""
-        modalWidth={452}
-        show={show}
-        onClose={() => {
-          setShow(false);
-        }}
-        closable={true}
-        bodyStyle={{ padding: "28px 25px" }}
-        className="buyModal"
-      >
-        <div className="cancelWrap">
-          <div className="title">
-            Are your sure you want to cancel your listing？
-          </div>
-          <div className="subTitle">
-            This order may still be filled, if it was previously purchased but
-            not completed on the blockchain.
-          </div>
-          <div className="buttons">
-            <Button
-              type="default"
-              onClick={() => {
-                setShow(false);
-              }}
-              block
-            >
-              Close
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                handleCancel();
-              }}
-              loading={submiting}
-              block
-            >
-              Cancel listing
-            </Button>
-          </div>
-        </div>
-      </Popup>
-    </>
-  );
+        {
+            title: 'Path',
+            dataIndex: 'qual',
+            render: (price, record) => {
+                return <Tooltip title={record.qual.path}>path:{record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
+            }
+        },
+        {
+            title: 'Difficulty Level',
+            dataIndex: 'level',
+            render: (item, record) => {
+                return record.qual.lvl || '--'
+            }
+        },
+        {
+            title: 'Count',
+            dataIndex: 'count',
+            render: (item, record) => {
+                return record.qual.count || '--'
+            }
+        },
+        {
+            title: 'Max mint Count',
+            dataIndex: 'mintCount',
+
+        },
+        {
+            title: 'Amount per Mint',
+            dataIndex: 'amtPerMint',
+
+        },
+        {
+            title: 'Decimals',
+            dataIndex: 'decimals',
+
+        },
+        {
+            title: 'Premine Count',
+            dataIndex: 'premineCount',
+
+        },
+        {
+            title: 'Type',
+            dataIndex: 'blockHeight',
+            render: (item) => {
+                return item ? 'complete' : 'Pending'
+            }
+        },
+        {
+            title: "Time",
+            dataIndex: "timestamp",
+            key: "timestamp",
+            render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
+        },
+        {
+            title: "Hash",
+            dataIndex: "txId",
+            key: "txId",
+            render: (text, record) => (
+                <Tooltip title={text}>
+                    <a
+                        style={{ color: "#fff", textDecoration: "underline" }}
+                        target="_blank"
+                        href={
+                            network === "testnet"
+                                ? `https://mempool.space/testnet/tx/${text}`
+                                : `https://mempool.space/tx/${text}`
+                        }
+                    >
+                        {text.replace(/(\w{5})\w+(\w{5})/, "$2")}
+                    </a>
+                </Tooltip>
+            ),
+        },
+
+
+    ];
+    return (
+        <>
+
+            <div className="tableWrap">
+                <Table
+                    scroll={{ x: 1000 }}
+                    rowKey={"txId"}
+                    loading={loading}
+                    columns={columns}
+                    dataSource={list}
+                  
+                    bordered
+                    pagination={{
+                        pageSize: size,
+                        current: page + 1,
+                        total
+                    }}
+                   
+                />
+            </div>
+
+
+        </>
+    );
 };

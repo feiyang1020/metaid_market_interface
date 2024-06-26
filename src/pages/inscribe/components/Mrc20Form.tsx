@@ -31,6 +31,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
+    const _deployAmountPerMint = Form.useWatch('deployAmountPerMint', form);
     const _tab = query.get('tab');
     const _tickerId = query.get('tickerId');
     const [mintTokenID, setMintTokenID] = useState<string>('');
@@ -180,8 +181,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         //     }
         // });
         // if (ret.status) throw new Error(ret.status);
-        console.log(ret, 'ret');
-        success('Deploy', { commitTxId: commitRes.data.commitTxId })
+
+        success('Deploy', { revealTxId: commitRes.data.revealTxId })
     }
 
     const success = (title: string, ret: any) => {
@@ -213,17 +214,17 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         <div className="item">
                             <div className="label">Tarde Hash</div>
                             <div className="value">
-                                <Tooltip title={ret.commitTxId}>
+                                <Tooltip title={ret.revealTxId}>
                                     <a
                                         style={{ color: "#fff", textDecoration: "underline" }}
                                         target="_blank"
                                         href={
                                             network === "testnet"
-                                                ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
-                                                : `https://mempool.space/tx/${ret.commitTxId}`
+                                                ? `https://mempool.space/testnet/tx/${ret.revealTxId}`
+                                                : `https://mempool.space/tx/${ret.revealTxId}`
                                         }
                                     >
-                                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                        {ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
                                     </a>
                                 </Tooltip>
                             </div>
@@ -489,13 +490,21 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     </Form.Item>
                                                 </ConfigProvider>
 
-                                                <Form.Item rules={[{ required: true }]} label="Premine Count" name="deployPremineCount"
+                                                <Form.Item rules={[{ required: true }, ({ getFieldValue }) => ({
+                                                    validator(_, value) {
+                                                        if (!value || getFieldValue('deployAmountPerMint') >= value) {
+                                                            return Promise.resolve();
+                                                        }
+                                                        return Promise.reject(new Error('Premine Count cannot be greater than Amount per Mint !'));
+                                                    },
+                                                })]} label="Premine Count" name="deployPremineCount"
 
                                                 >
                                                     <InputNumber
                                                         size="large"
                                                         style={{ width: '100%' }}
                                                         min={0}
+                                                        
                                                         precision={0}
                                                     />
                                                 </Form.Item>

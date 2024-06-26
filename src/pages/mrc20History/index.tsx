@@ -7,7 +7,7 @@ import Deploy from "./components/Deploy";
 import Mint from "./components/Mint";
 import Transfer from "./components/Transfer";
 type Tab = "Deploy" | "Mint" | "Transfer";
-const items = ["Deploy", 'Mint', 'Transfer'];
+const items = ["Deploy", 'Mint', ];
 export default () => {
 
     const [tab, setTab] = useState<Tab>("Deploy");

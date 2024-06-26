@@ -361,14 +361,22 @@ declare namespace API {
     txId: string;
   };
   type Mrc20InscribeOrder = {
+    amtPerMint: string;
     blockHeight: number;
     confirmationState: number;
+    decimals: string;
+    mintCount: string;
     opOrderType: string;
     orderId: string;
+    premineCount: string;
+    qual: Record<string, string>;
+    startBlockHeight: string;
     tick: string;
     tickId: string;
     tickName: string;
     timestamp: number;
+    totalMinted: string;
     txId: string;
+    usedPins: string[];
   };
 }

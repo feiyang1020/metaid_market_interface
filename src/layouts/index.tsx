@@ -147,6 +147,15 @@ export default function Layout() {
                           <div className="path">Pending Order</div>
                           <RightOutlined />
                         </div>
+                        <div
+                          className="item"
+                          onClick={() => {
+                            history.push("/mrc20History");
+                          }}
+                        >
+                          <div className="path">Deploy</div>
+                          <RightOutlined />
+                        </div>
                       </div>
                       <div className="disConnect" onClick={disConnect}>
                         Disconnect

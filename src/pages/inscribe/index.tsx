@@ -400,17 +400,17 @@ export default () => {
                 <div className="item">
                   <div className="label">Tarde Hash</div>
                   <div className="value">
-                    <Tooltip title={ret.commitTxId}>
+                    <Tooltip title={ret.revealTxId}>
                       <a
                         style={{ color: "#fff", textDecoration: "underline" }}
                         target="_blank"
                         href={
                           network === "testnet"
-                            ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
-                            : `https://mempool.space/tx/${ret.commitTxId}`
+                            ? `https://mempool.space/testnet/tx/${ret.revealTxId}`
+                            : `https://mempool.space/tx/${ret.revealTxId}`
                         }
                       >
-                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                        {ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
                       </a>
                     </Tooltip>
                   </div>
