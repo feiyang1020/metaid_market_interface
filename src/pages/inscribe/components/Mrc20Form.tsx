@@ -82,11 +82,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     if (data && data.qual && data.qual.path) {
                         if (item.path !== data.qual.path) return false
                     }
-                    if(data.qual.lvl){
-                        return item.popLv >=(data.qual.lvl||0) 
+                    if (data.qual.lvl) {
+                        return item.popLv >= (data.qual.lvl || 0)
                     }
                     return true
-                   
+
                 }))
             }
         }
@@ -102,7 +102,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     }, [mintTokenID, btcAddress, network])
 
-   
+
 
     const fetchList = useCallback(async () => {
         if (!btcAddress) return;
@@ -122,7 +122,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     const deploy = async () => {
         if (!connected || !btcAddress || !btcConnector) return;
-        
+
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
         const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
@@ -346,6 +346,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     "Input": {
 
                         "colorSplit": "rgba(253, 253, 253, 0)"
+                    },
+                    "InputNumber": {
+                        "colorSplit": "rgba(253, 253, 253, 0)"
                     }
                 },
             }}>
@@ -400,17 +403,32 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     <Form.Item rules={[{ required: true }]} label="Max mint Count" name="deployMaxMintCount"
 
                                     >
-                                        <Input
+                                        <InputNumber
                                             size="large"
-
+                                            style={{ width: '100%' }}
+                                            min={0}
+                                            max={1000000000000}
+                                            precision={0}
+                                            addonAfter={
+                                                <Tooltip title="Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).">
+                                                    <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                </Tooltip>}
                                         />
                                     </Form.Item>
                                     <Form.Item rules={[{ required: true }]} label="Amount per Mint" name="deployAmountPerMint"
 
                                     >
-                                        <Input
+                                        <InputNumber
                                             size="large"
-
+                                            style={{ width: '100%' }}
+                                            min={1}
+                                            max={1000000000000}
+                                            precision={0}
+                                            addonAfter={
+                                                <Tooltip title="Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).">
+                                                    <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                </Tooltip>
+                                            }
                                         />
                                     </Form.Item>
 
@@ -430,7 +448,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 >
                                                     <Input
                                                         size="large"
-
+                                                        addonAfter={
+                                                            <Tooltip title="Optional. Format: `metafile://txid`. You should upload your icon file on-chain using Metafile protocol, then paste the metafile URL here.">
+                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                            </Tooltip>
+                                                        }
                                                     />
                                                 </Form.Item>
                                                 <ConfigProvider
@@ -450,7 +472,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             style={{ width: '100%' }}
                                                             min={0}
                                                             max={12}
-                                                            controls={false}
+                                                            precision={0}
                                                             addonAfter={
                                                                 <Tooltip title="Number of decimal places. Min: 0, Max: 12. Default to 0.">
                                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
@@ -467,6 +489,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <InputNumber
                                                         size="large"
                                                         style={{ width: '100%' }}
+                                                        min={0}
+                                                        precision={0}
                                                     />
                                                 </Form.Item>
                                                 <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}><Tooltip title='Difficulty Settings'> Difficulty Settings <QuestionCircleOutlined /></Tooltip></Col></Row>
@@ -496,6 +520,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <InputNumber
                                                         size="large"
                                                         style={{ width: '100%' }}
+                                                        min={0}
+                                                        precision={0}
                                                     />
                                                 </Form.Item></>
                                         }
