@@ -89,6 +89,8 @@ export default () => {
                 if (!current) current = 1
                 if (sorter.order) {
                     setParams({ orderBy: sorter.field === 'price' ? 'lastPrice' : sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
+                }else{
+                    setParams({}) 
                 }
                 setPage(current - 1)
             }}
