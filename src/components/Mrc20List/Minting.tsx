@@ -161,8 +161,10 @@ export default () => {
             onChange={({ current, ...params }, _, sorter) => {
                 console.log(sorter, 'params')
                 if (!current) current = 1;
-                if (sorter.field === 'holders') {
-                    setParams({ ...params, orderBy: 'holders' })
+                if (sorter.order) {
+                    setParams({ orderBy: sorter.field === 'price' ? 'lastPrice' : sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
+                }else{
+                    setParams({}) 
                 }
                 setPage(current - 1)
             }}
