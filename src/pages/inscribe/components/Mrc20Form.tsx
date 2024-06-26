@@ -78,16 +78,17 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (btcAddress) {
             const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
             if (code === 0 && ret && ret.list) {
-                setShowel(ret.list.filter(item => {
-                    if (data && data.qual && data.qual.path) {
-                        if (item.path !== data.qual.path) return false
-                    }
-                    if (data.qual.lvl) {
-                        return item.popLv >= (data.qual.lvl || 0)
-                    }
-                    return true
-
-                }))
+                setShowel(ret.list
+                    // .filter(item => {
+                    //     if (data && data.qual && data.qual.path) {
+                    //         if (item.path !== data.qual.path) return false
+                    //     }
+                    //     if (data.qual.lvl) {
+                    //         return item.popLv >= (data.qual.lvl || 0)
+                    //     }
+                    //     return true
+                    // })
+                )
             }
         }
         setMintInfoLoading(false)
