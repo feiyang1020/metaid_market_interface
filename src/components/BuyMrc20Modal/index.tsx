@@ -239,7 +239,7 @@ export default ({ order, show, onClose }: Props) => {
           onClose={onClose}
           closable={true}
           bodyStyle={{ padding: "28px 25px" }}
-          className="buyModal"
+          className="buyMRCModal"
         >
           <div className="buyWrap">
             <div className="orderInfo">
