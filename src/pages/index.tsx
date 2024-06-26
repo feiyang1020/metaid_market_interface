@@ -27,7 +27,8 @@ export default () => {
     updateOrders,
     setCursor,
     tab,
-    setTab
+    setTab,
+    filterKey
   } = useModel("orders");
   const [query] = useSearchParams();
   // const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
@@ -117,8 +118,8 @@ export default () => {
                 }
               ></SortArrow>
             </div>
-            <Popover content={<FilterForm /> } placement='bottomLeft'>
-              <Button type="text" icon={<FilterOutlined />}></Button>
+            <Popover content={<FilterForm /> } trigger={'click'} placement='bottomLeft'>
+              <Button type={Object.keys(filterKey).length>0?'link':'text'} icon={<FilterOutlined  />}></Button>
             </Popover>
 
             <Button

@@ -1,16 +1,18 @@
 import { Button, Col, Form, Input, Row, Space } from "antd";
+import { useModel } from "umi";
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 },
+    sm: { span: 5 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 },
+    sm: { span: 18 },
   },
 };
 export default () => {
+  const { filterKey, setFilterKey, setLoading } = useModel('orders')
   const [form] = Form.useForm();
   return <Form
     {...formItemLayout}
@@ -19,7 +21,7 @@ export default () => {
     form={form}
 
   >
-    <Form.Item label="Path" name="path"
+    <Form.Item label="Path" name="filter-path"
 
     >
       <Input
@@ -27,7 +29,7 @@ export default () => {
         style={{ width: '100%' }}
       />
     </Form.Item>
-    <Form.Item label="Level" name="level"
+    <Form.Item label="Level" name="filter-level"
 
     >
       <Input
@@ -36,10 +38,12 @@ export default () => {
       />
     </Form.Item>
 
-    <Form.Item label="Uncast" name="uncast"
+    <Form.Item label={<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}> <span>Uncast</span><span>(TokenID)</span>
+    </div>} name="filter-uncastTickId"
 
     >
       <Input
+        disabled
         size="large"
         style={{ width: '100%' }}
       />
@@ -49,7 +53,9 @@ export default () => {
       <Col span={12}>
         <Button
           onClick={() => {
+            setLoading(true);
             form.resetFields();
+            setFilterKey({});
           }}
           size="large"
           block
@@ -59,7 +65,10 @@ export default () => {
       </Col>
 
       <Col span={12}>
-        <Button type="primary" size="large" block disabled>
+        <Button type="primary" size="large" block onClick={() => {
+          setLoading(true);
+          setFilterKey(form.getFieldsValue());
+        }}>
           Confirmed
         </Button>
       </Col>
