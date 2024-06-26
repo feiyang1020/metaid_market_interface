@@ -40,6 +40,10 @@ const _themes = {
       headerSplitColor: "rgba(255, 251, 251, 0.08)",
       headerColor: "rgba(255, 255, 255, 0.6)",
     },
+    "Input": {
+
+      "colorSplit": "rgba(253, 253, 253, 0)"
+    },
   },
 };
 
@@ -116,7 +120,7 @@ export default function Layout() {
                         </div>
                       </div>
                       <div className="links">
-                      <div
+                        <div
                           className="item forsale"
                           onClick={() => {
                             history.push("/sale");

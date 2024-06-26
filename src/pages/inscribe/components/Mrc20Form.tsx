@@ -82,7 +82,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     if (data && data.qual && data.qual.path) {
                         if (item.path !== data.qual.path) return false
                     }
-                    return item.popLv >= data.qual.lvl
+                    if(data.qual.lvl){
+                        return item.popLv >=(data.qual.lvl||0) 
+                    }
+                    return true
+                   
                 }))
             }
         }
@@ -98,9 +102,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     }, [mintTokenID, btcAddress, network])
 
-    const fetchShovels = useCallback(async () => {
-
-    }, [btcAddress, mintTokenID])
+   
 
     const fetchList = useCallback(async () => {
         if (!btcAddress) return;
@@ -120,7 +122,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     const deploy = async () => {
         if (!connected || !btcAddress || !btcConnector) return;
-        await form.validateFields();
+        
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
         const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
@@ -338,279 +340,304 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     }
     return <div className="mrc20Form">
-        <Form
-            {...formItemLayout}
-            variant="filled"
-            style={{ maxWidth: "96vw", width: 632 }}
-            initialValues={{
-                // type: 'transfer',
-                // transferTickerId: '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0',
-                // recipient: 'mwKUTvJF43BqGqANeVdrtpRwd2zxNFvnWQ',
-                // amount: 200
-            }}
-            form={form}
-        >
-            <Form.Item label="Type" name="type" rules={[{ required: true }]}>
-                <Radio.Group className="customRadio">
-                    <Radio value="deploy" className="customRadioItem">Deploy</Radio>
-                    <Radio value="mint" className="customRadioItem">Mint</Radio>
-                    <Radio value="transfer" className="customRadioItem">Transfer</Radio>
-                </Radio.Group>
-            </Form.Item>
-            <Form.Item noStyle shouldUpdate={(prev, cur) => prev.type !== cur.type}>
-                {
-                    ({ getFieldValue }) => {
-                        const type = getFieldValue('type');
-                        if (type === 'deploy') {
-                            return <>
-                                <Form.Item label="Ticker" name="deployTicker"
-                                    rules={[{ required: true }]}
-                                >
-                                    <Input
-                                        size="large"
+        <ConfigProvider
+            theme={{
+                components: {
+                    "Input": {
 
-                                    />
-                                </Form.Item>
-                                <Form.Item label="Token Name" name="deployTokenName"
-
-                                >
-                                    <Input
-                                        size="large"
-                                        suffix={
-                                            <Tooltip title="Token Name">
-                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                            </Tooltip>
-                                        }
-                                    />
-                                </Form.Item>
-
-
-
-                                <Form.Item rules={[{ required: true }]} label="Max mint Count" name="deployMaxMintCount"
-
-                                >
-                                    <Input
-                                        size="large"
-
-                                    />
-                                </Form.Item>
-                                <Form.Item rules={[{ required: true }]} label="Amount per Mint" name="deployAmountPerMint"
-
-                                >
-                                    <Input
-                                        size="large"
-
-                                    />
-                                </Form.Item>
-
-                                <Collapse className="collapse" style={{ padding: 0 }} ghost items={[
-                                    {
-                                        key: '1',
-                                        label: <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}><div className="collapsePanel"> more options<div
-                                            className="collapseIcon"
-                                        >
-                                            <DownOutlined /></div>
-                                        </div></Col></Row>,
-
-                                        showArrow: false,
-                                        children: <>
-                                            <Form.Item label="Icon" name="deployIcon"
-
-                                            >
-                                                <Input
-                                                    size="large"
-
-                                                />
-                                            </Form.Item>
-                                            <Form.Item rules={[{ required: true }]} label="Decimals" name="deployDecimals"
-
-                                            >
-                                                <InputNumber
-                                                    size="large"
-                                                    style={{ width: '100%' }}
-                                                    min={0}
-                                                    max={12}
-
-                                                />
-                                            </Form.Item>
-
-                                            <Form.Item rules={[{ required: true }]} label="Premine Count" name="deployPremineCount"
-
-                                            >
-                                                <InputNumber
-                                                    size="large"
-                                                    style={{ width: '100%' }}
-                                                />
-                                            </Form.Item>
-                                            <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}><Tooltip title='Difficulty Settings'> Difficulty Settings <QuestionCircleOutlined /></Tooltip></Col></Row>
-
-
-                                            <Form.Item rules={[{ required: true }]} label="Path" name="deployPath"
-
-                                            >
-                                                <Input
-                                                    size="large"
-                                                    style={{ width: '100%' }}
-                                                />
-                                            </Form.Item>
-                                            <Form.Item rules={[{ required: true }]} label="Difficulty level" name="deployDifficultyLevel"
-
-                                            >
-                                                <Select style={{ textAlign: 'left' }} size="large" options={new Array(14).fill(null).map((_, i) => {
-                                                    return { label: `Lv${i}`, value: i }
-                                                })}>
-
-                                                </Select>
-                                            </Form.Item>
-
-                                            <Form.Item rules={[{ required: true }]} label="Count" name="deployCount"
-
-                                            >
-                                                <InputNumber
-                                                    size="large"
-                                                    style={{ width: '100%' }}
-                                                />
-                                            </Form.Item></>
-                                    }
-                                ]}>
-
-                                </Collapse>
-
-
-
-
-                            </>
-                        }
-                        if (type === 'transfer') {
-                            return <>
-                                <Form.Item label="Token ID" name="transferTickerId"
-                                    rules={[{ required: true }]}
-                                >
-                                    <Select
-
-                                        showSearch
-
-                                        style={{ textAlign: 'left' }} size="large"
-                                        placeholder="Select a token"
-                                        options={list.map(item => {
-                                            return { label: <div><span style={{ color: 'var(--primary)' }}>{item.balance}</span> {item.tick}</div>, value: item.mrc20Id }
-                                        })}
+                        "colorSplit": "rgba(253, 253, 253, 0)"
+                    }
+                },
+            }}>
+            <Form
+                {...formItemLayout}
+                variant="filled"
+                style={{ maxWidth: "96vw", width: 632 }}
+                initialValues={{
+                    // type: 'transfer',
+                    // transferTickerId: '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0',
+                    // recipient: 'mwKUTvJF43BqGqANeVdrtpRwd2zxNFvnWQ',
+                    // amount: 200
+                }}
+                form={form}
+            >
+                <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+                    <Radio.Group className="customRadio">
+                        <Radio value="deploy" className="customRadioItem">Deploy</Radio>
+                        <Radio value="mint" className="customRadioItem">Mint</Radio>
+                        <Radio value="transfer" className="customRadioItem">Transfer</Radio>
+                    </Radio.Group>
+                </Form.Item>
+                <Form.Item noStyle shouldUpdate={(prev, cur) => prev.type !== cur.type}>
+                    {
+                        ({ getFieldValue }) => {
+                            const type = getFieldValue('type');
+                            if (type === 'deploy') {
+                                return <>
+                                    <Form.Item label="Ticker" name="deployTicker"
+                                        rules={[{ required: true }]}
                                     >
+                                        <Input
+                                            size="large"
 
-                                    </Select>
-                                </Form.Item>
-                                <Form.Item label="Amount" name="amount" rules={[{ required: true }]}>
-                                    <InputNumber
-                                        size="large"
-                                        style={{ width: '100%' }}
-                                    />
-                                </Form.Item>
-                                <Form.Item label="Recipient address" name="recipient" rules={[{ required: true }]}>
-                                    <Input
-                                        size="large"
-                                    />
-                                </Form.Item></>
-                        }
-                        if (type === 'mint') {
-                            return <>
+                                        />
+                                    </Form.Item>
+                                    <Form.Item label="Token Name" name="deployTokenName"
 
-                                <Form.Item label="Token ID" name="tickerId" rules={[{ required: true }]} validateStatus={mintInfoStatus}
-                                    help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}>This token ID does not correspond to any MRC 20; Please re-enter.</div> : <></>} >
-                                    <Input
-                                        size="large"
-                                        onBlur={handleMintTokenIDChange}
-                                    />
-                                </Form.Item>
-                                <Row gutter={[0, 0]}>
-                                    <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading}>
+                                    >
+                                        <Input
+                                            size="large"
+                                            addonAfter={
+                                                <Tooltip title="Full name of the token. Length: 1-48 characters.">
+                                                    <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                </Tooltip>
+                                            }
+                                        />
+                                    </Form.Item>
 
+
+
+                                    <Form.Item rules={[{ required: true }]} label="Max mint Count" name="deployMaxMintCount"
+
+                                    >
+                                        <Input
+                                            size="large"
+
+                                        />
+                                    </Form.Item>
+                                    <Form.Item rules={[{ required: true }]} label="Amount per Mint" name="deployAmountPerMint"
+
+                                    >
+                                        <Input
+                                            size="large"
+
+                                        />
+                                    </Form.Item>
+
+                                    <Collapse className="collapse" style={{ padding: 0 }} ghost items={[
                                         {
-                                            mintMrc20Info && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><Card bordered={false} style={{ marginBottom: 20 }} >
-                                                <Descriptions column={1}
-                                                    labelStyle={{ color: '#FFFFFF' }}
-                                                    contentStyle={{ flexGrow: 1, justifyContent: 'flex-end', color: 'rgba(255, 255, 255, 0.5)' }}
-                                                    items={[
-                                                        {
-                                                            key: 'Ticker',
-                                                            label: 'Ticker',
-                                                            children: <>{mintMrc20Info.tick}</>
-                                                        },
-                                                        {
-                                                            key: 'tokenName',
-                                                            label: 'Token Name',
-                                                            children: <>{mintMrc20Info.tokenName}</>
-                                                        },
-                                                        {
-                                                            key: 'mintCount',
-                                                            label: 'Mint Count',
-                                                            children: <>{mintMrc20Info.mintCount}</>
-                                                        },
-                                                        {
-                                                            key: 'amtPerMint',
-                                                            label: 'Amount per Mint',
-                                                            children: <>{mintMrc20Info.amtPerMint}</>
-                                                        },
-                                                        {
-                                                            key: 'Path',
-                                                            label: 'Path',
-                                                            children: <Tooltip title={mintMrc20Info.qual.path}>{mintMrc20Info.qual.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip>
-                                                        },
-                                                        {
-                                                            key: 'Difficultylevel',
-                                                            label: 'Difficulty level',
-                                                            children: <>{mintMrc20Info.qual.lvl || '--'}</>
-                                                        },
-                                                        {
-                                                            key: 'Count',
-                                                            label: 'Count',
-                                                            children: <>{mintMrc20Info.qual.count || '--'}</>
-                                                        }
-                                                    ]}></Descriptions>
-                                            </Card></>
-                                        }
-                                    </Spin>
-                                    </Col>
-                                </Row>
-                                {mintMrc20Info && <>
-                                    {(shovel && shovel.length > 0) ?
-                                        <Row gutter={[0, 0]}>
-                                            <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
-                                                <Form.Item label={<div>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
+                                            key: '1',
+                                            label: <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}><div className="collapsePanel"> more options<div
+                                                className="collapseIcon"
+                                            >
+                                                <DownOutlined /></div>
+                                            </div></Col></Row>,
+
+                                            showArrow: false,
+                                            children: <>
+                                                <Form.Item label="Icon" name="deployIcon"
 
                                                 >
-                                                    <Checkbox.Group style={{ display: 'flex' }}>
-                                                        <Row>
-                                                            {shovel?.map(item => {
-                                                                return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
-                                                                    <div className="value">#{item.number} <a href={`https://man${network === 'mainnet' ? '' : '-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{ color: 'rgba(255, 255, 255, 0.5)', transform: 'rotate(-0.125turn)' }} /></a> </div></Checkbox></Col>
-                                                            })}
+                                                    <Input
+                                                        size="large"
 
-                                                        </Row></Checkbox.Group>
-                                                </Form.Item></Col></Row> : <Row gutter={[0, 0]}>
-                                            <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
-                                                No PIN. Go get it
-                                            </div></div></Col></Row>
-                                    }
-                                </>}
+                                                    />
+                                                </Form.Item>
+                                                <ConfigProvider
+                                                    theme={{
+                                                        components: {
+                                                            "Input": {
 
-                            </>
+                                                                "colorSplit": "rgba(253, 253, 253, 0)"
+                                                            }
+                                                        },
+                                                    }}>
+                                                    <Form.Item rules={[{ required: true }]} label="Decimals" name="deployDecimals"
+
+                                                    >
+                                                        <InputNumber
+                                                            size="large"
+                                                            style={{ width: '100%' }}
+                                                            min={0}
+                                                            max={12}
+                                                            controls={false}
+                                                            addonAfter={
+                                                                <Tooltip title="Number of decimal places. Min: 0, Max: 12. Default to 0.">
+                                                                    <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                                </Tooltip>
+                                                            }
+
+                                                        />
+                                                    </Form.Item>
+                                                </ConfigProvider>
+
+                                                <Form.Item rules={[{ required: true }]} label="Premine Count" name="deployPremineCount"
+
+                                                >
+                                                    <InputNumber
+                                                        size="large"
+                                                        style={{ width: '100%' }}
+                                                    />
+                                                </Form.Item>
+                                                <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}><Tooltip title='Difficulty Settings'> Difficulty Settings <QuestionCircleOutlined /></Tooltip></Col></Row>
+
+
+                                                <Form.Item rules={[{ required: true }]} label="Path" name="deployPath"
+
+                                                >
+                                                    <Input
+                                                        size="large"
+                                                        style={{ width: '100%' }}
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item rules={[{ required: true }]} label="Difficulty level" name="deployDifficultyLevel"
+
+                                                >
+                                                    <Select style={{ textAlign: 'left' }} size="large" options={new Array(14).fill(null).map((_, i) => {
+                                                        return { label: `Lv${i}`, value: i }
+                                                    })}>
+
+                                                    </Select>
+                                                </Form.Item>
+
+                                                <Form.Item rules={[{ required: true }]} label="Count" name="deployCount"
+
+                                                >
+                                                    <InputNumber
+                                                        size="large"
+                                                        style={{ width: '100%' }}
+                                                    />
+                                                </Form.Item></>
+                                        }
+                                    ]}>
+
+                                    </Collapse>
+
+
+
+
+                                </>
+                            }
+                            if (type === 'transfer') {
+                                return <>
+                                    <Form.Item label="Token ID" name="transferTickerId"
+                                        rules={[{ required: true }]}
+                                    >
+                                        <Select
+
+                                            showSearch
+
+                                            style={{ textAlign: 'left' }} size="large"
+                                            placeholder="Select a token"
+                                            options={list.map(item => {
+                                                return { label: <div><span style={{ color: 'var(--primary)' }}>{item.balance}</span> {item.tick}</div>, value: item.mrc20Id }
+                                            })}
+                                        >
+
+                                        </Select>
+                                    </Form.Item>
+                                    <Form.Item label="Amount" name="amount" rules={[{ required: true }]}>
+                                        <InputNumber
+                                            size="large"
+                                            style={{ width: '100%' }}
+                                        />
+                                    </Form.Item>
+                                    <Form.Item label="Recipient address" name="recipient" rules={[{ required: true }]}>
+                                        <Input
+                                            size="large"
+                                        />
+                                    </Form.Item></>
+                            }
+                            if (type === 'mint') {
+                                return <>
+
+                                    <Form.Item label="Token ID" name="tickerId" rules={[{ required: true }]} validateStatus={mintInfoStatus}
+                                        help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}>This token ID does not correspond to any MRC 20; Please re-enter.</div> : <></>} >
+                                        <Input
+                                            size="large"
+                                            onBlur={handleMintTokenIDChange}
+                                        />
+                                    </Form.Item>
+                                    <Row gutter={[0, 0]}>
+                                        <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading}>
+
+                                            {
+                                                mintMrc20Info && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><Card bordered={false} style={{ marginBottom: 20 }} >
+                                                    <Descriptions column={1}
+                                                        labelStyle={{ color: '#FFFFFF' }}
+                                                        contentStyle={{ flexGrow: 1, justifyContent: 'flex-end', color: 'rgba(255, 255, 255, 0.5)' }}
+                                                        items={[
+                                                            {
+                                                                key: 'Ticker',
+                                                                label: 'Ticker',
+                                                                children: <>{mintMrc20Info.tick}</>
+                                                            },
+                                                            {
+                                                                key: 'tokenName',
+                                                                label: 'Token Name',
+                                                                children: <>{mintMrc20Info.tokenName}</>
+                                                            },
+                                                            {
+                                                                key: 'mintCount',
+                                                                label: 'Mint Count',
+                                                                children: <>{mintMrc20Info.mintCount}</>
+                                                            },
+                                                            {
+                                                                key: 'amtPerMint',
+                                                                label: 'Amount per Mint',
+                                                                children: <>{mintMrc20Info.amtPerMint}</>
+                                                            },
+                                                            {
+                                                                key: 'Path',
+                                                                label: 'Path',
+                                                                children: <Tooltip title={mintMrc20Info.qual.path}>{mintMrc20Info.qual.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip>
+                                                            },
+                                                            {
+                                                                key: 'Difficultylevel',
+                                                                label: 'Difficulty level',
+                                                                children: <>{mintMrc20Info.qual.lvl || '--'}</>
+                                                            },
+                                                            {
+                                                                key: 'Count',
+                                                                label: 'Count',
+                                                                children: <>{mintMrc20Info.qual.count || '--'}</>
+                                                            }
+                                                        ]}></Descriptions>
+                                                </Card></>
+                                            }
+                                        </Spin>
+                                        </Col>
+                                    </Row>
+                                    {mintMrc20Info && <>
+                                        {(shovel && shovel.length > 0) ?
+                                            <Row gutter={[0, 0]}>
+                                                <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
+                                                    <Form.Item label={<div>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
+
+                                                    >
+                                                        <Checkbox.Group style={{ display: 'flex' }}>
+                                                            <Row>
+                                                                {shovel?.map(item => {
+                                                                    return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
+                                                                        <div className="value">#{item.number} <a href={`https://man${network === 'mainnet' ? '' : '-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{ color: 'rgba(255, 255, 255, 0.5)', transform: 'rotate(-0.125turn)' }} /></a> </div></Checkbox></Col>
+                                                                })}
+
+                                                            </Row></Checkbox.Group>
+                                                    </Form.Item></Col></Row> : <Row gutter={[0, 0]}>
+                                                <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
+                                                    No PIN. Go get it
+                                                </div></div></Col></Row>
+                                        }
+                                    </>}
+
+                                </>
+                            }
+                            return null;
                         }
-                        return null;
                     }
-                }
-            </Form.Item>
+                </Form.Item>
 
 
-            <Form.Item label="FeeRate" name="feeRate">
-                <SeleceFeeRateItem feeRates={feeRates} />
-            </Form.Item>
-
-
+                <Form.Item label="FeeRate" name="feeRate">
+                    <SeleceFeeRateItem feeRates={feeRates} />
+                </Form.Item>
 
 
 
-        </Form>
 
+
+            </Form>
+        </ConfigProvider>
         <Row gutter={[0, 0]}>
             <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
                 {!connected ? (
