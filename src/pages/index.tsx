@@ -1,5 +1,5 @@
-import { Avatar, Button, Grid, List, Space } from "antd";
-import { SyncOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Button, Grid, List, Popover, Space } from "antd";
+import { FilterOutlined, SyncOutlined, UserOutlined } from "@ant-design/icons";
 import "./index.less";
 import { useModel } from "umi";
 import Order from "@/components/Order";
@@ -10,6 +10,8 @@ import Mrc20List from "@/components/Mrc20List";
 
 const { useBreakpoint } = Grid;
 const items = ["PIN", 'MRC20'];
+
+
 export default () => {
   const {
     orders,
@@ -105,6 +107,10 @@ export default () => {
                 }
               ></SortArrow>
             </div>
+            <Popover>
+              <Button type="text" icon={<FilterOutlined />}></Button>
+            </Popover>
+
             <Button
               onClick={() => {
                 setLoading(true);
@@ -145,7 +151,7 @@ export default () => {
           />
         </div>
       </>}
-      {tab === "MRC20" &&<Mrc20List/>}
+      {tab === "MRC20" && <Mrc20List />}
 
       <BuyModel
         order={curOrder}

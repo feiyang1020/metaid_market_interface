@@ -164,7 +164,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         // console.log(commitRes, 'commitRes', revealRes, 'revealRes')
 
-        const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx })
+        const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx }, {
+            headers: {
+                ...authParams,
+            },
+        })
         if (commitRes.code !== 0) throw new Error(commitRes.message)
 
 
