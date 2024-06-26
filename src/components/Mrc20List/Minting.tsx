@@ -123,7 +123,8 @@ export default () => {
         {
             title: '',
             dataIndex: 'mint',
-
+            fixed: 'right',
+            width: 80,
             render: (_, record) => {
                 return <Button size='small' onClick={(e) => { e.stopPropagation(); history.push('/inscribe?tab=MRC-20&tickerId=' + record.mrc20Id) }} type='primary'>Mint</Button>
             }
@@ -146,7 +147,7 @@ export default () => {
                 }
             },
         }}><Table
-            style={{ margin: screens.lg ? '0 200px' : '0 20px' }}
+            style={{ margin: screens.lg ? '0 20px 0 200px' : '0 20px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}

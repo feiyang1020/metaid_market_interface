@@ -360,4 +360,15 @@ declare namespace API {
     dealTime: number;
     txId: string;
   };
+  type Mrc20InscribeOrder = {
+    blockHeight: number;
+    confirmationState: number;
+    opOrderType: string;
+    orderId: string;
+    tick: string;
+    tickId: string;
+    tickName: string;
+    timestamp: number;
+    txId: string;
+  };
 }

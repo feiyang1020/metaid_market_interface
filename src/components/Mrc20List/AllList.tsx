@@ -73,7 +73,7 @@ export default () => {
                 }
             },
         }}><Table
-            style={{ margin: screens.lg ? '0 200px' : '0 20px' }}
+            style={{ margin: screens.lg ? '0 20px 0 200px' : '0 20px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}

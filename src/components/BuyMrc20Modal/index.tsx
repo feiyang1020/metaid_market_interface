@@ -183,7 +183,7 @@ export default ({ order, show, onClose }: Props) => {
         title: "Buy",
         tip: "Payment Successful",
         children: (
-          <div className="buySuccess">
+          <div className="buyMRCSuccess">
             <div className="orderInfo">
               <div className="contetn">
                 <MRC20Icon size={80} tick={order.tick} />

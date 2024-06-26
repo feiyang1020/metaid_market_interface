@@ -553,3 +553,24 @@ export async function deployCommit(
     ...(options || {}),
   });
 }
+
+export async function getMrc20InscribeOrders(
+  network: API.Network,
+  params: {
+    opOrderType:string;//deploy, mint, transfer
+    address: string;
+    tickId?: string;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.Mrc20InscribeOrder>>(
+    `${getHost(network)}/api/v1/inscribe/mrc20/orders`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
