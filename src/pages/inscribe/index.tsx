@@ -484,9 +484,12 @@ export default () => {
           ))}
         </Space>
       </div>
-      {tab === "File" && (
-        <div className=" animation-slide-bottom">
-          {/* <Form
+      <div className="inscribeForm">
+
+
+        {tab === "File" && (
+          <div className=" animation-slide-bottom">
+            {/* <Form
             {...formItemLayout}
             variant="filled"
             style={{ maxWidth: "96vw", width: 632 }}
@@ -495,225 +498,226 @@ export default () => {
               <Input size="large" placeholder="" />
             </Form.Item>
           </Form> */}
-          <Row>
-            <Col
-              offset={sm ? 4 : 0}
-              span={sm ? 20 : 24}
-              style={{ paddingBottom: 24 }}
-            >
-              <div className="uploadWrap">
-                <div className="label"></div>
-                <div className="upload">
-                  <Dragger {...props} className="uploadInput">
-                    <p className="ant-upload-text">Upload file</p>
-                    <p className="ant-upload-hint">Any file type. Max 300kb</p>
-                    <p className="ant-upload-drag-icon">
-                      <img src={uploadIcon} alt="" />
-                    </p>
-                  </Dragger>
-                </div>
-              </div>
-            </Col>
-          </Row>
-          <Form
-            {...formItemLayout}
-            variant="filled"
-            style={{ maxWidth: "96vw", width: 632 }}
-          >
-            <Form.Item label="Fee Rate" name="Input">
-              <SeleceFeeRate
-                feeRates={feeRates}
-                customRate={customRate}
-                setCustomRate={setCustomRate}
-                feeRateTab={feeRateTab}
-                setFeeRateTab={setFeeRateTab}
-              />
-            </Form.Item>
-          </Form>
-          <Row gutter={[0, 0]}>
-            <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
-              {!connected ? (
-                <Button
-                  block
-                  className="submit"
-                  size="large"
-                  type="primary"
-                  onClick={connect}
-                >
-                  Connect Wallet
-                </Button>
-              ) : (
-                <Button
-                  block
-                  size="large"
-                  loading={submiting}
-                  type="primary"
-                  onClick={submit}
-                  disabled={!feeRate || fileList.length === 0}
-                  className="submit"
-                >
-                  Submit
-                </Button>
-              )}
-            </Col>
-          </Row>
-        </div>
-      )}
-      {tab === "Buzz" && (
-        <div className="form3 animation-slide-bottom">
-          <Form
-            {...formItemLayout}
-            variant="filled"
-            style={{ maxWidth: "96vw", width: 632 }}
-          >
-            <Form.Item label="Content" name="TextArea">
-              <TextArea
-                placeholder=""
-                allowClear
-                onChange={onChange}
-                className="textarea"
-                autoSize={false}
-                style={{ height: 140 }}
-                value={buzz}
-              />
-            </Form.Item>
-            <Form.Item label="Fee Rate" name="TextArea">
-              <SeleceFeeRate
-                feeRates={feeRates}
-                customRate={customRate}
-                setCustomRate={setCustomRate}
-                feeRateTab={feeRateTab}
-                setFeeRateTab={setFeeRateTab}
-              />
-            </Form.Item>
-          </Form>
-          <Row>
-            <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
-              {!connected ? (
-                <Button block size="large" type="primary" onClick={connect}>
-                  Connect Wallet
-                </Button>
-              ) : (
-                <Button
-                  block
-                  size="large"
-                  loading={submiting}
-                  type="primary"
-                  onClick={submitBuzz}
-                  disabled={!feeRate || !buzz}
-                >
-                  Submit
-                </Button>
-              )}
-              <div className="tips">
-                You can view your buzz in{" "}
-                <a href="https://www.bitbuzz.io/" target="_blank">
-                  bitbuzz.io
-                </a>{" "}
-                affer inscription
-              </div>
-            </Col>
-          </Row>
-
-          {/* </div> */}
-        </div>
-      )}
-      {tab === "PINs" && (
-        <div className="form4 animation-slide-bottom">
-          <Form
-            {...formItemLayout}
-            variant="filled"
-            style={{ maxWidth: "96vw", width: 632 }}
-            initialValues={{
-              path: "/protocols",
-              contentType: "text/plain",
-              Operation: "Create",
-            }}
-          >
-            <Form.Item label="Operation" name="Operation">
-              <Input size="large" disabled />
-            </Form.Item>
-            <Form.Item label="Path" name="path">
-              <Input
-                size="large"
-                status={checkPath ? "" : "error"}
-                value={path}
-                onChange={(e) => {
-                  setPath(e.target.value);
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item label="Content-type" name="contentType">
-              <Select
-                size="large"
-                style={{ textAlign: "left" }}
-                onChange={(e) => {
-                  setContentType(e);
-                }}
+            <Row>
+              <Col
+                offset={sm ? 4 : 0}
+                span={sm ? 20 : 24}
+                style={{ paddingBottom: 24 }}
               >
-                <Select.Option value="application/json">
-                  application/json
-                </Select.Option>
-                <Select.Option value="text/plain">text/plain</Select.Option>
-              </Select>
-            </Form.Item>
+                <div className="uploadWrap">
+                  <div className="label"></div>
+                  <div className="upload">
+                    <Dragger {...props} className="uploadInput">
+                      <p className="ant-upload-text">Upload file</p>
+                      <p className="ant-upload-hint">Any file type. Max 300kb</p>
+                      <p className="ant-upload-drag-icon">
+                        <img src={uploadIcon} alt="" />
+                      </p>
+                    </Dragger>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+            <Form
+              {...formItemLayout}
+              variant="filled"
+              style={{ maxWidth: "96vw", width: 632 }}
+            >
+              <Form.Item label="Fee Rate" name="Input">
+                <SeleceFeeRate
+                  feeRates={feeRates}
+                  customRate={customRate}
+                  setCustomRate={setCustomRate}
+                  feeRateTab={feeRateTab}
+                  setFeeRateTab={setFeeRateTab}
+                />
+              </Form.Item>
+            </Form>
+            <Row gutter={[0, 0]}>
+              <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
+                {!connected ? (
+                  <Button
+                    block
+                    className="submit"
+                    size="large"
+                    type="primary"
+                    onClick={connect}
+                  >
+                    Connect Wallet
+                  </Button>
+                ) : (
+                  <Button
+                    block
+                    size="large"
+                    loading={submiting}
+                    type="primary"
+                    onClick={submit}
+                    disabled={!feeRate || fileList.length === 0}
+                    className="submit"
+                  >
+                    Submit
+                  </Button>
+                )}
+              </Col>
+            </Row>
+          </div>
+        )}
+        {tab === "Buzz" && (
+          <div className="form3 animation-slide-bottom">
+            <Form
+              {...formItemLayout}
+              variant="filled"
+              style={{ maxWidth: "96vw", width: 632 }}
+            >
+              <Form.Item label="Content" name="TextArea">
+                <TextArea
+                  placeholder=""
+                  allowClear
+                  onChange={onChange}
+                  className="textarea"
+                  autoSize={false}
+                  style={{ height: 140 }}
+                  value={buzz}
+                />
+              </Form.Item>
+              <Form.Item label="Fee Rate" name="TextArea">
+                <SeleceFeeRate
+                  feeRates={feeRates}
+                  customRate={customRate}
+                  setCustomRate={setCustomRate}
+                  feeRateTab={feeRateTab}
+                  setFeeRateTab={setFeeRateTab}
+                />
+              </Form.Item>
+            </Form>
+            <Row>
+              <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
+                {!connected ? (
+                  <Button block size="large" type="primary" onClick={connect}>
+                    Connect Wallet
+                  </Button>
+                ) : (
+                  <Button
+                    block
+                    size="large"
+                    loading={submiting}
+                    type="primary"
+                    onClick={submitBuzz}
+                    disabled={!feeRate || !buzz}
+                  >
+                    Submit
+                  </Button>
+                )}
+                <div className="tips">
+                  You can view your buzz in{" "}
+                  <a href="https://www.bitbuzz.io/" target="_blank">
+                    bitbuzz.io
+                  </a>{" "}
+                  affer inscription
+                </div>
+              </Col>
+            </Row>
 
-            <Form.Item label="Payload" name="TextArea">
-              <Input.TextArea
-                size="large"
-                autoSize={false}
-                style={{ height: 140 }}
-                value={payload}
-                status={checkPayload ? "" : "error"}
-                onChange={(e) => {
-                  setPayload(e.target.value);
-                }}
-              />
-            </Form.Item>
-            <Form.Item label="Fee Rate" name="TextArea">
-              <SeleceFeeRate
-                feeRates={feeRates}
-                customRate={customRate}
-                setCustomRate={setCustomRate}
-                feeRateTab={feeRateTab}
-                setFeeRateTab={setFeeRateTab}
-              />
-            </Form.Item>
-          </Form>
+            {/* </div> */}
+          </div>
+        )}
+        {tab === "PINs" && (
+          <div className="form4 animation-slide-bottom">
+            <Form
+              {...formItemLayout}
+              variant="filled"
+              style={{ maxWidth: "96vw", width: 632 }}
+              initialValues={{
+                path: "/protocols",
+                contentType: "text/plain",
+                Operation: "Create",
+              }}
+            >
+              <Form.Item label="Operation" name="Operation">
+                <Input size="large" disabled />
+              </Form.Item>
+              <Form.Item label="Path" name="path">
+                <Input
+                  size="large"
+                  status={checkPath ? "" : "error"}
+                  value={path}
+                  onChange={(e) => {
+                    setPath(e.target.value);
+                  }}
+                />
+              </Form.Item>
 
-          <Row gutter={[0, 0]}>
-            <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
-              {!connected ? (
-                <Button
-                  block
-                  className="submit"
+              <Form.Item label="Content-type" name="contentType">
+                <Select
                   size="large"
-                  type="primary"
-                  onClick={connect}
+                  style={{ textAlign: "left" }}
+                  onChange={(e) => {
+                    setContentType(e);
+                  }}
                 >
-                  Connect Wallet
-                </Button>
-              ) : (
-                <Button
-                  block
+                  <Select.Option value="application/json">
+                    application/json
+                  </Select.Option>
+                  <Select.Option value="text/plain">text/plain</Select.Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item label="Payload" name="TextArea">
+                <Input.TextArea
                   size="large"
-                  loading={submiting}
-                  type="primary"
-                  onClick={inscribe}
-                  disabled={
-                    !feeRate || !path || !payload || !checkPayload || !checkPath
-                  }
-                  className="submit"
-                >
-                  Submit
-                </Button>
-              )}
-            </Col>
-          </Row>
-        </div>
-      )}
-      {tab === "MRC-20" && <Mrc20Form setTab={setTab} />}
+                  autoSize={false}
+                  style={{ height: 140 }}
+                  value={payload}
+                  status={checkPayload ? "" : "error"}
+                  onChange={(e) => {
+                    setPayload(e.target.value);
+                  }}
+                />
+              </Form.Item>
+              <Form.Item label="Fee Rate" name="TextArea">
+                <SeleceFeeRate
+                  feeRates={feeRates}
+                  customRate={customRate}
+                  setCustomRate={setCustomRate}
+                  feeRateTab={feeRateTab}
+                  setFeeRateTab={setFeeRateTab}
+                />
+              </Form.Item>
+            </Form>
+
+            <Row gutter={[0, 0]}>
+              <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
+                {!connected ? (
+                  <Button
+                    block
+                    className="submit"
+                    size="large"
+                    type="primary"
+                    onClick={connect}
+                  >
+                    Connect Wallet
+                  </Button>
+                ) : (
+                  <Button
+                    block
+                    size="large"
+                    loading={submiting}
+                    type="primary"
+                    onClick={inscribe}
+                    disabled={
+                      !feeRate || !path || !payload || !checkPayload || !checkPath
+                    }
+                    className="submit"
+                  >
+                    Submit
+                  </Button>
+                )}
+              </Col>
+            </Row>
+          </div>
+        )}
+        {tab === "MRC-20" && <Mrc20Form setTab={setTab} />}
+      </div>
       <SuccessModal {...successProp}></SuccessModal>
     </div>
   );
