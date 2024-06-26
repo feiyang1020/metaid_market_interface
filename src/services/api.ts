@@ -531,3 +531,25 @@ export async function broadcastBTCTx(
     ...(options || {}),
   });
 }
+
+export async function deployCommit(
+  network: API.Network,
+  params: {
+    commitTxRaw: string;
+    revealTxRaw: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      commitTxId: "string";
+      orderId: "string";
+      revealTxId: "string";
+      tickId: "string";
+    }>
+  >(`${getHost(network)}/api/v1/inscribe/mrc20/deploy/commit`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}

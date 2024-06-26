@@ -1,10 +1,10 @@
-import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Radio, Row, Select, Spin, Tooltip, message } from "antd";
+import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useSearchParams, history } from "umi";
 import "./index.less";
 import SeleceFeeRateItem from "./SeleceFeeRateItem";
-import { broadcastBTCTx, broadcastTx, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
+import { broadcastBTCTx, broadcastTx, deployCommit, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
 import { Psbt, Transaction, networks, address as addressLib } from "bitcoinjs-lib";
@@ -159,13 +159,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         //     console.log(revealTx, 'revealTx')
         // }
         // debugger
-        const commitRes = await broadcastBTCTx(network, ret.commitTx.rawTx)
-        const revealRes = await broadcastBTCTx(network, ret.revealTx.rawTx)
+        // const commitRes = await broadcastBTCTx(network, ret.commitTx.rawTx)
+        // const revealRes = await broadcastBTCTx(network, ret.revealTx.rawTx)
 
-        console.log(commitRes, 'commitRes', revealRes, 'revealRes')
+        // console.log(commitRes, 'commitRes', revealRes, 'revealRes')
 
-
-
+        const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx })
+        if (commitRes.code !== 0) throw new Error(commitRes.message)
 
 
         // const ret = await btcConnector.inscribe({
@@ -178,7 +178,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         // });
         // if (ret.status) throw new Error(ret.status);
         console.log(ret, 'ret');
-        success('Deploy', { commitTxId: ret.commitTx.txId })
+        success('Deploy', { commitTxId: commitRes.data.commitTxId })
     }
 
     const success = (title: string, ret: any) => {
@@ -494,7 +494,41 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         precision={0}
                                                     />
                                                 </Form.Item>
-                                                <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}><Tooltip title='Difficulty Settings'> Difficulty Settings <QuestionCircleOutlined /></Tooltip></Col></Row>
+                                                <Row gutter={[0, 0]}>
+                                                    <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
+                                                        <Popover title='Difficulty Settings' content={<Typography style={{ maxWidth: '400px' }}>
+                                                            <Typography.Paragraph>
+                                                                MRC20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.
+                                                            </Typography.Paragraph>
+                                                            <Typography.Paragraph>
+
+                                                                The difficulty setting has four parameters:
+
+                                                            </Typography.Paragraph>
+                                                            <ul>
+                                                                <li>
+                                                                    <Typography.Text code strong>
+                                                                        difficulty level
+                                                                    </Typography.Text>: The difficulty level determines that a PIN of the corresponding or higher difficulty level is required to be eligible to mint MRC20.
+                                                                </li>
+                                                                <li>
+                                                                    <Typography.Text code strong>path</Typography.Text>
+                                                                    : determines that a PIN with the corresponding path is required to be eligible to mint MRC20.
+                                                                </li>
+                                                                <li>
+                                                                    <Typography.Text code strong>count</Typography.Text>
+                                                                    : one needs to provide the corresponding number of PINs that meet the difficulty criteria to be eligible to mint MRC20.
+                                                                </li>
+                                                                <li>
+                                                                    <Typography.Text code strong>creator</Typography.Text>
+                                                                    :one needs to provide PINs of certain creators to be eligible to mint MRC20.
+                                                                </li>
+                                                            </ul>
+                                                        </Typography>}>
+                                                            Difficulty Settings <QuestionCircleOutlined />
+                                                        </Popover>
+                                                    </Col>
+                                                </Row>
 
 
                                                 <Form.Item rules={[{ required: true }]} label="Path" name="deployPath"
