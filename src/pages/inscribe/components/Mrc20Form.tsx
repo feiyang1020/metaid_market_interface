@@ -383,18 +383,20 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             if (type === 'deploy') {
                                 return <>
                                     <Form.Item label="Ticker" name="deployTicker"
-                                        rules={[{ required: true }]}
+                                        rules={[{ required: true }, { type: 'string', min: 2, max: 24 }]}
                                     >
                                         <Input
                                             size="large"
-
+                                            maxLength={24}
                                         />
                                     </Form.Item>
                                     <Form.Item label="Token Name" name="deployTokenName"
-
+                                        rules={[{ type: 'string', min: 1, max: 48 }]}
                                     >
                                         <Input
                                             size="large"
+                                            maxLength={48}
+
                                             addonAfter={
                                                 <Tooltip title="Full name of the token. Length: 1-48 characters.">
                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
