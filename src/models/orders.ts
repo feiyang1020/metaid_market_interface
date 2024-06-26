@@ -7,6 +7,7 @@ export default () => {
   const size = 12;
   const { network } = useModel("wallet");
   const [sortKey, setSortKey] = useState<string>("timestamp");
+  const [filter, setFilter] = useState<string>("");
   const [sortType, setSortType] = useState<number>(-1);
   const [cursor, setCursor] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);

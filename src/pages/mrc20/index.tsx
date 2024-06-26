@@ -11,6 +11,8 @@ import Activeity from './components/Activeity';
 import MyActiveity from './components/MyActiveity';
 import MetaIdAvatar from '@/components/MetaIdAvatar';
 import MRC20Icon from '@/components/MRC20Icon';
+import { formatSat } from '@/utils/utlis';
+import btcIcon from "@/assets/logo_btc@2x.png";
 
 const items: TabsProps['items'] = [
     {
@@ -53,7 +55,7 @@ export default () => {
             mrc20Info && <div className='mrc20Info'>
                 <div className='left'>
                     <MRC20Icon size={102} tick={mrc20Info.tick} />
-                    
+
                     <div className="info">
                         <div className="top">
                             <div className="nameWrap">
@@ -86,12 +88,12 @@ export default () => {
                             <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false} />
                         </div>
                     </div>
-                    <Divider type='vertical' style={{height:75}} />
+                    <Divider type='vertical' style={{ height: 75 }} />
                     <div className="desc">
-                        <Statistic title="Total volume" value={'--'} />
-                        <Statistic title="Market Cap" value={mrc20Info.marketCap} />
-                        <Statistic title="Floor price" value={mrc20Info.price} />
-                        <Statistic title="Holders" value={mrc20Info.holders} />
+                        <Statistic valueStyle={{display:'flex',alignItems:'center',fontSize:16}} title="Total volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{width:16,height:16}} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{display:'flex',alignItems:'center',fontSize:16}} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{width:16,height:16}} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{display:'flex',alignItems:'center',fontSize:16}} title="Floor price" value={mrc20Info.price} suffix='sats' />
+                        <Statistic valueStyle={{display:'flex',alignItems:'center',fontSize:16}}  title="Holders" value={mrc20Info.holders} />
                     </div>
                 </div>
                 <div className='mintBtn'>

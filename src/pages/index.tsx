@@ -7,6 +7,7 @@ import SortArrow from "@/components/SortArrow";
 import { useEffect, useState } from "react";
 import BuyModel from "@/components/BuyModel";
 import Mrc20List from "@/components/Mrc20List";
+import FilterForm from "@/components/FilterForm";
 
 const { useBreakpoint } = Grid;
 const items = ["PIN", 'MRC20'];
@@ -107,7 +108,7 @@ export default () => {
                 }
               ></SortArrow>
             </div>
-            <Popover>
+            <Popover content={<FilterForm /> } placement='bottomLeft'>
               <Button type="text" icon={<FilterOutlined />}></Button>
             </Popover>
 
