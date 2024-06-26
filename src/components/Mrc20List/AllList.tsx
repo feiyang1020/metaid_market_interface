@@ -22,7 +22,7 @@ export default () => {
         {
             title: 'Price',
             dataIndex: 'price',
-            // sorter: true,
+            sorter: true,
             render: (price) => {
                 return <NumberFormat value={price} suffix=' sats' />
             }
@@ -30,7 +30,7 @@ export default () => {
         {
             title: 'Change 24H',
             dataIndex: 'change24h',
-            // sorter: true,
+            sorter: true,
             render: (item) => {
                 return <div style={{ color: item[0] === '+' ? '#40BA68' : '#B94041' }}>{item}</div>
             }
@@ -38,9 +38,9 @@ export default () => {
         {
             title: 'MarketCap',
             dataIndex: 'marketCap',
-            // sorter: true,
+            sorter: true,
             render: (price) => {
-                return <NumberFormat value={price} decimal={8} suffix=' BTC' />
+                return <NumberFormat value={price} decimal={8} isBig suffix=' BTC' />
             }
         },
         {
@@ -87,8 +87,8 @@ export default () => {
             onChange={({ current, ...params }, _, sorter) => {
                 console.log(sorter, 'params')
                 if (!current) current = 1
-                if (sorter.field === 'holders') {
-                    setParams({ ...params, orderBy: 'holders' })
+                if (sorter.order) {
+                    setParams({ orderBy: sorter.field === 'price' ? 'lastPrice' : sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
                 }
                 setPage(current - 1)
             }}
