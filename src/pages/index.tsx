@@ -1,7 +1,7 @@
 import { Avatar, Button, Grid, List, Popover, Space } from "antd";
 import { FilterOutlined, SyncOutlined, UserOutlined } from "@ant-design/icons";
 import "./index.less";
-import { useModel } from "umi";
+import { useModel,useSearchParams } from "umi";
 import Order from "@/components/Order";
 import SortArrow from "@/components/SortArrow";
 import { useEffect, useState } from "react";
@@ -29,6 +29,7 @@ export default () => {
     tab,
     setTab
   } = useModel("orders");
+  const [query] = useSearchParams();
   // const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const [curOrder, setCurOrder] = useState<API.Order>();
   const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
@@ -41,6 +42,14 @@ export default () => {
     }
     setLoading(true);
   };
+
+  
+  const _tab = query.get("tab");
+  useEffect(() => {
+    if (_tab && items.includes(_tab)) {
+      setTab(_tab as "PIN" | "MRC20");
+    }
+  }, [_tab]);
 
   useEffect(() => {
     setLoading(true);
