@@ -423,7 +423,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 </Tooltip>}
                                         />
                                     </Form.Item>
-                                    <Form.Item rules={[{ required: true }]} label="Amount per Mint" name="deployAmountPerMint"
+                                    <Form.Item rules={[{ required: true },({ getFieldValue }) => ({
+                                                    validator(_, value) {
+                                                        if (!value || getFieldValue('deployMaxMintCount') >= value) {
+                                                            return Promise.resolve();
+                                                        }
+                                                        return Promise.reject(new Error('Amount per Mint cannot be greater than Max Mint Count !'));
+                                                    },
+                                                })]} label="Amount per Mint" name="deployAmountPerMint"
 
                                     >
                                         <InputNumber
