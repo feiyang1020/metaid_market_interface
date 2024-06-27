@@ -57,6 +57,31 @@
       // gap: 4px;
       align-items: center;
     }
+    &:hover {
+      .ant-checkbox .ant-checkbox-inner{
+        border-color: #000;
+      }
+      .ant-checkbox-checked .ant-checkbox-inner{
+        background-color: #000!important;
+        border-color: #000;
+        
+      }
+    }
+    .ant-checkbox .ant-checkbox-inner{
+      border-radius: 50%;
+      
+    }
+    .ant-checkbox-checked .ant-checkbox-inner{
+      background-color: #000;
+      border-color: #000;
+      &:hover{
+        background-color: #000;
+        border-color: #000;
+      }
+    }
+    .ant-checkbox .ant-checkbox-inner:after{
+      border-color: #c0f079;
+    }
   }
   .ant-checkbox-wrapper:after {
     display: none !important;

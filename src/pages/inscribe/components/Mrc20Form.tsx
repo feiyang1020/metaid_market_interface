@@ -681,7 +681,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                     >
                                                         <Checkbox.Group style={{ display: 'flex' }}>
-                                                            <Row>
+                                                            <Row style={{borderRadius:8,overflow:'hidden'}}>
                                                                 {shovel?.map(item => {
                                                                     return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
                                                                         <div className="value">#{item.number} <a href={`https://man${network === 'mainnet' ? '' : '-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{ color: 'rgba(255, 255, 255, 0.5)', transform: 'rotate(-0.125turn)' }} /></a> </div></Checkbox></Col>
