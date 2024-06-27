@@ -77,6 +77,7 @@ export default () => {
             title: 'Minted',
             dataIndex: 'totalMinted',
             sorter: true,
+            width: 160,
             render: (totalMinted) => {
                 return <NumberFormat value={totalMinted} />
             }
@@ -85,12 +86,13 @@ export default () => {
             title: 'Holders',
             dataIndex: 'holders',
             sorter: true,
+            width: 160,
             render: (price) => {
                 return <NumberFormat value={price} />
             }
         },
         {
-            title: 'condition',
+            title: 'Condition',
             dataIndex: 'qual',
             width: 200,
             render: (qual, record) => {
@@ -98,7 +100,7 @@ export default () => {
             }
         },
         {
-            title: 'Deployed',
+            title: 'Time',
             dataIndex: 'deployTime',
             // sorter: true,
             width: 200,
