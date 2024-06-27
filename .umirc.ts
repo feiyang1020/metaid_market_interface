@@ -1,15 +1,7 @@
 import { defineConfig } from "umi";
 export default defineConfig({
   routes: [
-    { path: "/", component: "index", title: "" },
-    { path: "/market", component: "index" },
-    { path: "/inscribe", component: "inscribe" },
-    { path: "/sale", component: "sale" },
-    { path: "/order", component: "detail" },
-    { path: "/history", component: "history" },
-    { path: "/pending", component: "pending" },
-    { path: "/mrc20History", component: "mrc20History" },
-    { path: "/mrc20/:mrc20Id", component: "mrc20" },
+    { path: "/", component: "inscribe", title: "" },
   ],
   title: "MetaID-Market",
   npmClient: "pnpm",

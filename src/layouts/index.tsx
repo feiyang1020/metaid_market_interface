@@ -68,7 +68,7 @@ export default function Layout() {
       <div className="page">
         <div className="header">
           <div className="pageLeft">
-            <img
+            {/* <img
               src={logo}
               alt=""
               className="logo"
@@ -77,12 +77,12 @@ export default function Layout() {
             <Divider type="vertical"></Divider>
             <div className="navWrap">
               <Nav />
-            </div>
+            </div> */}
           </div>
           <div className="navWrap">
             {connected ? (
               <Space>
-                <Button
+                {/* <Button
                   type="link"
                   onClick={() => {
                     history.push("/sale");
@@ -90,7 +90,7 @@ export default function Layout() {
                   className="listforsale"
                 >
                   List for sale
-                </Button>
+                </Button> */}
                 <Dropdown
                   arrow
                   dropdownRender={() => (
@@ -120,7 +120,7 @@ export default function Layout() {
                         </div>
                       </div>
                       <div className="links">
-                        <div
+                        {/* <div
                           className="item forsale"
                           onClick={() => {
                             history.push("/sale");
@@ -155,7 +155,7 @@ export default function Layout() {
                         >
                           <div className="path">Deploy</div>
                           <RightOutlined />
-                        </div>
+                        </div> */}
                       </div>
                       <div className="disConnect" onClick={disConnect}>
                         Disconnect
@@ -185,7 +185,7 @@ export default function Layout() {
           <Outlet />
         </div>
 
-        <div className="footer">MetaID.market@2024 All Rights Reserved</div>
+        <div className="footer"></div>
       </div>
     </ConfigProvider>
   );
