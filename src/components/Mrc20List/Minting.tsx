@@ -56,8 +56,8 @@ export default () => {
             width: 160,
             render: (deployerUserInfo, record) => {
                 return <div className="deployer">
-                    <div>
-                        <MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /> {record.deployerUserInfo.name||record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
+                    <div className="deployerInfo">
+                        <MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /><div className="deployerName">{record.deployerUserInfo.name||record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</div> 
                     </div>
                     <div className="MetaId">
                         MetaID:{record.deployerMetaId.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}
