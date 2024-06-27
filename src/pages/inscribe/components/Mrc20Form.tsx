@@ -127,7 +127,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
         const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
-        
+        if(deployPremineCount===undefined||deployPath===undefined||deployDifficultyLevel===undefined||deployCount===undefined){
+            throw new Error('Please fill in the required fields')
+        }
         const payload: any = {
             tick: deployTicker, // no less than 2-24 characters
             tokenName: deployTokenName, // token full name, 1-48 characters
