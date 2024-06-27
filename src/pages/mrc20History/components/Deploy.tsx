@@ -53,7 +53,7 @@ export default () => {
             title: 'Path',
             dataIndex: 'qual',
             render: (price, record) => {
-                return <Tooltip title={record.qual.path}>path:{record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
+                return <Tooltip title={record.qual.path}>path:{record.qual.path&&record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
             }
         },
         {
