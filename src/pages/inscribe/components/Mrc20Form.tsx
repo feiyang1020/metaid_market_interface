@@ -31,7 +31,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
-    
+
     const _tab = query.get('tab');
     const _tickerId = query.get('tickerId');
     const [mintTokenID, setMintTokenID] = useState<string>('');
@@ -126,8 +126,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals='8', deployPremineCount='', deployPath='', deployDifficultyLevel='', deployCount='', feeRate } = form.getFieldsValue();
-        
+        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', feeRate } = form.getFieldsValue();
+
         const payload: any = {
             tick: deployTicker, // no less than 2-24 characters
             tokenName: deployTokenName, // token full name, 1-48 characters
@@ -424,14 +424,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 </Tooltip>}
                                         />
                                     </Form.Item>
-                                    <Form.Item rules={[{ required: true },({ getFieldValue }) => ({
-                                                    validator(_, value) {
-                                                        if (!value || getFieldValue('deployMaxMintCount') >= value) {
-                                                            return Promise.resolve();
-                                                        }
-                                                        return Promise.reject(new Error('Amount Per Mint cannot be greater than Max Mint Count !'));
-                                                    },
-                                                })]} label="Amount Per Mint" name="deployAmountPerMint"
+                                    <Form.Item rules={[{ required: true }, ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('deployMaxMintCount') >= value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Amount Per Mint cannot be greater than Max Mint Count !'));
+                                        },
+                                    })]} label="Amount Per Mint" name="deployAmountPerMint"
 
                                     >
                                         <InputNumber
@@ -480,7 +480,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             }
                                                         },
                                                     }}>
-                                                    <Form.Item  label="Decimals" name="deployDecimals"
+                                                    <Form.Item label="Decimals" name="deployDecimals"
 
                                                     >
                                                         <InputNumber
@@ -499,7 +499,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     </Form.Item>
                                                 </ConfigProvider>
 
-                                                <Form.Item rules={[ ({ getFieldValue }) => ({
+                                                <Form.Item rules={[({ getFieldValue }) => ({
                                                     validator(_, value) {
                                                         if (!value || getFieldValue('deployMaxMintCount') >= value) {
                                                             return Promise.resolve();
@@ -513,7 +513,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         size="large"
                                                         style={{ width: '100%' }}
                                                         min={0}
-                                                        
+
                                                         precision={0}
                                                     />
                                                 </Form.Item>
@@ -686,18 +686,27 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         {(shovel && shovel.length > 0) ?
                                             <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
-                                                    <Form.Item label={<div>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}</div>} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
+                                                    <Collapse ghost defaultActiveKey={1} style={{ padding: 0,marginBottom:20 }} expandIconPosition='end' items={
+                                                        [{
+                                                            key: 1,
+                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="PINs">
+                                                            <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                        </Tooltip></div>,
+                                                            children: <Form.Item label='' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
 
-                                                    >
-                                                        <Checkbox.Group style={{ display: 'flex' }}>
-                                                            <Row style={{borderRadius:8,overflow:'hidden'}}>
-                                                                {shovel?.map(item => {
-                                                                    return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
-                                                                        <div className="value">#{item.number} <a href={`https://man${network === 'mainnet' ? '' : '-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{ color: 'rgba(255, 255, 255, 0.5)', transform: 'rotate(-0.125turn)' }} /></a> </div></Checkbox></Col>
-                                                                })}
+                                                            >
+                                                                <Checkbox.Group style={{ display: 'flex' }}>
+                                                                    <Row style={{ borderRadius: 8, overflow: 'hidden', maxHeight: 200, overflowY: 'scroll' }}>
+                                                                        {shovel?.map(item => {
+                                                                            return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
+                                                                                <div className="value">#{item.number} <a href={`https://man${network === 'mainnet' ? '' : '-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{ color: 'rgba(255, 255, 255, 0.5)', transform: 'rotate(-0.125turn)' }} /></a> </div></Checkbox></Col>
+                                                                        })}
 
-                                                            </Row></Checkbox.Group>
-                                                    </Form.Item></Col></Row> : <Row gutter={[0, 0]}>
+                                                                    </Row></Checkbox.Group>
+                                                            </Form.Item>
+                                                        }]
+                                                    }></Collapse>
+                                                </Col></Row> : <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/?tab=PIN') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
                                                     No PIN. Go get it
                                                 </div></div></Col></Row>
