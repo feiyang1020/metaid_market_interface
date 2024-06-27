@@ -109,7 +109,7 @@ export default () => {
             title: "Time",
             dataIndex: "timestamp",
             key: "timestamp",
-            render: (text) => dayjs(text*1000).format("YYYY/MM/DD,HH:mm"),
+            render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
         },
         {
             title: "Hash",
