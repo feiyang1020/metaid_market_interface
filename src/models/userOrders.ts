@@ -14,6 +14,7 @@ export default () => {
   const [loading, setLoading] = useState<boolean>(true);
   const fetchOrders = useCallback(
     async (retry: boolean = true) => {
+      return;
       if (!btcAddress) {
         setLoading(false);
         return;

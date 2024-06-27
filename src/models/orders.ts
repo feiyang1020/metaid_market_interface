@@ -7,7 +7,7 @@ export default () => {
   const size = 12;
   const { network } = useModel("wallet");
   const [sortKey, setSortKey] = useState<string>("timestamp");
-  const [filterKey, setFilterKey] = useState<Record<string,string>>({});
+  const [filterKey, setFilterKey] = useState<Record<string, string>>({});
   const [sortType, setSortType] = useState<number>(-1);
   const [cursor, setCursor] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
@@ -16,8 +16,9 @@ export default () => {
   const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const fetchOrders = useCallback(
     async (retry: boolean = true) => {
+      return;
       if (network) {
-        console.log('fetchOrders', filterKey)
+        console.log("fetchOrders", filterKey);
         try {
           const ret = await getOrders(network, {
             assetType: "pins",
@@ -26,7 +27,7 @@ export default () => {
             sortType,
             cursor: cursor * size,
             size,
-            ...filterKey
+            ...filterKey,
           });
           const list: API.Asset[] = ret.data.list.map((item) => {
             return {
@@ -54,7 +55,7 @@ export default () => {
         }
       }
     },
-    [network, sortKey, sortType, cursor,filterKey]
+    [network, sortKey, sortType, cursor, filterKey]
   );
   const updateOrders: any = useIntervalAsync(fetchOrders, 90000);
   return {
@@ -72,6 +73,6 @@ export default () => {
     tab,
     setTab,
     filterKey,
-    setFilterKey  
+    setFilterKey,
   };
 };
