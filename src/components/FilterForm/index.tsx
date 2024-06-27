@@ -43,7 +43,7 @@ export default () => {
 
     >
       <Input
-        disabled
+        
         size="large"
         style={{ width: '100%' }}
       />
