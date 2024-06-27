@@ -126,7 +126,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals='', deployPremineCount='', deployPath='', deployDifficultyLevel='', deployCount='', feeRate } = form.getFieldsValue();
+        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals='8', deployPremineCount='', deployPath='', deployDifficultyLevel='', deployCount='', feeRate } = form.getFieldsValue();
         
         const payload: any = {
             tick: deployTicker, // no less than 2-24 characters
