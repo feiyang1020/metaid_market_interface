@@ -1,21 +1,17 @@
 import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
-const { useBreakpoint } = Grid;
+
 import { useModel, useSearchParams, history } from "umi";
 import "./index.less";
 import SeleceFeeRateItem from "./SeleceFeeRateItem";
-import { broadcastBTCTx, broadcastTx, deployCommit, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
-import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
+import { deployCommit, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
+import { getPkScriprt } from "@/utils/orders";
 import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
-import { Psbt, Transaction, networks, address as addressLib } from "bitcoinjs-lib";
-import level from "@/assets/level.svg";
-import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
-import { getCreatePinFeeByNet } from "@/config";
 import { ArrowRightOutlined, DownOutlined, FileTextOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
-import PopLvl from "@/components/PopLvl";
+const { useBreakpoint } = Grid;
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -31,7 +27,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
-    
+
     const _tab = query.get('tab');
     const _tickerId = query.get('tickerId');
     const [mintTokenID, setMintTokenID] = useState<string>('');
@@ -126,8 +122,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals='', deployPremineCount='', deployPath='', deployDifficultyLevel='', deployCount='', feeRate } = form.getFieldsValue();
-        
+        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', feeRate } = form.getFieldsValue();
+
         const payload: any = {
             tick: deployTicker, // no less than 2-24 characters
             tokenName: deployTokenName, // token full name, 1-48 characters
@@ -153,18 +149,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             revealFeeRate: Number(feeRate),
             body: payload
         })
-        console.log(ret, 'ret');
-        // if (deployPremineCount) {
-        //     const script = addressLib.toOutputScript(btcAddress, network === 'mainnet' ? networks.bitcoin : networks.testnet);
-        //     const revealTx = Transaction.fromHex(ret.revealTx.rawTx);
-        //     revealTx.addOutput(script, 546);
-        //     console.log(revealTx, 'revealTx')
-        // }
-        // debugger
-        // const commitRes = await broadcastBTCTx(network, ret.commitTx.rawTx)
-        // const revealRes = await broadcastBTCTx(network, ret.revealTx.rawTx)
-
-        // console.log(commitRes, 'commitRes', revealRes, 'revealRes')
 
         const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx }, {
             headers: {
@@ -172,18 +156,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             },
         })
         if (commitRes.code !== 0) throw new Error(commitRes.message)
-
-
-        // const ret = await btcConnector.inscribe({
-        //     inscribeDataArray: [metaidData],
-        //     options: {
-        //         noBroadcast: "no",
-        //         feeRate: Number(feeRate),
-        //         service: getCreatePinFeeByNet(network),
-        //     }
-        // });
-        // if (ret.status) throw new Error(ret.status);
-
         success('Deploy', { revealTxId: commitRes.data.revealTxId })
     }
 
@@ -424,14 +396,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 </Tooltip>}
                                         />
                                     </Form.Item>
-                                    <Form.Item rules={[{ required: true },({ getFieldValue }) => ({
-                                                    validator(_, value) {
-                                                        if (!value || getFieldValue('deployMaxMintCount') >= value) {
-                                                            return Promise.resolve();
-                                                        }
-                                                        return Promise.reject(new Error('Amount Per Mint cannot be greater than Max Mint Count !'));
-                                                    },
-                                                })]} label="Amount Per Mint" name="deployAmountPerMint"
+                                    <Form.Item rules={[{ required: true }, ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('deployMaxMintCount') >= value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Amount Per Mint cannot be greater than Max Mint Count !'));
+                                        },
+                                    })]} label="Amount Per Mint" name="deployAmountPerMint"
 
                                     >
                                         <InputNumber
@@ -480,7 +452,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             }
                                                         },
                                                     }}>
-                                                    <Form.Item  label="Decimals" name="deployDecimals"
+                                                    <Form.Item label="Decimals" name="deployDecimals"
 
                                                     >
                                                         <InputNumber
@@ -499,7 +471,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     </Form.Item>
                                                 </ConfigProvider>
 
-                                                <Form.Item rules={[ ({ getFieldValue }) => ({
+                                                <Form.Item rules={[({ getFieldValue }) => ({
                                                     validator(_, value) {
                                                         if (!value || getFieldValue('deployMaxMintCount') >= value) {
                                                             return Promise.resolve();
@@ -513,7 +485,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         size="large"
                                                         style={{ width: '100%' }}
                                                         min={0}
-                                                        
+
                                                         precision={0}
                                                     />
                                                 </Form.Item>
@@ -690,7 +662,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                     >
                                                         <Checkbox.Group style={{ display: 'flex' }}>
-                                                            <Row style={{borderRadius:8,overflow:'hidden'}}>
+                                                            <Row style={{ borderRadius: 8, overflow: 'hidden' }}>
                                                                 {shovel?.map(item => {
                                                                     return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
                                                                         <div className="value">#{item.number} <a href={`https://man${network === 'mainnet' ? '' : '-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{ color: 'rgba(255, 255, 255, 0.5)', transform: 'rotate(-0.125turn)' }} /></a> </div></Checkbox></Col>
