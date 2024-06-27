@@ -689,7 +689,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <Collapse ghost defaultActiveKey={1} style={{ padding: 0,marginBottom:20 }} expandIconPosition='end' items={
                                                         [{
                                                             key: 1,
-                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="PINs">
+                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="MRC20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
                                                             <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                         </Tooltip></div>,
                                                             children: <Form.Item label='' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
