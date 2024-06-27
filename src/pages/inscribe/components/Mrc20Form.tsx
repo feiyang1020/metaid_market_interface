@@ -408,7 +408,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
 
 
-                                    <Form.Item rules={[{ required: true }]} label="Max mint Count" name="deployMaxMintCount"
+                                    <Form.Item rules={[{ required: true }]} label="Max Mint Count" name="deployMaxMintCount"
 
                                     >
                                         <InputNumber
@@ -428,9 +428,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         if (!value || getFieldValue('deployMaxMintCount') >= value) {
                                                             return Promise.resolve();
                                                         }
-                                                        return Promise.reject(new Error('Amount per Mint cannot be greater than Max Mint Count !'));
+                                                        return Promise.reject(new Error('Amount Per Mint cannot be greater than Max Mint Count !'));
                                                     },
-                                                })]} label="Amount per Mint" name="deployAmountPerMint"
+                                                })]} label="Amount Per Mint" name="deployAmountPerMint"
 
                                     >
                                         <InputNumber
@@ -561,7 +561,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         style={{ width: '100%' }}
                                                     />
                                                 </Form.Item>
-                                                <Form.Item rules={[{ required: true }]} label="Difficulty level" name="deployDifficultyLevel"
+                                                <Form.Item rules={[{ required: true }]} label="Difficulty Level" name="deployDifficultyLevel"
 
                                                 >
                                                     <Select style={{ textAlign: 'left' }} size="large" options={new Array(14).fill(null).map((_, i) => {
@@ -615,7 +615,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                             style={{ width: '100%' }}
                                         />
                                     </Form.Item>
-                                    <Form.Item label="Recipient address" name="recipient" rules={[{ required: true }]}>
+                                    <Form.Item label="Recipient Address" name="recipient" rules={[{ required: true }]}>
                                         <Input
                                             size="large"
                                         />
@@ -657,7 +657,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             },
                                                             {
                                                                 key: 'amtPerMint',
-                                                                label: 'Amount per Mint',
+                                                                label: 'Amount Per Mint',
                                                                 children: <>{mintMrc20Info.amtPerMint}</>
                                                             },
                                                             {
@@ -667,7 +667,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             },
                                                             {
                                                                 key: 'Difficultylevel',
-                                                                label: 'Difficulty level',
+                                                                label: 'Difficulty Level',
                                                                 children: <>{mintMrc20Info.qual.lvl || '--'}</>
                                                             },
                                                             {
