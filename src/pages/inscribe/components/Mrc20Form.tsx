@@ -126,10 +126,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
-        if(deployPremineCount===undefined||deployPath===undefined||deployDifficultyLevel===undefined||deployCount===undefined){
-            throw new Error('Please fill in the required fields')
-        }
+        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals='', deployPremineCount='', deployPath='', deployDifficultyLevel='', deployCount='', feeRate } = form.getFieldsValue();
+        
         const payload: any = {
             tick: deployTicker, // no less than 2-24 characters
             tokenName: deployTokenName, // token full name, 1-48 characters
@@ -144,6 +142,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 lvl: String(deployDifficultyLevel)
             },
         }
+        console.log(payload)
         if (deployIcon) {
             payload.metadata = JSON.stringify({ icon: deployIcon })
         }
@@ -481,7 +480,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             }
                                                         },
                                                     }}>
-                                                    <Form.Item rules={[{ required: true }]} label="Decimals" name="deployDecimals"
+                                                    <Form.Item  label="Decimals" name="deployDecimals"
 
                                                     >
                                                         <InputNumber
@@ -500,7 +499,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     </Form.Item>
                                                 </ConfigProvider>
 
-                                                <Form.Item rules={[{ required: true }, ({ getFieldValue }) => ({
+                                                <Form.Item rules={[ ({ getFieldValue }) => ({
                                                     validator(_, value) {
                                                         if (!value || getFieldValue('deployMaxMintCount') >= value) {
                                                             return Promise.resolve();
@@ -555,7 +554,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 </Row>
 
 
-                                                <Form.Item rules={[{ required: true }]} label="Path" name="deployPath"
+                                                <Form.Item rules={[]} label="Path" name="deployPath"
 
                                                 >
                                                     <Input
@@ -563,7 +562,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         style={{ width: '100%' }}
                                                     />
                                                 </Form.Item>
-                                                <Form.Item rules={[{ required: true }]} label="Difficulty Level" name="deployDifficultyLevel"
+                                                <Form.Item rules={[]} label="Difficulty Level" name="deployDifficultyLevel"
 
                                                 >
                                                     <Select style={{ textAlign: 'left' }} size="large" options={new Array(14).fill(null).map((_, i) => {
@@ -573,7 +572,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     </Select>
                                                 </Form.Item>
 
-                                                <Form.Item rules={[{ required: true }]} label="Count" name="deployCount"
+                                                <Form.Item rules={[]} label="Count" name="deployCount"
 
                                                 >
                                                     <InputNumber
