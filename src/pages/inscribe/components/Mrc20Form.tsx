@@ -31,7 +31,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
-    const _deployAmountPerMint = Form.useWatch('deployAmountPerMint', form);
+    
     const _tab = query.get('tab');
     const _tickerId = query.get('tickerId');
     const [mintTokenID, setMintTokenID] = useState<string>('');
@@ -127,6 +127,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
         const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals, deployPremineCount, deployPath, deployDifficultyLevel, deployCount, feeRate } = form.getFieldsValue();
+        
         const payload: any = {
             tick: deployTicker, // no less than 2-24 characters
             tokenName: deployTokenName, // token full name, 1-48 characters
@@ -492,10 +493,10 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                 <Form.Item rules={[{ required: true }, ({ getFieldValue }) => ({
                                                     validator(_, value) {
-                                                        if (!value || getFieldValue('deployAmountPerMint') >= value) {
+                                                        if (!value || getFieldValue('deployMaxMintCount') >= value) {
                                                             return Promise.resolve();
                                                         }
-                                                        return Promise.reject(new Error('Premine Count cannot be greater than Amount per Mint !'));
+                                                        return Promise.reject(new Error('Premine Count cannot be greater than Max Mint Count !'));
                                                     },
                                                 })]} label="Premine Count" name="deployPremineCount"
 
