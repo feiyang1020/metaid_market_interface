@@ -43,17 +43,6 @@ const formItemLayout = {
 };
 const { useBreakpoint } = Grid;
 
-type Operation = "init" | "create" | "modify";
-type InscribeOptions = {
-  operation: Operation;
-  body?: string | Buffer;
-  path?: string;
-  contentType?: string;
-  encryption?: "0" | "1" | "2";
-  version?: string;
-  encoding?: BufferEncoding;
-};
-
 type FeeRateProps = {
   customRate: number | undefined;
   setCustomRate: (feeRate: number) => void;
@@ -119,7 +108,6 @@ export default () => {
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("File");
   const [submiting, setSubmiting] = useState(false);
-  // const [feeRate, setFeeRate] = useState<number>();
   const { btcConnector, connected, connect, feeRates, network, disConnect } =
     useModel("wallet");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -131,7 +119,6 @@ export default () => {
     useState<SuccessProps>(DefaultSuccessProps);
   const checkPath = useMemo(() => {
     const regex = /^\/[a-zA-Z0-9]+(\/[a-zA-Z0-9]+)*\/?$/;
-
     return regex.test(path);
   }, [path]);
 
@@ -151,16 +138,6 @@ export default () => {
     }
 
   }, [_tab])
-  // useEffect(() => {
-  //   const find = feeRates.find((item) => item.label === "Avg");
-  //   if (find) {
-  //     setFeeRate((prev) => {
-  //       if (!prev) return find.value;
-  //       return prev;
-  //     });
-  //   }
-  // }, [feeRates]);
-
   const [customRate, setCustomRate] = useState<string | number>(0);
   const [feeRateTab, setFeeRateTab] = useState<string>("Avg");
   const feeRate = useMemo(() => {
@@ -193,7 +170,6 @@ export default () => {
       setSubmiting(true);
       const pass = await checkWallet();
       if (!pass) throw new Error("Account change");
-      console.log(fileList, "fileList");
       const file = fileList[0];
       const fileEntity = await btcConnector!.use("file");
       const fileOptions: CreateOptions[] = [];
@@ -300,7 +276,6 @@ export default () => {
         },
 
       });
-      console.log(ret);
       if (ret.status) throw new Error(ret.status);
       if (ret.commitTxId) {
         setSuccessProp({
@@ -400,17 +375,17 @@ export default () => {
                 <div className="item">
                   <div className="label">Tarde Hash</div>
                   <div className="value">
-                    <Tooltip title={ret.revealTxId}>
+                    <Tooltip title={ret.commitTxId}>
                       <a
                         style={{ color: "#fff", textDecoration: "underline" }}
                         target="_blank"
                         href={
                           network === "testnet"
-                            ? `https://mempool.space/testnet/tx/${ret.revealTxId}`
-                            : `https://mempool.space/tx/${ret.revealTxId}`
+                            ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
+                            : `https://mempool.space/tx/${ret.commitTxId}`
                         }
                       >
-                        {ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
                       </a>
                     </Tooltip>
                   </div>
@@ -489,15 +464,6 @@ export default () => {
 
         {tab === "File" && (
           <div className=" animation-slide-bottom">
-            {/* <Form
-            {...formItemLayout}
-            variant="filled"
-            style={{ maxWidth: "96vw", width: 632 }}
-          >
-            <Form.Item label="File" name="Input">
-              <Input size="large" placeholder="" />
-            </Form.Item>
-          </Form> */}
             <Row>
               <Col
                 offset={sm ? 4 : 0}
