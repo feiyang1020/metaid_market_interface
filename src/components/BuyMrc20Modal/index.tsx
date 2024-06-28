@@ -186,7 +186,7 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buyMRCSuccess">
             <div className="orderInfo">
               <div className="contetn">
-                <MRC20Icon size={80} tick={order.tick} />
+                <MRC20Icon size={80} tick={order.tick}  metadata={order.metaData}/>
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>
@@ -244,7 +244,7 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buyWrap">
             <div className="orderInfo">
               <div className="contetn">
-                <MRC20Icon size={80} tick={order.tick} />
+                <MRC20Icon size={80} tick={order.tick} metadata={order.metaData} />
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>

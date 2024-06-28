@@ -3,7 +3,7 @@ import MRC20Icon from "../MRC20Icon"
 
 export default ({ info }: { info: API.MRC20Info }) => {
     return <div className="mrc20-item">
-        <MRC20Icon tick={info.tick} />
+        <MRC20Icon tick={info.tick} metadata={info.metaData} />
         <div className="tick">
             <div className="tickName">
                 {info.tick}

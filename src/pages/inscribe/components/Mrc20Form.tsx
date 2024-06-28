@@ -149,7 +149,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (deployIcon) {
             payload.metadata = JSON.stringify({ icon: deployIcon })
         }
-
+        console.log(payload, 'payload');
         const ret = await window.metaidwallet.btc.deployMRC20({
             flag: network === "mainnet" ? "metaid" : "testid",
             commitFeeRate: Number(feeRate),

@@ -175,7 +175,7 @@ const ListForMRC20 = () => {
                                         <div className="unchecked"></div>
                                     )}
                                 </div>
-                                <div className="info"><MRC20Icon size={32} tick={item.tick} /> {item.amount} {item.tick}</div>
+                                <div className="info"><MRC20Icon size={32} tick={item.tick}  metadata={item.metaData} /> {item.amount} {item.tick}</div>
                             </div>
 
                            

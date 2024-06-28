@@ -54,7 +54,7 @@ export default () => {
         {
             mrc20Info && <div className='mrc20Info'>
                 <div className='left'>
-                    <MRC20Icon size={102} tick={mrc20Info.tick} />
+                    <MRC20Icon size={102} tick={mrc20Info.tick}  metadata={mrc20Info.metaData} />
 
                     <div className="info">
                         <div className="top">
