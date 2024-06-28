@@ -142,7 +142,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 lvl: String(deployDifficultyLevel)
             },
         }
-        if((Number(payload.decimals)+payload.amtPerMint.length+payload.mintCount.length)>20){
+        if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
             throw new Error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
         }
         console.log(payload)
@@ -689,12 +689,12 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         {(shovel && shovel.length > 0) ?
                                             <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
-                                                    <Collapse ghost defaultActiveKey={1} style={{ padding: 0,marginBottom:20 }} expandIconPosition='end' items={
+                                                    <Collapse ghost defaultActiveKey={1} style={{ padding: 0, marginBottom: 20 }} expandIconPosition='end' items={
                                                         [{
                                                             key: 1,
                                                             label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="MRC20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
-                                                            <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                                        </Tooltip></div>,
+                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                            </Tooltip></div>,
                                                             children: <Form.Item label='' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
 
                                                             >
