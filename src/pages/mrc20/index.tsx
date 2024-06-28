@@ -97,7 +97,7 @@ export default () => {
                     </div>
                 </div>
                 <div className='mintBtn'>
-                    <Button type='primary' onClick={() => { history.push('/inscribe?tab=MRC-20&tickerId=' + mrc20Info.mrc20Id) }}>Mint</Button>
+                    <Button type='primary' block onClick={() => { history.push('/inscribe?tab=MRC-20&tickerId=' + mrc20Info.mrc20Id) }}>Mint</Button>
                 </div>
 
             </div>
