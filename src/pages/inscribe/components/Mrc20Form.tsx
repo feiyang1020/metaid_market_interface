@@ -145,7 +145,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
             throw new Error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
         }
-        console.log(payload)
+
         if (deployIcon) {
             payload.metadata = JSON.stringify({ icon: deployIcon })
         }
@@ -371,6 +371,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     // transferTickerId: '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0',
                     // recipient: 'mwKUTvJF43BqGqANeVdrtpRwd2zxNFvnWQ',
                     // amount: 200
+                    deployDecimals:8
                 }}
                 form={form}
             >
