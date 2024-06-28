@@ -142,6 +142,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 lvl: String(deployDifficultyLevel)
             },
         }
+        if((payload.decimals.lenght+payload.amtPerMint.lenght+payload.mintCount.lenght)>20){
+            throw new Error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
+        }
         console.log(payload)
         if (deployIcon) {
             payload.metadata = JSON.stringify({ icon: deployIcon })
