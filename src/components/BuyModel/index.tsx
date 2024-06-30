@@ -257,7 +257,7 @@ export default ({ order, show, onClose }: Props) => {
                 </div>
               </div>
               <div className="item">
-                <div className="label">Tarde Hash</div>
+                <div className="label">Trade Hash</div>
                 <div className="value">
                   <Tooltip title={ret.data.txId}>
                     <a
