@@ -186,7 +186,10 @@ declare namespace API {
     mintCount: string;
     mrc20Id: string;
     pinNumber: number;
-    qual: string;
+    qual: {
+      count: string;
+      lvl: string;
+    };
     tick: string;
     tokenName: string;
     totalMinted: number;

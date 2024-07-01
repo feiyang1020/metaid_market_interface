@@ -93,20 +93,10 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         setMintInfoLoading(true)
         setMintInfoStatus('validating')
         const { code, message, data } = await getMrc20Info(network, { tickId: mintTokenID });
-        if (btcAddress) {
+        if (btcAddress && data && data.qual && data.qual.count) {
             const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
             if (code === 0 && ret && ret.list) {
-                setShowel(ret.list
-                    // .filter(item => {
-                    //     if (data && data.qual && data.qual.path) {
-                    //         if (item.path !== data.qual.path) return false
-                    //     }
-                    //     if (data.qual.lvl) {
-                    //         return item.popLv >= (data.qual.lvl || 0)
-                    //     }
-                    //     return true
-                    // })
-                )
+                setShowel(ret.list)
             }
         }
         setMintInfoLoading(false)
@@ -136,8 +126,37 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     }, [fetchList])
 
     useEffect(() => {
+        let didCancel = false;
+        const fetchMrc20Info = async () => {
+            if (!mintTokenID) return;
+            setMintInfoLoading(true)
+            setMintInfoStatus('validating')
+            const { code, message, data } = await getMrc20Info(network, { tickId: mintTokenID });
+            let _shovels: API.MRC20Shovel[] = []
+            if (btcAddress && data && data.qual && data.qual.count) {
+                const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
+                if (code === 0 && ret && ret.list) {
+                    _shovels = ret.list
+                }
+            }
+            if (didCancel) return;
+            setMintInfoLoading(false)
+            setShowel(_shovels)
+            if (data && data.mrc20Id) {
+                setMintMrc20Info(data);
+                setMintInfoStatus('success')
+                _shovels.length>0&&form.setFieldsValue({ pins: _shovels[0].id })
+                return
+            }
+
+            setMintInfoStatus('error')
+            setMintMrc20Info(undefined)
+        }
         fetchMrc20Info()
-    }, [fetchMrc20Info])
+        return () => {
+            didCancel = true
+        }
+    }, [mintTokenID, btcAddress, network])
 
 
     const deploy = async () => {
@@ -334,7 +353,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (!connected || !btcAddress) return;
         await form.validateFields();
         setSubmiting(true);
-        const { type, feeRate, tickerId, pins=[], transferTickerId, amount, recipient } = form.getFieldsValue();
+        const { type, feeRate, tickerId, pins = [], transferTickerId, amount, recipient } = form.getFieldsValue();
         try {
 
             if (type === 'deploy') {
@@ -342,10 +361,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
             }
             if (type === 'mint') {
-                if (!mintMrc20Info) return
-                // if (!pins || pins.lenght === 0) {
-                //     throw new Error(`Select at Least 1 PINs`)
-                // }
+                if (!mintMrc20Info) return;
                 if (Number(mintMrc20Info.qual.count) && pins.length < Number(mintMrc20Info.qual.count)) {
                     throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
                 }
@@ -361,7 +377,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         pkScript: getPkScriprt(btcAddress, network).toString('hex'),
                     }
                 })
-                
+
                 const { code, message, data, } = await mintMrc20Pre(network, {
                     mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId,
                 }, {
@@ -370,7 +386,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     },
                 });
                 if (code !== 0) throw new Error(message);
-                
+
                 const { rawTx, revealPrePsbtRaw } = await commitMintMRC20PSBT(data, feeRate, btcAddress, network);
                 const ret = await mintMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
                 if (ret.code !== 0) throw new Error(ret.message);
@@ -728,7 +744,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}>This token ID does not correspond to any MRC 20; Please re-enter.</div> : <></>} >
                                         <Input
                                             size="large"
-                                            onBlur={handleMintTokenIDChange}
+                                            onChange={handleMintTokenIDChange}
                                         />
                                     </Form.Item>
                                     <Row gutter={[0, 0]}>
@@ -781,7 +797,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         </Spin>
                                         </Col>
                                     </Row>
-                                    {mintMrc20Info && <>
+                                    {(mintMrc20Info && Number(mintMrc20Info.qual.count) > 0) && <>
                                         {(shovel && shovel.length > 0) ?
                                             <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
