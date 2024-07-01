@@ -87,6 +87,10 @@ export default () => {
                         <div className="slider">
                             <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false} />
                         </div>
+                        <div className="sliderNumber">
+                           
+                            <NumberFormat value={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} suffix=' %' /> 
+                        </div>
                     </div>
                     <Divider type='vertical' style={{ height: 75 }} />
                     <div className="desc">
