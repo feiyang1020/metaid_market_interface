@@ -28,17 +28,13 @@ export default ({ mintMrc20Info }: Props) => {
                     key: 'Deployer',
                     label: 'Deployer',
                     children: <div className="deployer">
-                        <MetaIdAvatar size={36} avatar={mintMrc20Info.deployerUserInfo.avatar} />
-
-                        <div className="deployerInfo">
-                            <div className="deployerName">{mintMrc20Info.deployerUserInfo.name || mintMrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</div>
-                            <div className="MetaId">
-                                MetaID:{mintMrc20Info.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}
-                            </div>
-                        </div>
-
-
+                    <div className="deployerInfo">
+                        <MetaIdAvatar size={20} avatar={mintMrc20Info.deployerUserInfo.avatar} /><div className="deployerName">{mintMrc20Info.deployerUserInfo.name || mintMrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</div>
                     </div>
+                    <div className="MetaId">
+                        MetaID:{mintMrc20Info.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}
+                    </div>
+                </div>
                 },
 
                 {

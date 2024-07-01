@@ -636,7 +636,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <Input
                                                         size="large"
                                                         addonAfter={
-                                                            <Tooltip title="Optional. Format: `metafile://txid`. You should upload your icon file on-chain using Metafile protocol, then paste the metafile URL here.">
+                                                            <Tooltip title="Optional. Format: `metafile://pinid`. You should upload your icon file on-chain using Metafile protocol, then paste the metafile URL here.">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
@@ -838,7 +838,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     }></Collapse>
                                                 </Col></Row> : <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/?tab=PIN') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
-                                                    No Appropriate PIN . Go get it
+                                                No eligible PIN. Go get one.
                                                 </div></div></Col></Row>
                                         }
                                     </>}
