@@ -369,9 +369,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     },
                 });
                 if (code !== 0) throw new Error(message);
-                await window.metaidwallet.btc.MRC20Transfer({
-
-                })
+                
                 const { rawTx, revealPrePsbtRaw } = await commitMintMRC20PSBT(data, feeRate, btcAddress, network);
                 const ret = await mintMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
                 if (ret.code !== 0) throw new Error(ret.message);
