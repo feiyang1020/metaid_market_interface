@@ -62,7 +62,7 @@ export default () => {
             }
         },
         {
-            title: 'MarketCap',
+            title: 'Market Cap',
             dataIndex: 'marketCap',
             sorter: true,
             render: (price) => {
