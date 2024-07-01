@@ -394,7 +394,59 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 const { rawTx, revealPrePsbtRaw } = await commitMintMRC20PSBT(data, feeRate, btcAddress, network);
                 const ret = await mintMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
                 if (ret.code !== 0) throw new Error(ret.message);
-                success('Mint', ret.data)
+                setSuccessProp({
+                    show: true,
+                    onClose: () => {
+                        setSuccessProp(DefaultSuccessProps);
+                        form.resetFields();
+                    },
+                    onDown: () => {
+                        setSuccessProp(DefaultSuccessProps);
+                        form.resetFields();
+                        history.push('/mrc20History?tab=Mint')
+        
+                    },
+                    title: "Deploy",
+                    tip: "Successful",
+                    okText: 'OK,Skip to My MRC20',
+                    children: (
+                        <div className="inscribeSuccess">
+                            <div className="res">
+                                {/* {
+                                    ret.data.commitCost && <div className="item">
+                                        <div className="label">Transaction Cost</div>
+                                        <div className="value">
+                                            <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                                        </div>
+                                    </div>
+                                } */}
+        
+                                <div className="item">
+                                    <div className="label">TxId </div>
+                                    <div className="value">
+                                        <Tooltip title={ret.data.revealTxId}>
+                                            <a
+                                                style={{ color: "#fff", textDecoration: "underline" }}
+                                                target="_blank"
+                                                href={
+                                                    network === "testnet"
+                                                        ? `https://mempool.space/testnet/tx/${ret.data.revealTxId}`
+                                                        : `https://mempool.space/tx/${ret.data.revealTxId}`
+                                                }
+                                            >
+                                                {ret.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                            </a>
+                                        </Tooltip>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="tips">
+                                <InfoCircleOutlined />
+                                <span>Mint is currently in a pending state; please wait for the block confirmation before proceeding with its use.</span>
+                            </div>
+                        </div>
+                    ),
+                });
             }
             if (type === 'transfer') {
                 const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(transferTickerId), cursor: 0, size: 100 }, {
