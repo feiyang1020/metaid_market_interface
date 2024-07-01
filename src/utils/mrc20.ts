@@ -80,7 +80,8 @@ const _commitMint = async (
   params: CommitPsbtParams,
   selectedUTXOs: API.UTXO[],
   change: Decimal,
-  needChange: boolean
+  needChange: boolean,
+  buildPsbt?: boolean=true
 ) => {
   const {
     address,
@@ -120,6 +121,9 @@ const _commitMint = async (
       address: address,
       value: change.toNumber(),
     });
+  }
+  if(!buildPsbt){
+    return psbt;
   }
   const _signPsbt = await window.metaidwallet.btc.signPsbt({
     psbtHex: psbt.toHex(),
@@ -163,7 +167,8 @@ export const commitMintMRC20PSBT = async (
       ...order,
     },
     address,
-    _commitMint
+    _commitMint,
+    true
   );
   const { rawTx, txId, psbt: commitPsbt } = commitTx;
   const psbt = Psbt.fromHex(order.revealPrePsbtRaw, {

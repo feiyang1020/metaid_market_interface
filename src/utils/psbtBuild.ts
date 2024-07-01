@@ -128,7 +128,7 @@ export async function buildTx<T>(
     needChange: boolean,
     signPsbt?: boolean
   ) => Promise<Psbt>,
-  manualCalcFee: boolean = false
+  extract: boolean = false
 ): Promise<{
   psbt: Psbt;
   fee: string;
@@ -146,9 +146,10 @@ export async function buildTx<T>(
     true,
     false
   );
-  let estimatedFee = manualCalcFee
-    ? calcFee(psbt, feeRate)
-    : calculateEstimatedFee(psbt, feeRate);
+  // let estimatedFee = manualCalcFee
+  //   ? calcFee(psbt, feeRate)
+  //   : calculateEstimatedFee(psbt, feeRate);
+  let estimatedFee=calcFee(psbt, feeRate)
   while (total.lt(amount.add(estimatedFee))) {
     if (selectedUTXOs.length === utxos.length) {
       throw new Error("Insufficient funds");
@@ -162,9 +163,10 @@ export async function buildTx<T>(
       true,
       false
     );
-    estimatedFee = manualCalcFee
-      ? calcFee(psbt, feeRate)
-      : calculateEstimatedFee(psbt, feeRate);
+    estimatedFee=calcFee(psbt, feeRate)
+    // estimatedFee = manualCalcFee
+    //   ? calcFee(psbt, feeRate)
+    //   : calculateEstimatedFee(psbt, feeRate);
   }
 
   psbt = await buildPsbt(
@@ -185,8 +187,8 @@ export async function buildTx<T>(
     fee: total
       .minus(psbt.txOutputs.reduce((acc, cur) => acc + Number(cur.value), 0))
       .toString(),
-    txId: manualCalcFee ? "" : psbt.extractTransaction().getId(),
-    rawTx: manualCalcFee ? psbt.toHex() : psbt.extractTransaction().toHex(),
+    txId: !extract ? "" : psbt.extractTransaction().getId(),
+    rawTx: !extract ? psbt.toHex() : psbt.extractTransaction().toHex(),
     txInputs: selectedUTXOs.map((utxo) => ({
       address,
       value: utxo.satoshis,
