@@ -11,7 +11,7 @@ import { Psbt, Transaction, networks, address as addressLib } from "bitcoinjs-li
 import level from "@/assets/level.svg";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
 import { getCreatePinFeeByNet } from "@/config";
-import { ArrowRightOutlined, DownOutlined, FileTextOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DownOutlined, FileTextOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
@@ -27,6 +27,21 @@ const formItemLayout = {
         sm: { span: 19 },
     },
 };
+
+export interface MRC20TransferParams {
+    body: string
+    mrc20TickId: string
+    flag?: 'metaid' | 'testid'
+    revealAddr?: string
+    commitFeeRate: number
+    revealFeeRate: number
+    changeAddress?: string
+    revealOutValue?: number
+    service?: {
+        address: string
+        satoshis: string
+    }
+}
 export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const [query] = useSearchParams();
 
@@ -160,38 +175,66 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             body: payload
         })
         if (ret.status) throw new Error(ret.status)
-        console.log(ret, 'ret');
-        // if (deployPremineCount) {
-        //     const script = addressLib.toOutputScript(btcAddress, network === 'mainnet' ? networks.bitcoin : networks.testnet);
-        //     const revealTx = Transaction.fromHex(ret.revealTx.rawTx);
-        //     revealTx.addOutput(script, 546);
-        //     console.log(revealTx, 'revealTx')
-        // }
-        // debugger
-        // const commitRes = await broadcastBTCTx(network, ret.commitTx.rawTx)
-        // const revealRes = await broadcastBTCTx(network, ret.revealTx.rawTx)
-
-        // console.log(commitRes, 'commitRes', revealRes, 'revealRes')
-
         const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx }, {
             headers: {
                 ...authParams,
             },
         })
         if (commitRes.code !== 0) throw new Error(commitRes.message)
-
-
-        // const ret = await btcConnector.inscribe({
-        //     inscribeDataArray: [metaidData],
-        //     options: {
-        //         noBroadcast: "no",
-        //         feeRate: Number(feeRate),
-        //         service: getCreatePinFeeByNet(network),
-        //     }
-        // });
-        // if (ret.status) throw new Error(ret.status);
         setDeployComfirmProps(defaultDeployComfirmProps)
-        success('Deploy', { revealTxId: commitRes.data.revealTxId })
+        setSuccessProp({
+            show: true,
+            onClose: () => {
+                setSuccessProp(DefaultSuccessProps);
+                form.resetFields();
+            },
+            onDown: () => {
+                setSuccessProp(DefaultSuccessProps);
+                form.resetFields();
+                history.push('/mrc20History')
+
+            },
+            title: "Deploy",
+            tip: "Successful",
+            okText: 'OK,Skip to My MRC20',
+            children: (
+                <div className="inscribeSuccess">
+                    <div className="res">
+                        {
+                            ret.commitCost && <div className="item">
+                                <div className="label">Transaction Cost</div>
+                                <div className="value">
+                                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                                </div>
+                            </div>
+                        }
+
+                        <div className="item">
+                            <div className="label">TxId </div>
+                            <div className="value">
+                                <Tooltip title={ret.revealTxId}>
+                                    <a
+                                        style={{ color: "#fff", textDecoration: "underline" }}
+                                        target="_blank"
+                                        href={
+                                            network === "testnet"
+                                                ? `https://mempool.space/testnet/tx/${ret.revealTxId}`
+                                                : `https://mempool.space/tx/${ret.revealTxId}`
+                                        }
+                                    >
+                                        {ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                    </a>
+                                </Tooltip>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="tips">
+                        <InfoCircleOutlined />
+                        <span>The current status is displayed as "Pending", Please wait for the deploy to be completed before minting.</span>
+                    </div>
+                </div>
+            ),
+        });
     }
 
     const success = (title: string, ret: any) => {
@@ -326,6 +369,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     },
                 });
                 if (code !== 0) throw new Error(message);
+                await window.metaidwallet.btc.MRC20Transfer({
+
+                })
                 const { rawTx, revealPrePsbtRaw } = await commitMintMRC20PSBT(data, feeRate, btcAddress, network);
                 const ret = await mintMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
                 if (ret.code !== 0) throw new Error(ret.message);

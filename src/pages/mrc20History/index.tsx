@@ -20,7 +20,7 @@ export default () => {
                     history.back();
                 }}
             >
-                <LeftOutlined />
+                <LeftOutlined /> My MRC 20/Persona
             </div>
 
             <div className="tabs">

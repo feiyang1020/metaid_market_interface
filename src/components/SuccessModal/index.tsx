@@ -9,6 +9,7 @@ export type SuccessProps = {
   tip: string;
   title?: string;
   children: React.ReactNode;
+  okText?:string
 };
 
 export const DefaultSuccessProps: SuccessProps = {
@@ -26,6 +27,7 @@ export default ({
   tip,
   children,
   onDown,
+  okText='Done'
 }: SuccessProps) => {
   return (
     <Popup
@@ -41,7 +43,7 @@ export default ({
       <div className="tip">{tip}</div>
       {children}
       <Button type="primary" onClick={onDown} size='large'  block>
-        Done
+        {okText}
       </Button>
     </Popup>
   );
