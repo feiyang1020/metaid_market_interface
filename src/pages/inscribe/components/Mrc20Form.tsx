@@ -343,8 +343,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }
             if (type === 'mint') {
                 if (!mintMrc20Info) return
-                if (!pins || pins.lenght === 0) {
-                    throw new Error(`Select at Least 1 PINs`)
+                // if (!pins || pins.lenght === 0) {
+                //     throw new Error(`Select at Least 1 PINs`)
+                // }
+                if (Number(mintMrc20Info.qual.count) && pins.length < Number(mintMrc20Info.qual.count)) {
+                    throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
                 }
                 const mintPins = pins.map((pinId) => {
                     const pin = shovel?.find(item => item.id === pinId);
@@ -358,9 +361,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         pkScript: getPkScriprt(btcAddress, network).toString('hex'),
                     }
                 })
-                if (Number(mintMrc20Info.qual.count) && mintPins.length < Number(mintMrc20Info.qual.count)) {
-                    throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
-                }
+                
                 const { code, message, data, } = await mintMrc20Pre(network, {
                     mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId,
                 }, {
