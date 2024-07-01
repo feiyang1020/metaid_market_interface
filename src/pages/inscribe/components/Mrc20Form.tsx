@@ -452,7 +452,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Input
                                             size="large"
                                             maxLength={48}
-                                            placeholder="1~48 charaters"
+                                            placeholder="less than charaters"
                                             addonAfter={
                                                 <Tooltip title="Full name of the token. Length: 1-48 characters.">
                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
