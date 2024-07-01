@@ -101,6 +101,16 @@ export default () => {
             }
         },
         {
+            title: 'Premine',
+            dataIndex: 'Premine',
+            // sorter: true,
+            width: 200,
+            align: 'center',
+            render: (_,record) => {
+                return <div className="premine">{Number(record.premineCount)>0?<NumberFormat value={Number(record.premineCount/record.mintCount)*100} suffix='%' />:'Fair launch'}</div> 
+            }
+        },
+        {
             title: 'Time',
             dataIndex: 'deployTime',
             // sorter: true,
