@@ -321,16 +321,16 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 onClose: () => {
                     setDeployComfirmProps(defaultDeployComfirmProps)
                 },
-                onConfirm: mint,
+                onConfirm: submit,
                 submiting: submiting,
                 deployInfo: payload
             })
         } else {
-            await mint()
+            await submit()
         }
     }
 
-    const mint = async () => {
+    const submit = async () => {
         if (!connected || !btcAddress) return;
         await form.validateFields();
         setSubmiting(true);
