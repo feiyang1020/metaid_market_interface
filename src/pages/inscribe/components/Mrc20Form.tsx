@@ -1,5 +1,5 @@
 import { Button, Card, Checkbox, Col, Modal, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useSearchParams, history } from "umi";
 import "./index.less";
@@ -18,6 +18,8 @@ import { formatSat } from "@/utils/utlis";
 import PopLvl from "@/components/PopLvl";
 import DeployComfirm, { DeployComfirmProps, defaultDeployComfirmProps } from "./DeployComfirm";
 import MRC20DetailCard from "./MRC20DetailCard";
+import NumberFormat from "@/components/NumberFormat";
+import MRC20Icon from "@/components/MRC20Icon";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -48,7 +50,16 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
-
+    const _deployMaxMintCount = Form.useWatch('deployMaxMintCount', form);
+    const _deployAmountPerMint = Form.useWatch('deployAmountPerMint', form);
+    const _deployIcon = Form.useWatch('deployIcon', form);
+    const totalSupply =useMemo(()=>{
+        if(_deployMaxMintCount&&_deployAmountPerMint){
+            return BigInt(_deployMaxMintCount)*BigInt(_deployAmountPerMint)
+        }else{
+            return BigInt(0)
+        }
+    },[_deployMaxMintCount,_deployAmountPerMint])
     const _tab = query.get('tab');
     const _tickerId = query.get('tickerId');
     const [mintTokenID, setMintTokenID] = useState<string>('');
@@ -193,8 +204,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             commitFeeRate: Number(feeRate),
             revealFeeRate: Number(feeRate),
             body: payload
-        }).catch(err=>{
-            console.log(err,'errrrr')
+        }).catch(err => {
+            console.log(err, 'errrrr')
             throw new Error(err)
         })
         if (ret.status) throw new Error(ret.status)
@@ -253,7 +264,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     </div>
                     <div className="tips">
                         <InfoCircleOutlined />
-                        <span>The current status is displayed as "Pending", Please wait for the deploy to be completed before minting.</span>
+                        <span>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</span>
                     </div>
                 </div>
             ),
@@ -404,7 +415,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         setSuccessProp(DefaultSuccessProps);
                         form.resetFields();
                         history.push('/mrc20History?tab=Mint')
-        
+
                     },
                     title: "Deploy",
                     tip: "Successful",
@@ -420,7 +431,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         </div>
                                     </div>
                                 } */}
-        
+
                                 <div className="item">
                                     <div className="label">TxId </div>
                                     <div className="value">
@@ -442,7 +453,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             </div>
                             <div className="tips">
                                 <InfoCircleOutlined />
-                                <span>Mint is currently in a pending state; please wait for the block confirmation before proceeding with its use.</span>
+                                <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
                             </div>
                         </div>
                     ),
@@ -603,7 +614,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                             return Promise.reject(new Error('Amount Per Mint cannot be greater than Max Mint Count !'));
                                         },
                                     })]} label="Amount Per Mint" name="deployAmountPerMint"
-
+                                    // help={<div style={{ textAlign: 'left',color:'rgba(255, 255, 255, 0.6)',fontSize:14 }}> TotalSupply: </div>}
                                     >
                                         <InputNumber
                                             size="large"
@@ -618,8 +629,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                             }
                                         />
                                     </Form.Item>
+                                    <Row gutter={[0, 0]}>
+                                        <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left',color:'rgba(255, 255, 255, 0.6)',fontSize:14 }}>
+                                            TotalSupply: <NumberFormat value={totalSupply} isBig decimal={1}/>
+                                        </Col>
+                                    </Row>
 
-                                    <Collapse className="collapse" defaultActiveKey={1} style={{ padding: 0 }} ghost items={[
+                                    <Collapse className="collapse" style={{ padding: 0 }} ghost items={[
                                         {
                                             key: '1',
                                             label: <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}><div className="collapsePanel"> more options<div
@@ -636,10 +652,12 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <Input
                                                         size="large"
                                                         addonAfter={
-                                                            <Tooltip title="Optional. Format: `metafile://pinid`. You should upload your icon file on-chain using Metafile protocol, then paste the metafile URL here.">
+                                                            <Tooltip title="Optional. Format: 'metafile://pinid'. You should inscribe your icon file first, then paste the metafile protocol URI here.">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
+                                                        suffix={_deployIcon?<img  src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)} style={{ width: 24, height: 24,borderRadius:'50%' }} />:<></>}
+                                                        placeholder="metafile://Your-Icon-Pinid"
                                                     />
                                                 </Form.Item>
                                                 <ConfigProvider
@@ -838,7 +856,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     }></Collapse>
                                                 </Col></Row> : <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/?tab=PIN') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
-                                                No eligible PIN. Go get one.
+                                                    No eligible PIN. Go get one.
                                                 </div></div></Col></Row>
                                         }
                                     </>}
