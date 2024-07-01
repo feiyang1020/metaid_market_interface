@@ -54,7 +54,7 @@ export default () => {
         {
             mrc20Info && <div className='mrc20Info'>
                 <div className='left'>
-                    <MRC20Icon size={102} tick={mrc20Info.tick}  metadata={mrc20Info.metaData} />
+                    <MRC20Icon size={102} tick={mrc20Info.tick} metadata={mrc20Info.metaData} />
 
                     <div className="info">
                         <div className="top">
@@ -74,7 +74,7 @@ export default () => {
                             </div>
 
                             <div className="detail">
-                                <span className='avatars'><MetaIdAvatar size={20} avatar={mrc20Info.deployerUserInfo.avatar} /> {mrc20Info.deployerUserInfo.name || mrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                                <span className='avatars'><span className='metaid'>Deployer</span><MetaIdAvatar size={20} avatar={mrc20Info.deployerUserInfo.avatar} /> {mrc20Info.deployerUserInfo.name || mrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
                                 <span className='metaid'>MetaID : {mrc20Info.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
                             </div>
                         </div>
@@ -90,10 +90,10 @@ export default () => {
                     </div>
                     <Divider type='vertical' style={{ height: 75 }} />
                     <div className="desc">
-                        <Statistic valueStyle={{display:'flex',alignItems:'center',fontSize:16}} title="Total volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{width:16,height:16}} src={btcIcon}></img>} />
-                        <Statistic valueStyle={{display:'flex',alignItems:'center',fontSize:16}} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{width:16,height:16}} src={btcIcon}></img>} />
-                        <Statistic valueStyle={{display:'flex',alignItems:'center',fontSize:16}} title="Floor price" value={mrc20Info.floorPrice} suffix='sats' />
-                        <Statistic valueStyle={{display:'flex',alignItems:'center',fontSize:16}}  title="Holders" value={mrc20Info.holders} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" value={mrc20Info.floorPrice} suffix='sats' />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={mrc20Info.holders} />
                     </div>
                 </div>
                 <div className='mintBtn'>

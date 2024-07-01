@@ -45,8 +45,8 @@ export default () => {
         {
             title: 'Name',
             dataIndex: 'tick',
-            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId }}
-            />
+            width: 220,
+            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId }} />
         },
 
         {
@@ -71,12 +71,12 @@ export default () => {
             }
         },
         {
-            title: 'Max mint Count',
+            title: 'Max Mint Count',
             dataIndex: 'mintCount',
 
         },
         {
-            title: 'Amount per Mint',
+            title: 'Amount Per Mint',
             dataIndex: 'amtPerMint',
 
         },
@@ -94,7 +94,7 @@ export default () => {
             title: 'Type',
             dataIndex: 'blockHeight',
             render: (item) => {
-                return item ? 'complete' : 'Pending'
+                return <>{item ? 'complete' : <span style={{color:'#FF5252'}}>Pending</span>}</>
             }
         },
         {

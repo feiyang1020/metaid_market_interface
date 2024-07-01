@@ -45,6 +45,7 @@ export default () => {
         {
             title: 'Name',
             dataIndex: 'tick',
+            width: 220,
             render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId }}
             />
         },
@@ -52,69 +53,77 @@ export default () => {
         {
             title: 'Path',
             dataIndex: 'qual',
+            width: 200,
             render: (price, record) => {
-                return <Tooltip title={record.qual.path}>path:{record.qual.path&&record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
+                return <Tooltip title={record.qual.path}>path:{record.qual.path && record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
             }
         },
+        // {
+        //     title: 'Difficulty Level',
+        //     dataIndex: 'level',
+        //     width: 200,
+        //     render: (item, record) => {
+        //         return record.qual.lvl || '--'
+        //     }
+        // },
+        // {
+        //     title: 'Count',
+        //     dataIndex: 'count',
+        //     width: 200,
+        //     render: (item, record) => {
+        //         return record.qual.count || '--'
+        //     }
+        // },
+        // {
+        //     title: 'Max mint Count',
+        //     dataIndex: 'mintCount',
+        //     width: 200,
+        // },
         {
-            title: 'Difficulty Level',
-            dataIndex: 'level',
-            render: (item, record) => {
-                return record.qual.lvl || '--'
-            }
-        },
-        {
-            title: 'Count',
-            dataIndex: 'count',
-            render: (item, record) => {
-                return record.qual.count || '--'
-            }
-        },
-        {
-            title: 'Max mint Count',
-            dataIndex: 'mintCount',
-
-        },
-        {
-            title: 'Amount per Mint',
+            title: 'Amount Per Mint',
             dataIndex: 'amtPerMint',
-
+            width: 200,
         },
+        // {
+        //     title: 'Decimals',
+        //     dataIndex: 'decimals',
+        //     width: 200,
+        // },
+        // {
+        //     title: 'Premine Count',
+        //     dataIndex: 'premineCount',
+        //     width: 200,
+        // },
         {
-            title: 'Decimals',
-            dataIndex: 'decimals',
-
-        },
-        {
-            title: 'Premine Count',
-            dataIndex: 'premineCount',
-
+            title: 'Type',
+            dataIndex: 'blockHeight',
+            width: 100,
+            render: (item) => {
+                return <>{item ? 'complete' : <span style={{color:'#FF5252'}}>Pending</span>}</>
+            }
         },
         {
             title: 'Pin',
             dataIndex: 'Pin',
-            render: (item,record) => {
-                return <>{record.usedPins.map((item) =>(<p>{item.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</p>))}</> 
+            width: 200,
+            render: (item, record) => {
+                return <>{record.usedPins.map((item) => (<p>{item.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</p>))}</>
             }
 
         },
-        {
-            title: 'Type',
-            dataIndex: 'blockHeight',
-            render: (item) => {
-                return item ? 'complete' : 'Pending'
-            }
-        },
+
         {
             title: "Time",
             dataIndex: "timestamp",
             key: "timestamp",
+            width: 200,
             render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
         },
         {
             title: "Hash",
             dataIndex: "txId",
             key: "txId",
+            width: 200,
             render: (text, record) => (
                 <Tooltip title={text}>
                     <a
@@ -139,7 +148,7 @@ export default () => {
 
             <div className="tableWrap">
                 <Table
-                    scroll={{ x: 1000 }}
+                    scroll={{ x: 1200 }}
                     rowKey={"txId"}
                     loading={loading}
                     columns={columns}

@@ -44,7 +44,7 @@ export default () => {
         {
             title: 'Token',
             dataIndex: 'tick',
-            fixed: 'left',
+            // fixed: 'left',
             width: 220,
             render: (_, record) => {
                 return <Item info={record} />

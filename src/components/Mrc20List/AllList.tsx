@@ -42,7 +42,7 @@ export default () => {
             render: (_, record) => {
                 return <Item info={record} />
             },
-            fixed: 'left',
+            // fixed: 'left',
             width: 220
         },
         {

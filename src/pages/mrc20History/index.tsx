@@ -2,14 +2,21 @@ import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
 import { Button, Space, Table, TableProps, Tooltip, message } from "antd";
 
 import "./index.less";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Deploy from "./components/Deploy";
 import Mint from "./components/Mint";
 import Transfer from "./components/Transfer";
+import { useSearchParams } from "umi";
 type Tab = "Deploy" | "Mint" | "Transfer";
-const items = ["Deploy", 'Mint', ];
+const items = ["Deploy", 'Mint',];
 export default () => {
-
+    const [query] = useSearchParams();
+    const _tab = query.get("tab");
+    useEffect(() => {
+        if (_tab && items.includes(_tab)) {
+            setTab(_tab as Tab)
+        }
+    }, [_tab])
     const [tab, setTab] = useState<Tab>("Deploy");
 
     return (
@@ -20,7 +27,7 @@ export default () => {
                     history.back();
                 }}
             >
-                <LeftOutlined /> My MRC 20/Persona
+                <LeftOutlined /> My MRC20/ <span className="subTitle">Personal</span>
             </div>
 
             <div className="tabs">
