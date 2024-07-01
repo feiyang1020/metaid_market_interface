@@ -221,7 +221,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         }
 
                         <div className="item">
-                            <div className="label">Tx Hash </div>
+                            <div className="label">TxId </div>
                             <div className="value">
                                 <Tooltip title={ret.revealTxId}>
                                     <a
