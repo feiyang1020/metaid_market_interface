@@ -28,7 +28,7 @@ import SuccessModal, {
 } from "@/components/SuccessModal";
 import Mrc20Form from "./components/Mrc20Form";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
-const items = ["File", "Buzz", "PINs", 'MRC-20'];
+const items = ['MRC-20',"File", "Buzz", "PINs", ];
 const { Dragger } = Upload;
 const { TextArea } = Input;
 const formItemLayout = {
@@ -106,7 +106,7 @@ export default () => {
   const [query] = useSearchParams();
   const _tab = query.get('tab');
   const { sm } = useBreakpoint();
-  const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("File");
+  const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("MRC-20");
   const [submiting, setSubmiting] = useState(false);
   const { btcConnector, connected, connect, feeRates, network, disConnect } =
     useModel("wallet");

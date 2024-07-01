@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message } from "antd";
+import { Button, Card, Checkbox, Col, Modal, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message } from "antd";
 import { useCallback, useEffect, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useSearchParams, history } from "umi";
@@ -16,6 +16,7 @@ import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/Su
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
 import PopLvl from "@/components/PopLvl";
+import DeployComfirm, { DeployComfirmProps, defaultDeployComfirmProps } from "./DeployComfirm";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -39,9 +40,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const [mintInfoStatus, setMintInfoStatus] = useState('');
     const [mintMrc20Info, setMintMrc20Info] = useState<API.MRC20TickInfo>();
     const [shovel, setShowel] = useState<API.MRC20Shovel[]>();
-    const [list, setList] = useState<API.UserMrc20Asset[]>([])
+    const [list, setList] = useState<API.UserMrc20Asset[]>([]);
+
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
+    const [deployComfirmProps, setDeployComfirmProps] = useState<DeployComfirmProps>(defaultDeployComfirmProps)
     const [submiting, setSubmiting] = useState(false);
     const { authParams, connected, connect, feeRates, network, disConnect, btcConnector, btcAddress } =
         useModel("wallet");
@@ -121,6 +124,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         fetchMrc20Info()
     }, [fetchMrc20Info])
 
+
     const deploy = async () => {
         if (!connected || !btcAddress || !btcConnector) return;
 
@@ -129,9 +133,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', feeRate } = form.getFieldsValue();
 
         const payload: any = {
-            tick: deployTicker, // no less than 2-24 characters
-            tokenName: deployTokenName, // token full name, 1-48 characters
-            decimals: String(deployDecimals), // 0-12
+            tick: deployTicker,
+            tokenName: deployTokenName,
+            decimals: String(deployDecimals),
             amtPerMint: String(deployAmountPerMint),
             mintCount: String(deployMaxMintCount),
             premineCount: String(deployPremineCount),
@@ -149,13 +153,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (deployIcon) {
             payload.metadata = JSON.stringify({ icon: deployIcon })
         }
-        console.log(payload, 'payload');
         const ret = await window.metaidwallet.btc.deployMRC20({
             flag: network === "mainnet" ? "metaid" : "testid",
             commitFeeRate: Number(feeRate),
             revealFeeRate: Number(feeRate),
             body: payload
         })
+        if (ret.status) throw new Error(ret.status)
         console.log(ret, 'ret');
         // if (deployPremineCount) {
         //     const script = addressLib.toOutputScript(btcAddress, network === 'mainnet' ? networks.bitcoin : networks.testnet);
@@ -186,7 +190,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         //     }
         // });
         // if (ret.status) throw new Error(ret.status);
-
+        setDeployComfirmProps(defaultDeployComfirmProps)
         success('Deploy', { revealTxId: commitRes.data.revealTxId })
     }
 
@@ -240,15 +244,59 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         });
     }
 
+    const beforeSubmit = async () => {
+        if (!connected || !btcAddress) return;
+        await form.validateFields();
+        const { type } = form.getFieldsValue();
+        if (type === 'deploy') {
+            const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', feeRate } = form.getFieldsValue();
+
+            const payload: any = {
+                tick: deployTicker,
+                tokenName: deployTokenName,
+                decimals: String(deployDecimals),
+                amtPerMint: String(deployAmountPerMint),
+                mintCount: String(deployMaxMintCount),
+                premineCount: String(deployPremineCount),
+                blockheight: '',
+                qual: {
+                    path: deployPath,
+                    count: String(deployCount),
+                    lvl: String(deployDifficultyLevel)
+                },
+            }
+            if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
+                message.error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
+                return
+            }
+
+            if (deployIcon) {
+                payload.metadata = JSON.stringify({ icon: deployIcon })
+            }
+            setDeployComfirmProps({
+                show: true,
+                onClose: () => {
+                    setDeployComfirmProps(defaultDeployComfirmProps)
+                },
+                onConfirm: mint,
+                submiting: submiting,
+                deployInfo: payload
+            })
+        } else {
+            await mint()
+        }
+    }
+
     const mint = async () => {
         if (!connected || !btcAddress) return;
         await form.validateFields();
+        setSubmiting(true);
         const { type, feeRate, tickerId, pins, transferTickerId, amount, recipient } = form.getFieldsValue();
-        // const tickerId = '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0'
         try {
 
             if (type === 'deploy') {
                 await deploy();
+
             }
             if (type === 'mint') {
                 if (!mintMrc20Info) return
@@ -284,8 +332,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 success('Mint', ret.data)
             }
             if (type === 'transfer') {
-                // const amount = 200;
-                // const recipient = 'mwKUTvJF43BqGqANeVdrtpRwd2zxNFvnWQ';
                 const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(transferTickerId), cursor: 0, size: 100 }, {
                     headers: {
                         ...authParams,
@@ -346,6 +392,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             console.error(e);
             message.error(e.message)
         }
+        setSubmiting(false);
 
 
     }
@@ -367,11 +414,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 variant="filled"
                 style={{ maxWidth: "96vw", width: 632 }}
                 initialValues={{
-                    // type: 'transfer',
+                    type: 'deploy',
                     // transferTickerId: '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0',
                     // recipient: 'mwKUTvJF43BqGqANeVdrtpRwd2zxNFvnWQ',
                     // amount: 200
-                    deployDecimals:8
+                    deployMaxMintCount: 21000,
+                    deployDecimals: 8,
+                    deployAmountPerMint: 1000,
                 }}
                 form={form}
             >
@@ -394,6 +443,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Input
                                             size="large"
                                             maxLength={24}
+                                            placeholder="2~24 charaters"
                                         />
                                     </Form.Item>
                                     <Form.Item label="Token Name" name="deployTokenName"
@@ -402,7 +452,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Input
                                             size="large"
                                             maxLength={48}
-
+                                            placeholder="1~48 charaters"
                                             addonAfter={
                                                 <Tooltip title="Full name of the token. Length: 1-48 characters.">
                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
@@ -452,7 +502,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         />
                                     </Form.Item>
 
-                                    <Collapse className="collapse" style={{ padding: 0 }} ghost items={[
+                                    <Collapse className="collapse" defaultActiveKey={1} style={{ padding: 0 }} ghost items={[
                                         {
                                             key: '1',
                                             label: <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}><div className="collapsePanel"> more options<div
@@ -753,7 +803,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         size="large"
                         loading={submiting}
                         type="primary"
-                        onClick={mint}
+                        onClick={beforeSubmit}
 
                         className="submit"
                     >
@@ -762,7 +812,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 )}
             </Col>
         </Row>
-
+        <DeployComfirm {...deployComfirmProps} submiting={submiting} />
         <SuccessModal {...successProp}></SuccessModal>
     </div>
 

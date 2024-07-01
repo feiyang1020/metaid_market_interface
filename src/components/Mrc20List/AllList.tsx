@@ -4,11 +4,37 @@ import { ConfigProvider, Table, TableColumnsType, Grid } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
 import Item from "./Item";
+import { useCallback, useEffect, useState } from "react";
 const { useBreakpoint } = Grid;
 export default () => {
     const screens = useBreakpoint();
     const { network } = useModel("wallet")
-    const { list, loading, total, page, setPage, size, setParams } = usePageList(getMrc20List, network);
+    const [list, setList] = useState<API.MRC20Info[]>([]);
+    const [total, setTotal] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [page, setPage] = useState<number>(0);
+    const [size, setSize] = useState<number>(10);
+    const [params, setParams] = useState<Record<string, any>>({orderBy:'marketCap',sortType:-1});
+    const fetchData = useCallback(async () => {
+        console.log(network, page, size, params)
+        setLoading(true);
+        const { code, message, data } = await getMrc20List(network, {
+            cursor: page * size,
+            size,
+            completed: true,
+            ...params,
+        });
+        if (code !== 0) return
+        if (data.list) {
+            setList(data.list);
+            setTotal(data.total);
+        }
+        setLoading(false);
+    }, [network, page, size, params]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
     const columns: TableColumnsType<API.MRC20Info> = [
         {
             title: 'Token',
@@ -73,7 +99,7 @@ export default () => {
                 }
             },
         }}><Table
-            style={{ margin: screens.lg ? '0 20px 0 200px' : '0 20px' }}
+            style={{ margin: screens.lg ? '0 20px ' : '0 20px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}

@@ -114,7 +114,7 @@ export default function Layout() {
                           {metaid && (
                             <div className="metaId">
                               MetaID:
-                              {metaid.replace(/(\w{4})\w+(\w{3})/, "$1...$2")}
+                              {metaid.replace(/(\w{6})\w+(\w{3})/, "$1...")}
                             </div>
                           )}
                         </div>

@@ -7,7 +7,7 @@ const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
         key: '1',
-        label: 'All',
+        label: 'Minted',
         children: <AllList />,
     },
     {
@@ -33,5 +33,5 @@ export default () => {
                 }
             },
         }}
-    ><Tabs tabBarStyle={{ paddingLeft: screens.lg ? 200 : 20 }} className="mrc20ListWrap" defaultActiveKey="1" items={items} /></ConfigProvider>
+    ><Tabs tabBarStyle={{ paddingLeft: screens.lg ? 20 : 20 }} className="mrc20ListWrap" defaultActiveKey="1" items={items} /></ConfigProvider>
 }

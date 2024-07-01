@@ -57,10 +57,10 @@ export default () => {
             render: (deployerUserInfo, record) => {
                 return <div className="deployer">
                     <div className="deployerInfo">
-                        <MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /><div className="deployerName">{record.deployerUserInfo.name||record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</div> 
+                        <MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /><div className="deployerName">{record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</div>
                     </div>
                     <div className="MetaId">
-                        MetaID:{record.deployerMetaId.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}
+                        MetaID:{record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}
                     </div>
                 </div>
             }
@@ -94,9 +94,10 @@ export default () => {
         {
             title: 'Condition',
             dataIndex: 'qual',
-            width: 200,
+            width: 170,
             render: (qual, record) => {
-                return <div className="condition"><PopLvl lvl={record.qual.lvl} /> <Tooltip title={record.qual.path}>path:{record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip> <span className="colorPrimary"> X {record.qual.count || '1'}</span></div>
+                return <div className="condition"><div>
+                    <Tooltip title={record.qual.path}>path:{record.qual.path.length > 45 ? record.qual.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.qual.path}</Tooltip></div> <div className="lvlCount"><PopLvl lvl={record.qual.lvl} />  <span className="colorPrimary"> X {record.qual.count || '1'}</span></div></div>
             }
         },
         {
@@ -149,7 +150,7 @@ export default () => {
                 }
             },
         }}><Table
-            style={{ margin: screens.lg ? '0 20px 0 200px' : '0 20px' }}
+            style={{ margin: screens.lg ? '0 20px ' : '0 20px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}
@@ -166,8 +167,8 @@ export default () => {
                 if (!current) current = 1;
                 if (sorter.order) {
                     setParams({ orderBy: sorter.field === 'price' ? 'lastPrice' : sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
-                }else{
-                    setParams({}) 
+                } else {
+                    setParams({})
                 }
                 setPage(current - 1)
             }}
