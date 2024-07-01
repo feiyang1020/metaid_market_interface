@@ -55,9 +55,8 @@ export default function DeployComfirm({ show, onClose, onConfirm, submiting, dep
         <DescItem label='Max Mint Count' value={deployInfo.mintCount} />
         <DescItem label='Amount Per Mint' value={deployInfo.amtPerMint} />
 
-        {
-            deployInfo.metadata && <DescItem label='Icon' value={<MRC20Icon {...deployInfo}></MRC20Icon>} />
-        }
+        <DescItem label='Icon' value={<MRC20Icon {...deployInfo}></MRC20Icon>} />
+
         <DescItem label='Decimals' value={deployInfo.decimals} />
         {
             deployInfo.premineCount && <DescItem label='Premine Count' value={deployInfo.premineCount} />
