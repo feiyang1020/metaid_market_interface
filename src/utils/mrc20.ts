@@ -315,7 +315,8 @@ const _buildBuyMrc20TakePsbt = async (
   buyTicketParams: BuyMrc20Params,
   selectedUTXOs: API.UTXO[],
   change: Decimal,
-  needChange: boolean
+  needChange: boolean,
+  buildPsbt: boolean = true
 ) => {
   const {
     addressType,
@@ -355,10 +356,9 @@ const _buildBuyMrc20TakePsbt = async (
       value: change.toNumber(),
     });
   }
-  if (!signPsbt) {
+  if (!signPsbt||!buildPsbt) {
     return psbt;
   }
-  console.log(toSignInputs);
   const _signPsbt = await window.metaidwallet.btc.signPsbt({
     psbtHex: psbt.toHex(),
     options: {
