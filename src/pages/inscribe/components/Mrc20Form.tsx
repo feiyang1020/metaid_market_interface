@@ -334,7 +334,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (!connected || !btcAddress) return;
         await form.validateFields();
         setSubmiting(true);
-        const { type, feeRate, tickerId, pins, transferTickerId, amount, recipient } = form.getFieldsValue();
+        const { type, feeRate, tickerId, pins=[], transferTickerId, amount, recipient } = form.getFieldsValue();
         try {
 
             if (type === 'deploy') {
