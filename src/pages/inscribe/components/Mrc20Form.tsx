@@ -17,6 +17,7 @@ import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
 import PopLvl from "@/components/PopLvl";
 import DeployComfirm, { DeployComfirmProps, defaultDeployComfirmProps } from "./DeployComfirm";
+import MRC20DetailCard from "./MRC20DetailCard";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -145,7 +146,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             if (data && data.mrc20Id) {
                 setMintMrc20Info(data);
                 setMintInfoStatus('success')
-                _shovels.length>0&&form.setFieldsValue({ pins: _shovels[0].id })
+                _shovels.length > 0 && form.setFieldsValue({ pins: _shovels[0].id })
                 return
             }
 
@@ -192,6 +193,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             commitFeeRate: Number(feeRate),
             revealFeeRate: Number(feeRate),
             body: payload
+        }).catch(err=>{
+            console.log(err,'errrrr')
+            throw new Error(err)
         })
         if (ret.status) throw new Error(ret.status)
         const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx }, {
@@ -365,7 +369,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 if (Number(mintMrc20Info.qual.count) && pins.length < Number(mintMrc20Info.qual.count)) {
                     throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
                 }
-                const mintPins = pins.map((pinId:string) => {
+                const mintPins = pins.map((pinId: string) => {
                     const pin = shovel?.find(item => item.id === pinId);
                     if (!pin) return;
                     return {
@@ -751,48 +755,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading}>
 
                                             {
-                                                mintMrc20Info && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><Card bordered={false} style={{ marginBottom: 20 }} >
-                                                    <Descriptions column={1}
-                                                        labelStyle={{ color: '#FFFFFF' }}
-                                                        contentStyle={{ flexGrow: 1, justifyContent: 'flex-end', color: 'rgba(255, 255, 255, 0.5)' }}
-                                                        items={[
-                                                            {
-                                                                key: 'Ticker',
-                                                                label: 'Ticker',
-                                                                children: <>{mintMrc20Info.tick}</>
-                                                            },
-                                                            {
-                                                                key: 'tokenName',
-                                                                label: 'Token Name',
-                                                                children: <>{mintMrc20Info.tokenName}</>
-                                                            },
-                                                            {
-                                                                key: 'mintCount',
-                                                                label: 'Mint Count',
-                                                                children: <>{mintMrc20Info.mintCount}</>
-                                                            },
-                                                            {
-                                                                key: 'amtPerMint',
-                                                                label: 'Amount Per Mint',
-                                                                children: <>{mintMrc20Info.amtPerMint}</>
-                                                            },
-                                                            {
-                                                                key: 'Path',
-                                                                label: 'Path',
-                                                                children: <Tooltip title={mintMrc20Info.qual.path}>{mintMrc20Info.qual.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip>
-                                                            },
-                                                            {
-                                                                key: 'Difficultylevel',
-                                                                label: 'Difficulty Level',
-                                                                children: <>{mintMrc20Info.qual.lvl || '--'}</>
-                                                            },
-                                                            {
-                                                                key: 'Count',
-                                                                label: 'Count',
-                                                                children: <>{mintMrc20Info.qual.count || '--'}</>
-                                                            }
-                                                        ]}></Descriptions>
-                                                </Card></>
+                                                mintMrc20Info && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><MRC20DetailCard mintMrc20Info={mintMrc20Info} /></>
                                             }
                                         </Spin>
                                         </Col>
@@ -823,7 +786,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     }></Collapse>
                                                 </Col></Row> : <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/?tab=PIN') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
-                                                    No PIN. Go get it
+                                                    No Appropriate PIN . Go get it
                                                 </div></div></Col></Row>
                                         }
                                     </>}
