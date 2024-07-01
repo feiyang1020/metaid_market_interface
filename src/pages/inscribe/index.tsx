@@ -226,7 +226,7 @@ export default () => {
                   </div>
                 </div>
                 <div className="item">
-                  <div className="label">Trade Hash</div>
+                  <div className="label">Tx Hash </div>
                   <div className="value">
                     <Tooltip title={ret.commitTxId}>
                       <a
@@ -297,7 +297,7 @@ export default () => {
                   </div>
                 </div>
                 <div className="item">
-                  <div className="label">Trade Hash</div>
+                  <div className="label">Tx Hash </div>
                   <div className="value">
                     <Tooltip title={ret.commitTxId}>
                       <a
@@ -373,7 +373,7 @@ export default () => {
                   </div>
                 </div>
                 <div className="item">
-                  <div className="label">Trade Hash</div>
+                  <div className="label">Tx Hash </div>
                   <div className="value">
                     <Tooltip title={ret.commitTxId}>
                       <a

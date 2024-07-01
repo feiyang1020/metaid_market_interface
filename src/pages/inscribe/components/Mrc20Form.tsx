@@ -221,7 +221,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         }
 
                         <div className="item">
-                            <div className="label">Trade Hash</div>
+                            <div className="label">Tx Hash </div>
                             <div className="value">
                                 <Tooltip title={ret.revealTxId}>
                                     <a
@@ -452,7 +452,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Input
                                             size="large"
                                             maxLength={48}
-                                            placeholder="less than charaters"
+                                            placeholder="less than 48 charaters"
                                             addonAfter={
                                                 <Tooltip title="Full name of the token. Length: 1-48 characters.">
                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
