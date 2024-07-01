@@ -13,6 +13,7 @@ import {
   message,
   Grid,
   Select,
+  Typography,
 } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import "./index.less";
@@ -28,7 +29,7 @@ import SuccessModal, {
 } from "@/components/SuccessModal";
 import Mrc20Form from "./components/Mrc20Form";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
-const items = ['MRC-20',"File", "Buzz", "PINs", ];
+const items = ['MRC-20', "File", "Buzz", "PINs",];
 const { Dragger } = Upload;
 const { TextArea } = Input;
 const formItemLayout = {
@@ -206,7 +207,9 @@ export default () => {
 
       });
       if (ret.status) throw new Error(ret.status);
-      if (ret.commitTxId) {
+      console.log(ret, "ret");
+      const [revealTxId] = ret.revealTxIds
+      if (revealTxId) {
         setSuccessProp({
           show: true,
           onClose: () => setSuccessProp(DefaultSuccessProps),
@@ -222,24 +225,34 @@ export default () => {
                 <div className="item">
                   <div className="label">Transaction Cost</div>
                   <div className="value">
-                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                    <img src={btcIcon}></img> {formatSat(ret.totalCost)}
                   </div>
                 </div>
                 <div className="item">
                   <div className="label">TxId </div>
                   <div className="value">
-                    <Tooltip title={ret.commitTxId}>
+                    <Tooltip title={revealTxId}>
                       <a
                         style={{ color: "#fff", textDecoration: "underline" }}
                         target="_blank"
                         href={
                           network === "testnet"
-                            ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
-                            : `https://mempool.space/tx/${ret.commitTxId}`
+                            ? `https://mempool.space/testnet/tx/${revealTxId}`
+                            : `https://mempool.space/tx/${revealTxId}`
                         }
-                      >
-                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                      ><Typography.Text copyable={{ text: revealTxId }}>
+                          {revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                        </Typography.Text>
                       </a>
+                    </Tooltip>
+                  </div>
+                </div>
+
+                <div className="item">
+                  <div className="label">Metafile URI </div>
+                  <div className="value">
+                    <Tooltip title={`metafile://${revealTxId}i0`}>
+                      <Typography.Text copyable={{ text: `metafile://${revealTxId}i0` }}> metafile://{revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}i0</Typography.Text>
                     </Tooltip>
                   </div>
                 </div>
@@ -277,7 +290,8 @@ export default () => {
 
       });
       if (ret.status) throw new Error(ret.status);
-      if (ret.commitTxId) {
+      const [revealTxId] = ret.revealTxIds
+      if (revealTxId) {
         setSuccessProp({
           show: true,
           onClose: () => setSuccessProp(DefaultSuccessProps),
@@ -293,23 +307,25 @@ export default () => {
                 <div className="item">
                   <div className="label">Transaction Cost</div>
                   <div className="value">
-                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                    <img src={btcIcon}></img> {formatSat(ret.totalCost)}
                   </div>
                 </div>
                 <div className="item">
                   <div className="label">TxId </div>
                   <div className="value">
-                    <Tooltip title={ret.commitTxId}>
+                    <Tooltip title={revealTxId}>
                       <a
                         style={{ color: "#fff", textDecoration: "underline" }}
                         target="_blank"
                         href={
                           network === "testnet"
-                            ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
-                            : `https://mempool.space/tx/${ret.commitTxId}`
+                            ? `https://mempool.space/testnet/tx/${revealTxId}`
+                            : `https://mempool.space/tx/${revealTxId}`
                         }
                       >
-                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                        <Typography.Text copyable={{ text: revealTxId }}>
+                          {revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                        </Typography.Text>
                       </a>
                     </Tooltip>
                   </div>
@@ -353,7 +369,8 @@ export default () => {
       }
       );
       if (ret.status) throw new Error(ret.status);
-      if (ret.commitTxId) {
+      const [revealTxId] = ret.revealTxIds
+      if (revealTxId) {
         setSuccessProp({
           show: true,
           onClose: () => setSuccessProp(DefaultSuccessProps),
@@ -369,23 +386,23 @@ export default () => {
                 <div className="item">
                   <div className="label">Transaction Cost</div>
                   <div className="value">
-                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                    <img src={btcIcon}></img> {formatSat(ret.totalCost)}
                   </div>
                 </div>
                 <div className="item">
                   <div className="label">TxId </div>
                   <div className="value">
-                    <Tooltip title={ret.commitTxId}>
+                    <Tooltip title={revealTxId}>
                       <a
                         style={{ color: "#fff", textDecoration: "underline" }}
                         target="_blank"
                         href={
                           network === "testnet"
-                            ? `https://mempool.space/testnet/tx/${ret.commitTxId}`
-                            : `https://mempool.space/tx/${ret.commitTxId}`
+                            ? `https://mempool.space/testnet/tx/${revealTxId}`
+                            : `https://mempool.space/tx/${revealTxId}`
                         }
-                      >
-                        {ret.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                      > <Typography.Text copyable={{ text: revealTxId }}>{revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</Typography.Text>
+
                       </a>
                     </Tooltip>
                   </div>
@@ -397,9 +414,9 @@ export default () => {
       } else {
         throw new Error(typeof ret === "string" ? ret : "unknow error");
       }
-    } catch (err) {
-      console.log(err, "eeeeeee");
-      message.error(err.message);
+    } catch (err: any) {
+      console.log(err,);
+      message.error(typeof err === 'string' ? err : err.message);
     }
     setSubmiting(false);
   };
@@ -473,7 +490,7 @@ export default () => {
                 <div className="uploadWrap">
                   <div className="label"></div>
                   <div className="upload">
-                    <Dragger {...props} className="uploadInput">
+                    <Dragger {...props} className="uploadInput" listType={fileList && fileList[0] && fileList[0].type?.includes('image') ? 'picture' : 'text'}>
                       <p className="ant-upload-text">Upload file</p>
                       <p className="ant-upload-hint">Any file type. Max 300kb</p>
                       <p className="ant-upload-drag-icon">

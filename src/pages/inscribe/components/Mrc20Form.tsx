@@ -53,13 +53,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const _deployMaxMintCount = Form.useWatch('deployMaxMintCount', form);
     const _deployAmountPerMint = Form.useWatch('deployAmountPerMint', form);
     const _deployIcon = Form.useWatch('deployIcon', form);
-    const totalSupply =useMemo(()=>{
-        if(_deployMaxMintCount&&_deployAmountPerMint){
-            return BigInt(_deployMaxMintCount)*BigInt(_deployAmountPerMint)
-        }else{
+    const totalSupply = useMemo(() => {
+        if (_deployMaxMintCount && _deployAmountPerMint) {
+            return BigInt(_deployMaxMintCount) * BigInt(_deployAmountPerMint)
+        } else {
             return BigInt(0)
         }
-    },[_deployMaxMintCount,_deployAmountPerMint])
+    }, [_deployMaxMintCount, _deployAmountPerMint])
     const _tab = query.get('tab');
     const _tickerId = query.get('tickerId');
     const [mintTokenID, setMintTokenID] = useState<string>('');
@@ -256,7 +256,10 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 : `https://mempool.space/tx/${ret.revealTxId}`
                                         }
                                     >
-                                        {ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                        <Typography.Text copyable={{ text: ret.revealTxId }}>
+                                            {ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                        </Typography.Text>
+
                                     </a>
                                 </Tooltip>
                             </div>
@@ -310,7 +313,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 : `https://mempool.space/tx/${ret.revealTxId}`
                                         }
                                     >
-                                        {ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                        <Typography.Text copyable={{ text: ret.revealTxId }}>{ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</Typography.Text>
                                     </a>
                                 </Tooltip>
                             </div>
@@ -445,7 +448,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         : `https://mempool.space/tx/${ret.data.revealTxId}`
                                                 }
                                             >
-                                                {ret.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                                <Typography.Text copyable={{ text: ret.data.revealTxId }}>
+                                                    {ret.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                                </Typography.Text>
                                             </a>
                                         </Tooltip>
                                     </div>
@@ -630,8 +635,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         />
                                     </Form.Item>
                                     <Row gutter={[0, 0]}>
-                                        <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left',color:'rgba(255, 255, 255, 0.6)',fontSize:14 }}>
-                                            TotalSupply: <NumberFormat value={totalSupply} isBig decimal={1}/>
+                                        <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
+                                            TotalSupply: <NumberFormat value={totalSupply} isBig decimal={1} />
                                         </Col>
                                     </Row>
 
@@ -656,7 +661,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
-                                                        suffix={_deployIcon?<img  src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)} style={{ width: 24, height: 24,borderRadius:'50%' }} />:<></>}
+                                                        suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
                                                         placeholder="metafile://Your-Icon-Pinid"
                                                     />
                                                 </Form.Item>
