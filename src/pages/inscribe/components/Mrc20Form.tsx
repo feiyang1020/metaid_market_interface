@@ -365,7 +365,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 if (Number(mintMrc20Info.qual.count) && pins.length < Number(mintMrc20Info.qual.count)) {
                     throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
                 }
-                const mintPins = pins.map((pinId) => {
+                const mintPins = pins.map((pinId:string) => {
                     const pin = shovel?.find(item => item.id === pinId);
                     if (!pin) return;
                     return {
