@@ -563,7 +563,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     // amount: 200
                     deployPremineCount: 0,
                     deployMaxMintCount: 21000,
-                    deployDecimals: 0,
+                    deployDecimals: 8,
                     deployAmountPerMint: 1000,
                 }}
                 form={form}
@@ -696,7 +696,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             max={12}
                                                             precision={0}
                                                             addonAfter={
-                                                                <Tooltip title="Decimal Places: Min 0, Max 12. Default is 0.">
+                                                                <Tooltip title="Decimal Places: Min 0, Max 12. Default is 8.">
                                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                                 </Tooltip>
                                                             }
