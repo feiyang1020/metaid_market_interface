@@ -264,8 +264,8 @@ export default () => {
         throw new Error("unknow error");
       }
     } catch (err) {
-      console.log(err);
-      message.error(err.message);
+      console.log(err,typeof err === 'string');
+      message.error(typeof err === 'string' ? err : err.message);
     }
     setSubmiting(false);
   };
@@ -337,9 +337,9 @@ export default () => {
       } else {
         throw new Error("unknow error");
       }
-    } catch (err) {
-      console.log(err)
-      message.error(err.message);
+    } catch (err:any) {
+      console.log(err,typeof err === 'string');
+      message.error(typeof err === 'string' ? err : err.message);
     }
     setSubmiting(false);
   };
@@ -415,7 +415,7 @@ export default () => {
         throw new Error(typeof ret === "string" ? ret : "unknow error");
       }
     } catch (err: any) {
-      console.log(err,);
+      console.log(err,typeof err === 'string');
       message.error(typeof err === 'string' ? err : err.message);
     }
     setSubmiting(false);
