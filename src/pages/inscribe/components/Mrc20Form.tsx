@@ -786,9 +786,12 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 <Form.Item rules={[]} label="Difficulty Level" name="deployDifficultyLevel"
 
                                                 >
-                                                    <Select style={{ textAlign: 'left' }} size="large" options={new Array(10).fill(null).map((_, i) => {
-                                                        return { label: `Lv${i + 5}`, value: i + 5 }
-                                                    })}>
+                                                    <Select style={{ textAlign: 'left' }} size="large" options={
+                                                        network === 'mainnet' ? new Array(10).fill(null).map((_, i) => {
+                                                            return { label: `Lv${i + 5}`, value: i + 5 }
+                                                        }) : new Array(14).fill(null).map((_, i) => {
+                                                            return { label: `Lv${i}`, value: i }
+                                                        })}>
 
                                                     </Select>
                                                 </Form.Item>
