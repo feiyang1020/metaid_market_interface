@@ -413,7 +413,6 @@ export const buildBuyMrc20TakePsbt = async (
     manualCalcFee
   );
   const totalSpent = Number(ret.fee) + Number(order.priceAmount) + Number(fee);
-  console.log(ret, totalSpent, ret.fee, "ret");
   return { rawTx: ret.rawTx, psbt: ret.psbt, fee: ret.fee, totalSpent };
 };
 export const buyMrc20Order = async (
@@ -425,7 +424,7 @@ export const buyMrc20Order = async (
     order,
     network,
     feeRate,
-    true,
+    false,
     true
   );
   return rawTx;

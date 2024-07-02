@@ -133,7 +133,7 @@ export default ({ order, show, onClose }: Props) => {
       if (!orderWithPsbt || !connected) return;
       try {
         setCalcing(true);
-        const { order, totalSpent, fee, error } = await buildBuyMrc20TakePsbt(orderWithPsbt, network, Number(feeRate), true, false);
+        const { order, totalSpent, fee, error } = await buildBuyMrc20TakePsbt(orderWithPsbt, network, Number(feeRate), false, false);
         console.log(order, totalSpent);
         if (didCancel) return;
         setCalcing(false);
