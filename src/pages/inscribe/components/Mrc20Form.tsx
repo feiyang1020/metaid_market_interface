@@ -166,7 +166,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             if (data && data.mrc20Id) {
                 setMintMrc20Info(data);
                 setMintInfoStatus('success')
-                _shovels.length > 0 && form.setFieldsValue({ pins: _shovels[0].id })
+                _shovels.length > 0 && form.setFieldsValue({ pins: [_shovels[0].id] })
                 return
             }
 
@@ -397,6 +397,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 if (Number(mintMrc20Info.qual.count) && pins.length < Number(mintMrc20Info.qual.count)) {
                     throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
                 }
+                console.log(pins,'pins')
                 const mintPins = pins.map((pinId: string) => {
                     const pin = shovel?.find(item => item.id === pinId);
                     if (!pin) return;
