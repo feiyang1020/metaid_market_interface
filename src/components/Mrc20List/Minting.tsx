@@ -106,8 +106,8 @@ export default () => {
             // sorter: true,
             width: 200,
             align: 'center',
-            render: (_,record) => {
-                return <div className="premine">{Number(record.premineCount)>0?<NumberFormat value={Number(record.premineCount/record.mintCount)*100} suffix='%' precision={4} />:'Fair Launch'}</div> 
+            render: (_, record) => {
+                return <div className="premine">{Number(record.premineCount) > 0 ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100} suffix='%' precision={4} /> : 'Fair Launch'}</div>
             }
         },
         {
