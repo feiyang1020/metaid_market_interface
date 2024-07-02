@@ -255,18 +255,18 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         <div className="item">
                             <div className="label">TxId </div>
                             <div className="value">
-                                <Tooltip title={ret.revealTxId}>
+                                <Tooltip title={commitRes.data.revealTxId}>
                                     <a
                                         style={{ color: "#fff", textDecoration: "underline" }}
                                         target="_blank"
                                         href={
                                             network === "testnet"
-                                                ? `https://mempool.space/testnet/tx/${ret.revealTxId}`
-                                                : `https://mempool.space/tx/${ret.revealTxId}`
+                                                ? `https://mempool.space/testnet/tx/${commitRes.data.revealTxId}`
+                                                : `https://mempool.space/tx/${commitRes.data.revealTxId}`
                                         }
                                     >
                                         <Typography.Text copyable={{ text: ret.revealTxId }}>
-                                            {ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                            {commitRes.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
                                         </Typography.Text>
 
                                     </a>
