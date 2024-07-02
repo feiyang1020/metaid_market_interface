@@ -1,6 +1,6 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
 import { getMrc20Info } from '@/services/api';
-import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography } from 'antd';
+import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid } from 'antd';
 import { useCallback, useState } from 'react';
 import { useMatch, useModel, history } from 'umi';
 import './index.less'
@@ -13,7 +13,7 @@ import MetaIdAvatar from '@/components/MetaIdAvatar';
 import MRC20Icon from '@/components/MRC20Icon';
 import { formatSat } from '@/utils/utlis';
 import btcIcon from "@/assets/logo_btc@2x.png";
-
+const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
         key: '1',
@@ -33,6 +33,7 @@ const items: TabsProps['items'] = [
 ];
 
 export default () => {
+    const screens = useBreakpoint();
     const match = useMatch('/mrc20/:mrc20Id');
     const { network } = useModel('wallet')
     const [mrc20Info, setMrc20Info] = useState<API.MRC20TickInfo>();
@@ -88,11 +89,12 @@ export default () => {
                             <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false} />
                         </div>
                         <div className="sliderNumber">
-                           
-                            <NumberFormat value={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} suffix=' %' /> 
+
+                            <NumberFormat value={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} suffix=' %' />
                         </div>
                     </div>
-                    <Divider type='vertical' style={{ height: 75 }} />
+
+                    <Divider type={screens.md ? 'vertical' : 'horizontal'} style={{ height: screens.md ? 75 : 1 }} />
                     <div className="desc">
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />

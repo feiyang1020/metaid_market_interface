@@ -123,6 +123,7 @@ export default ({ mrc20Id }: Props) => {
                 current: page + 1,
                 total
             }}
+            scroll={{ x: 1000 }}
             loading={loading}
             onChange={({ current, ...params }, _, sorter) => {
                 console.log(sorter, 'params')

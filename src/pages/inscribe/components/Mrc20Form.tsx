@@ -50,9 +50,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
+    const type = Form.useWatch('type', form);
     const _deployMaxMintCount = Form.useWatch('deployMaxMintCount', form);
     const _deployAmountPerMint = Form.useWatch('deployAmountPerMint', form);
     const _deployIcon = Form.useWatch('deployIcon', form);
+    const _deployPremineCount = Form.useWatch('deployPremineCount', form);
     const totalSupply = useMemo(() => {
         if (_deployMaxMintCount && _deployAmountPerMint) {
             return BigInt(_deployMaxMintCount) * BigInt(_deployAmountPerMint)
@@ -60,6 +62,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             return BigInt(0)
         }
     }, [_deployMaxMintCount, _deployAmountPerMint])
+    const totalPreMint = useMemo(() => {
+        if (_deployPremineCount && _deployAmountPerMint) {
+            return BigInt(_deployPremineCount) * BigInt(_deployAmountPerMint)
+        } else {
+            return BigInt(0)
+        }
+    }, [_deployPremineCount, _deployAmountPerMint])
     const _tab = query.get('tab');
     const _tickerId = query.get('tickerId');
     const [mintTokenID, setMintTokenID] = useState<string>('');
@@ -420,7 +429,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         history.push('/mrc20History?tab=Mint')
 
                     },
-                    title: "Deploy",
+                    title: "Mint",
                     tip: "Successful",
                     okText: 'OK,Skip to My MRC20',
                     children: (
@@ -551,6 +560,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     // transferTickerId: '8e659899275b1d06db870fbee9b293bc73d25e063cc86860a6d52c1e11091e9bi0',
                     // recipient: 'mwKUTvJF43BqGqANeVdrtpRwd2zxNFvnWQ',
                     // amount: 200
+                    deployPremineCount: 0,
                     deployMaxMintCount: 21000,
                     deployDecimals: 8,
                     deployAmountPerMint: 1000,
@@ -579,20 +589,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                             placeholder="2~24 charaters"
                                         />
                                     </Form.Item>
-                                    <Form.Item label="Token Name" name="deployTokenName"
-                                        rules={[{ type: 'string', min: 1, max: 48 }]}
-                                    >
-                                        <Input
-                                            size="large"
-                                            maxLength={48}
-                                            placeholder="less than 48 charaters"
-                                            addonAfter={
-                                                <Tooltip title="Full name of the token. Length: 1-48 characters.">
-                                                    <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                                </Tooltip>
-                                            }
-                                        />
-                                    </Form.Item>
+
 
 
 
@@ -636,7 +633,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     </Form.Item>
                                     <Row gutter={[0, 0]}>
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
-                                            TotalSupply: <NumberFormat value={totalSupply} isBig decimal={1} />
+                                            TotalSupply: <NumberFormat value={totalSupply} isBig decimal={0} />
                                         </Col>
                                     </Row>
 
@@ -651,6 +648,20 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                             showArrow: false,
                                             children: <>
+                                                <Form.Item label="Token Name" name="deployTokenName"
+                                                    rules={[{ type: 'string', min: 1, max: 48 }]}
+                                                >
+                                                    <Input
+                                                        size="large"
+                                                        maxLength={48}
+                                                        placeholder="less than 48 charaters"
+                                                        addonAfter={
+                                                            <Tooltip title="Full name of the token. Length: 1-48 characters.">
+                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                            </Tooltip>
+                                                        }
+                                                    />
+                                                </Form.Item>
                                                 <Form.Item label="Icon" name="deployIcon"
 
                                                 >
@@ -709,11 +720,25 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         min={0}
 
                                                         precision={0}
+                                                        addonAfter={
+                                                            <Tooltip title="Pre-Minted Count. Value must be ≥ 0 and ≤ Max Mint Count. If this Token is a fair launch, please enter 0.">
+                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                            </Tooltip>
+                                                        }
                                                     />
                                                 </Form.Item>
+                                                {
+                                                    _deployPremineCount > 0 && <Row gutter={[0, 0]} style={{ marginBottom: 20 }}>
+                                                        <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
+                                                            Total Pre-Minted Token Amount: : <NumberFormat value={totalPreMint} isBig decimal={0} /><br />
+                                                            These tokens will be in your wallet once deployment is confirmed.
+                                                        </Col>
+                                                    </Row>
+                                                }
+
                                                 <Row gutter={[0, 0]}>
                                                     <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
-                                                        <Popover title='Difficulty Settings' content={<Typography style={{ maxWidth: '400px' }}>
+                                                        <Popover title='PoP Difficulty Settings' content={<Typography style={{ maxWidth: '400px' }}>
                                                             <Typography.Paragraph>
                                                                 MRC20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.
                                                             </Typography.Paragraph>
@@ -742,7 +767,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                                 </li>
                                                             </ul>
                                                         </Typography>}>
-                                                            Difficulty Settings <QuestionCircleOutlined />
+                                                            PoP Difficulty Settings <QuestionCircleOutlined /><br />
+                                                            <span style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>(Leave them blank if you are not sure what they are. )</span>
                                                         </Popover>
                                                     </Col>
                                                 </Row>
@@ -759,8 +785,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 <Form.Item rules={[]} label="Difficulty Level" name="deployDifficultyLevel"
 
                                                 >
-                                                    <Select style={{ textAlign: 'left' }} size="large" options={new Array(14).fill(null).map((_, i) => {
-                                                        return { label: `Lv${i}`, value: i }
+                                                    <Select style={{ textAlign: 'left' }} size="large" options={new Array(10).fill(null).map((_, i) => {
+                                                        return { label: `Lv${i + 5}`, value: i + 5 }
                                                     })}>
 
                                                     </Select>
@@ -906,7 +932,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                         className="submit"
                     >
-                        Next
+                        {type === 'deploy' ? 'Deploy' : type === 'mint' ? 'Mint' : 'Transfer'}
                     </Button>
                 )}
             </Col>

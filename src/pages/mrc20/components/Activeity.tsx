@@ -126,6 +126,7 @@ export default ({ mrc20Id }: Props) => {
         current: page + 1,
         total
       }}
+      scroll={{ x: 1000 }}
       className="activeityTable"
       loading={loading}
       onChange={({ current, ...params }, _, sorter) => {

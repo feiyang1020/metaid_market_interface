@@ -94,7 +94,7 @@ export default () => {
             title: 'Type',
             dataIndex: 'blockHeight',
             render: (item) => {
-                return <>{item ? 'complete' : <span style={{color:'#FF5252'}}>Pending</span>}</>
+                return <>{item ? 'Confirmed' : <span style={{color:'#FF5252'}}>Pending</span>}</>
             }
         },
         {

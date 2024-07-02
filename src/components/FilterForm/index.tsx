@@ -17,7 +17,7 @@ export default () => {
   return <Form
     {...formItemLayout}
     variant="filled"
-    style={{ maxWidth: "96vw", width: 368, padding: 16 }}
+    style={{ maxWidth: "80vw", width: 368, padding: 16 }}
     form={form}
 
   >
