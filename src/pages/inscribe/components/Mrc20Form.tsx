@@ -57,14 +57,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const _deployPremineCount = Form.useWatch('deployPremineCount', form);
     const totalSupply = useMemo(() => {
         if (_deployMaxMintCount && _deployAmountPerMint) {
-            return BigInt(_deployMaxMintCount) * BigInt(_deployAmountPerMint)
+            return BigInt(Math.round(_deployMaxMintCount)) * BigInt(Math.round(_deployAmountPerMint))
         } else {
             return BigInt(0)
         }
     }, [_deployMaxMintCount, _deployAmountPerMint])
     const totalPreMint = useMemo(() => {
         if (_deployPremineCount && _deployAmountPerMint) {
-            return BigInt(_deployPremineCount) * BigInt(_deployAmountPerMint)
+            return BigInt(Math.round(_deployPremineCount)) * BigInt(Math.round(_deployAmountPerMint))
         } else {
             return BigInt(0)
         }
@@ -217,6 +217,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             console.log(err, 'errrrr')
             throw new Error(err)
         })
+        console.log(ret)
         if (ret.status) throw new Error(ret.status)
         const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx }, {
             headers: {
@@ -239,7 +240,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             },
             title: "Deploy",
             tip: "Successful",
-            okText: 'OK,Skip to My MRC20',
+            okText: 'OK',
             children: (
                 <div className="inscribeSuccess">
                     <div className="res">
@@ -431,7 +432,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     },
                     title: "Mint",
                     tip: "Successful",
-                    okText: 'OK,Skip to My MRC20',
+                    okText: 'OK',
                     children: (
                         <div className="inscribeSuccess">
                             <div className="res">
