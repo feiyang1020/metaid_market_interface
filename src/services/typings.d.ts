@@ -257,6 +257,8 @@ declare namespace API {
   };
 
   type MRC20Info = {
+    premineCount:string;
+    mintCount:string;
     amtPerMint: string;
     blockHeight: string;
     change24h: string;

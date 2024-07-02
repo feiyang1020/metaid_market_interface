@@ -633,7 +633,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     </Form.Item>
                                     <Row gutter={[0, 0]}>
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
-                                            TotalSupply: <NumberFormat value={totalSupply} isBig decimal={0} />
+                                            Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} />
                                         </Col>
                                     </Row>
 
