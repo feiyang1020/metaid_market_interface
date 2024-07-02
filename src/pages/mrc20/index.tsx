@@ -90,7 +90,7 @@ export default () => {
                         </div>
                         <div className="sliderNumber">
 
-                            <NumberFormat value={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} suffix=' %' />
+                            <NumberFormat value={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} precision={4} suffix=' %' />
                         </div>
                     </div>
 
