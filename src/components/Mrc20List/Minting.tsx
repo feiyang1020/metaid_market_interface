@@ -107,7 +107,7 @@ export default () => {
             width: 200,
             align: 'center',
             render: (_,record) => {
-                return <div className="premine">{Number(record.premineCount)>0?<NumberFormat value={Number(record.premineCount/record.mintCount)*100} suffix='%' />:'Fair launch'}</div> 
+                return <div className="premine">{Number(record.premineCount)>0?<NumberFormat value={Number(record.premineCount/record.mintCount)*100} suffix='%' precision={4} />:'Fair Launch'}</div> 
             }
         },
         {
