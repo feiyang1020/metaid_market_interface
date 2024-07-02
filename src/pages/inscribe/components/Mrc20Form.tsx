@@ -212,7 +212,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             flag: network === "mainnet" ? "metaid" : "testid",
             commitFeeRate: Number(feeRate),
             revealFeeRate: Number(feeRate),
-            body: payload
+            body: payload,
+            options: {
+                markSafe: true,
+                noBroadcast: false
+            }
         }).catch(err => {
             console.log(err, 'errrrr')
             throw new Error(err)

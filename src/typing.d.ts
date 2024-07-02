@@ -71,6 +71,7 @@ declare interface Window {
       pushPsbt: (psbt: string) => Promise<string>;
       signPsbts: (psbtHexs: string[], options?: any[]) => Promise<string[]>;
       getUtxos: () => Promise<API.UTXO[]>;
+      deployMRC20:(paams:any)=>Promise<any>
     };
     token: {
       getBalance: () => Promise<any>;
