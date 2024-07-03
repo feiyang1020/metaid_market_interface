@@ -532,7 +532,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     },
                 })
                 if (code !== 0) throw new Error(message);
-                
+
                 const { rawTx, revealPrePsbtRaw } = await transferMRC20PSBT(data, feeRate, btcAddress, network);
                 console.log(revealPrePsbtRaw, 'revealPrePsbtRaw', rawTx);
                 const ret = await transferMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } });
@@ -540,16 +540,16 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
                 success('Transfer', ret.data)
             }
-        } catch (e:any) {
+        } catch (e: any) {
             console.error(e);
-            if(e.message === 'Insufficient funds to reach the target amount'){
+            if (e.message === 'Insufficient funds to reach the target amount') {
                 message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
-                
-            }else{
+
+            } else {
                 message.error(e.message)
             }
-            
-            
+
+
         }
         setSubmiting(false);
 
@@ -951,8 +951,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         onClick={beforeSubmit}
 
                         className="submit"
+                        disabled={mintMrc20Info && mintMrc20Info.mintable === false}
                     >
-                        {type === 'deploy' ? 'Deploy' : type === 'mint' ? 'Mint' : 'Transfer'}
+                        {type === 'deploy' ? 'Deploy' : type === 'mint' ? (mintMrc20Info && mintMrc20Info.mintable === false) ? 'Non-mintable' : 'Mint' : 'Transfer'}
                     </Button>
                 )}
             </Col>

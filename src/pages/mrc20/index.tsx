@@ -61,8 +61,8 @@ export default () => {
                         <div className="top">
                             <div className="nameWrap">
                                 <div className="name">
-                                    <div className='tick'>{mrc20Info.tick } </div>
-                                    
+                                    <div className='tick'>{mrc20Info.tick} </div>
+
                                     <Button
                                         type='link'
                                         size='small'
@@ -72,7 +72,7 @@ export default () => {
                                         Mrc-20
                                     </Button>
                                 </div>
-                                <Typography.Text className="token" copyable={{ text: mrc20Info.mrc20Id }}><span style={{color:'#fff'}}>{mrc20Info.tokenName}</span>  TokenID: {mrc20Info.mrc20Id.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}</Typography.Text>
+                                <Typography.Text className="token" copyable={{ text: mrc20Info.mrc20Id }}><span style={{ color: '#fff' }}>{mrc20Info.tokenName}</span>  TokenID: {mrc20Info.mrc20Id.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}</Typography.Text>
                             </div>
 
                             <div className="detail">
@@ -103,9 +103,12 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={mrc20Info.holders} />
                     </div>
                 </div>
-                <div className='mintBtn'>
-                    <Button type='primary' block onClick={() => { history.push('/inscribe?tab=MRC-20&tickerId=' + mrc20Info.mrc20Id) }}>Mint</Button>
-                </div>
+                {
+                    mrc20Info.mintable && <div className='mintBtn'>
+                        <Button type='primary' block onClick={() => { history.push('/inscribe?tab=MRC-20&tickerId=' + mrc20Info.mrc20Id) }}>Mint</Button>
+                    </div>
+                }
+
 
             </div>
         }
