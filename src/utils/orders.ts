@@ -541,7 +541,7 @@ export async function buildAskLimit({
     } catch (e: any) {}
   }
   const pubKey = await window.metaidwallet.btc.getPublicKey();
-  const psbtInput = {
+  const psbtInput:any = {
     hash: ordinalUtxo.txId,
     index: ordinalUtxo.outputIndex,
     witnessUtxo: ordinalPreTx.outs[ordinalUtxo.outputIndex],

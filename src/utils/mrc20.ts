@@ -391,7 +391,9 @@ export const buildBuyMrc20TakePsbt = async (
   const address = await window.metaidwallet.btc.getAddress();
   const btcNetwork =
     network === "mainnet" ? networks.bitcoin : networks.testnet;
-  const utxos = await getUtxos(address);
+  const utxos = (await getUtxos(address)).sort(
+    (a, b) => b.satoshi - a.satoshi
+  );
   const addressType = determineAddressInfo(address).toUpperCase();
   const publicKey = await window.metaidwallet.btc.getPublicKey();
   const script = addressLib.toOutputScript(address, networks.testnet);
