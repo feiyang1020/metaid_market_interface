@@ -514,7 +514,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     }
                 }
                 if (totalAmount < amount) {
-                    throw new Error('Insufficient funds to reach the target amount')
+                    throw new Error('No available UTXOs. Please wait for existing transactions to be confirmed. ')
                 }
 
                 const params: API.TransferMRC20PreReq = {
@@ -540,9 +540,16 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
                 success('Transfer', ret.data)
             }
-        } catch (e) {
+        } catch (e:any) {
             console.error(e);
-            message.error(e.message)
+            if(e.message === 'Insufficient funds to reach the target amount'){
+                message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
+                
+            }else{
+                message.error(e.message)
+            }
+            
+            
         }
         setSubmiting(false);
 

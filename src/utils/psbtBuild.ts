@@ -36,7 +36,7 @@ function selectUTXOs(utxos: API.UTXO[], targetAmount: Decimal) {
   }
 
   if (totalAmount.lt(targetAmount)) {
-    throw new Error("Insufficient funds to reach the target amount");
+    throw new Error("No available UTXOs. Please wait for existing transactions to be confirmed. ");
   }
 
   return selectedUtxos;
