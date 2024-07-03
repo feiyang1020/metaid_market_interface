@@ -7,27 +7,32 @@ export const getFeeRate = async (network: API.Network) => {
     hostname: "mempool.space",
     network: network === "mainnet" ? "main" : "testnet",
   });
-  try{
+  try {
     const feesRecommended = await fees.getFeesRecommended();
     console.log(feesRecommended);
+    const { fastestFee, halfHourFee, hourFee, minimumFee } = feesRecommended;
+    const isInvalid =
+      minimumFee === fastestFee &&
+      minimumFee === halfHourFee &&
+      minimumFee === hourFee;
     return [
       {
         label: "Fast",
-        value: feesRecommended.fastestFee,
+        value: isInvalid ? fastestFee + 1 : fastestFee,
         time: "15 minutes",
       },
       {
         label: "Avg",
-        value: feesRecommended.halfHourFee,
+        value: isInvalid ? halfHourFee + 1 : halfHourFee,
         time: "30 minutes",
       },
       {
         label: "Slow",
-        value: feesRecommended.hourFee,
+        value: isInvalid ? hourFee + 1 : hourFee,
         time: "about 1 hour",
       },
     ];
-  }catch(e){
+  } catch (e) {
     console.log(e);
     return [
       {
@@ -47,6 +52,4 @@ export const getFeeRate = async (network: API.Network) => {
       },
     ];
   }
-
-  
 };

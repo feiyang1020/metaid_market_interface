@@ -6,7 +6,12 @@ import {
   Transaction,
   payments,
 } from "bitcoinjs-lib";
-import { buildTx, createPsbtInput, fillInternalKey } from "./psbtBuild";
+import {
+  buildTx,
+  createPsbtInput,
+  fillInternalKey,
+  getUtxos,
+} from "./psbtBuild";
 import Decimal from "decimal.js";
 import mempoolJS from "@mempool/mempool.js";
 import * as ecc from "@bitcoin-js/tiny-secp256k1-asmjs";
@@ -19,30 +24,6 @@ import {
 } from "./orders";
 import { getMrc20OrderPsbt, getRawTx } from "@/services/api";
 const DUST_SIZE = 546;
-const getUtxos = async (address: string) => {
-  const mempoolReturn = mempoolJS({
-    hostname: "mempool.space",
-    network: "testnet",
-  });
-  const rawUtxoList = await mempoolReturn.bitcoin.addresses.getAddressTxsUtxo({
-    address,
-  });
-  const utxos: API.UTXO[] = [];
-  for (const utxoElement of rawUtxoList) {
-    if (utxoElement.value > 1000) {
-      utxos.push({
-        txId: utxoElement.txid,
-        vout: utxoElement.vout,
-        satoshi: utxoElement.value,
-        confirmed: utxoElement.status.confirmed,
-        inscriptions: null,
-        outputIndex: utxoElement.vout,
-        satoshis: utxoElement.value,
-      });
-    }
-  }
-  return utxos;
-};
 
 export function fillInternalKey2<T extends PsbtInput | PsbtInputExtended>(
   input: T,
@@ -81,7 +62,7 @@ const _commitMint = async (
   selectedUTXOs: API.UTXO[],
   change: Decimal,
   needChange: boolean,
-  buildPsbt?: boolean=true
+  buildPsbt?: boolean = true
 ) => {
   const {
     address,
@@ -122,7 +103,7 @@ const _commitMint = async (
       value: change.toNumber(),
     });
   }
-  if(!buildPsbt){
+  if (!buildPsbt) {
     return psbt;
   }
   const _signPsbt = await window.metaidwallet.btc.signPsbt({
@@ -146,7 +127,7 @@ export const commitMintMRC20PSBT = async (
 ) => {
   initEccLib(ecc);
   const { totalFee, revealInputIndex } = order;
-  const utxos = (await window.metaidwallet.btc.getUtxos()).sort(
+  const utxos = (await getUtxos(address, network)).sort(
     (a, b) => b.satoshi - a.satoshi
   );
   const addressType = determineAddressInfo(address).toUpperCase();
@@ -361,7 +342,7 @@ const _buildBuyMrc20TakePsbt = async (
       value: change.toNumber(),
     });
   }
-  if (!signPsbt||!buildPsbt) {
+  if (!signPsbt || !buildPsbt) {
     return psbt;
   }
   const _signPsbt = await window.metaidwallet.btc.signPsbt({
@@ -391,7 +372,7 @@ export const buildBuyMrc20TakePsbt = async (
   const address = await window.metaidwallet.btc.getAddress();
   const btcNetwork =
     network === "mainnet" ? networks.bitcoin : networks.testnet;
-  const utxos = (await getUtxos(address)).sort(
+  const utxos = (await getUtxos(address, network)).sort(
     (a, b) => b.satoshi - a.satoshi
   );
   const addressType = determineAddressInfo(address).toUpperCase();

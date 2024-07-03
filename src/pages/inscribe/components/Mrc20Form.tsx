@@ -20,6 +20,7 @@ import DeployComfirm, { DeployComfirmProps, defaultDeployComfirmProps } from "./
 import MRC20DetailCard from "./MRC20DetailCard";
 import NumberFormat from "@/components/NumberFormat";
 import MRC20Icon from "@/components/MRC20Icon";
+import { getUtxos } from "@/utils/psbtBuild";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -208,6 +209,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (deployIcon) {
             payload.metadata = JSON.stringify({ icon: deployIcon })
         }
+        await getUtxos(btcAddress, network)
         const ret = await window.metaidwallet.btc.deployMRC20({
             flag: network === "mainnet" ? "metaid" : "testid",
             commitFeeRate: Number(feeRate),
@@ -397,7 +399,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 if (Number(mintMrc20Info.qual.count) && pins.length < Number(mintMrc20Info.qual.count)) {
                     throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
                 }
-                console.log(pins,'pins')
+                console.log(pins, 'pins')
                 const mintPins = pins.map((pinId: string) => {
                     const pin = shovel?.find(item => item.id === pinId);
                     if (!pin) return;

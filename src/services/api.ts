@@ -557,7 +557,7 @@ export async function deployCommit(
 export async function getMrc20InscribeOrders(
   network: API.Network,
   params: {
-    opOrderType:string;//deploy, mint, transfer
+    opOrderType: string; //deploy, mint, transfer
     address: string;
     tickId?: string;
     cursor: number;
@@ -574,3 +574,22 @@ export async function getMrc20InscribeOrders(
     }
   );
 }
+
+export const getMetaletUtxos = async (
+  network: API.Network,
+  params: {
+    address: string; //deploy, mint, transfer
+    unconfirmed: number;
+    net: API.Network;
+  },
+  options?: { [key: string]: any }
+) => {
+  return request<API.Ret<API.UTXO[]>>(
+    `https://www.metalet.space/wallet-api/v3/address/btc-utxo`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+};

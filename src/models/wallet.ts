@@ -49,7 +49,9 @@ export default () => {
     let { network: _net, status } = await window.metaidwallet.getNetwork();
     if (status === "not-connected") {
       await MetaletWalletForBtc.create();
-      const { network: _net, status } = await window.metaidwallet.getNetwork();
+      const { network: _net2, status } = await window.metaidwallet.getNetwork();
+      console.log(_net, "status2");
+      _net = _net2;
     }
     console.log(_net, "_net");
     if (_net !== curNetwork) {
@@ -66,9 +68,8 @@ export default () => {
     if (!_wallet.address) return;
     setNetwork(network);
     const publicKey = await window.metaidwallet.btc.getPublicKey();
-    const publicKeySign = await window.metaidwallet.btc.signMessage(
-      "metaid.market"
-    );
+    const publicKeySign =
+      await window.metaidwallet.btc.signMessage("metaid.market");
     if (publicKeySign.status) return;
     setAuthParams({ "X-Public-Key": publicKey, "X-Signature": publicKeySign });
     sessionStorage.setItem(
