@@ -194,9 +194,10 @@ export async function buildTx<T>(
       address,
       value: utxo.satoshis,
     })),
-    txOutputs: psbt.txOutputs.map((out) => ({
+    txOutputs: psbt.txOutputs.map((out,index) => ({
       address: out.address || "",
       value: out.value,
+      vout: index,
     })),
   };
 }
@@ -344,6 +345,7 @@ export const addUtxoSafe = async (
   address: string,
   utxos: { txId: string; vout: number }[]
 ) => {
+  console.log(utxos, "addUtxoSafe")
   for (let i = 0; i < utxos.length; i++) {
     try {
       const { txId, vout } = utxos[i];
@@ -351,6 +353,7 @@ export const addUtxoSafe = async (
         address,
         unspentOutput: `${txId}:${vout}`,
       });
+      console.log(ret, "addUtxoSafe")
     } catch (err) {
       console.log(err);
     }

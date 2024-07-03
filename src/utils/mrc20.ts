@@ -396,19 +396,25 @@ export const buildBuyMrc20TakePsbt = async (
     manualCalcFee
   );
   const totalSpent = Number(ret.fee) + Number(order.priceAmount) + Number(fee);
-  return { rawTx: ret.rawTx, psbt: ret.psbt, fee: ret.fee, totalSpent };
+  return {
+    rawTx: ret.rawTx,
+    psbt: ret.psbt,
+    fee: ret.fee,
+    totalSpent,
+    txOutputs: ret.txOutputs,
+  };
 };
 export const buyMrc20Order = async (
   order: API.BuyOrderPsbtRes,
   network: API.Network,
   feeRate: number
 ) => {
-  const { rawTx, psbt } = await buildBuyMrc20TakePsbt(
+  const { rawTx, psbt, txOutputs } = await buildBuyMrc20TakePsbt(
     order,
     network,
     feeRate,
     false,
     true
   );
-  return rawTx;
+  return { rawTx, txOutputs };
 };

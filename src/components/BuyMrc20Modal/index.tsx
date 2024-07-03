@@ -25,6 +25,7 @@ import { number } from "bitcoinjs-lib/src/script";
 import JSONView from "../JSONView";
 import { buildBuyMrc20TakePsbt, buyMrc20Order } from "@/utils/mrc20";
 import MRC20Icon from "../MRC20Icon";
+import { addUtxoSafe } from "@/utils/psbtBuild";
 type Props = {
   order: API.Mrc20Order | undefined;
   show: boolean;
@@ -155,16 +156,16 @@ export default ({ order, show, onClose }: Props) => {
   }, [orderWithPsbt, network, connected, feeRate]);
 
   const handleBuy = async () => {
-    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order)
+    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order||!btcAddress)
       return;
     setSubmiting(true);
     try {
-      const signed = await buyMrc20Order(orderWithPsbt, network, Number(feeRate),);
+      const { rawTx, txOutputs } = await buyMrc20Order(orderWithPsbt, network, Number(feeRate),);
       const ret = await buyMrc20OrderTake(
         network,
         {
           orderId: order.orderId,
-          takerPsbtRaw: signed,
+          takerPsbtRaw: rawTx,
           networkFeeRate: Number(feeRate),
         },
         {
@@ -176,6 +177,12 @@ export default ({ order, show, onClose }: Props) => {
       if (ret.code !== 0) {
         throw new Error(ret.message);
       }
+      console.log(txOutputs,'txOutputs')
+
+      await addUtxoSafe(btcAddress, [{
+        txId: ret.data.txId,
+        vout: txOutputs.length-1,
+      }])
       onClose();
       setSuccessProp({
         show: true,
@@ -187,7 +194,7 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buyMRCSuccess">
             <div className="orderInfo">
               <div className="contetn">
-                <MRC20Icon size={80} tick={order.tick}  metadata={order.metaData}/>
+                <MRC20Icon size={80} tick={order.tick} metadata={order.metaData} />
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>

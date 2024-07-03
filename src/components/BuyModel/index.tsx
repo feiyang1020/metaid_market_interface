@@ -23,6 +23,7 @@ import SuccessModal, {
 } from "../SuccessModal";
 import { number } from "bitcoinjs-lib/src/script";
 import JSONView from "../JSONView";
+import { addUtxoSafe } from "@/utils/psbtBuild";
 type Props = {
   order: API.Order | undefined;
   show: boolean;
@@ -162,7 +163,7 @@ export default ({ order, show, onClose }: Props) => {
   }, [orderWithPsbt, network, connected, feeRate]);
 
   const handleBuy = async () => {
-    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order)
+    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order||!btcAddress)
       return;
     setSubmiting(true);
     try {
@@ -220,6 +221,7 @@ export default ({ order, show, onClose }: Props) => {
       if (ret.code !== 0) {
         throw new Error(ret.message);
       }
+      await addUtxoSafe(btcAddress, [{ txId: ret.data.txId, vout: orderPsbt.data.outputs.length - 1 }])
       onClose();
       setSuccessProp({
         show: true,
@@ -342,9 +344,8 @@ export default ({ order, show, onClose }: Props) => {
                 {feeRates.map((item) => (
                   <div
                     onClick={() => setFeeRateTab(item.label)}
-                    className={`feeRateItem ${
-                      item.label === feeRateTab ? "active" : ""
-                    }`}
+                    className={`feeRateItem ${item.label === feeRateTab ? "active" : ""
+                      }`}
                     key={item.label}
                   >
                     <div className="label">{item.label}</div>
@@ -353,9 +354,8 @@ export default ({ order, show, onClose }: Props) => {
                   </div>
                 ))}
                 <div
-                  className={`feeRateItem ${
-                    feeRateTab === "custom" ? "active" : ""
-                  }`}
+                  className={`feeRateItem ${feeRateTab === "custom" ? "active" : ""
+                    }`}
                   onClick={() => {
                     setFeeRateTab("custom");
                   }}
@@ -408,7 +408,7 @@ export default ({ order, show, onClose }: Props) => {
                 type="primary"
                 onClick={handleBuy}
                 loading={submiting}
-                disabled={Boolean(errInfo)||calcing}
+                disabled={Boolean(errInfo) || calcing}
               >
                 Confirm
               </Button>
