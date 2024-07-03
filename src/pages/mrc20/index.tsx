@@ -22,12 +22,12 @@ const items: TabsProps['items'] = [
     },
     {
         key: '2',
-        label: 'Activeity',
+        label: 'Activity',
         children: 'Content of Tab Pane 2',
     },
     {
         key: '3',
-        label: 'My Activeity',
+        label: 'My Activity',
         children: 'Content of Tab Pane 3',
     },
 ];
@@ -132,12 +132,12 @@ export default () => {
                 },
                 {
                     key: '2',
-                    label: 'Activeity',
+                    label: 'Activity',
                     children: <Activeity mrc20Id={match && match.params.mrc20Id || ''} />,
                 },
                 {
                     key: '3',
-                    label: 'My Activeity',
+                    label: 'My Activity',
                     children: <MyActiveity mrc20Id={match && match.params.mrc20Id || ''} />,
                 },
             ]} /></ConfigProvider>
