@@ -38,7 +38,8 @@ export default ({ order, show, onClose }: Props) => {
     addressType,
     authParams,
     connected,
-  } = useModel("wallet");
+  } = useModel("wallet")
+  const {updateOrders}=useModel('orders')
   const [submiting, setSubmiting] = useState<boolean>(false);
   const [customRate, setCustomRate] = useState<string | number>();
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
@@ -222,6 +223,7 @@ export default ({ order, show, onClose }: Props) => {
         throw new Error(ret.message);
       }
       await addUtxoSafe(btcAddress, [{ txId: ret.data.txId, vout: orderPsbt.data.outputs.length - 1 }])
+      updateOrders()
       onClose();
       setSuccessProp({
         show: true,
