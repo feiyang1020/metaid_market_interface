@@ -339,3 +339,20 @@ export const getUtxos = async (address: string, network: API.Network) => {
   }
   return utxos;
 };
+
+export const addUtxoSafe = async (
+  address: string,
+  utxos: { txId: string; vout: number }[]
+) => {
+  for (let i = 0; i < utxos.length; i++) {
+    try {
+      const { txId, vout } = utxos[i];
+      const ret = await window.metaidwallet.btc.addSafeUtxo({
+        address,
+        unspentOutput: `${txId}:${vout}`,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+};

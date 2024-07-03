@@ -20,7 +20,7 @@ import DeployComfirm, { DeployComfirmProps, defaultDeployComfirmProps } from "./
 import MRC20DetailCard from "./MRC20DetailCard";
 import NumberFormat from "@/components/NumberFormat";
 import MRC20Icon from "@/components/MRC20Icon";
-import { getUtxos } from "@/utils/psbtBuild";
+import { addUtxoSafe, getUtxos } from "@/utils/psbtBuild";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -209,7 +209,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (deployIcon) {
             payload.metadata = JSON.stringify({ icon: deployIcon })
         }
-        await getUtxos(btcAddress, network)
         const ret = await window.metaidwallet.btc.deployMRC20({
             flag: network === "mainnet" ? "metaid" : "testid",
             commitFeeRate: Number(feeRate),
@@ -230,6 +229,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 ...authParams,
             },
         })
+        await addUtxoSafe(btcAddress, [{ txId: ret.commitTx.txId, vout: 1 }])
         if (commitRes.code !== 0) throw new Error(commitRes.message)
         setDeployComfirmProps(defaultDeployComfirmProps)
         setSuccessProp({
@@ -425,6 +425,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 const { rawTx, revealPrePsbtRaw } = await commitMintMRC20PSBT(data, feeRate, btcAddress, network);
                 const ret = await mintMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
                 if (ret.code !== 0) throw new Error(ret.message);
+                await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
                 setSuccessProp({
                     show: true,
                     onClose: () => {
@@ -531,11 +532,12 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     },
                 })
                 if (code !== 0) throw new Error(message);
-
+                
                 const { rawTx, revealPrePsbtRaw } = await transferMRC20PSBT(data, feeRate, btcAddress, network);
                 console.log(revealPrePsbtRaw, 'revealPrePsbtRaw', rawTx);
                 const ret = await transferMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } });
                 if (ret.code !== 0) throw new Error(ret.message);
+                await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
                 success('Transfer', ret.data)
             }
         } catch (e) {
