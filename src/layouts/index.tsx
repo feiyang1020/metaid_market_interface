@@ -18,6 +18,7 @@ import {
   DownOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import { useEffect } from "react";
 
 const _themes = {
   token: {
@@ -58,6 +59,14 @@ export default function Layout() {
     avatar,
     disConnect,
   } = useModel("wallet");
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (pathname) {  // 可以排除不需要置顶的页面
+      if (document?.documentElement || document?.body) {
+        document.documentElement.scrollTop = document.body.scrollTop = 0;  // 切换路由时手动置顶
+      }
+    }
+  }, [pathname]);
   return (
     <ConfigProvider
       theme={{
