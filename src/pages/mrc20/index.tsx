@@ -61,7 +61,8 @@ export default () => {
                         <div className="top">
                             <div className="nameWrap">
                                 <div className="name">
-                                    {mrc20Info.tick}
+                                    <div className='tick'>{mrc20Info.tick } {mrc20Info.tokenName&&<>({mrc20Info.tokenName})</>}</div>
+                                    
                                     <Button
                                         type='link'
                                         size='small'

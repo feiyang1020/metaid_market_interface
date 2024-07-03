@@ -24,7 +24,7 @@
       .info {
         .top {
           display: flex;
-          align-items:flex-end;
+          align-items: flex-end;
           justify-content: space-between;
           margin-bottom: 16px;
         }
@@ -38,6 +38,13 @@
             color: #ffffff;
             gap: 8px;
             margin-bottom: 10px;
+
+            .tick {
+              max-width: 300px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
           }
           .token {
             font-size: 10px;
@@ -76,11 +83,10 @@
             height: 4px !important;
           }
         }
-        .sliderNumber{
-         
+        .sliderNumber {
           text-align: right;
           font-size: 12px;
-          color:var(--primary)
+          color: var(--primary);
         }
       }
       .desc {
@@ -91,24 +97,23 @@
         justify-content: center;
       }
     }
-    .mintBtn{
+    .mintBtn {
       display: flex;
       align-items: center;
       justify-content: center;
-
     }
   }
-  .ant-statistic{
+  .ant-statistic {
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    .ant-statistic-title{
+    .ant-statistic-title {
       color: #ffffff;
     }
-    .ant-statistic-value{
+    .ant-statistic-value {
       color: #ffffff;
     }
-    .ant-statistic-content-prefix{
+    .ant-statistic-content-prefix {
       display: flex;
       align-items: center;
     }
@@ -118,12 +123,15 @@
 @media screen and (max-width: 767px) {
   .mrc20Page {
     padding: 20px;
-    .mrc20Info{
-      gap:10px;
-      .left{
-        gap:10px;
+    .mrc20Info {
+      gap: 10px;
+      .left {
+        gap: 10px;
+        .tick{
+          max-width: 200px!important;
+        }
       }
-      .mintBtn{
+      .mintBtn {
         flex-grow: 1;
       }
     }
