@@ -18,17 +18,17 @@ export const getFeeRate = async (network: API.Network) => {
     return [
       {
         label: "Fast",
-        value: isInvalid ? fastestFee + 1 : fastestFee,
+        value: isInvalid ? fastestFee + 4 : fastestFee,
         time: "15 minutes",
       },
       {
         label: "Avg",
-        value: isInvalid ? halfHourFee + 1 : halfHourFee,
+        value: isInvalid ? halfHourFee + 4 : halfHourFee,
         time: "30 minutes",
       },
       {
         label: "Slow",
-        value: isInvalid ? hourFee + 1 : hourFee,
+        value: isInvalid ? hourFee + 4 : hourFee,
         time: "about 1 hour",
       },
     ];
