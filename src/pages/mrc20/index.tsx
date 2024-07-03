@@ -61,7 +61,7 @@ export default () => {
                         <div className="top">
                             <div className="nameWrap">
                                 <div className="name">
-                                    <div className='tick'>{mrc20Info.tick } {mrc20Info.tokenName&&<>({mrc20Info.tokenName})</>}</div>
+                                    <div className='tick'>{mrc20Info.tick } </div>
                                     
                                     <Button
                                         type='link'
@@ -72,7 +72,7 @@ export default () => {
                                         Mrc-20
                                     </Button>
                                 </div>
-                                <Typography.Text className="token" copyable={{ text: mrc20Info.mrc20Id }}>TokenID: {mrc20Info.mrc20Id.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}</Typography.Text>
+                                <Typography.Text className="token" copyable={{ text: mrc20Info.mrc20Id }}><span style={{color:'#fff'}}>{mrc20Info.tokenName}</span>  TokenID: {mrc20Info.mrc20Id.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}</Typography.Text>
                             </div>
 
                             <div className="detail">
