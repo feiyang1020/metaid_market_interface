@@ -47,14 +47,12 @@ export default () => {
   const connect = async () => {
     if (!checkExtension()) return;
     let { network: _net, status } = await window.metaidwallet.getNetwork();
-    let _wallet:any
+    let _wallet: IMetaletWalletForBtc | undefined = undefined;
     if (status === "not-connected") {
-      _wallet=await MetaletWalletForBtc.create();
-      const { network: _net2, status } = await window.metaidwallet.getNetwork();
-      console.log(_net, "status2");
-      _net = _net2;
+      _wallet = await MetaletWalletForBtc.create();
+      const ret = await window.metaidwallet.getNetwork();
+      _net = ret.network;
     }
-    console.log(_net, "_net");
     if (_net !== curNetwork) {
       await window.metaidwallet.switchNetwork(
         curNetwork === "testnet" ? "testnet" : "livenet"
@@ -64,10 +62,10 @@ export default () => {
     if (network !== curNetwork) {
       return;
     }
-    if(!_wallet){
+    if (_wallet === undefined) {
       _wallet = await MetaletWalletForBtc.create();
     }
-    console.log(_wallet);
+    console.log(_wallet.address, _wallet);
     if (!_wallet.address) return;
     setNetwork(network);
     const publicKey = await window.metaidwallet.btc.getPublicKey();
@@ -88,7 +86,7 @@ export default () => {
     });
     const _walletParams = {
       address: _wallet.address,
-      pub: _wallet.pub,
+      pub: publicKey,
     };
     sessionStorage.setItem("walletParams", JSON.stringify(_walletParams));
     setBtcConnector(_btcConnector);
