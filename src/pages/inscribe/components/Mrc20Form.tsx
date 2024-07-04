@@ -151,6 +151,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         let didCancel = false;
         const fetchMrc20Info = async () => {
             if (!mintTokenID) return;
+            setShowel([])
             setMintInfoLoading(true)
             setMintInfoStatus('validating')
             const { code, message, data } = await getMrc20Info(network, { tickId: mintTokenID });
