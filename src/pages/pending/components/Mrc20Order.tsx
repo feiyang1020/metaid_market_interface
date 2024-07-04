@@ -65,10 +65,10 @@ export default () => {
   
   {
       title: 'Price',
-      dataIndex: 'amount',
+      dataIndex: 'priceAmount',
       // sorter: true,
       render: (price) => {
-          return <NumberFormat value={price} suffix=' sats' />
+          return <NumberFormat value={price} suffix=' sats' precision={2} />
       }
   },
   {
