@@ -92,7 +92,7 @@ export default ({ mrc20Id, showMy=false }: Props) => {
                                         <div className="units">
 
                                             <span className="colorPrimary">
-                                                <NumberFormat value={item.priceAmount / item.amount} precision={4} />
+                                                <NumberFormat value={Number(item.tokenPriceRate)<0.01?0.01:item.tokenPriceRate} precision={2} />
                                             </span> sats/{item.tick}
                                         </div>
 
