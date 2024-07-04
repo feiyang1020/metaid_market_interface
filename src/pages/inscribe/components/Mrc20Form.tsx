@@ -486,6 +486,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 if (utxoList.list.length === 0) throw new Error('No UTXO');
                 const selectedUtxos = [];
                 let totalAmount = 0;
+                console.log(utxoList, 'getMrc20AddressUtxo')
                 for (const utxo of utxoList.list) {
                     for (const tick of utxo.mrc20s) {
                         if (Number(tick.amount) > 0) {

@@ -99,7 +99,7 @@ export default () => {
                     <div className="desc">
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" value={mrc20Info.floorPrice} suffix='sats' />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" value={mrc20Info.floorPrice} precision={4} suffix='sats' />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={mrc20Info.holders} />
                     </div>
                 </div>
