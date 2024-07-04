@@ -533,6 +533,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 const ret = await transferMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } });
                 if (ret.code !== 0) throw new Error(ret.message);
                 await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
+                await fetchList()
                 success('Transfer', ret.data)
             }
         } catch (e: any) {
