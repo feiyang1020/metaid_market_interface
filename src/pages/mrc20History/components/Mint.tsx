@@ -112,7 +112,7 @@ export default () => {
             }
         },
         {
-            title: 'Pin',
+            title: 'PIN',
             dataIndex: 'Pin',
             width: 200,
             render: (item, record) => {
