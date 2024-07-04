@@ -319,7 +319,7 @@ export default ({ order, show, onClose }: Props) => {
               </div>
               <div className="dess">
                 <div className="renu">#{order.assetNumber}</div>
-                <div className="number">{order.info.path}</div>
+                <div className="number">{order.info.path} </div>
               </div>
             </div>
             <div className="fees">

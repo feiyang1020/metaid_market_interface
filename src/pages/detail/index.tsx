@@ -89,7 +89,7 @@ export default () => {
               className="right"
             >
               <div className="orderName">#{order.assetNumber}</div>
-              <div className="path">#{order.info.path}</div>
+              <div className="path">{order.info.path} </div>
               {/* <div className="titleWrap">
                 <div className="title">Inscription </div>
                 <div className="subTitle"> </div>
