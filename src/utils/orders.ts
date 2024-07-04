@@ -70,6 +70,7 @@ function inputBytes(input: PsbtInput) {
   if (isTaprootInput(input)) {
     return TX_INPUT_BASE + TX_INPUT_TAPROOT;
   }
+  if (input.redeemScript) return TX_INPUT_BASE + input.redeemScript.length;
   if (input.nonWitnessUtxo) return TX_INPUT_BASE + TX_INPUT_PUBKEYHASH;
   if (input.witnessUtxo) return TX_INPUT_BASE + TX_INPUT_SEGWIT;
 
