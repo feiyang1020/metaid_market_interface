@@ -10,7 +10,7 @@ import Mrc20List from "@/components/Mrc20List";
 import FilterForm from "@/components/FilterForm";
 
 const { useBreakpoint } = Grid;
-const items = ["PIN", 'MRC20'];
+const items = ["PIN", 'MRC-20'];
 
 
 export default () => {
@@ -31,7 +31,6 @@ export default () => {
     filterKey
   } = useModel("orders");
   const [query] = useSearchParams();
-  // const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const [curOrder, setCurOrder] = useState<API.Order>();
   const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
   const handleSort = (key: string) => {
@@ -48,7 +47,7 @@ export default () => {
   const _tab = query.get("tab");
   useEffect(() => {
     if (_tab && items.includes(_tab)) {
-      setTab(_tab as "PIN" | "MRC20");
+      setTab(_tab as "PIN" | "MRC-20");
     }
   }, [_tab]);
 
@@ -162,7 +161,7 @@ export default () => {
           />
         </div>
       </>}
-      {tab === "MRC20" && <Mrc20List />}
+      {tab === "MRC-20" && <Mrc20List />}
 
       <BuyModel
         order={curOrder}

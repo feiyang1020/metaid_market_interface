@@ -8,7 +8,7 @@ import Popup from "@/components/ResponPopup";
 import { authTest, cancelMRC20Order, cancelOrder, getMrc20Orders } from "@/services/api";
 import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
-const items = ["PIN", 'MRC20'];
+
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
   const [show, setShow] = useState<boolean>(false);

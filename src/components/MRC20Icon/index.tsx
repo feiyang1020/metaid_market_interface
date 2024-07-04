@@ -12,8 +12,14 @@ export default ({ size = 40, tick, metadata = '' }: Props) => {
     const src = useMemo(() => {
         if (metadata && !err) {
             try {
-                const data = JSON.parse(metadata)
-                return data.icon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)
+                const data = JSON.parse(metadata);
+                if(data.icon){
+                    return data.icon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)
+                }
+                if(data.cover){
+                    return data.cover.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)
+                }
+                
             } catch (err) {
                 return ''
             }

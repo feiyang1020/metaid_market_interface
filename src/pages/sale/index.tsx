@@ -19,12 +19,12 @@ import SuccessModal, {
 } from "@/components/SuccessModal";
 import JSONView from "@/components/JSONView";
 import ListForMRC20 from "@/components/ListForMRC20";
-const items = ["PIN", 'MRC20'];
+const items = ["PIN", 'MRC-20'];
 export default () => {
   const { btcAddress, connect, connected, network, authParams } =
     useModel("wallet");
   const { orders, loading, updateOrders, setLoading } = useModel("sale");
-  const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
+  const [tab, setTab] = useState<"PIN" | "MRC-20">("PIN");
   const [sellPrices, setSellPrices] = useState<Record<string, number>>({});
   const [checkList, setCheckList] = useState<string[]>([]);
   const [submiting, setSubmiting] = useState<boolean>(false);
@@ -283,7 +283,7 @@ export default () => {
             </div></>
 
         }
-        {tab === "MRC20" && <ListForMRC20 />}
+        {tab === "MRC-20" && <ListForMRC20 />}
       </div>
 
 

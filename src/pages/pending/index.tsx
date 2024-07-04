@@ -9,12 +9,12 @@ import Popup from "@/components/ResponPopup";
 import { authTest, cancelOrder } from "@/services/api";
 import JSONView from "@/components/JSONView";
 import Mrc20Order from "./components/Mrc20Order";
-const items = ["PIN", 'MRC20'];
+const items = ["PIN", 'MRC-20'];
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
   const { orders, loading, updateOrders, setLoading, cursor,total,size,setCursor } = useModel("userOrders");
   const [show, setShow] = useState<boolean>(false);
-  const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
+  const [tab, setTab] = useState<"PIN" | "MRC-20">("PIN");
   const [submiting, setSubmiting] = useState<boolean>(false);
   const [curOrder, setCurOrder] = useState<API.Order>();
   const list = useMemo(() => {

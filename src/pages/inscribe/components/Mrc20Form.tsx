@@ -745,7 +745,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
                                                         <Popover title='PoP Difficulty Settings' content={<Typography style={{ maxWidth: '400px' }}>
                                                             <Typography.Paragraph>
-                                                                MRC20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.
+                                                                MRC-20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC-20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.
                                                             </Typography.Paragraph>
                                                             <Typography.Paragraph>
 
@@ -756,19 +756,19 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                                 <li>
                                                                     <Typography.Text code strong>
                                                                         difficulty level
-                                                                    </Typography.Text>: The difficulty level determines that a PIN of the corresponding or higher difficulty level is required to be eligible to mint MRC20.
+                                                                    </Typography.Text>: The difficulty level determines that a PIN of the corresponding or higher difficulty level is required to be eligible to mint MRC-20.
                                                                 </li>
                                                                 <li>
                                                                     <Typography.Text code strong>path</Typography.Text>
-                                                                    : determines that a PIN with the corresponding path is required to be eligible to mint MRC20.
+                                                                    : determines that a PIN with the corresponding path is required to be eligible to mint MRC-20.
                                                                 </li>
                                                                 <li>
                                                                     <Typography.Text code strong>count</Typography.Text>
-                                                                    : one needs to provide the corresponding number of PINs that meet the difficulty criteria to be eligible to mint MRC20.
+                                                                    : one needs to provide the corresponding number of PINs that meet the difficulty criteria to be eligible to mint MRC-20.
                                                                 </li>
                                                                 <li>
                                                                     <Typography.Text code strong>creator</Typography.Text>
-                                                                    :one needs to provide PINs of certain creators to be eligible to mint MRC20.
+                                                                    :one needs to provide PINs of certain creators to be eligible to mint MRC-20.
                                                                 </li>
                                                             </ul>
                                                         </Typography>}>
@@ -877,7 +877,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <Collapse ghost defaultActiveKey={1} style={{ padding: 0, marginBottom: 20 }} expandIconPosition='end' items={
                                                         [{
                                                             key: 1,
-                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select  ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="MRC20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
+                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select  ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="MRC-20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC-20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip></div>,
                                                             children: <Form.Item label='' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}

@@ -10,7 +10,6 @@ import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
-const items = ["PIN", 'MRC20'];
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);

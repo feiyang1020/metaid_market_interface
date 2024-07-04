@@ -165,7 +165,7 @@ export default function Layout() {
                             history.push("/mrc20History");
                           }}
                         >
-                          <div className="path">My MRC20</div>
+                          <div className="path">My MRC-20</div>
                           <RightOutlined />
                         </div>
                       </div>

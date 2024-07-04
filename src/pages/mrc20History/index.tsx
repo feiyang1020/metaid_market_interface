@@ -27,7 +27,7 @@ export default () => {
                     history.back();
                 }}
             >
-                <LeftOutlined /> User /<span className="subTitle">My MRC20</span>
+                <LeftOutlined /> User /<span className="subTitle">My MRC-20</span>
             </div>
 
             <div className="tabs">
