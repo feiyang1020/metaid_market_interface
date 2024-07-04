@@ -35,7 +35,7 @@ const items: TabsProps['items'] = [
 export default () => {
     const screens = useBreakpoint();
     const match = useMatch('/mrc20/:mrc20Id');
-    const { network } = useModel('wallet')
+    const { network, btcAddress } = useModel('wallet')
     const [mrc20Info, setMrc20Info] = useState<API.MRC20TickInfo>();
     const fetchData = useCallback(async () => {
         if (!match || !match.params.mrc20Id) return;
@@ -76,7 +76,7 @@ export default () => {
                             </div>
 
                             <div className="detail">
-                                <span className='avatars'><span className='metaid'>Deployer</span><MetaIdAvatar size={20} avatar={mrc20Info.deployerUserInfo&&mrc20Info.deployerUserInfo.avatar} /> {mrc20Info.deployerUserInfo&&mrc20Info.deployerUserInfo.name || mrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                                <span className='avatars'><span className='metaid'>Deployer</span><MetaIdAvatar size={20} avatar={mrc20Info.deployerUserInfo && mrc20Info.deployerUserInfo.avatar} /> {mrc20Info.deployerUserInfo && mrc20Info.deployerUserInfo.name || mrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
                                 <span className='metaid'>MetaID : {mrc20Info.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
                             </div>
                         </div>
@@ -141,7 +141,12 @@ export default () => {
                 {
                     key: '3',
                     label: 'My Activity',
-                    children: <MyActiveity mrc20Id={match && match.params.mrc20Id || ''} />,
+                    children: <Activeity mrc20Id={match && match.params.mrc20Id || ''} btcAddress={btcAddress} />,
+                },
+                {
+                    key: '4',
+                    label: 'My Listed',
+                    children: <Listed mrc20Id={match && match.params.mrc20Id || ''} btcAddress={btcAddress} />,
                 },
             ]} /></ConfigProvider>
 

@@ -1,49 +1,73 @@
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import NumberFormat from "@/components/NumberFormat";
 import { getMrc20Orders } from "@/services/api";
-import { ConfigProvider, Table, TableColumnsType, Tooltip } from "antd";
+import { SyncOutlined } from "@ant-design/icons";
+import { ConfigProvider, Table, TableColumnsType, Tag, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { useModel } from "umi";
 type Props = {
-  mrc20Id: string
+  mrc20Id: string,
+  btcAddress?: string
 }
-export default ({ mrc20Id }: Props) => {
-  const { network, connected, connect, btcAddress, authParams } = useModel('wallet')
+export default ({ mrc20Id, btcAddress }: Props) => {
+  const { network } = useModel('wallet')
   const [list, setList] = useState<API.Mrc20Order[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [curOrder, setCurOrder] = useState<API.Mrc20Order>();
   const [page, setPage] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
-  const [size, setSize] = useState<number>(12);
-  const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
+  const [size, setSize] = useState<number>(10);
   const fetchOrders = useCallback(async () => {
     console.log('fetchOrders', network, mrc20Id, page, size)
     if (!mrc20Id) return;
     setLoading(true);
-
-    const { data } = await getMrc20Orders(network, { assetType: 'mrc20', orderState: 3, sortKey: 'timestamp', sortType: -1, tickId: mrc20Id, cursor: page * size, size });
+    const params: any = { assetType: 'mrc20', orderState: 3, sortKey: 'timestamp', sortType: -1, tickId: mrc20Id, cursor: page * size, size }
+    if (btcAddress) {
+      params.address = btcAddress
+    }
+    const { data } = await getMrc20Orders(network, params);
     if (data.list) {
       setList(data.list)
       setTotal(data.total);
     }
     setLoading(false);
-  }, [mrc20Id, network,page,size])
+  }, [mrc20Id, network, page, size, btcAddress])
   useEffect(() => { fetchOrders() }, [fetchOrders]);
 
   const columns: TableColumnsType<API.Mrc20Order> = [
     {
-      title: 'Name',
+      title: 'Ticker',
       dataIndex: 'tick',
-
+      render: (tick, record) => {
+        return <div className="tickInfo">
+          <span>{record.tokenName}</span>
+          {record.blockHeight === 0 && <Tag icon={<SyncOutlined spin />} color="processing">In progress</Tag>}
+        </div>
+      }
     },
 
     {
       title: 'Price',
       dataIndex: 'tokenPriceRate',
-      sorter: true,
-      render: (price,record) => {
+
+      render: (price, record) => {
         return <NumberFormat value={price} suffix={` sats/${record.tick}`} />
+      }
+    },
+    {
+      title: 'Total Price',
+      dataIndex: 'priceAmount',
+
+      render: (priceAmount, record) => {
+        return <NumberFormat value={priceAmount} isBig decimal={record.priceDecimal} suffix={` ${record.priceCoin}`} />
+      }
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'amount',
+
+      render: (amount, record) => {
+        return <NumberFormat value={amount} />
       }
     },
     {
@@ -129,16 +153,16 @@ export default ({ mrc20Id }: Props) => {
 
           setLoading(true);
           setPage(page - 1);
-      },
+        },
       }}
       scroll={{ x: 1000 }}
       className="activeityTable"
       loading={loading}
-      // onChange={({ current, ...params }, _, sorter) => {
-      //   console.log(sorter, 'params')
-      //   if (!current) current = 1
-      //   setPage(current - 1)
-      // }}
+    // onChange={({ current, ...params }, _, sorter) => {
+    //   console.log(sorter, 'params')
+    //   if (!current) current = 1
+    //   setPage(current - 1)
+    // }}
 
     />
   </ConfigProvider>
