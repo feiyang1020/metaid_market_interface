@@ -43,7 +43,7 @@ const Popup: React.FC<Props> = ({
           >
               {children}
           </Modal> :
-          <Drawer title={title} open={show} className={'hayPopup'+' '+className} styles={{body:{ height: 'auto', overflow:'scroll', padding:10,...bodyStyle }}} placement="bottom" onClose={onClose} closable={closable}  maskClosable={maskClosable} >
+          <Drawer title={title} height={'80vh'} open={show} className={'hayPopup'+' '+className} styles={{body:{ height: 'auto', overflow:'scroll', padding:10,...bodyStyle }}} placement="bottom" onClose={onClose} closable={closable}  maskClosable={maskClosable} >
               {children}
           </Drawer>
       }
