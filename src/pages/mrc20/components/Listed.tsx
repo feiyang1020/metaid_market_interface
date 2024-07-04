@@ -31,7 +31,7 @@ export default ({ mrc20Id, showMy=false }: Props) => {
         if (!mrc20Id||(showMy&&!btcAddress)) return;
         setLoading(true);
         const params: any = { assetType: 'mrc20', orderState: 1, sortKey: 'priceAmount', sortType: -1, tickId: mrc20Id, cursor: page * size, size };
-        if (btcAddress) {
+        if (showMy && btcAddress) {
             params.address = btcAddress
         }
         const { data } = await getMrc20Orders(network, params);

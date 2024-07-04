@@ -10,8 +10,8 @@ type Props = {
   mrc20Id: string,
   showMy?: boolean
 }
-export default ({ mrc20Id, showMy=false }: Props) => {
-  const { network,btcAddress } = useModel('wallet')
+export default ({ mrc20Id, showMy = false }: Props) => {
+  const { network, btcAddress } = useModel('wallet')
   const [list, setList] = useState<API.Mrc20Order[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
@@ -19,10 +19,10 @@ export default ({ mrc20Id, showMy=false }: Props) => {
   const [size, setSize] = useState<number>(10);
   const fetchOrders = useCallback(async () => {
     console.log('fetchOrders', network, mrc20Id, page, size)
-    if (!mrc20Id||(showMy&&!btcAddress)) return;
+    if (!mrc20Id || (showMy && !btcAddress)) return;
     setLoading(true);
     const params: any = { assetType: 'mrc20', orderState: 3, sortKey: 'timestamp', sortType: -1, tickId: mrc20Id, cursor: page * size, size }
-    if (btcAddress) {
+    if (showMy && btcAddress) {
       params.address = btcAddress
     }
     const { data } = await getMrc20Orders(network, params);
@@ -31,7 +31,7 @@ export default ({ mrc20Id, showMy=false }: Props) => {
       setTotal(data.total);
     }
     setLoading(false);
-  }, [mrc20Id, network, page, size, btcAddress,showMy])
+  }, [mrc20Id, network, page, size, btcAddress, showMy])
   useEffect(() => { fetchOrders() }, [fetchOrders]);
 
   const columns: TableColumnsType<API.Mrc20Order> = [
