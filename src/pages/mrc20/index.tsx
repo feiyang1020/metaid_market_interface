@@ -69,7 +69,7 @@ export default () => {
                                         className='btn'
                                         style={{ fontSize: 10 }}
                                     >
-                                        Mrc-20
+                                        MRC-20
                                     </Button>
                                 </div>
                                 <Typography.Text className="token" copyable={{ text: mrc20Info.mrc20Id }}><span style={{ color: '#fff' }}>{mrc20Info.tokenName}</span>  TokenID: {mrc20Info.mrc20Id.replace(/(\w{4})\w+(\w{5})/, "$1...$2")}</Typography.Text>
