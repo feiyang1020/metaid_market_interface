@@ -37,12 +37,12 @@ export default ({ mrc20Id }: Props) => {
         },
         {
             title: 'Price',
-            dataIndex: 'amount',
+            dataIndex: 'tokenPriceRate',
             sorter: true,
-            render: (price) => {
-                return <NumberFormat value={price} suffix=' sats' />
+            render: (price,record) => {
+              return <NumberFormat value={price} suffix={` sats/${record.tick}`} />
             }
-        },
+          },
         {
             title: 'Type',
             dataIndex: 'buyerAddress',

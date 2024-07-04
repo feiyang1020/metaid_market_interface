@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
 import { Button, Space, Table, TableProps, Tooltip, message } from "antd";
-import { Link, useModel } from "umi";
+import { history, useModel } from "umi";
 import dayjs from "dayjs";
 import { formatSat } from "@/utils/utlis";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -31,7 +31,7 @@ export default () => {
       setTotal(data.total);
     }
     setLoading(false);
-  }, [network, btcAddress])
+  }, [network, btcAddress,page,size])
   useEffect(() => { fetchOrders() }, [fetchOrders]);
   const handleCancel = async () => {
     if (!curOrder || !btcAddress) return;
@@ -67,7 +67,7 @@ export default () => {
   {
       title: 'Price',
       dataIndex: 'amount',
-      sorter: true,
+      // sorter: true,
       render: (price) => {
           return <NumberFormat value={price} suffix=' sats' />
       }
@@ -84,7 +84,7 @@ export default () => {
       title: "",
       dataIndex: "txId",
       key: "txId",
-      fixed: 'right',
+      // /fixed: 'right',
 
       render: (text, record) => (
         <Button
@@ -105,12 +105,30 @@ export default () => {
       <div className="tableWrap">
         <Table
           scroll={{ x: 1000 }}
-          rowKey={"txId"}
+          rowKey={"orderId"}
           loading={loading}
           columns={columns}
           dataSource={list}
-          pagination={{ position: ["none", "none"] }}
+         
           bordered
+          pagination={{
+            pageSize: size,
+            current: page + 1,
+            total,
+            onChange: (page) => {
+
+                setLoading(true);
+                setPage(page - 1);
+            },
+        }}
+        onRow={(record) => {
+            return {
+                style: { cursor: 'pointer' },
+                onClick: () => {
+                    history.push(`/mrc20/${record.tickId}`)
+                },
+            }
+        }}
         />
       </div>
 

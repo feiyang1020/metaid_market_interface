@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useModel } from "umi";
 
 export default () => {
-  const size = 12;
+  const size = 10;
   const { network, btcAddress } = useModel("wallet");
   const [sortKey, setSortKey] = useState<string>("timestamp");
   const [sortType, setSortType] = useState<number>(-1);
@@ -70,5 +70,6 @@ export default () => {
     setSortKey,
     loading,
     setLoading,
+    size
   };
 };

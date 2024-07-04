@@ -57,6 +57,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const _deployAmountPerMint = Form.useWatch('deployAmountPerMint', form);
     const _deployIcon = Form.useWatch('deployIcon', form);
     const _deployPremineCount = Form.useWatch('deployPremineCount', form);
+    // transferTickerId
+    const _transferTickerId = Form.useWatch('transferTickerId', form);
     const totalSupply = useMemo(() => {
         if (_deployMaxMintCount && _deployAmountPerMint) {
             return BigInt(Math.round(_deployMaxMintCount)) * BigInt(Math.round(_deployAmountPerMint))
@@ -111,28 +113,16 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         setMintTokenID(e.target.value);
     };
 
-    const fetchMrc20Info = useCallback(async () => {
-        if (!mintTokenID) return;
-        setMintInfoLoading(true)
-        setMintInfoStatus('validating')
-        const { code, message, data } = await getMrc20Info(network, { tickId: mintTokenID });
-        if (btcAddress && data && data.qual && data.qual.count) {
-            const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
-            if (code === 0 && ret && ret.list) {
-                setShowel(ret.list)
+    // precision
+    const transferPrecision=useMemo(()=>{
+        if(_transferTickerId&&list.length>0){
+            const token=list.find(item=>item.mrc20Id===_transferTickerId)
+            if(token){
+                return Number(token.decimals)
             }
         }
-        setMintInfoLoading(false)
-        if (data && data.mrc20Id) {
-            setMintMrc20Info(data);
-            setMintInfoStatus('success')
-            return
-        }
-
-        setMintInfoStatus('error')
-        setMintMrc20Info(undefined)
-
-    }, [mintTokenID, btcAddress, network])
+        return 0
+    },[_transferTickerId,list])
 
 
 
@@ -239,6 +229,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             onClose: () => {
                 setSuccessProp(DefaultSuccessProps);
                 form.resetFields();
+                form.setFieldValue('type', 'deploy')
             },
             onDown: () => {
                 setSuccessProp(DefaultSuccessProps);
@@ -302,6 +293,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             onDown: () => {
                 setSuccessProp(DefaultSuccessProps);
                 form.resetFields();
+                form.setFieldValue('type', 'transfer')
 
             },
             title: title,
@@ -433,6 +425,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     onClose: () => {
                         setSuccessProp(DefaultSuccessProps);
                         form.resetFields();
+                        form.setFieldValue('type', 'mint')
                     },
                     onDown: () => {
                         setSuccessProp(DefaultSuccessProps);
@@ -856,6 +849,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <InputNumber
                                             size="large"
                                             style={{ width: '100%' }}
+                                            precision={transferPrecision}
                                         />
                                     </Form.Item>
                                     <Form.Item label="Recipient Address" name="recipient" rules={[{ required: true }]}>

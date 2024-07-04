@@ -12,7 +12,7 @@ import Mrc20Order from "./components/Mrc20Order";
 const items = ["PIN", 'MRC20'];
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
-  const { orders, loading, updateOrders, setLoading } = useModel("userOrders");
+  const { orders, loading, updateOrders, setLoading, cursor,total,size,setCursor } = useModel("userOrders");
   const [show, setShow] = useState<boolean>(false);
   const [tab, setTab] = useState<"PIN" | "MRC20">("PIN");
   const [submiting, setSubmiting] = useState<boolean>(false);
@@ -106,7 +106,7 @@ export default () => {
       title: "",
       dataIndex: "txId",
       key: "txId",
-      fixed: 'right',
+      // fixed: 'right',
 
       render: (text, record) => (
         <Button
@@ -129,7 +129,7 @@ export default () => {
           history.back();
         }}
       >
-        <LeftOutlined /> Pending Order
+        <LeftOutlined /> My Listing
       </div>
 
       <div className="tabs">
@@ -154,8 +154,18 @@ export default () => {
             loading={loading}
             columns={columns}
             dataSource={list}
-            pagination={{ position: ["none", "none"] }}
+            // pagination={{ position: ["none", "none"] }}
             bordered
+            pagination={{
+              pageSize: size,
+              current: cursor + 1,
+              total,
+              onChange: (page) => {
+  
+                  setLoading(true);
+                  setCursor(page - 1);
+              },
+          }}
           />
         </div> : <Mrc20Order />
       }

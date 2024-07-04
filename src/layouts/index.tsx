@@ -153,7 +153,7 @@ export default function Layout() {
                             history.push("/pending");
                           }}
                         >
-                          <div className="path">Pending Order</div>
+                          <div className="path">My Listing</div>
                           <RightOutlined />
                         </div>
                         <div

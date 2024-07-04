@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
 import { Button, Space, Table, TableProps, Tooltip, message } from "antd";
-import { Link, useModel } from "umi";
+import { history, useModel } from "umi";
 import dayjs from "dayjs";
 import { formatSat } from "@/utils/utlis";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -13,13 +13,12 @@ const items = ["PIN", 'MRC20'];
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);
-
     const [submiting, setSubmiting] = useState<boolean>(false);
     const [list, setList] = useState<API.Mrc20InscribeOrder[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
-    const [size, setSize] = useState<number>(12);
+    const [size, setSize] = useState<number>(10);
 
     const fetchOrders = useCallback(async () => {
         if (!btcAddress) return;
@@ -38,7 +37,7 @@ export default () => {
             setTotal(data.total);
         }
         setLoading(false);
-    }, [network, btcAddress])
+    }, [network, btcAddress, page, size])
     useEffect(() => { fetchOrders() }, [fetchOrders]);
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
@@ -46,7 +45,7 @@ export default () => {
             title: 'Name',
             dataIndex: 'tick',
             width: 220,
-            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId }}
+            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }}
             />
         },
 
@@ -99,7 +98,7 @@ export default () => {
             dataIndex: 'blockHeight',
             width: 100,
             render: (item) => {
-                return <>{item ? 'Confirmed' : <span style={{color:'#FF5252'}}>Pending</span>}</>
+                return <>{item ? 'Confirmed' : <span style={{ color: '#FF5252' }}>Pending</span>}</>
             }
         },
         {
@@ -158,7 +157,21 @@ export default () => {
                     pagination={{
                         pageSize: size,
                         current: page + 1,
-                        total
+                        total,
+                        onChange: (page) => {
+
+                            setLoading(true);
+                            setPage(page - 1);
+                        },
+                    }}
+
+                    onRow={(record) => {
+                        return {
+                            style: { cursor: 'pointer' },
+                            onClick: () => {
+                                history.push(`/mrc20/${record.tickId}`)
+                            },
+                        }
                     }}
 
                 />

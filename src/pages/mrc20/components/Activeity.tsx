@@ -28,7 +28,7 @@ export default ({ mrc20Id }: Props) => {
       setTotal(data.total);
     }
     setLoading(false);
-  }, [mrc20Id, network])
+  }, [mrc20Id, network,page,size])
   useEffect(() => { fetchOrders() }, [fetchOrders]);
 
   const columns: TableColumnsType<API.Mrc20Order> = [
@@ -40,10 +40,10 @@ export default ({ mrc20Id }: Props) => {
 
     {
       title: 'Price',
-      dataIndex: 'amount',
+      dataIndex: 'tokenPriceRate',
       sorter: true,
-      render: (price) => {
-        return <NumberFormat value={price} suffix=' sats' />
+      render: (price,record) => {
+        return <NumberFormat value={price} suffix={` sats/${record.tick}`} />
       }
     },
     {
@@ -124,16 +124,21 @@ export default ({ mrc20Id }: Props) => {
       pagination={{
         pageSize: size,
         current: page + 1,
-        total
+        total,
+        onChange: (page) => {
+
+          setLoading(true);
+          setPage(page - 1);
+      },
       }}
       scroll={{ x: 1000 }}
       className="activeityTable"
       loading={loading}
-      onChange={({ current, ...params }, _, sorter) => {
-        console.log(sorter, 'params')
-        if (!current) current = 1
-        setPage(current - 1)
-      }}
+      // onChange={({ current, ...params }, _, sorter) => {
+      //   console.log(sorter, 'params')
+      //   if (!current) current = 1
+      //   setPage(current - 1)
+      // }}
 
     />
   </ConfigProvider>

@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
 import { Button, Space, Table, TableProps, Tooltip, message } from "antd";
-import { Link, useModel } from "umi";
+import { history, useModel } from "umi";
 import dayjs from "dayjs";
 import { formatSat } from "@/utils/utlis";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -38,7 +38,7 @@ export default () => {
             setTotal(data.total);
         }
         setLoading(false);
-    }, [network, btcAddress])
+    }, [network, btcAddress,page,size])
     useEffect(() => { fetchOrders() }, [fetchOrders]);
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
@@ -46,14 +46,14 @@ export default () => {
             title: 'Name',
             dataIndex: 'tick',
             width: 220,
-            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId }} />
+            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }} />
         },
 
         {
             title: 'Path',
             dataIndex: 'qual',
             render: (price, record) => {
-                return <Tooltip title={record.qual.path}>path:{record.qual.path&&record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
+                return <Tooltip title={record.qual.path}>path:{record.qual.path && record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
             }
         },
         {
@@ -94,7 +94,7 @@ export default () => {
             title: 'Type',
             dataIndex: 'blockHeight',
             render: (item) => {
-                return <>{item ? 'Confirmed' : <span style={{color:'#FF5252'}}>Pending</span>}</>
+                return <>{item ? 'Confirmed' : <span style={{ color: '#FF5252' }}>Pending</span>}</>
             }
         },
         {
@@ -136,14 +136,26 @@ export default () => {
                     loading={loading}
                     columns={columns}
                     dataSource={list}
-                  
+
                     bordered
                     pagination={{
                         pageSize: size,
                         current: page + 1,
-                        total
+                        total,
+                        onChange: (page) => {
+
+                            setLoading(true);
+                            setPage(page - 1);
+                        },
                     }}
-                   
+                    onRow={(record) => {
+                        return {
+                            style: { cursor: 'pointer' },
+                            onClick: () => {
+                                history.push(`/mrc20/${record.tickId}`)
+                            },
+                        }
+                    }}
                 />
             </div>
 
