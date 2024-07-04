@@ -43,7 +43,7 @@ export default () => {
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
         {
-            title: 'Name',
+            title: 'Ticker',
             dataIndex: 'tick',
             width: 220,
             render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }} />

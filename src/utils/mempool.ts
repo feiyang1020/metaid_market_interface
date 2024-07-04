@@ -10,11 +10,16 @@ export const getFeeRate = async (network: API.Network) => {
   try {
     const feesRecommended = await fees.getFeesRecommended();
     console.log(feesRecommended);
-    const { fastestFee, halfHourFee, hourFee, minimumFee } = feesRecommended;
+    let { fastestFee, halfHourFee, hourFee, minimumFee } = feesRecommended;
     const isInvalid =
       minimumFee === fastestFee &&
       minimumFee === halfHourFee &&
       minimumFee === hourFee;
+    if(network==='testnet'){
+      fastestFee+=10;
+      halfHourFee+=10;
+      hourFee+=10;
+    }
     return [
       {
         label: "Fast",
