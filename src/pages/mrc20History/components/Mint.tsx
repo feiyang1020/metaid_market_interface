@@ -9,6 +9,7 @@ import { authTest, cancelMRC20Order, cancelOrder, getMrc20InscribeOrders, getMrc
 import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
+import MetaIdAvatar from "@/components/MetaIdAvatar";
 const items = ["PIN", 'MRC20'];
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
@@ -48,13 +49,15 @@ export default () => {
             render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }}
             />
         },
-        // {
-        //     title: 'Ticker',
-        //     dataIndex: 'tick',
-        //     width: 220,
-        //     render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }}
-        //     />
-        // },
+        {
+            title: 'Deployer',
+            dataIndex: 'deployer',
+            width: 220,
+            render: (_, record) =>  <div className="detail">
+            <span className='avatars'><MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /> {record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+            <span className='metaid'>MetaID : {record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
+          </div>
+        },
 
         {
             title: 'Path',
