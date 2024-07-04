@@ -21,6 +21,7 @@ import MRC20DetailCard from "./MRC20DetailCard";
 import NumberFormat from "@/components/NumberFormat";
 import MRC20Icon from "@/components/MRC20Icon";
 import { addUtxoSafe, getUtxos } from "@/utils/psbtBuild";
+import SelectPins from "./SelectPins";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -168,7 +169,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             if (data && data.mrc20Id) {
                 setMintMrc20Info(data);
                 setMintInfoStatus('success')
-                _shovels.length > 0 && form.setFieldsValue({ pins: [_shovels[0].id] })
+                _shovels.length > 0 && form.setFieldsValue({ pins: _shovels.slice(0,Number(data.qual.count)).map(item=>item.id) })
                 return
             }
 
@@ -398,7 +399,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             if (type === 'mint') {
                 if (!mintMrc20Info) return;
                 if (Number(mintMrc20Info.qual.count) && pins.length < Number(mintMrc20Info.qual.count)) {
-                    throw new Error(`Select at Least ${mintMrc20Info.qual.count} PINs`)
+                    throw new Error(`Select  ${mintMrc20Info.qual.count} PINs`)
                 }
                 console.log(pins, 'pins')
                 const mintPins = pins.map((pinId: string) => {
@@ -889,20 +890,21 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <Collapse ghost defaultActiveKey={1} style={{ padding: 0, marginBottom: 20 }} expandIconPosition='end' items={
                                                         [{
                                                             key: 1,
-                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select at Least ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="MRC20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
+                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select  ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="MRC20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip></div>,
                                                             children: <Form.Item label='' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
 
                                                             >
-                                                                <Checkbox.Group style={{ display: 'flex' }}>
+                                                                {/* <Checkbox.Group style={{ display: 'flex' }} >
                                                                     <Row style={{ borderRadius: 8, overflow: 'hidden', maxHeight: 200, overflowY: 'scroll' }}>
                                                                         {shovel?.map(item => {
-                                                                            return <Col span={24} key={item.id}><Checkbox className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
+                                                                            return <Col span={24} key={item.id}><Checkbox  className="customCheckbox" value={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row-reverse' }}>
                                                                                 <div className="value">#{item.number} <a href={`https://man${network === 'mainnet' ? '' : '-test'}.metaid.io/pin/${item.id}`} target='_blank'>  <ArrowRightOutlined style={{ color: 'rgba(255, 255, 255, 0.5)', transform: 'rotate(-0.125turn)' }} /></a> </div></Checkbox></Col>
                                                                         })}
 
-                                                                    </Row></Checkbox.Group>
+                                                                    </Row></Checkbox.Group> */}
+                                                                <SelectPins shovel={shovel} count={Number(mintMrc20Info.qual.count)} network={network} />
                                                             </Form.Item>
                                                         }]
                                                     }></Collapse>
