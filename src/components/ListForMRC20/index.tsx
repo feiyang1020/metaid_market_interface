@@ -187,7 +187,7 @@ const ListForMRC20 = () => {
                                     className="input"
                                     value={sellPrices[item.txPoint]}
                                     suffix="sats"
-
+                                    min={2000}
                                     onFocus={() => {
                                         handleCheck(item.txPoint);
                                     }}

@@ -45,6 +45,9 @@ const _themes = {
 
       "colorSplit": "rgba(253, 253, 253, 0)"
     },
+    "Progress": {
+      "colorSuccess": "#d4f66b"
+    }
   },
 };
 
