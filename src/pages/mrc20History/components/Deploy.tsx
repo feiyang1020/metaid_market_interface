@@ -91,9 +91,9 @@ export default () => {
         },
         {
             title: 'Type',
-            dataIndex: 'blockHeight',
+            dataIndex: 'mintState',
             render: (item) => {
-                return <>{item ? 'Confirmed' : <span style={{ color: '#FF5252' }}>Pending</span>}</>
+                return <>{item===1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item===0?'Pending':'Failure'}</span>}</>
             }
         },
         {
