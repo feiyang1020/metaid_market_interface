@@ -8,10 +8,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useModel } from "umi";
 type Props = {
   mrc20Id: string,
-  btcAddress?: string
+  showMy?: boolean
 }
-export default ({ mrc20Id, btcAddress }: Props) => {
-  const { network } = useModel('wallet')
+export default ({ mrc20Id, showMy=false }: Props) => {
+  const { network,btcAddress } = useModel('wallet')
   const [list, setList] = useState<API.Mrc20Order[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
@@ -19,7 +19,7 @@ export default ({ mrc20Id, btcAddress }: Props) => {
   const [size, setSize] = useState<number>(10);
   const fetchOrders = useCallback(async () => {
     console.log('fetchOrders', network, mrc20Id, page, size)
-    if (!mrc20Id) return;
+    if (!mrc20Id||(showMy&&!btcAddress)) return;
     setLoading(true);
     const params: any = { assetType: 'mrc20', orderState: 3, sortKey: 'timestamp', sortType: -1, tickId: mrc20Id, cursor: page * size, size }
     if (btcAddress) {
@@ -31,7 +31,7 @@ export default ({ mrc20Id, btcAddress }: Props) => {
       setTotal(data.total);
     }
     setLoading(false);
-  }, [mrc20Id, network, page, size, btcAddress])
+  }, [mrc20Id, network, page, size, btcAddress,showMy])
   useEffect(() => { fetchOrders() }, [fetchOrders]);
 
   const columns: TableColumnsType<API.Mrc20Order> = [

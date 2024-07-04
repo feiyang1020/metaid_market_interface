@@ -87,7 +87,7 @@ export default () => {
                             <span>Supply : <NumberFormat value={mrc20Info.totalSupply} /> </span>
                         </div>
                         <div className="slider">
-                            <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false} />
+                            <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false}  />
                         </div>
                         <div className="sliderNumber">
 
@@ -141,12 +141,12 @@ export default () => {
                 {
                     key: '3',
                     label: 'My Activity',
-                    children: <Activeity mrc20Id={match && match.params.mrc20Id || ''} btcAddress={btcAddress} />,
+                    children: <Activeity mrc20Id={match && match.params.mrc20Id || ''} showMy />,
                 },
                 {
                     key: '4',
                     label: 'My Listed',
-                    children: <Listed mrc20Id={match && match.params.mrc20Id || ''} btcAddress={btcAddress} />,
+                    children: <Listed mrc20Id={match && match.params.mrc20Id || ''} showMy />,
                 },
             ]} /></ConfigProvider>
 

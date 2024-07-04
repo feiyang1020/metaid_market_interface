@@ -13,10 +13,10 @@ import MRC20Icon from "@/components/MRC20Icon";
 import CancelListing from "@/components/CancelListing";
 type Props = {
     mrc20Id: string,
-    btcAddress?: string
+    showMy?: boolean
 }
-export default ({ mrc20Id, btcAddress }: Props) => {
-    const { network, connected, connect, btcAddress: userAddress, authParams } = useModel('wallet')
+export default ({ mrc20Id, showMy=false }: Props) => {
+    const { network, connected, connect, btcAddress, authParams } = useModel('wallet')
     const [list, setList] = useState<API.Mrc20Order[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [curOrder, setCurOrder] = useState<API.Mrc20Order>();
@@ -28,7 +28,7 @@ export default ({ mrc20Id, btcAddress }: Props) => {
     const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
     const fetchOrders = useCallback(async () => {
         console.log('fetchOrders', network, mrc20Id, page, size)
-        if (!mrc20Id) return;
+        if (!mrc20Id||(showMy&&!btcAddress)) return;
         setLoading(true);
         const params: any = { assetType: 'mrc20', orderState: 1, sortKey: 'priceAmount', sortType: -1, tickId: mrc20Id, cursor: page * size, size };
         if (btcAddress) {
@@ -43,7 +43,7 @@ export default ({ mrc20Id, btcAddress }: Props) => {
             setTotal(0)
         }
         setLoading(false);
-    }, [mrc20Id, network, page, size])
+    }, [mrc20Id, network, page, size,btcAddress,showMy])
 
     const handleCancel = async () => {
         if (!curOrder || !btcAddress) return;
@@ -143,7 +143,7 @@ export default ({ mrc20Id, btcAddress }: Props) => {
                                             style={{ height: 40 }}
                                             block
                                             onClick={() => {
-                                                if (userAddress === item.sellerAddress) {
+                                                if (btcAddress === item.sellerAddress) {
                                                     setCurOrder(item);
                                                     setCancelModalVisible(true);
                                                 } else {
@@ -153,7 +153,7 @@ export default ({ mrc20Id, btcAddress }: Props) => {
 
                                             }}
                                         >
-                                            {userAddress === item.sellerAddress ? 'Cancel Listing' : 'Buy'}
+                                            {btcAddress === item.sellerAddress ? 'Cancel Listing' : 'Buy'}
                                         </Button>
                                     ) : (
                                         <Button
