@@ -10,6 +10,7 @@ import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
+import PopLvl from "@/components/PopLvl";
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);
@@ -115,7 +116,7 @@ export default () => {
             dataIndex: 'Pin',
             width: 200,
             render: (item, record) => {
-                return <>{record.usedPins.map((item) => (<p>{item.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</p>))}</>
+                return <>{record.usedPins.map((item) => (<p className="userPin">{item.replace(/(\w{5})\w+(\w{5})\-/, "$1...$2")} <PopLvl lvl={item.split('-')[1]}></PopLvl></p>))}</>
             }
 
         },
