@@ -114,15 +114,15 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     };
 
     // precision
-    const transferPrecision=useMemo(()=>{
-        if(_transferTickerId&&list.length>0){
-            const token=list.find(item=>item.mrc20Id===_transferTickerId)
-            if(token){
+    const transferPrecision = useMemo(() => {
+        if (_transferTickerId && list.length > 0) {
+            const token = list.find(item => item.mrc20Id === _transferTickerId)
+            if (token) {
                 return Number(token.decimals)
             }
         }
         return 0
-    },[_transferTickerId,list])
+    }, [_transferTickerId, list])
 
 
 
@@ -145,10 +145,16 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             setShowel([])
             setMintInfoLoading(true)
             setMintInfoStatus('validating')
-            const { code, message, data } = await getMrc20Info(network, { tickId: mintTokenID });
+            const params={};
+            if(mintTokenID.length>24){
+                params.tickId=mintTokenID
+            }else{
+               params.tick=mintTokenID.toUpperCase()
+            }
+            const { code, message, data } = await getMrc20Info(network, params);
             let _shovels: API.MRC20Shovel[] = []
             if (btcAddress && data && data.qual && data.qual.count) {
-                const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: mintTokenID, address: btcAddress, cursor: 0, size: 100 });
+                const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: data.mrc20Id, address: btcAddress, cursor: 0, size: 100 });
                 if (code === 0 && ret && ret.list) {
                     _shovels = ret.list
                 }
@@ -159,7 +165,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             if (data && data.mrc20Id) {
                 setMintMrc20Info(data);
                 setMintInfoStatus('success')
-                _shovels.length > 0 && form.setFieldsValue({ pins: _shovels.slice(0,Number(data.qual.count)).map(item=>item.id) })
+                _shovels.length > 0 && form.setFieldsValue({ pins: _shovels.slice(0, Number(data.qual.count)).map(item => item.id) })
                 return
             }
 
@@ -381,7 +387,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (!connected || !btcAddress) return;
         await form.validateFields();
         setSubmiting(true);
-        const { type, feeRate, tickerId, pins = [], transferTickerId, amount, recipient } = form.getFieldsValue();
+        const { type, feeRate, pins = [], transferTickerId, amount, recipient } = form.getFieldsValue();
         try {
 
             if (type === 'deploy') {
@@ -408,7 +414,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 })
 
                 const { code, message, data, } = await mintMrc20Pre(network, {
-                    mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId,
+                    mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId:mintMrc20Info.mrc20Id,
                 }, {
                     headers: {
                         ...authParams,
@@ -552,6 +558,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
 
     }
+    // const [validateTickerStatus,setValidateTickerStatus] = useState<string>()
+    // const validateTicker = async (tick: string) => {
+    //     setValidateTickerStatus('validating')
+    //     const { data } = await getMrc20Info(network, { tick: tick });
+    //     if(data && data.mrc20Id){
+    //         setValidateTickerStatus('error')
+    //     } 
+    // }
     return <div className="mrc20Form">
         <ConfigProvider
             theme={{
@@ -595,7 +609,19 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             if (type === 'deploy') {
                                 return <>
                                     <Form.Item label="Ticker" name="deployTicker"
-                                        rules={[{ required: true }, { type: 'string', min: 2, max: 24 }]}
+                                        rules={[{ required: true }, { type: 'string', min: 2, max: 24 },{pattern: new RegExp(/^[a-zA-Z0-9\-]*$/),message: "No Space or Special Characters Allowed"}, () => ({
+                                            async validator(_, value) {
+                                                if (!value || value.length < 2) {
+                                                    return Promise.resolve();
+                                                }
+                                                const { data } = await getMrc20Info(network, { tick: value.toUpperCase() });
+                                                if (data && data.mrc20Id) {
+                                                    return Promise.reject(new Error('This tick already exists.'));
+                                                }
+
+                                            },
+                                        })]}
+                                        validateTrigger="onBlur"
                                     >
                                         <Input
                                             size="large"
@@ -824,7 +850,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             }
                             if (type === 'transfer') {
                                 return <>
-                                    <Form.Item label="Token ID" name="transferTickerId"
+                                    <Form.Item label="Token" name="transferTickerId"
                                         rules={[{ required: true }]}
                                     >
                                         <Select
@@ -856,8 +882,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             if (type === 'mint') {
                                 return <>
 
-                                    <Form.Item label="Token ID" name="tickerId" rules={[{ required: true }]} validateStatus={mintInfoStatus}
-                                        help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}>This token ID does not correspond to any MRC 20; Please re-enter.</div> : <></>} >
+                                    <Form.Item label="Ticker / Token ID" name="tickerId" rules={[{ required: true }]} validateStatus={mintInfoStatus}
+                                        help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}>This Ticker / Token ID does not correspond to any MRC-20; Please re-enter.</div> : <></>} >
                                         <Input
                                             size="large"
                                             onChange={handleMintTokenIDChange}

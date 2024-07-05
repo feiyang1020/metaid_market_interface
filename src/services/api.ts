@@ -276,7 +276,8 @@ export async function transferMrc20Commit(
 export async function getMrc20Info(
   network: API.Network,
   params: {
-    tickId: string;
+    tickId?: string;
+    tick?:string
   },
   options?: { [key: string]: any }
 ) {
