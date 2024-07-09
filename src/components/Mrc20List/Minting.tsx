@@ -166,6 +166,7 @@ export default () => {
             dataSource={list}
             // size='small'
             pagination={{
+                position: ['bottomCenter'],
                 pageSize: size,
                 current: page + 1,
                 total

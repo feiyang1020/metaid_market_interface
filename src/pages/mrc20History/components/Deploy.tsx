@@ -138,6 +138,7 @@ export default () => {
 
                     bordered
                     pagination={{
+                        position: ['bottomCenter'],
                         pageSize: size,
                         current: page + 1,
                         total,

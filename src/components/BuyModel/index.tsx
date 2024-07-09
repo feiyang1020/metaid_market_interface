@@ -39,7 +39,7 @@ export default ({ order, show, onClose }: Props) => {
     authParams,
     connected,
   } = useModel("wallet")
-  const {updateOrders}=useModel('orders')
+  const { updateOrders } = useModel('orders')
   const [submiting, setSubmiting] = useState<boolean>(false);
   const [customRate, setCustomRate] = useState<string | number>();
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
@@ -164,7 +164,7 @@ export default ({ order, show, onClose }: Props) => {
   }, [orderWithPsbt, network, connected, feeRate]);
 
   const handleBuy = async () => {
-    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order||!btcAddress)
+    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order || !btcAddress)
       return;
     setSubmiting(true);
     try {
@@ -257,7 +257,7 @@ export default ({ order, show, onClose }: Props) => {
               <div className="item">
                 <div className="label">Transaction Price</div>
                 <div className="value">
-                  <img src={btcIcon}></img> {formatSat(totalSpent)}
+                  <img src={btcIcon}></img> {formatSat(totalSpent)} BTC
                 </div>
               </div>
               <div className="item">
@@ -398,7 +398,7 @@ export default ({ order, show, onClose }: Props) => {
                 <div className="label">Available balance</div>
 
                 <div className="value">
-                  {userBalInfo && formatSat(userBalInfo.confirmed)} BTC
+                  {userBalInfo && formatSat(userBalInfo.total)} BTC
                 </div>
               </div>
             </Spin>

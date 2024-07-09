@@ -205,7 +205,7 @@ export default ({ order, show, onClose }: Props) => {
               <div className="item">
                 <div className="label">Transaction Price</div>
                 <div className="value">
-                  <img src={btcIcon}></img> {formatSat(totalSpent)}
+                  <img src={btcIcon}></img> {formatSat(totalSpent)} BTC
                 </div>
               </div>
               <div className="item">
@@ -335,7 +335,7 @@ export default ({ order, show, onClose }: Props) => {
                 <div className="label">Available balance</div>
 
                 <div className="value">
-                  {userBalInfo && formatSat(userBalInfo.confirmed)} BTC
+                  {userBalInfo && formatSat(userBalInfo.total)} BTC
                 </div>
               </div>
             </Spin>

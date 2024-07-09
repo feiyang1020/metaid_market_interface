@@ -104,6 +104,7 @@ export default () => {
             rowKey={(record) => record.mrc20Id}
             dataSource={list}
             pagination={{
+                position: ['bottomCenter'],
                 pageSize: size,
                 current: page + 1,
                 total

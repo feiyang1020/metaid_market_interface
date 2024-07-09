@@ -163,6 +163,7 @@ export default () => {
           columns={columns}
           dataSource={list}
           pagination={{
+            position: ['bottomCenter'],
             onChange: (page) => {
               setTab("");
               setLoading(true);

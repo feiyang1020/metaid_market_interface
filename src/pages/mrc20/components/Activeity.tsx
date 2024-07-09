@@ -146,6 +146,7 @@ export default ({ mrc20Id, showMy = false }: Props) => {
       rowKey={(record) => record.orderId}
       dataSource={list}
       pagination={{
+        position: ['bottomCenter'],
         pageSize: size,
         current: page + 1,
         total,
