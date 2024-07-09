@@ -145,11 +145,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             setShowel([])
             setMintInfoLoading(true)
             setMintInfoStatus('validating')
-            const params={};
-            if(mintTokenID.length>24){
-                params.tickId=mintTokenID
-            }else{
-               params.tick=mintTokenID.toUpperCase()
+            const params = {};
+            if (mintTokenID.length > 24) {
+                params.tickId = mintTokenID
+            } else {
+                params.tick = mintTokenID.toUpperCase()
             }
             const { code, message, data } = await getMrc20Info(network, params);
             let _shovels: API.MRC20Shovel[] = []
@@ -414,7 +414,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 })
 
                 const { code, message, data, } = await mintMrc20Pre(network, {
-                    mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId:mintMrc20Info.mrc20Id,
+                    mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId: mintMrc20Info.mrc20Id,
                 }, {
                     headers: {
                         ...authParams,
@@ -609,7 +609,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             if (type === 'deploy') {
                                 return <>
                                     <Form.Item label="Ticker" name="deployTicker"
-                                        rules={[{ required: true }, { type: 'string', min: 2, max: 24 },{pattern: new RegExp(/^[a-zA-Z0-9\-]*$/),message: "No Space or Special Characters Allowed"}, () => ({
+                                        rules={[{ required: true }, { type: 'string', min: 2, max: 24 }, { pattern: new RegExp(/^[a-zA-Z0-9\-]*$/), message: "No Space or Special Characters Allowed" }, () => ({
                                             async validator(_, value) {
                                                 if (!value || value.length < 2) {
                                                     return Promise.resolve();
@@ -633,14 +633,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
 
 
-                                    <Form.Item rules={[{ required: true }]} label="Max Mint Count" name="deployMaxMintCount"
+                                    <Form.Item rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: 'Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).' }]} label="Max Mint Count" name="deployMaxMintCount"
 
                                     >
                                         <InputNumber
                                             size="large"
                                             style={{ width: '100%' }}
-                                            min={0}
-                                            max={1000000000000}
+                                            // min={1}
+
                                             precision={0}
                                             addonAfter={
                                                 <Tooltip title="Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).">
@@ -648,14 +648,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 </Tooltip>}
                                         />
                                     </Form.Item>
-                                    <Form.Item rules={[{ required: true }]} label="Amount Per Mint" name="deployAmountPerMint"
+                                    <Form.Item rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: 'Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).' }]} label="Amount Per Mint" name="deployAmountPerMint"
                                     // help={<div style={{ textAlign: 'left',color:'rgba(255, 255, 255, 0.6)',fontSize:14 }}> TotalSupply: </div>}
                                     >
                                         <InputNumber
                                             size="large"
                                             style={{ width: '100%' }}
-                                            min={1}
-                                            max={1000000000000}
+                                            // min={1}
+                                            // max={1000000000000}
                                             precision={0}
                                             addonAfter={
                                                 <Tooltip title="Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).">
@@ -719,13 +719,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         },
                                                     }}>
                                                     <Form.Item label="Decimals" name="deployDecimals"
-
+                                                        rules={[{ max: 12, min: 0, type: 'number', message: 'Decimal Places: Min 0, Max 12. Default is 8.' }]}
                                                     >
                                                         <InputNumber
                                                             size="large"
                                                             style={{ width: '100%' }}
-                                                            min={0}
-                                                            max={12}
+                                                            // min={0}
+                                                            // max={12}
                                                             precision={0}
                                                             addonAfter={
                                                                 <Tooltip title="Decimal Places: Min 0, Max 12. Default is 8.">
