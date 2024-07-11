@@ -29,7 +29,7 @@ export default () => {
     return <div className="launchPage">
         <div className="user">
             <MetaIdAvatar avatar={avatar} size={124} />
-            <div className="name">{userName || 'unnamed'}</div>
+            <div className="name">{userName || 'Unnamed'}</div>
             <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
         </div>
         <Form

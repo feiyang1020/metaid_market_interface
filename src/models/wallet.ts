@@ -187,14 +187,14 @@ export default () => {
         setAddressType(
           determineAddressInfo(_btcConnector.wallet.address).toUpperCase()
         );
-        try{
+        try {
           const bal = await _btcConnector.wallet.getBalance();
           setUserBal(formatSat(bal.total));
-        }catch(err){
-          console.log(err,'getBalance');
+        } catch (err) {
+          console.log(err, "getBalance");
         }
-       
-        console.log(_btcConnector.user,'_btcConnector.user');
+
+        console.log(_btcConnector.user, "_btcConnector.user");
         setAvatar(
           _btcConnector.user.avatar
             ? `${getHostByNet(network)}${_btcConnector.user.avatar}`
@@ -254,6 +254,6 @@ export default () => {
     authParams,
     updateWalletInfo,
     updateFeeRate,
-    init
+    init,
   };
 };
