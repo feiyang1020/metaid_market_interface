@@ -4,6 +4,7 @@ import { useModel, useSearchParams, history } from "umi";
 import MetaIdAvatar from '@/components/MetaIdAvatar';
 import { useState } from 'react';
 import NumberFormat from '@/components/NumberFormat';
+import SetProfile from '@/components/SetProfile';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
@@ -97,5 +98,6 @@ export default () => {
             </Row>
 
         </Form>
+        <SetProfile show onClose={() =>{}} />
     </div>
 }
