@@ -10,7 +10,7 @@ export default () => {
     const [form] = Form.useForm();
     const { sm } = useBreakpoint();
     const [visible, setVisible] = useState(false);
-    const { authParams, connected, connect, feeRates, network, disConnect, btcConnector, btcAddress, avatar, userName } =
+    const { authParams, connected, connect, feeRates, network, disConnect, btcConnector, btcAddress, avatar, userName, metaid } =
         useModel("wallet");
     const [submiting, setSubmiting] = useState<boolean>(false);
     const launch = async () => {
@@ -28,7 +28,7 @@ export default () => {
         <div className="user">
             <MetaIdAvatar avatar={avatar} size={124} />
             <div className="name">{userName || 'unnamed'}</div>
-            <div className="metaid">Metaid：451269741</div>
+            <div className="metaid">Metaid:{metaid?metaid.replace(/(\w{6})\w+(\w{3})/, "$1..."):'--'}</div>
         </div>
         <Form
             labelCol={{ span: 24 }}
