@@ -184,7 +184,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', feeRate } = form.getFieldsValue();
+        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', feeRate, deployPayTo = '', deployPayAmount = '' } = form.getFieldsValue();
 
         const payload: any = {
             tick: deployTicker,
@@ -199,6 +199,10 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 count: String(deployCount),
                 lvl: String(deployDifficultyLevel)
             },
+            payCheck: {
+                payTo: deployPayTo,
+                payAmount: deployPayAmount
+            }
         }
         if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
             throw new Error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
@@ -755,6 +759,34 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         precision={0}
                                                         addonAfter={
                                                             <Tooltip title="Pre-Minted Count. Value must be ≥ 0 and ≤ Max Mint Count. If this Token is a fair launch, please enter 0.">
+                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                            </Tooltip>
+                                                        }
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item label="Pay To" name="deployPayTo"
+                                                    rules={[]}
+                                                >
+                                                    <Input
+                                                        size="large"
+                                                        maxLength={48}
+                                                        placeholder=""
+                                                        addonAfter={
+                                                            <Tooltip title="">
+                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                            </Tooltip>
+                                                        }
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item label="Pay Amount" name="deployPayAmount"
+                                                    rules={[]}
+                                                >
+                                                    <Input
+                                                        size="large"
+                                                        maxLength={48}
+                                                        placeholder=""
+                                                        addonAfter={
+                                                            <Tooltip title="">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
