@@ -70,17 +70,17 @@ export default ({ mintMrc20Info }: Props) => {
                 {
                     key: 'Path',
                     label: 'Path',
-                    children: <Tooltip title={mintMrc20Info.qual.path}>{mintMrc20Info.qual.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip>
+                    children: <Tooltip title={mintMrc20Info.pinCheck.path}>{mintMrc20Info.pinCheck.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip>
                 },
                 {
                     key: 'Difficultylevel',
                     label: 'Difficulty Level',
-                    children: <>{mintMrc20Info.qual.lvl || '--'}</>
+                    children: <>{mintMrc20Info.pinCheck.lvl || '--'}</>
                 },
                 {
                     key: 'Count',
                     label: 'Count',
-                    children: <>{mintMrc20Info.qual.count || '--'}</>
+                    children: <>{mintMrc20Info.pinCheck.count || '--'}</>
                 }
             ]}></Descriptions>
     </Card>

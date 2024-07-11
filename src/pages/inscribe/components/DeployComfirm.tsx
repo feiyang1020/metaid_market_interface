@@ -11,7 +11,7 @@ type MRC20DeployParams = {
     premineCount: string
     blockheight: string
     metadata?: string
-    qual: {
+    pinCheck: {
         path?: string
         count?: string
         lvl?: string
@@ -38,7 +38,7 @@ export const defaultDeployComfirmProps: DeployComfirmProps = {
         mintCount: '',
         premineCount: '',
         blockheight: '',
-        qual: {}
+        pinCheck: {}
     } as MRC20DeployParams
 
 }
@@ -63,13 +63,13 @@ export default function DeployComfirm({ show, onClose, onConfirm, submiting, dep
         }
 
         {
-            deployInfo.qual.path && <DescItem label='Path' value={deployInfo.qual.path} />
+            deployInfo.pinCheck.path && <DescItem label='Path' value={deployInfo.pinCheck.path} />
         }
         {
-            deployInfo.qual.count && <DescItem label='Count' value={deployInfo.qual.count} />
+            deployInfo.pinCheck.count && <DescItem label='Count' value={deployInfo.pinCheck.count} />
         }
         {
-            deployInfo.qual.lvl && <DescItem label='Difficulty Level' value={deployInfo.qual.lvl} />
+            deployInfo.pinCheck.lvl && <DescItem label='Difficulty Level' value={deployInfo.pinCheck.lvl} />
         }
         <Button block size='large' type="primary" style={{ marginTop: 28 }} onClick={onConfirm} loading={submiting}>Confirm</Button>
     </Popup>

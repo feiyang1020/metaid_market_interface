@@ -186,7 +186,7 @@ declare namespace API {
     mintCount: string;
     mrc20Id: string;
     pinNumber: number;
-    qual: {
+    pinCheck: {
       count: string;
       lvl: string;
     };
@@ -279,7 +279,7 @@ declare namespace API {
     pinNumber: number;
     price: string;
     priceUsd: string;
-    qual: {
+    pinCheck: {
       count:string;
       lvl:string;
       path:string;
@@ -374,7 +374,7 @@ declare namespace API {
     opOrderType: string;
     orderId: string;
     premineCount: string;
-    qual: Record<string, string>;
+    pinCheck: Record<string, string>;
     startBlockHeight: string;
     tick: string;
     tickId: string;

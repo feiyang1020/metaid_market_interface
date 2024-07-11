@@ -27,10 +27,10 @@ export default () => {
         const { data } = await getMrc20InscribeOrders(network, { opOrderType: 'mint', address: btcAddress, cursor: page * size, size });
         if (data.list) {
             setList(data.list.map((item) => {
-                if (item.qual) {
+                if (item.pinCheck) {
                     try {
-                        item.qual = JSON.parse(item.qual)
-                    } catch (e) { item.qual = {} }
+                        item.pinCheck = JSON.parse(item.pinCheck)
+                    } catch (e) { item.pinCheck = {} }
 
                 };
                 return item
@@ -61,10 +61,10 @@ export default () => {
 
         {
             title: 'Path',
-            dataIndex: 'qual',
+            dataIndex: 'pinCheck',
             width: 200,
             render: (price, record) => {
-                return <Tooltip title={record.qual.path}>path:{record.qual.path && record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
+                return <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path && record.pinCheck.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
             }
         },
         // {

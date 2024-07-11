@@ -93,12 +93,12 @@ export default () => {
         },
         {
             title: 'Condition',
-            dataIndex: 'qual',
+            dataIndex: 'pinCheck',
             width: 170,
             render: (_, record) => {
-               if(!record.qual) return <div className="condition">--</div>
+               if(!record.pinCheck) return <div className="condition">--</div>
                 return <div className="condition"><div>
-                    <Tooltip title={record.qual.path}>path:{record.qual.path.length > 45 ? record.qual.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.qual.path}</Tooltip></div> <div className="lvlCount"><PopLvl lvl={record.qual.lvl} />  <span className="colorPrimary"> X {record.qual.count || '1'}</span></div></div>
+                    <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 45 ? record.pinCheck.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.pinCheck.path}</Tooltip></div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> X {record.pinCheck.count || '1'}</span></div></div>
             }
         },
         {

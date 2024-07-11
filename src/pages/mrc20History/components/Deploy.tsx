@@ -26,10 +26,10 @@ export default () => {
         const { data } = await getMrc20InscribeOrders(network, { opOrderType: 'deploy', address: btcAddress, cursor: page * size, size });
         if (data.list) {
             setList(data.list.map((item) => {
-                if (item.qual) {
+                if (item.pinCheck) {
                     try {
-                        item.qual = JSON.parse(item.qual)
-                    } catch (e) { item.qual = {} }
+                        item.pinCheck = JSON.parse(item.pinCheck)
+                    } catch (e) { item.pinCheck = {} }
 
                 };
                 return item
@@ -50,23 +50,23 @@ export default () => {
 
         {
             title: 'Path',
-            dataIndex: 'qual',
+            dataIndex: 'pinCheck',
             render: (price, record) => {
-                return <Tooltip title={record.qual.path}>path:{record.qual.path && record.qual.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
+                return <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path && record.pinCheck.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
             }
         },
         {
             title: 'Difficulty Level',
             dataIndex: 'level',
             render: (item, record) => {
-                return record.qual.lvl || '--'
+                return record.pinCheck.lvl || '--'
             }
         },
         {
             title: 'Count',
             dataIndex: 'count',
             render: (item, record) => {
-                return record.qual.count || '--'
+                return record.pinCheck.count || '--'
             }
         },
         {

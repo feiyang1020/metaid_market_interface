@@ -153,7 +153,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }
             const { code, message, data } = await getMrc20Info(network, params);
             let _shovels: API.MRC20Shovel[] = []
-            if (btcAddress && data && data.qual && data.qual.count) {
+            if (btcAddress && data && data.pinCheck && data.pinCheck.count) {
                 const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: data.mrc20Id, address: btcAddress, cursor: 0, size: 100 });
                 if (code === 0 && ret && ret.list) {
                     _shovels = ret.list
@@ -165,7 +165,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             if (data && data.mrc20Id) {
                 setMintMrc20Info(data);
                 setMintInfoStatus('success')
-                _shovels.length > 0 && form.setFieldsValue({ pins: _shovels.slice(0, Number(data.qual.count)).map(item => item.id) })
+                _shovels.length > 0 && form.setFieldsValue({ pins: _shovels.slice(0, Number(data.pinCheck.count)).map(item => item.id) })
                 return
             }
 
@@ -194,7 +194,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             mintCount: String(deployMaxMintCount),
             premineCount: String(deployPremineCount),
             blockheight: '',
-            qual: {
+            pinCheck: {
                 path: deployPath,
                 count: String(deployCount),
                 lvl: String(deployDifficultyLevel)
@@ -355,7 +355,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 mintCount: String(deployMaxMintCount),
                 premineCount: String(deployPremineCount),
                 blockheight: '',
-                qual: {
+                pinCheck: {
                     path: deployPath,
                     count: String(deployCount),
                     lvl: String(deployDifficultyLevel)
@@ -396,8 +396,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }
             if (type === 'mint') {
                 if (!mintMrc20Info) return;
-                if (Number(mintMrc20Info.qual.count) && pins.length < Number(mintMrc20Info.qual.count)) {
-                    throw new Error(`Select  ${mintMrc20Info.qual.count} PINs`)
+                if (Number(mintMrc20Info.pinCheck.count) && pins.length < Number(mintMrc20Info.pinCheck.count)) {
+                    throw new Error(`Select  ${mintMrc20Info.pinCheck.count} PINs`)
                 }
                 console.log(pins, 'pins')
                 const mintPins = pins.map((pinId: string) => {
@@ -898,14 +898,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         </Spin>
                                         </Col>
                                     </Row>
-                                    {(mintMrc20Info && Number(mintMrc20Info.qual.count) > 0) && <>
+                                    {(mintMrc20Info && Number(mintMrc20Info.pinCheck.count) > 0) && <>
                                         {(shovel && shovel.length > 0) ?
                                             <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
                                                     <Collapse ghost defaultActiveKey={1} style={{ padding: 0, marginBottom: 20 }} expandIconPosition='end' items={
                                                         [{
                                                             key: 1,
-                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.qual.count && `(Select  ${mintMrc20Info.qual.count} PINs)`}  <Tooltip title="MRC-20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC-20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
+                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.pinCheck.count && `(Select  ${mintMrc20Info.pinCheck.count} PINs)`}  <Tooltip title="MRC-20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC-20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip></div>,
                                                             children: <Form.Item label='' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
@@ -919,7 +919,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                                         })}
 
                                                                     </Row></Checkbox.Group> */}
-                                                                <SelectPins shovel={shovel} count={Number(mintMrc20Info.qual.count)} network={network} />
+                                                                <SelectPins shovel={shovel} count={Number(mintMrc20Info.pinCheck.count)} network={network} />
                                                             </Form.Item>
                                                         }]
                                                     }></Collapse>
