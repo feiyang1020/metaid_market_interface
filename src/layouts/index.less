@@ -5,11 +5,11 @@
   align-items: center;
   justify-content: space-between;
   width: 100vw;
-  
+
   min-height: 100vh;
   .header {
     position: sticky;
-    background: rgba(0,0,0,1);
+    background: rgba(0, 0, 0, 1);
     // backdrop-filter: blur(20px);
     top: 0;
     left: 0;
@@ -48,6 +48,11 @@
         color: #ffffff;
         cursor: pointer;
         animation: all ease-in-out 0.5s;
+        &.Launch {
+          background: linear-gradient(90deg, #ff0f57 5%, #ff6224 108%);
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
         .text {
           padding-left: 5px;
         }
@@ -104,7 +109,7 @@
   .links {
     border-top: 1px solid rgba(255, 255, 255, 0.02);
     border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-    .forsale{
+    .forsale {
       display: none;
     }
     .item {
@@ -140,29 +145,28 @@
           height: 30px;
         }
       }
-      .navs{
+      .navs {
         gap: 10px;
-        .nav{
+        .nav {
           font-size: 14px;
         }
-        
-        img{
+
+        img {
           display: none;
-          
         }
       }
-      .listforsale{
+      .listforsale {
         display: none;
       }
-      .userInfo{
-        .bal{
+      .userInfo {
+        .bal {
           display: none;
         }
       }
     }
   }
-  .walletInfo{
-    .forsale{
+  .walletInfo {
+    .forsale {
       display: flex;
     }
   }

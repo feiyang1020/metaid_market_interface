@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, Grid, Button, InputNumber } from 'antd';
+import { Col, Form, Input, Row, Grid, Button, InputNumber, message } from 'antd';
 import './index.less'
 import { useModel, useSearchParams, history } from "umi";
 import MetaIdAvatar from '@/components/MetaIdAvatar';
@@ -19,6 +19,8 @@ export default () => {
             setVisible(true);
             return;
         }
+        message.info({ content: "coming soon", icon: "🚀", });
+        return
         setSubmiting(true);
         const ret = await form.validateFields();
         console.log(ret);
@@ -28,7 +30,7 @@ export default () => {
         <div className="user">
             <MetaIdAvatar avatar={avatar} size={124} />
             <div className="name">{userName || 'unnamed'}</div>
-            <div className="metaid">Metaid:{metaid?metaid.replace(/(\w{6})\w+(\w{3})/, "$1..."):'--'}</div>
+            <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
         </div>
         <Form
             labelCol={{ span: 24 }}

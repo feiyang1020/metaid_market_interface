@@ -6,6 +6,7 @@ import home1 from "@/assets/home1.svg";
 import home2 from "@/assets/home2.svg";
 import inscribe1 from "@/assets/Inscribe1.svg";
 import inscribe2 from "@/assets/Inscribe2.svg";
+import launch from "@/assets/launch.svg";
 type MenuItem = Required<MenuProps>["items"][number];
 
 const items = [
@@ -21,6 +22,12 @@ const items = [
     icon: inscribe1,
     activeIvon: inscribe2,
   },
+  {
+    label: "Launch",
+    key: "/launch",
+    icon: launch,
+    activeIvon: launch,
+  },
 ];
 export default () => {
   const location = useLocation();
@@ -33,7 +40,7 @@ export default () => {
       {items.map((item) => (
         <div
           onClick={() => onClick(item.key)}
-          className={`nav ${path === item.key ? "active" : ""}`}
+          className={`nav ${item.label} ${path === item.key ? "active" : ""}`}
           key={item.key}
         >
           <img
