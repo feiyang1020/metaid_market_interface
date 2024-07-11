@@ -248,5 +248,6 @@ export default () => {
     authParams,
     updateWalletInfo,
     updateFeeRate,
+    init
   };
 };

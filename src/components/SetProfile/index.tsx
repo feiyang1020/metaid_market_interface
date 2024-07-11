@@ -1,4 +1,4 @@
-import { Button, Form, Input, Upload } from "antd";
+import { Button, Form, Input, message, Upload } from "antd";
 import Popup from "../ResponPopup";
 import { useState } from "react";
 import './index.less'
@@ -7,6 +7,7 @@ import UploadAvatar from "./UploadAvatar";
 import { useModel } from "umi";
 import SeleceFeeRateItem from "@/pages/inscribe/components/SeleceFeeRateItem";
 import { getCreatePinFeeByNet } from "@/config";
+import { image2Attach } from "@/utils/utlis";
 
 type SetProfileProps = {
     show: boolean;
@@ -23,27 +24,39 @@ const formItemLayout = {
     },
 };
 export default ({ show, onClose }: SetProfileProps) => {
-    const { btcConnector, connected, connect, feeRates, network, disConnect } =
+    const { btcConnector, init, connect, feeRates, network, disConnect } =
         useModel("wallet");
     const [visible, setVisible] = useState(false);
+    const [submiting, setSubmiting] = useState<boolean>(false)
     const [form] = Form.useForm();
     const submit = async () => {
         if (!btcConnector) return;
         await form.validateFields();
-        const { name, avatar, feeRate } = form.getFieldsValue();
-        const userData: any = { name };
-        if (avatar) {
-            userData.avatar = avatar
-        }
-        const isSuccess = await btcConnector.createUserInfo({
-            userData,
-            options: {
-                feeRate: Number(feeRate),
-                network: network,
-                service: getCreatePinFeeByNet(network),
+        try {
+
+            setSubmiting(true)
+
+            const { name, avatar, feeRate } = form.getFieldsValue();
+            const userData: any = { name };
+            if (avatar) {
+                const [image] = await image2Attach([avatar]);
+                userData.avatar = Buffer.from(image.data, "hex").toString("base64")
             }
-        })
-        console.log(isSuccess)
+            const isSuccess = await btcConnector.createUserInfo({
+                userData,
+                options: {
+                    feeRate: Number(feeRate),
+                    network: network,
+                    service: getCreatePinFeeByNet(network),
+                }
+            })
+            await init();
+            message.success('Success')
+            onClose();
+        } catch (err: any) {
+            message.error(typeof err === 'string' ? err : err.message)
+        }
+        setSubmiting(true)
     }
     return <>
 
@@ -98,7 +111,7 @@ export default ({ show, onClose }: SetProfileProps) => {
                         onClick={() => {
                             submit();
                         }}
-
+                        loading={submiting}
                         block
                     >
                         OK

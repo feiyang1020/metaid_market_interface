@@ -9,10 +9,16 @@ const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
     const { sm } = useBreakpoint();
+    const [visible, setVisible] = useState(false);
     const { authParams, connected, connect, feeRates, network, disConnect, btcConnector, btcAddress, avatar, userName } =
         useModel("wallet");
     const [submiting, setSubmiting] = useState<boolean>(false);
     const launch = async () => {
+        if (!connected) return;
+        if (!userName) {
+            setVisible(true);
+            return;
+        }
         setSubmiting(true);
         const ret = await form.validateFields();
         console.log(ret);
@@ -98,6 +104,6 @@ export default () => {
             </Row>
 
         </Form>
-        <SetProfile show onClose={() =>{}} />
+        <SetProfile show={visible} onClose={() => { setVisible(false) }} />
     </div>
 }

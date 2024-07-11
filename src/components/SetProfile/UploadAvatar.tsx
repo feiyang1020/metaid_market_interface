@@ -38,7 +38,7 @@ const UploadAvatar = (props: any) => {
                 setLoading(false);
                 setImageUrl(url);
                 if (props.onChange) {
-                    props.onChange(url);
+                    props.onChange(info.file.originFileObj);
                 }
             });
         }
