@@ -16,10 +16,11 @@ export default ({ avatar, style, size }: Props) => {
       size={size}
       src={
         <img
-          src={avatar ? getHostByNet(network) + avatar : defaultAvatar}
+          src={avatar ? avatar.indexOf('http') > -1 ? avatar : getHostByNet(network) + avatar : defaultAvatar
+          }
           alt="avatar"
         />
       }
-    ></Avatar>
+    ></Avatar >
   );
 };

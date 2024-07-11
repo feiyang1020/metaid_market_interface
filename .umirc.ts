@@ -4,6 +4,7 @@ export default defineConfig({
     { path: "/", component: "index", title: "" },
     { path: "/market", component: "index" },
     { path: "/inscribe", component: "inscribe" },
+    { path: "/launch", component: "launch" },
     { path: "/sale", component: "sale" },
     { path: "/order", component: "detail" },
     { path: "/history", component: "history" },
