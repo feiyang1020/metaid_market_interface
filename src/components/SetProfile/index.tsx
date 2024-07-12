@@ -80,6 +80,12 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
         }
         setSubmiting(false)
     }
+
+    useEffect(() => {
+        if (userName) {
+            form.setFieldValue('name', userName)
+        }
+    }, [userName])
     return <>
 
         <Popup
