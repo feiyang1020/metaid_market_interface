@@ -26,50 +26,77 @@
       }
     }
   }
-  .premine{
-    display: inline-flex ;
+  .idCoinDeploy {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+    .name {
+      max-width: 150px;
+      font-size: 14px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .metaid {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+  .progressAndMint {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    .progress{
+      .ant-progress-bg{
+        width: 88px !important;
+      }
+    }
+  }
+  .premine {
+    display: inline-flex;
     flex-wrap: nowrap;
     background: #232719;
     border-radius: 4px;
-    color: #D4F66B;
+    color: #d4f66b;
     font-size: 16px;
     text-align: center;
-    padding: 4px 8px ;
+    padding: 4px 8px;
     white-space: nowrap;
   }
-  .condition{
+  .condition {
     display: flex;
     flex-direction: column;
-    gap:4px;
-    .lvlCount{
+    gap: 4px;
+    .lvlCount {
       display: flex;
       align-items: center;
-      gap:7px;
+      gap: 7px;
     }
   }
   .progress {
-   
     font-size: 14px;
     .ant-progress-bg {
       height: 4px !important;
     }
   }
-  .deployer{
-    .deployerInfo{
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        .deployerName{
-          max-width: 150px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
+  .deployer {
+    .deployerInfo {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      .deployerName {
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
-    .MetaId{
-        margin-top: 8px;
-        font-size: 10px;
-        color: rgba(255, 255, 255, 0.6);
+    .MetaId {
+      margin-top: 8px;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
     }
   }
 }

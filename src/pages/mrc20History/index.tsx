@@ -7,8 +7,10 @@ import Deploy from "./components/Deploy";
 import Mint from "./components/Mint";
 import Transfer from "./components/Transfer";
 import { useSearchParams } from "umi";
-type Tab = "Deploy" | "Mint" | "Transfer";
-const items = ["Deploy", 'Mint',];
+import DeployIdCoin from "./components/DeployIdCoin";
+import MintIDCoins from "./components/MintIDCoins";
+type Tab = "Deploy" | "Mint" | "ID-Coins Deploy" | 'ID-Coins Mint';
+const items = ["Deploy", 'Mint', 'ID-Coins Deploy', 'ID-Coins Mint'];
 export default () => {
     const [query] = useSearchParams();
     const _tab = query.get("tab");
@@ -47,7 +49,9 @@ export default () => {
             <div>
                 {tab === 'Deploy' && <Deploy />}
                 {tab === 'Mint' && <Mint />}
-                {tab === 'Transfer' && <Transfer />}
+                {tab === 'ID-Coins Deploy' && <DeployIdCoin />}
+                {tab === 'ID-Coins Mint' && <MintIDCoins />}
+
             </div>
 
         </div>

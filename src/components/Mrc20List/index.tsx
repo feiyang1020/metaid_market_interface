@@ -3,8 +3,14 @@ import AllList from "./AllList";
 
 import "./index.less";
 import Minting from "./Minting";
+import IdCoins from "./IdCoins";
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
+    {
+        key: '0',
+        label: 'ID Coins',
+        children: <IdCoins />,
+    },
     {
         key: '1',
         label: 'Minted',
@@ -33,5 +39,5 @@ export default () => {
                 }
             },
         }}
-    ><Tabs tabBarStyle={{ paddingLeft: screens.lg ? 20 : 20 }} className="mrc20ListWrap" defaultActiveKey="1" items={items} /></ConfigProvider>
+    ><Tabs tabBarStyle={{ paddingLeft: screens.lg ? 20 : 20 }} className="mrc20ListWrap" defaultActiveKey="0" items={items} /></ConfigProvider>
 }

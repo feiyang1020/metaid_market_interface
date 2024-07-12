@@ -64,9 +64,9 @@ declare namespace API {
     code: number;
   }
   type Tx = {
-    address: string
-    value: number
-  }
+    address: string;
+    value: number;
+  };
   type UTXO = {
     txId: string;
     vout: number;
@@ -167,7 +167,6 @@ declare namespace API {
     totalFee: number;
   };
 
-
   type MintMRC20PreRes = {
     orderId: string;
     revealAddress: string;
@@ -257,8 +256,8 @@ declare namespace API {
   };
 
   type MRC20Info = {
-    premineCount:string;
-    mintCount:string;
+    premineCount: string;
+    mintCount: string;
     amtPerMint: string;
     blockHeight: string;
     change24h: string;
@@ -280,9 +279,9 @@ declare namespace API {
     price: string;
     priceUsd: string;
     pinCheck: {
-      count:string;
-      lvl:string;
-      path:string;
+      count: string;
+      lvl: string;
+      path: string;
     };
     remaining: string;
     supply: string;
@@ -383,5 +382,83 @@ declare namespace API {
     totalMinted: string;
     txId: string;
     usedPins: string[];
+  };
+  type DeployIdCoinPreReq = {
+    networkFeeRate: number;
+    tick: string;
+    tokenName: string;
+    description: string;
+    issuerMetaId: string;
+    issuerAddress: string;
+    issuerSign: string; //issuerSign: 对tick签名
+    message: string;
+    followersNum: number;
+    amountPerMint: number;
+    liquidityPerMint: number;
+  };
+  type DeployIdCoinPreRes = {
+    orderId: "38f9a0384da868c85b6dad4a80e84d366d0fe2fb0a10790ca404e8cb1f5df5ec";
+    totalFee: 88000;
+    minerFee: 88000;
+    receiveAddress: "tb1pnp2hfgkef2yymsp4f4sqn5qgwqaws23ygjl7jk8apzpla63qy7mqhs8p37";
+    serviceFee: 0;
+  };
+
+  type MintIdCoinPreRes = {
+    orderId: string;
+    totalFee: number;
+    revealInscribeFee: number;
+    revealMintFee: number;
+    revealInscribeAddress: string;
+    revealMintAddress: string;
+    serviceFee: number;
+  };
+
+  type IdCoin = {
+    tick: string;
+    tokenName: string;
+    decimals: "8";
+    amtPerMint: "21000000";
+    followersLimit: "1000";
+    mintCount: "1000";
+    liquidityPerMint: 1200;
+    premineCount: string;
+    totalMinted: "0";
+    blockHeight: string;
+    metaData: string;
+    type: "b4b2e279f0322924076204b325369dbe207121d3b342446b81c216490ded6ae0i0";
+    qual: {
+      count: "1";
+      creator: string;
+      lvl: string;
+      path: string;
+    };
+    pinCheck: {
+      count: "1";
+      creator: string;
+      lvl: string;
+      path: string;
+    };
+    payCheck: {
+      payAmount: "1200";
+      payTo: string;
+    };
+    mrc20Id: "b4b2e279f0322924076204b325369dbe207121d3b342446b81c216490ded6ae0i0";
+    pinNumber: 1238;
+    holders: 0;
+    deployerMetaId: string;
+    deployerAddress: string;
+    deployerUserInfo: {
+      name: string;
+      avatar: string;
+    };
+    deployTime: number;
+    price: "0.00";
+    priceUsd: string;
+    pool: 0;
+    totalSupply: "21000000000";
+    supply: string;
+    mintable: true;
+    remaining: "21000000000";
   };
 }

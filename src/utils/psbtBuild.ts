@@ -36,7 +36,9 @@ function selectUTXOs(utxos: API.UTXO[], targetAmount: Decimal) {
   }
 
   if (totalAmount.lt(targetAmount)) {
-    throw new Error("No available UTXOs. Please wait for existing transactions to be confirmed. ");
+    throw new Error(
+      "No available UTXOs. Please wait for existing transactions to be confirmed. "
+    );
   }
 
   return selectedUtxos;
@@ -129,7 +131,8 @@ export async function buildTx<T>(
     needChange: boolean,
     signPsbt?: boolean
   ) => Promise<Psbt>,
-  extract: boolean = false
+  extract: boolean = false,
+  signPsbt: boolean = true
 ): Promise<{
   psbt: Psbt;
   fee: string;
@@ -175,7 +178,7 @@ export async function buildTx<T>(
     selectedUTXOs,
     total.minus(amount.add(estimatedFee)),
     false,
-    true
+    signPsbt
   );
   console.log(
     estimatedFee,
@@ -194,7 +197,7 @@ export async function buildTx<T>(
       address,
       value: utxo.satoshis,
     })),
-    txOutputs: psbt.txOutputs.map((out,index) => ({
+    txOutputs: psbt.txOutputs.map((out, index) => ({
       address: out.address || "",
       value: out.value,
       vout: index,
@@ -207,11 +210,13 @@ export async function createPsbtInput({
   addressType,
   publicKey,
   script,
+  network,
 }: {
   utxo: API.UTXO;
   publicKey: Buffer;
   script: Buffer;
   addressType: string;
+  network?: API.Network;
 }) {
   const payInput: any = {
     hash: utxo.txId,
@@ -232,7 +237,7 @@ export async function createPsbtInput({
   if (["P2PKH"].includes(addressType)) {
     const mempoolReturn = mempoolJS({
       hostname: "mempool.space",
-      network: "testnet",
+      network: network === "mainnet" ? "main" : "testnet",
     });
     const rawTx = await mempoolReturn.bitcoin.transactions.getTxHex({
       txid: utxo.txId,
@@ -345,7 +350,7 @@ export const addUtxoSafe = async (
   address: string,
   utxos: { txId: string; vout: number }[]
 ) => {
-  console.log(utxos, "addUtxoSafe")
+  console.log(utxos, "addUtxoSafe");
   for (let i = 0; i < utxos.length; i++) {
     try {
       const { txId, vout } = utxos[i];
@@ -353,9 +358,13 @@ export const addUtxoSafe = async (
         address,
         unspentOutput: `${txId}:${vout}`,
       });
-      console.log(ret, "addUtxoSafe")
+      console.log(ret, "addUtxoSafe");
     } catch (err) {
       console.log(err);
     }
   }
+};
+
+export const getNetworks = (network: API.Network) => {
+  return network === "mainnet" ? networks.bitcoin : networks.testnet;
 };

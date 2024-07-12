@@ -4,7 +4,7 @@ const { useBreakpoint } = Grid;
 import { useModel, useSearchParams, history } from "umi";
 import "./index.less";
 import SeleceFeeRateItem from "./SeleceFeeRateItem";
-import { broadcastBTCTx, broadcastTx, deployCommit, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
+import { broadcastBTCTx, broadcastTx, deployCommit, getIdCoinInfo, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
 import { Psbt, Transaction, networks, address as addressLib } from "bitcoinjs-lib";
@@ -22,6 +22,8 @@ import NumberFormat from "@/components/NumberFormat";
 import MRC20Icon from "@/components/MRC20Icon";
 import { addUtxoSafe, getUtxos } from "@/utils/psbtBuild";
 import SelectPins from "./SelectPins";
+import { buildMintIdCointPsbt } from "@/utils/idcoin";
+import IdCoinCard from "./IdCoinCard";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -79,6 +81,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const [mintInfoLoading, setMintInfoLoading] = useState(false);
     const [mintInfoStatus, setMintInfoStatus] = useState('');
     const [mintMrc20Info, setMintMrc20Info] = useState<API.MRC20TickInfo>();
+    const [IdCoinInfo, setIdCoinInfo] = useState<API.IdCoin>();
     const [shovel, setShowel] = useState<API.MRC20Shovel[]>();
     const [list, setList] = useState<API.UserMrc20Asset[]>([]);
 
@@ -143,6 +146,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         const fetchMrc20Info = async () => {
             if (!mintTokenID) return;
             setShowel([])
+            setIdCoinInfo(undefined)
             setMintInfoLoading(true)
             setMintInfoStatus('validating')
             const params = {};
@@ -152,16 +156,27 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 params.tick = mintTokenID.toUpperCase()
             }
             const { code, message, data } = await getMrc20Info(network, params);
-            let _shovels: API.MRC20Shovel[] = []
-            if (btcAddress && data && data.pinCheck && data.pinCheck.count) {
-                const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: data.mrc20Id, address: btcAddress, cursor: 0, size: 100 });
-                if (code === 0 && ret && ret.list) {
-                    _shovels = ret.list
+            let _shovels: API.MRC20Shovel[] = [];
+            let _idCoin: API.IdCoin | undefined = undefined;
+            if (data && data.mrc20Id) {
+                const idCoinRet = await getIdCoinInfo(network, { tickId: data.mrc20Id });
+                if (idCoinRet.code === 0 && idCoinRet.data) {
+                    _idCoin = idCoinRet.data
                 }
             }
+            if (!_idCoin) {
+                if (btcAddress && data && data.pinCheck && data.pinCheck.count) {
+                    const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: data.mrc20Id, address: btcAddress, cursor: 0, size: 100 });
+                    if (code === 0 && ret && ret.list) {
+                        _shovels = ret.list
+                    }
+                }
+            }
+
             if (didCancel) return;
             setMintInfoLoading(false)
             setShowel(_shovels)
+            setIdCoinInfo(_idCoin)
             if (data && data.mrc20Id) {
                 setMintMrc20Info(data);
                 setMintInfoStatus('success')
@@ -292,6 +307,96 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             ),
         });
     }
+    const mintIdCoin = async () => {
+        if (!connected || !btcAddress || !btcConnector) return;
+
+        const pass = await checkWallet();
+        if (!pass) throw new Error("Account change");
+        if (!IdCoinInfo) return;
+
+        const { feeRate, } = form.getFieldsValue();
+        const prePayload = {
+            networkFeeRate: feeRate,
+            tickId: IdCoinInfo.mrc20Id,
+            outAddress: btcAddress,
+            outValue: 546,
+        }
+        const { code, message, data } = await mintIdCoinPre(network, prePayload, { headers: { ...authParams } })
+        if (code !== 0) throw new Error(message);
+        const { rawTx } = await buildMintIdCointPsbt(
+            data,
+            feeRate,
+            btcAddress,
+            network
+        )
+        const commitRes = await mintIdCoinCommit(network, {
+            orderId: data.orderId,
+            commitTxOutInscribeIndex: 0,
+            commitTxOutMintIndex: 1,
+            commitTxRaw: rawTx,
+        }, { headers: authParams })
+        console.log(commitRes)
+        if (commitRes.code !== 0) throw new Error(commitRes.message)
+        await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 2 }])
+        setSuccessProp({
+            show: true,
+            onClose: () => {
+                setSuccessProp(DefaultSuccessProps);
+                form.resetFields();
+                form.setFieldValue('type', 'mint')
+            },
+            onDown: () => {
+                setSuccessProp(DefaultSuccessProps);
+                form.resetFields();
+                history.push('/mrc20History?tab=ID-Coins Mint')
+
+            },
+            title: "Mint",
+            tip: "Successful",
+            okText: 'OK',
+            children: (
+                <div className="inscribeSuccess">
+                    <div className="res">
+                        {/* {
+                            ret.data.commitCost && <div className="item">
+                                <div className="label">Transaction Cost</div>
+                                <div className="value">
+                                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                                </div>
+                            </div>
+                        } */}
+
+                        <div className="item">
+                            <div className="label">TxId </div>
+                            <div className="value">
+                                <Tooltip title={commitRes.data.revealMintTxId}>
+                                    <a
+                                        style={{ color: "#fff", textDecoration: "underline" }}
+                                        target="_blank"
+                                        href={
+                                            network === "testnet"
+                                                ? `https://mempool.space/testnet/tx/${commitRes.data.revealMintTxId}`
+                                                : `https://mempool.space/tx/${commitRes.data.revealMintTxId}`
+                                        }
+                                    >
+                                        <Typography.Text copyable={{ text: commitRes.data.revealMintTxId }}>
+                                            {commitRes.data.revealMintTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                        </Typography.Text>
+                                    </a>
+                                </Tooltip>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="tips">
+                        <InfoCircleOutlined />
+                        <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
+                    </div>
+                </div>
+            ),
+        });
+
+
+    }
 
     const success = (title: string, ret: any) => {
         setSuccessProp({
@@ -399,93 +504,99 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
             }
             if (type === 'mint') {
-                if (!mintMrc20Info) return;
-                if (Number(mintMrc20Info.pinCheck.count) && pins.length < Number(mintMrc20Info.pinCheck.count)) {
-                    throw new Error(`Select  ${mintMrc20Info.pinCheck.count} PINs`)
-                }
-                console.log(pins, 'pins')
-                const mintPins = pins.map((pinId: string) => {
-                    const pin = shovel?.find(item => item.id === pinId);
-                    if (!pin) return;
-                    return {
-                        pinId: pin.id,
-                        pinUtxoTxId: pin.location.split(":")[0],
-                        pinUtxoIndex: Number(pin.location.split(":")[1]),
-                        pinUtxoOutValue: pin.outputValue,
-                        address: btcAddress,
-                        pkScript: getPkScriprt(btcAddress, network).toString('hex'),
+                if (IdCoinInfo) {
+                    await mintIdCoin()
+
+                } else {
+                    if (!mintMrc20Info) return;
+                    if (Number(mintMrc20Info.pinCheck.count) && pins.length < Number(mintMrc20Info.pinCheck.count)) {
+                        throw new Error(`Select  ${mintMrc20Info.pinCheck.count} PINs`)
                     }
-                })
+                    console.log(pins, 'pins')
+                    const mintPins = pins.map((pinId: string) => {
+                        const pin = shovel?.find(item => item.id === pinId);
+                        if (!pin) return;
+                        return {
+                            pinId: pin.id,
+                            pinUtxoTxId: pin.location.split(":")[0],
+                            pinUtxoIndex: Number(pin.location.split(":")[1]),
+                            pinUtxoOutValue: pin.outputValue,
+                            address: btcAddress,
+                            pkScript: getPkScriprt(btcAddress, network).toString('hex'),
+                        }
+                    })
 
-                const { code, message, data, } = await mintMrc20Pre(network, {
-                    mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId: mintMrc20Info.mrc20Id,
-                }, {
-                    headers: {
-                        ...authParams,
-                    },
-                });
-                if (code !== 0) throw new Error(message);
+                    const { code, message, data, } = await mintMrc20Pre(network, {
+                        mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId: mintMrc20Info.mrc20Id,
+                    }, {
+                        headers: {
+                            ...authParams,
+                        },
+                    });
+                    if (code !== 0) throw new Error(message);
 
-                const { rawTx, revealPrePsbtRaw } = await commitMintMRC20PSBT(data, feeRate, btcAddress, network);
-                const ret = await mintMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
-                if (ret.code !== 0) throw new Error(ret.message);
-                await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
-                setSuccessProp({
-                    show: true,
-                    onClose: () => {
-                        setSuccessProp(DefaultSuccessProps);
-                        form.resetFields();
-                        form.setFieldValue('type', 'mint')
-                    },
-                    onDown: () => {
-                        setSuccessProp(DefaultSuccessProps);
-                        form.resetFields();
-                        history.push('/mrc20History?tab=Mint')
+                    const { rawTx, revealPrePsbtRaw } = await commitMintMRC20PSBT(data, feeRate, btcAddress, network);
+                    const ret = await mintMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
+                    if (ret.code !== 0) throw new Error(ret.message);
+                    await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
+                    setSuccessProp({
+                        show: true,
+                        onClose: () => {
+                            setSuccessProp(DefaultSuccessProps);
+                            form.resetFields();
+                            form.setFieldValue('type', 'mint')
+                        },
+                        onDown: () => {
+                            setSuccessProp(DefaultSuccessProps);
+                            form.resetFields();
+                            history.push('/mrc20History?tab=Mint')
 
-                    },
-                    title: "Mint",
-                    tip: "Successful",
-                    okText: 'OK',
-                    children: (
-                        <div className="inscribeSuccess">
-                            <div className="res">
-                                {/* {
-                                    ret.data.commitCost && <div className="item">
-                                        <div className="label">Transaction Cost</div>
+                        },
+                        title: "Mint",
+                        tip: "Successful",
+                        okText: 'OK',
+                        children: (
+                            <div className="inscribeSuccess">
+                                <div className="res">
+                                    {/* {
+                                        ret.data.commitCost && <div className="item">
+                                            <div className="label">Transaction Cost</div>
+                                            <div className="value">
+                                                <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                                            </div>
+                                        </div>
+                                    } */}
+
+                                    <div className="item">
+                                        <div className="label">TxId </div>
                                         <div className="value">
-                                            <img src={btcIcon}></img> {formatSat(ret.commitCost)}
+                                            <Tooltip title={ret.data.revealTxId}>
+                                                <a
+                                                    style={{ color: "#fff", textDecoration: "underline" }}
+                                                    target="_blank"
+                                                    href={
+                                                        network === "testnet"
+                                                            ? `https://mempool.space/testnet/tx/${ret.data.revealTxId}`
+                                                            : `https://mempool.space/tx/${ret.data.revealTxId}`
+                                                    }
+                                                >
+                                                    <Typography.Text copyable={{ text: ret.data.revealTxId }}>
+                                                        {ret.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                                    </Typography.Text>
+                                                </a>
+                                            </Tooltip>
                                         </div>
                                     </div>
-                                } */}
-
-                                <div className="item">
-                                    <div className="label">TxId </div>
-                                    <div className="value">
-                                        <Tooltip title={ret.data.revealTxId}>
-                                            <a
-                                                style={{ color: "#fff", textDecoration: "underline" }}
-                                                target="_blank"
-                                                href={
-                                                    network === "testnet"
-                                                        ? `https://mempool.space/testnet/tx/${ret.data.revealTxId}`
-                                                        : `https://mempool.space/tx/${ret.data.revealTxId}`
-                                                }
-                                            >
-                                                <Typography.Text copyable={{ text: ret.data.revealTxId }}>
-                                                    {ret.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
-                                                </Typography.Text>
-                                            </a>
-                                        </Tooltip>
-                                    </div>
+                                </div>
+                                <div className="tips">
+                                    <InfoCircleOutlined />
+                                    <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
                                 </div>
                             </div>
-                            <div className="tips">
-                                <InfoCircleOutlined />
-                                <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
-                            </div>
-                        </div>
-                    ),
-                });
+                        ),
+                    });
+                }
+
             }
             if (type === 'transfer') {
                 const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(transferTickerId), cursor: 0, size: 100 }, {
@@ -923,9 +1034,12 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     </Form.Item>
                                     <Row gutter={[0, 0]}>
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading}>
+                                            {
+                                                IdCoinInfo && <div style={{ color: 'var(--primary)', marginBottom: 20 }}><IdCoinCard mintMrc20Info={IdCoinInfo} /></div>
+                                            }
 
                                             {
-                                                mintMrc20Info && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><MRC20DetailCard mintMrc20Info={mintMrc20Info} /></>
+                                                (!IdCoinInfo && mintMrc20Info) && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><MRC20DetailCard mintMrc20Info={mintMrc20Info} /></>
                                             }
                                         </Spin>
                                         </Col>

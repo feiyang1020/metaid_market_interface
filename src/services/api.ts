@@ -277,7 +277,7 @@ export async function getMrc20Info(
   network: API.Network,
   params: {
     tickId?: string;
-    tick?:string
+    tick?: string;
   },
   options?: { [key: string]: any }
 ) {
@@ -576,6 +576,27 @@ export async function getMrc20InscribeOrders(
   );
 }
 
+export async function getIdCoinInscribeOrders(
+  network: API.Network,
+  params: {
+    opOrderType: string; //deploy, mint, transfer
+    address: string;
+    tickId?: string;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.Mrc20InscribeOrder>>(
+    `${getHost(network)}/api/v1/id-coins/inscribe/orders`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
 export const getMetaletUtxos = async (
   network: API.Network,
   params: {
@@ -594,3 +615,125 @@ export const getMetaletUtxos = async (
     }
   );
 };
+
+export async function deployIdCoinPre(
+  network: API.Network,
+  params: API.DeployIdCoinPreReq,
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.DeployIdCoinPreRes>>(
+    `${getHost(network)}/api/v1/id-coins/deploy/pre`,
+    {
+      method: "POST",
+      data: params,
+      ...(options || {}),
+    }
+  );
+}
+
+//deployIdCoinCommit
+
+export async function deployIdCoinCommit(
+  network: API.Network,
+  params: {
+    orderId: string;
+    commitTxRaw: string;
+    commitTxOutIndex: number; //commit交易中RevealAddress的output索引
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: string;
+      commitTxId: string;
+      revealTxId: string;
+      tickId: string;
+      pinId: string;
+      txId: string;
+    }>
+  >(`${getHost(network)}/api/v1/id-coins/deploy/commit`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}
+
+export async function getIdCoinList(
+  network: API.Network,
+  params: {
+    cursor: number;
+    size: number;
+    address?: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.IdCoin>>(
+    `${getHost(network)}/api/v1/id-coins/coins-list`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function mintIdCoinPre(
+  network: API.Network,
+  params: {
+    networkFeeRate: number;
+    tickId: string;
+    outAddress: string;
+    outValue: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.MintIdCoinPreRes>>(
+    `${getHost(network)}/api/v1/id-coins/mint/pre`,
+    {
+      method: "POST",
+      data: params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function mintIdCoinCommit(
+  network: API.Network,
+  params: {
+    orderId: string;
+    commitTxRaw: string;
+    commitTxOutInscribeIndex: number; //commit交易中RevealAddress的Inscribe-output索引
+    commitTxOutMintIndex: number; //commit交易中RevealAddress的Mint-output索引
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: string;
+      commitTxId: string;
+      revealInscribeTxId: string;
+      revealMintTxId: string;
+    }>
+  >(`${getHost(network)}/api/v1/id-coins/mint/commit`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}
+
+export async function getIdCoinInfo(
+  network: API.Network,
+  params: {
+    tickId: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.IdCoin>>(
+    `${getHost(network)}/api/v1/id-coins/coins-info`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}

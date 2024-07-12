@@ -1,29 +1,133 @@
-import { Col, Form, Input, Row, Grid, Button, InputNumber, message } from 'antd';
+import { Col, Form, Input, Row, Grid, Button, InputNumber, message, Tooltip, Typography } from 'antd';
 import './index.less'
 import { useModel, useSearchParams, history } from "umi";
 import MetaIdAvatar from '@/components/MetaIdAvatar';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import NumberFormat from '@/components/NumberFormat';
 import SetProfile from '@/components/SetProfile';
+import SeleceFeeRateItem from '../inscribe/components/SeleceFeeRateItem';
+import { deployIdCoinCommit, deployIdCoinPre } from '@/services/api';
+import { buildDeployIdCointPsbt } from '@/utils/idcoin';
+import { testnet } from 'bitcoinjs-lib/src/networks';
+import { addUtxoSafe } from '@/utils/psbtBuild';
+import SuccessModal, { DefaultSuccessProps, SuccessProps } from '@/components/SuccessModal';
+import { InfoCircleOutlined } from '@ant-design/icons';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
+    const _followersNum = Form.useWatch('followersNum', form);
+    const _amountPerMint = Form.useWatch('amountPerMint', form);
+    const [successProp, setSuccessProp] =
+        useState<SuccessProps>(DefaultSuccessProps);
+    const totalSupply = useMemo(() => {
+        if (_amountPerMint && _followersNum) {
+            return BigInt(Math.round(_amountPerMint)) * BigInt(Math.round(_followersNum))
+        } else {
+            return BigInt(0)
+        }
+    }, [_followersNum, _amountPerMint])
     const { sm } = useBreakpoint();
     const [visible, setVisible] = useState(false);
     const { authParams, connected, connect, feeRates, network, disConnect, btcConnector, btcAddress, avatar, userName, metaid } =
         useModel("wallet");
     const [submiting, setSubmiting] = useState<boolean>(false);
     const launch = async () => {
-        if (!connected) return;
+        if (!connected || !metaid || !userName || !btcAddress) return;
         if (!userName) {
             setVisible(true);
             return;
         }
-        message.info({ content: "coming soon", icon: "🚀", });
-        return
+
+
         setSubmiting(true);
-        const ret = await form.validateFields();
-        console.log(ret);
+        await form.validateFields();
+        try {
+            const { feeRate, tick, description, followersNum, amountPerMint, liquidityPerMint } = form.getFieldsValue();
+            const issuerSign: any = await window.metaidwallet.btc.signMessage(tick)
+            if (issuerSign.status) throw new Error(issuerSign.status)
+            const payload: API.DeployIdCoinPreReq = {
+                networkFeeRate: feeRate,
+                tick,
+                tokenName: tick,
+                description,
+                issuerMetaId: metaid,
+                issuerAddress: btcAddress,
+                issuerSign: issuerSign,
+                message: description,
+                followersNum,
+                amountPerMint,
+                liquidityPerMint
+            }
+            const { code, data, message: msg } = await deployIdCoinPre(network, payload, { headers: authParams });
+            if (code !== 0) throw new Error(msg);
+            const { rawTx } = await buildDeployIdCointPsbt(
+                data,
+                feeRate,
+                btcAddress,
+                network
+            )
+            const commitRes = await deployIdCoinCommit(network, {
+                orderId: data.orderId,
+                commitTxOutIndex: 0,
+                commitTxRaw: rawTx,
+            }, { headers: authParams })
+            console.log(commitRes)
+            if (commitRes.code !== 0) throw new Error(commitRes.message)
+            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 1 }])
+            // message.success('Successfully launched')
+            setSuccessProp({
+                show: true,
+                onClose: () => {
+                    setSuccessProp(DefaultSuccessProps);
+                    form.resetFields();
+                },
+                onDown: () => {
+                    setSuccessProp(DefaultSuccessProps);
+                    form.resetFields();
+                    history.push('/mrc20History?tab=ID-Coins Deploy')
+
+                },
+                title: "Deploy",
+                tip: "Successful",
+                okText: 'OK',
+                children: (
+                    <div className="inscribeSuccess">
+                        <div className="res">
+
+
+                            <div className="item">
+                                <div className="label">TxId </div>
+                                <div className="value">
+                                    <Tooltip title={commitRes.data.revealTxId}>
+                                        <a
+                                            style={{ color: "#fff", textDecoration: "underline" }}
+                                            target="_blank"
+                                            href={
+                                                network === "testnet"
+                                                    ? `https://mempool.space/testnet/tx/${commitRes.data.revealTxId}`
+                                                    : `https://mempool.space/tx/${commitRes.data.revealTxId}`
+                                            }
+                                        >
+                                            <Typography.Text copyable={{ text: commitRes.data.revealTxId }}>
+                                                {commitRes.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                            </Typography.Text>
+
+                                        </a>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="tips">
+                            <InfoCircleOutlined />
+                            <span>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</span>
+                        </div>
+                    </div>
+                ),
+            });
+
+        } catch (err) {
+            message.error(err.message)
+        }
         setSubmiting(false);
     }
     return <div className="launchPage">
@@ -41,19 +145,22 @@ export default () => {
             variant="borderless"
             className='formWrap'
             initialValues={{
-                amountPerMint: 21000000,
-                liqPerMint: 1200,
+                // tick: 'Ocean',
+                // followersNum: 1000,
+                // amountPerMint: 21000000,
+                // liquidityPerMint: 1200,
+                // description: "come on!"
             }}
         >
 
             <Row gutter={[24, 0]}>
                 <Col md={12} xs={24} >
-                    <Form.Item label="Ticker" name='ticker' rules={[{ required: true }]} className='formItem'>
+                    <Form.Item label="Ticker" name='tick' rules={[{ required: true }]} className='formItem'>
                         <Input placeholder="input ticker" value={'21,000,000'} />
                     </Form.Item>
                 </Col>
                 <Col md={12} xs={24} >
-                    <Form.Item label="Followers Num" name='followers' rules={[{ required: true }]} className='formItem'>
+                    <Form.Item label="Followers Num" name='followersNum' rules={[{ required: true }]} className='formItem'>
                         <InputNumber placeholder="Followers Num" style={{ width: '100%' }} />
                     </Form.Item>
                 </Col>
@@ -62,18 +169,23 @@ export default () => {
                         <InputNumber placeholder="Amount Per Mint" style={{ width: '100%' }} />
 
                     </Form.Item>
-                    <div className='totalSupply'> Total Supply: <NumberFormat value={'0'} isBig decimal={0} /></div>
+                    <div className='totalSupply'> Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} /></div>
 
                 </Col>
                 <Col md={12} xs={24} >
-                    <Form.Item label="Liquidity Per Mint" name='liqPerMint' rules={[{ required: true }]} className='formItem'>
-                        <InputNumber placeholder="Liquidity Per Mint" formatter={value => `${value} stas`} style={{ width: '100%' }} />
+                    <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }]} className='formItem'>
+                        <InputNumber placeholder="Liquidity Per Mint" style={{ width: '100%' }} />
                     </Form.Item>
                     <div className='totalSupply'> Initial Price   <NumberFormat value={'1200'} isBig decimal={0} suffix=' stas' /></div>
                 </Col>
                 <Col md={24} xs={24} >
-                    <Form.Item label="Message" name='message' className='formItem' >
+                    <Form.Item label="Message" name='description' className='formItem' >
                         <Input placeholder="Leave your message to your followers." />
+                    </Form.Item>
+                </Col>
+                <Col md={24} xs={24} >
+                    <Form.Item label="FeeRate" required name='feeRate' className="formItem">
+                        <SeleceFeeRateItem feeRates={feeRates} />
                     </Form.Item>
                 </Col>
                 <Col offset={sm ? 6 : 0} span={sm ? 12 : 24}>
@@ -107,5 +219,6 @@ export default () => {
 
         </Form>
         <SetProfile show={visible} onClose={() => { setVisible(false) }} />
+        <SuccessModal {...successProp}></SuccessModal>
     </div>
 }

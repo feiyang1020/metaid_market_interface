@@ -27,7 +27,7 @@ const SeleceFeeRateItem = ({
   }, [feeRateTab, customRate, feeRates])
   return (
     <div className="FeeRateWrap">
-      <Row gutter={[12, 12]}>
+      <Row gutter={[12, 12]} className="options">
         {feeRates.map((item) => (
           <Col
             span={8}
