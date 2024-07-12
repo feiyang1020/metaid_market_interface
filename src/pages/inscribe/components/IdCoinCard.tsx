@@ -37,6 +37,11 @@ export default ({ mintMrc20Info }: Props) => {
                 //         </div>
                 //     </div>
                 // },
+                {
+                    key: 'Ticker',
+                    label: 'Decimals',
+                    children: <>{mintMrc20Info.tick}</>
+                },
 
                 {
                     key: 'Follow',
@@ -46,7 +51,7 @@ export default ({ mintMrc20Info }: Props) => {
                 {
                     key: 'amtPerMint',
                     label: 'Amount Per Mint',
-                    children: <NumberFormat value={mintMrc20Info.amtPerMint}/>
+                    children: <NumberFormat value={mintMrc20Info.amtPerMint} />
                 },
                 {
                     key: 'Foliqllow',
