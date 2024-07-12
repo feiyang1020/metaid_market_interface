@@ -168,7 +168,6 @@ export default ({ show = false, onClose, editVisible = false,setEditVisible }: S
                         onClick={() => {
                             setEditVisible&&setEditVisible();
                         }}
-
                         block
                     >
                         Go to Setting
