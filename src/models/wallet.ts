@@ -35,6 +35,7 @@ export default () => {
   const [avatar, setAvatar] = useState<string>("");
   const [userName, setUserName] = useState<string>();
   const [authParams, setAuthParams] = useState<AuthParams>();
+  const [initializing, setInitializing] = useState<boolean>(true);
 
   const [feeRates, setFeeRates] = useState<
     {
@@ -89,6 +90,7 @@ export default () => {
       pub: publicKey,
     };
     sessionStorage.setItem("walletParams", JSON.stringify(_walletParams));
+    setInitializing(true);
     setBtcConnector(_btcConnector);
     setConnected(true);
     setBTCAddress(_btcConnector.wallet.address);
@@ -104,6 +106,7 @@ export default () => {
     );
     setMetaid(_btcConnector.user.metaid);
     setUserName(_btcConnector.user.name);
+    setInitializing(false);
   };
 
   const disConnect = async () => {
@@ -132,6 +135,7 @@ export default () => {
       const _network = (await window.metaidwallet.getNetwork()).network;
       if (_network !== curNetwork) {
         disConnect();
+        setInitializing(false);
         return;
       }
       setNetwork(_network);
@@ -145,11 +149,13 @@ export default () => {
         }
         if (!_authParams) {
           disConnect();
+          setInitializing(false);
           return;
         }
         const _walletParams = JSON.parse(walletParams);
         if (_authParams && _authParams["X-Public-Key"] !== _walletParams.pub) {
           disConnect();
+          setInitializing(false);
           return;
         }
         const _wallet = MetaletWalletForBtc.restore({
@@ -160,10 +166,12 @@ export default () => {
         const pubKey = await window.metaidwallet.btc.getPublicKey();
         if (btcAddress !== _walletParams.address) {
           disConnect();
+          setInitializing(false);
           return;
         }
         if (pubKey !== _walletParams.pub) {
           disConnect();
+          setInitializing(false);
           return;
         }
         setAuthParams((prev) => {
@@ -202,7 +210,9 @@ export default () => {
         );
         setMetaid(_btcConnector.user.metaid);
         setUserName(_btcConnector.user.name);
+        setInitializing(false);
       }
+      setInitializing(false);
     }
   }, [walletName]);
   useEffect(() => {
@@ -255,5 +265,6 @@ export default () => {
     updateWalletInfo,
     updateFeeRate,
     init,
+    initializing,
   };
 };

@@ -23,8 +23,9 @@ const items = [
     activeIvon: inscribe2,
   },
   {
-    label: "Launch",
+    label: "Launch me",
     key: "/launch",
+    className: 'Launch',
     icon: launch,
     activeIvon: launch,
   },
@@ -40,7 +41,7 @@ export default () => {
       {items.map((item) => (
         <div
           onClick={() => onClick(item.key)}
-          className={`nav ${item.label} ${path === item.key ? "active" : ""}`}
+          className={`nav ${item.className} ${path === item.key ? "active" : ""}`}
           key={item.key}
         >
           <img

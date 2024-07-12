@@ -1,6 +1,6 @@
-import { Button, Form, Input, message, Upload } from "antd";
+import { Avatar, Button, Form, Input, message, Upload } from "antd";
 import Popup from "../ResponPopup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import './index.less'
 import { PlusOutlined } from "@ant-design/icons";
 import UploadAvatar from "./UploadAvatar";
@@ -8,10 +8,14 @@ import { useModel } from "umi";
 import SeleceFeeRateItem from "@/pages/inscribe/components/SeleceFeeRateItem";
 import { getCreatePinFeeByNet } from "@/config";
 import { image2Attach } from "@/utils/utlis";
+import Meta from "antd/es/card/Meta";
+import MetaIdAvatar from "../MetaIdAvatar";
 
 type SetProfileProps = {
-    show: boolean;
+    show?: boolean;
     onClose: () => void;
+    editVisible?: boolean;
+    setEditVisible?: () => void
 }
 const formItemLayout = {
     labelCol: {
@@ -23,10 +27,9 @@ const formItemLayout = {
         sm: { span: 24 },
     },
 };
-export default ({ show, onClose }: SetProfileProps) => {
-    const { btcConnector, init, connect, feeRates, network, disConnect } =
+export default ({ show = false, onClose, editVisible = false,setEditVisible }: SetProfileProps) => {
+    const { btcConnector, init, connect, feeRates, network, disConnect, userName, avatar } =
         useModel("wallet");
-    const [visible, setVisible] = useState(false);
     const [submiting, setSubmiting] = useState<boolean>(false)
     const [form] = Form.useForm();
     const submit = async () => {
@@ -36,13 +39,23 @@ export default ({ show, onClose }: SetProfileProps) => {
 
             setSubmiting(true)
 
-            const { name, avatar, feeRate } = form.getFieldsValue();
+            const { name, avatar: newAvatar, feeRate } = form.getFieldsValue();
             const userData: any = { name };
-            if (avatar) {
-                const [image] = await image2Attach([avatar]);
+            if (newAvatar) {
+                const [image] = await image2Attach([newAvatar]);
                 userData.avatar = Buffer.from(image.data, "hex").toString("base64")
             }
-            const isSuccess = await btcConnector.createUserInfo({
+            // if (userName) {
+            //     const ret = await btcConnector.updateUserInfo({
+            //         userData,
+            //         options: {
+            //             feeRate: Number(feeRate),
+            //             network: network,
+            //             service: getCreatePinFeeByNet(network),
+            //         }
+            //     })
+            // }
+            const ret = await btcConnector.createUserInfo({
                 userData,
                 options: {
                     feeRate: Number(feeRate),
@@ -51,19 +64,27 @@ export default ({ show, onClose }: SetProfileProps) => {
                 }
             })
             await init();
+            if (ret.nameRes && ret.nameRes.status) {
+                throw new Error(ret.nameRes.status)
+            }
+            if (ret.avatarRes && ret.avatarRes.status) {
+                throw new Error(ret.nameRes.status)
+            }
+
+            await init();
             message.success('Success')
             onClose();
         } catch (err: any) {
             message.error(typeof err === 'string' ? err : err.message)
         }
-        setSubmiting(true)
+        setSubmiting(false)
     }
     return <>
 
         <Popup
             title="MetaID Profile"
             modalWidth={452}
-            show={show && visible}
+            show={editVisible}
             onClose={() => {
                 onClose();
             }}
@@ -72,14 +93,15 @@ export default ({ show, onClose }: SetProfileProps) => {
             className="setProfileModal"
         >
             <div className="setProfileWrap">
-
                 <Form
                     {...formItemLayout}
                     variant="filled"
                     layout="vertical"
-                    requiredMark='optional'
+                    // requiredMark='optional'
                     form={form}
-                    initialValues={{}}
+                    initialValues={{
+                        name: userName,
+                    }}
                 >
                     <Form.Item
                         name="name"
@@ -90,9 +112,12 @@ export default ({ show, onClose }: SetProfileProps) => {
                         <Input size='large' />
                     </Form.Item>
 
+                    <Form.Item label={<div className="currentAvatar">Current <div className="tag">AVATAR </div></div>}  >
+                        <MetaIdAvatar size={100} avatar={avatar} />
+                    </Form.Item>
 
 
-                    <Form.Item label="Avatar" name="avatar" >
+                    <Form.Item label={avatar ? "New Avatar" : 'Avatar'} required={avatar ? false : true} name="avatar" >
                         <UploadAvatar />
                     </Form.Item>
                     <Form.Item label="FeeRate" required name="feeRate">
@@ -122,7 +147,7 @@ export default ({ show, onClose }: SetProfileProps) => {
         <Popup
             title="Set up"
             modalWidth={452}
-            show={show && !visible}
+            show={show}
             onClose={() => {
                 onClose();
             }}
@@ -141,7 +166,7 @@ export default ({ show, onClose }: SetProfileProps) => {
                         type="primary"
                         size="large"
                         onClick={() => {
-                            setVisible(true);
+                            setEditVisible&&setEditVisible();
                         }}
 
                         block

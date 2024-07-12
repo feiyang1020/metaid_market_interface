@@ -16,9 +16,11 @@ import {
 import {
   ArrowRightOutlined,
   DownOutlined,
+  EditOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import SetProfile from "@/components/SetProfile";
 
 const _themes = {
   token: {
@@ -63,6 +65,7 @@ export default function Layout() {
     disConnect,
   } = useModel("wallet");
   const { pathname } = useLocation();
+  const [editViseble, setEditVisible] = useState<boolean>(false)
   useEffect(() => {
     if (pathname) {  // 可以排除不需要置顶的页面
       if (document?.documentElement || document?.body) {
@@ -130,6 +133,9 @@ export default function Layout() {
                             </div>
                           )}
                         </div>
+                        <Button size="small" icon={<EditOutlined />} type="link" onClick={() => setEditVisible(true)}>
+
+                        </Button>
                       </div>
                       <div className="links">
                         <div
@@ -198,7 +204,9 @@ export default function Layout() {
         </div>
 
         <div className="footer">MetaID.market@2024 All Rights Reserved</div>
+        <SetProfile show={false} editVisible={editViseble} onClose={() => { setEditVisible(false) }} />
       </div>
+
     </ConfigProvider>
   );
 }

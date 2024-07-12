@@ -1,8 +1,8 @@
-import { Col, Form, Input, Row, Grid, Button, InputNumber, message, Tooltip, Typography } from 'antd';
+import { Col, Form, Input, Row, Grid, Button, InputNumber, message, Tooltip, Typography, Spin } from 'antd';
 import './index.less'
 import { useModel, useSearchParams, history } from "umi";
 import MetaIdAvatar from '@/components/MetaIdAvatar';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import NumberFormat from '@/components/NumberFormat';
 import SetProfile from '@/components/SetProfile';
 import SeleceFeeRateItem from '../inscribe/components/SeleceFeeRateItem';
@@ -11,7 +11,7 @@ import { buildDeployIdCointPsbt } from '@/utils/idcoin';
 import { testnet } from 'bitcoinjs-lib/src/networks';
 import { addUtxoSafe } from '@/utils/psbtBuild';
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from '@/components/SuccessModal';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { EditFilled, InfoCircleOutlined } from '@ant-design/icons';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
@@ -28,12 +28,13 @@ export default () => {
     }, [_followersNum, _amountPerMint])
     const { sm } = useBreakpoint();
     const [visible, setVisible] = useState(false);
-    const { authParams, connected, connect, feeRates, network, disConnect, btcConnector, btcAddress, avatar, userName, metaid } =
+    const [editVisible, setEidtVisible] = useState(false);
+    const { authParams, connected, connect, feeRates, network, initializing, btcConnector, btcAddress, avatar, userName, metaid } =
         useModel("wallet");
     const [submiting, setSubmiting] = useState<boolean>(false);
     const launch = async () => {
-        if (!connected || !metaid || !userName || !btcAddress) return;
-        if (!userName) {
+        if (!connected || !metaid || !btcAddress) return;
+        if (!userName || !avatar) {
             setVisible(true);
             return;
         }
@@ -130,12 +131,32 @@ export default () => {
         }
         setSubmiting(false);
     }
+
+    useEffect(() => {
+        if (!initializing && connected) {
+            if (!userName || !avatar) {
+                setVisible(true)
+            }
+        }
+    }, [connected, userName, avatar, initializing])
     return <div className="launchPage">
-        <div className="user">
-            <MetaIdAvatar avatar={avatar} size={124} />
-            <div className="name">{userName || 'Unnamed'}</div>
-            <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
-        </div>
+        <Spin spinning={initializing}>
+            <div className="user">
+                <div className='userAvatar'>
+                    <MetaIdAvatar avatar={avatar} size={124} />
+                    {
+                        (connected && !initializing) && <div className='mask' onClick={() => { setEidtVisible(true) }}>
+                            <EditFilled />
+                        </div>
+                    }
+
+
+                </div>
+
+                <div className="name">{userName || 'Unnamed'}</div>
+                <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
+            </div>
+        </Spin>
         <Form
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
@@ -218,7 +239,7 @@ export default () => {
             </Row>
 
         </Form>
-        <SetProfile show={visible} onClose={() => { setVisible(false) }} />
+        <SetProfile show={visible} editVisible={editVisible} setEditVisible={() => { setVisible(false); setEidtVisible(true) }} onClose={() => { setVisible(false); setEidtVisible(false) }} />
         <SuccessModal {...successProp}></SuccessModal>
     </div>
 }
