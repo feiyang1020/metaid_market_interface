@@ -27,9 +27,10 @@ const formItemLayout = {
         sm: { span: 24 },
     },
 };
-export default ({ show = false, onClose, editVisible = false,setEditVisible }: SetProfileProps) => {
+export default ({ show = false, onClose, editVisible = false, setEditVisible }: SetProfileProps) => {
     const { btcConnector, init, connect, feeRates, network, disConnect, userName, avatar } =
         useModel("wallet");
+    console.log(avatar, '</Spin>')
     const [submiting, setSubmiting] = useState<boolean>(false)
     const [form] = Form.useForm();
     const submit = async () => {
@@ -111,10 +112,12 @@ export default ({ show = false, onClose, editVisible = false,setEditVisible }: S
                     >
                         <Input size='large' />
                     </Form.Item>
+                    {
+                        avatar && <Form.Item label={<div className="currentAvatar">Current <div className="tag">AVATAR </div></div>}  >
+                            <MetaIdAvatar size={100} avatar={avatar} />
+                        </Form.Item>
+                    }
 
-                    <Form.Item label={<div className="currentAvatar">Current <div className="tag">AVATAR </div></div>}  >
-                        <MetaIdAvatar size={100} avatar={avatar} />
-                    </Form.Item>
 
 
                     <Form.Item label={avatar ? "New Avatar" : 'Avatar'} required={avatar ? false : true} name="avatar" >
@@ -166,7 +169,7 @@ export default ({ show = false, onClose, editVisible = false,setEditVisible }: S
                         type="primary"
                         size="large"
                         onClick={() => {
-                            setEditVisible&&setEditVisible();
+                            setEditVisible && setEditVisible();
                         }}
                         block
                     >
