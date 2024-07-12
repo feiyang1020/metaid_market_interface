@@ -15,11 +15,12 @@ const beforeUpload = (file: FileType) => {
     if (!isJpgOrPng) {
         message.error('You can only upload JPG/PNG file!');
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-        message.error('Image must smaller than 2MB!');
+    const isLt300k = file.size / 1024 / 1024 < 0.3;
+    if (!isLt300k) {
+        message.error("file must smaller than 300k!");
+        return false;
     }
-    return isJpgOrPng && isLt2M;
+    return isJpgOrPng && isLt300k;
 };
 
 const UploadAvatar = (props: any) => {
