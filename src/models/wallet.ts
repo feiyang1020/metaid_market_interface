@@ -212,8 +212,9 @@ export default () => {
         setUserName(_btcConnector.user.name);
         setInitializing(false);
       }
-      setInitializing(false);
+      
     }
+    setInitializing(false);
   }, [walletName]);
   useEffect(() => {
     //
