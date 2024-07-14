@@ -164,14 +164,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     _idCoin = idCoinRet.data
                 }
             }
-
-            if (btcAddress && data && data.pinCheck && data.pinCheck.count) {
-                const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: data.mrc20Id, address: btcAddress, cursor: 0, size: 100 });
-                if (code === 0 && ret && ret.list) {
-                    _shovels = ret.list
+            if (!_idCoin) {
+                if (btcAddress && data && data.pinCheck && data.pinCheck.count) {
+                    const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: data.mrc20Id, address: btcAddress, cursor: 0, size: 100 });
+                    if (code === 0 && ret && ret.list) {
+                        _shovels = ret.list
+                    }
                 }
             }
-
 
             if (didCancel) return;
             setMintInfoLoading(false)
@@ -1044,7 +1044,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         </Spin>
                                         </Col>
                                     </Row>
-                                    {(mintMrc20Info && Number(mintMrc20Info.pinCheck.count) > 0) && <>
+                                    {(!IdCoinInfo && mintMrc20Info && Number(mintMrc20Info.pinCheck.count) > 0) && <>
                                         {(shovel && shovel.length > 0) ?
                                             <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
