@@ -1,7 +1,7 @@
 import { initEccLib, address as addressLib, Psbt } from "bitcoinjs-lib";
 import * as ecc from "@bitcoin-js/tiny-secp256k1-asmjs";
 import { determineAddressInfo } from "./utlis";
-import { buildTx, createPsbtInput, getNetworks } from "./psbtBuild";
+import { buildTx, createPsbtInput, getNetworks, getUtxos } from "./psbtBuild";
 import Decimal from "decimal.js";
 const DUST_SIZE = 546;
 type BaseBuildParams = {
@@ -80,7 +80,7 @@ export const buildDeployIdCointPsbt = async (
 ) => {
   initEccLib(ecc);
   const { totalFee } = order;
-  const utxos = await window.metaidwallet.btc.getUtxos();
+  const utxos = await getUtxos(address, network);
   console.log(utxos, "utxos in buildTicketPsbt");
   const addressType = determineAddressInfo(address).toUpperCase();
   const publicKey = await window.metaidwallet.btc.getPublicKey();
@@ -136,7 +136,7 @@ const _buildMintIdCoinPsbt = async (
     });
     psbt.addInput(psbtInput);
   }
-//   debugger;
+  //   debugger;
   psbt.addOutput({
     address: revealInscribeAddress,
     value: revealInscribeFee,
@@ -179,8 +179,8 @@ export const buildMintIdCointPsbt = async (
 ) => {
   initEccLib(ecc);
   const { totalFee } = order;
-  const utxos = await window.metaidwallet.btc.getUtxos();
-  console.log(utxos, "utxos in buildTicketPsbt");
+  const utxos = await getUtxos(address, network);
+  console.log(utxos, "utxos in buildMintIdCointPsbt");
   const addressType = determineAddressInfo(address).toUpperCase();
   const publicKey = await window.metaidwallet.btc.getPublicKey();
   const script = addressLib.toOutputScript(address, getNetworks(network));
