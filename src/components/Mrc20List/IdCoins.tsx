@@ -34,11 +34,12 @@ export default () => {
         setLoading(false);
     }, [network, page, size, params]);
 
-    const showMintNotice = () => {
-        modal.warning({
-            title: 'Mint Notification',
-            content: 'You have not yet been granted the right to mint tokens! Follow the deployed user to gain the ability to mint'
-        })
+    const showMintNotice = (record: API.IdCoin) => {
+        // modal.warning({
+        //     title: 'Mint Notification',
+        //     content: 'You have not yet been granted the right to mint tokens! Follow the deployed user to gain the ability to mint'
+        // })
+        history.push('/inscribe?tab=MRC-20&tickerId=' + record.mrc20Id)
     }
     const onChange: CheckboxProps['onChange'] = (e) => {
         console.log(`checked = ${e.target.checked}`);
@@ -127,7 +128,7 @@ export default () => {
             ellipsis: {
                 showTitle: false,
             },
-            
+
             render: (metaData) => {
                 try {
                     return <Tooltip placement="topLeft" title={JSON.parse(metaData).message}>{JSON.parse(metaData).message} </Tooltip>
@@ -152,7 +153,7 @@ export default () => {
                         </Progress>
                     </div>
 
-                    <Button size='small' onClick={(e) => { e.stopPropagation(); showMintNotice() }} type='primary'>Mint</Button>
+                    <Button size='small' onClick={(e) => { e.stopPropagation(); showMintNotice(record) }} type='primary'>Mint</Button>
 
                 </div>
             }
