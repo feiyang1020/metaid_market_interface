@@ -51,6 +51,9 @@ const UploadAvatar = (props: any) => {
             <div style={{ marginTop: 8 }}>Upload</div>
         </button>
     );
+    const handleUpload = async ({ file, onSuccess, onError }) => {
+        onSuccess()
+    }
 
     return (
         <Upload
@@ -61,6 +64,7 @@ const UploadAvatar = (props: any) => {
             className="avatar-uploader"
             showUploadList={false}
             style={{ overflow: 'hidden' }}
+            customRequest={handleUpload}
         >
             {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: '50%', overflow: 'hidden' }} /> : uploadButton}
         </Upload>
