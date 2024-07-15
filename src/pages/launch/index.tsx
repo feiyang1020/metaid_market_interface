@@ -34,7 +34,7 @@ export default () => {
     const [submiting, setSubmiting] = useState<boolean>(false);
     const launch = async () => {
         if (!connected || !metaid || !btcAddress) return;
-        if (!userName || !avatar) {
+        if (!userName) {
             setVisible(true);
             return;
         }
@@ -134,11 +134,11 @@ export default () => {
 
     useEffect(() => {
         if (!initializing && connected) {
-            if (!userName || !avatar) {
+            if (!userName) {
                 setVisible(true)
             }
         }
-    }, [connected, userName, avatar, initializing])
+    }, [connected, userName, initializing])
     return <div className="launchPage">
         <Spin spinning={initializing}>
             <div className="user">
@@ -168,8 +168,8 @@ export default () => {
             initialValues={{
                 // tick: 'Ocean',
                 // followersNum: 1000,
-                // amountPerMint: 21000000,
-                // liquidityPerMint: 1200,
+                amountPerMint: 21000000,
+                liquidityPerMint: 1200,
                 // description: "come on!"
             }}
         >
@@ -181,8 +181,8 @@ export default () => {
                     </Form.Item>
                 </Col>
                 <Col md={12} xs={24} >
-                    <Form.Item label="Followers Num" name='followersNum' rules={[{ required: true }]} className='formItem'>
-                        <InputNumber placeholder="Followers Num" style={{ width: '100%' }} />
+                    <Form.Item label="Followers Limit" name='followersNum' rules={[{ required: true }]} className='formItem'>
+                        <InputNumber placeholder="Followers Limit" style={{ width: '100%' }} />
                     </Form.Item>
                 </Col>
                 <Col md={12} xs={24} >
