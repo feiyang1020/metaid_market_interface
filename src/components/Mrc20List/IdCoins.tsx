@@ -87,7 +87,7 @@ export default () => {
             });
             if (followRes.status) throw new Error(followRes.status)
             if (followRes && followRes.revealTxIds && followRes.revealTxIds[0]) {
-                message.success('Follow success')
+                message.success('Follow successfully! Please wait for the transaction to be confirmed!')
                 //  setList(list.map(item => {
                 //     if (item.deployerMetaId === record.deployerMetaId) {
                 //         item.isFollowing = true
