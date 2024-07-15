@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import NumberFormat from '@/components/NumberFormat';
 import SetProfile from '@/components/SetProfile';
 import SeleceFeeRateItem from '../inscribe/components/SeleceFeeRateItem';
-import { deployIdCoinCommit, deployIdCoinPre } from '@/services/api';
+import { deployIdCoinCommit, deployIdCoinPre, getIdCoinInfo } from '@/services/api';
 import { buildDeployIdCointPsbt } from '@/utils/idcoin';
 import { testnet } from 'bitcoinjs-lib/src/networks';
 import { addUtxoSafe } from '@/utils/psbtBuild';
@@ -48,11 +48,15 @@ export default () => {
             return;
         }
 
-
-        setSubmiting(true);
         await form.validateFields();
+        setSubmiting(true);
+
         try {
             const { feeRate, tick, description, followersNum, amountPerMint, liquidityPerMint } = form.getFieldsValue();
+            const tickExist = await getIdCoinInfo(network, { issuerAddress: btcAddress });
+            if (tickExist.code === 0 && tickExist.data.mrc20Id) {
+                throw new Error('You have already launched an ID-Coin. Please do not launch it again.')
+            }
             const issuerSign: any = await window.metaidwallet.btc.signMessage(tick)
             if (issuerSign.status) throw new Error(issuerSign.status)
             const payload: API.DeployIdCoinPreReq = {
