@@ -11,19 +11,20 @@ const { useBreakpoint } = Grid;
 export default () => {
     const screens = useBreakpoint();
     const [modal, contextHolder] = Modal.useModal();
-    const { network } = useModel("wallet")
+    const { network, btcAddress } = useModel("wallet")
     const [list, setList] = useState<API.IdCoin[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(0);
     const [size, setSize] = useState<number>(10);
-    const [params, setParams] = useState<Record<string, any>>({ orderBy: 'marketCap', sortType: -1 });
+    const [params, setParams] = useState<Record<string, any>>({ orderBy: 'timestamp', sortType: -1 });
     const fetchData = useCallback(async () => {
         console.log(network, page, size, params)
         setLoading(true);
         const { code, message, data } = await getIdCoinList(network, {
             cursor: page * size,
             size,
+            followerAddress: btcAddress || '',
             ...params,
         });
         if (code !== 0) return
@@ -32,7 +33,7 @@ export default () => {
             setTotal(data.total);
         }
         setLoading(false);
-    }, [network, page, size, params]);
+    }, [network, page, size, params, btcAddress]);
 
     const showMintNotice = (record: API.IdCoin) => {
         // modal.warning({
@@ -100,13 +101,13 @@ export default () => {
         {
             title: 'Supply',
             dataIndex: 'supply',
-
+            sorter: true,
             width: 160
         },
         {
             title: 'Price',
             dataIndex: 'price',
-            sorter: true,
+            // sorter: true,
             width: 140,
             render: (price) => {
                 return <NumberFormat value={price} suffix=' sats' />
