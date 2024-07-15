@@ -7,11 +7,12 @@ import Item from "./Item";
 import { useCallback, useEffect, useState } from "react";
 import MetaIdAvatar from "../MetaIdAvatar";
 import { ArrowRightOutlined } from "@ant-design/icons";
+import { getCreatePinFeeByNet } from "@/config";
 const { useBreakpoint } = Grid;
 export default () => {
     const screens = useBreakpoint();
     const [modal, contextHolder] = Modal.useModal();
-    const { network, btcAddress } = useModel("wallet")
+    const { network, btcAddress, connect, connected, btcConnector, feeRates } = useModel("wallet")
     const [list, setList] = useState<API.IdCoin[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
@@ -61,6 +62,38 @@ export default () => {
 
         })
     }
+    const handleFollow = async (record: API.IdCoin) => {
+        if (!connected) {
+            await connect();
+            return
+        }
+        if (!btcConnector) return
+        try {
+            const followRes = await btcConnector.inscribe({
+                inscribeDataArray: [
+                    {
+                        operation: 'create',
+                        path: '/follow',
+                        body: record.deployerMetaId,
+                        contentType: 'text/plain;utf-8',
+                        flag: network === "mainnet" ? "metaid" : "testid",
+                    },
+                ],
+                options: {
+                    noBroadcast: 'no',
+                    feeRate: feeRates[1].value,
+                    service: getCreatePinFeeByNet(network),
+                },
+            });
+            if (followRes.status) throw new Error(followRes.status)
+            if (followRes && followRes.revealTxIds[0]) {
+                message.success('Follow success')
+                await fetchData()
+            }
+        } catch (err: any) {
+            message.error(err.message || 'Follow failed')
+        }
+    }
 
     useEffect(() => {
         fetchData();
@@ -77,7 +110,7 @@ export default () => {
                             <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
                         </a></div>
                         <div className="metaid">MetaID : {record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</div>
-                        <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); window.open(`${network === 'mainnet' ? 'https://www.bitbuzz.io' : 'https://bitbuzz-testnet.vercel.app'}/profile/${record.deployerAddress}`, '_blank') }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>
+                        <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>
                     </div>
                 </div>
             },
