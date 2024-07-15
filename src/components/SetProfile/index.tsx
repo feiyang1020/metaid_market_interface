@@ -104,7 +104,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                     {...formItemLayout}
                     variant="filled"
                     layout="vertical"
-                    // requiredMark='optional'
+                    requiredMark='optional'
                     form={form}
                     initialValues={{
                         name: userName,
@@ -126,7 +126,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
 
 
 
-                    <Form.Item label={avatar ? "New Avatar" : 'Avatar'} required={avatar ? false : true} name="avatar" >
+                    <Form.Item label={avatar ? "New Avatar" : 'Avatar'}  name="avatar" >
                         <UploadAvatar />
                     </Form.Item>
                     <Form.Item label="FeeRate" required name="feeRate">
