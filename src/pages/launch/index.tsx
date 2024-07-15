@@ -11,12 +11,13 @@ import { buildDeployIdCointPsbt } from '@/utils/idcoin';
 import { testnet } from 'bitcoinjs-lib/src/networks';
 import { addUtxoSafe } from '@/utils/psbtBuild';
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from '@/components/SuccessModal';
-import { EditFilled, InfoCircleOutlined } from '@ant-design/icons';
+import { EditFilled, InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
     const _followersNum = Form.useWatch('followersNum', form);
     const _amountPerMint = Form.useWatch('amountPerMint', form);
+    const _liquidityPerMint = Form.useWatch('liquidityPerMint', form);
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
     const totalSupply = useMemo(() => {
@@ -26,6 +27,14 @@ export default () => {
             return BigInt(0)
         }
     }, [_followersNum, _amountPerMint])
+
+    const InitialPrice = useMemo(() => {
+        if (_amountPerMint && _liquidityPerMint) {
+            return BigInt(Math.round(_liquidityPerMint)) / BigInt(Math.round(_amountPerMint))
+        } else {
+            return BigInt(0)
+        }
+    }, [_liquidityPerMint, _amountPerMint])
     const { sm } = useBreakpoint();
     const [visible, setVisible] = useState(false);
     const [editVisible, setEidtVisible] = useState(false);
@@ -186,8 +195,12 @@ export default () => {
                     </Form.Item>
                 </Col>
                 <Col md={12} xs={24} >
-                    <Form.Item label="Amount Per Mint" name='amountPerMint' rules={[{ required: true }]} className='formItem'>
-                        <InputNumber placeholder="Amount Per Mint" style={{ width: '100%' }} />
+                    <Form.Item label="Amount Per Mint" name='amountPerMint' rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: 'Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).' }]} className='formItem'>
+                        <InputNumber placeholder="Amount Per Mint" style={{ width: '100%' }} addonAfter={
+                            <Tooltip title="Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).">
+                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                            </Tooltip>
+                        } />
 
                     </Form.Item>
                     <div className='totalSupply'> Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} /></div>
@@ -197,7 +210,7 @@ export default () => {
                     <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }]} className='formItem'>
                         <InputNumber placeholder="Liquidity Per Mint" style={{ width: '100%' }} />
                     </Form.Item>
-                    <div className='totalSupply'> Initial Price   <NumberFormat value={'1200'} isBig decimal={0} suffix=' stas' /></div>
+                    <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' stas' /></div>
                 </Col>
                 <Col md={24} xs={24} >
                     <Form.Item label="Message" name='description' className='formItem' >
