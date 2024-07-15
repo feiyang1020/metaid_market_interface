@@ -86,7 +86,7 @@ export default () => {
                 },
             });
             if (followRes.status) throw new Error(followRes.status)
-            if (followRes && followRes.revealTxIds[0]) {
+            if (followRes && followRes.revealTxIds && followRes.revealTxIds[0]) {
                 message.success('Follow success')
                 //  setList(list.map(item => {
                 //     if (item.deployerMetaId === record.deployerMetaId) {
@@ -95,6 +95,8 @@ export default () => {
                 //     return item
                 //  }))
                 await fetchData()
+            } else {
+                throw new Error('Follow failed')
             }
         } catch (err: any) {
             message.error(err.message || 'Follow failed')
