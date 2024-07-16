@@ -29,7 +29,7 @@ export default ({ idCoid }: Props) => {
                             <Typography.Text copyable={{ text: idCoid.deployerMetaId }} className="metaid"> MetaID: {idCoid.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
                         </div>
                         <div>
-                            <Typography.Text className="ticker"><NumberFormat value={'-'} /> </Typography.Text>
+                            <Typography.Text className="ticker"><NumberFormat value={idCoid.followersCount} /> </Typography.Text>
                             <div>
                                 Followers
                             </div>
