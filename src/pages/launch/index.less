@@ -5,6 +5,7 @@
   justify-content: center;
   width: 100vw;
   .user {
+    margin-top: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -31,8 +32,8 @@
       }
     }
     .name {
-      margin: 12px 0;
-      font-size: 24px;
+      margin: 9px 0 4px;
+      font-size: 20px;
       font-weight: bold;
       color: #ffffff;
     }
@@ -42,14 +43,17 @@
     }
   }
   .formWrap {
-    margin-top: 87px;
-    width: 1288px;
+    margin-top: 24px;
+    width: 784px;
     max-width: calc(100vw - 24px);
     .ant-form-item .ant-form-item-label > label .ant-form-item-optional {
       color: #c0f079;
     }
+    .ant-form-item .ant-form-item-explain-error {
+      text-align: end;
+    }
     .ant-form-item .ant-form-item-label > label {
-      color: rgba(255, 255, 255, 0.5);
+      color: #ffffff;
     }
     .totalSupply {
       margin-left: 27px;
@@ -60,15 +64,23 @@
     .formItem {
       background: rgba(25, 27, 24, 0.84);
       border-radius: 8px;
-      padding: 13px 25px 25px 25px;
+      padding: 10px 23px;
 
       .ant-input {
         padding-left: 0;
         color: rgba(255, 255, 255, 0.5);
+        text-align: end;
+        input {
+          text-align: right;
+        }
       }
       .ant-input-number .ant-input-number-input {
         padding-left: 0;
         color: rgba(255, 255, 255, 0.5);
+        text-align: end;
+        input {
+          text-align: end;
+        }
       }
       .FeeRateWrap {
         display: flex;

@@ -30,7 +30,6 @@ const formItemLayout = {
 export default ({ show = false, onClose, editVisible = false, setEditVisible }: SetProfileProps) => {
     const { btcConnector, init, connect, feeRates, network, disConnect, userName, avatar } =
         useModel("wallet");
-    console.log(avatar, '</Spin>')
     const [submiting, setSubmiting] = useState<boolean>(false)
     const [form] = Form.useForm();
     const submit = async () => {

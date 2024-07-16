@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useSearchParams, history } from "umi";
 import "./index.less";
-import SeleceFeeRateItem from "./SeleceFeeRateItem";
 import { broadcastBTCTx, broadcastTx, deployCommit, getIdCoinInfo, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
@@ -24,6 +23,7 @@ import { addUtxoSafe, getUtxos } from "@/utils/psbtBuild";
 import SelectPins from "./SelectPins";
 import { buildMintIdCointPsbt } from "@/utils/idcoin";
 import IdCoinCard from "./IdCoinCard";
+import ComfirmMintIdCoin from "./ComfirmMintIdCoin";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -85,11 +85,15 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const [shovel, setShowel] = useState<API.MRC20Shovel[]>();
     const [list, setList] = useState<API.UserMrc20Asset[]>([]);
 
+    // mint Idcoin 
+    const [comfirmVisible, setComfirmVisible] = useState(false)
+    const [mintIdCoinOrder, setMintIdCoinOrder] = useState<API.MintIdCoinPreRes>();
+
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
     const [deployComfirmProps, setDeployComfirmProps] = useState<DeployComfirmProps>(defaultDeployComfirmProps)
     const [submiting, setSubmiting] = useState(false);
-    const { authParams, connected, connect, feeRates, network, disConnect, btcConnector, btcAddress } =
+    const { authParams, connected, connect, feeRate, network, disConnect, btcConnector, btcAddress } =
         useModel("wallet");
     const checkWallet = async () => {
         if (!btcConnector) return false;
@@ -199,7 +203,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', feeRate, deployPayTo = '', deployPayAmount = '' } = form.getFieldsValue();
+        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', deployPayTo = '', deployPayAmount = '' } = form.getFieldsValue();
 
         const payload: any = {
             tick: deployTicker,
@@ -308,29 +312,19 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         });
     }
     const mintIdCoin = async () => {
-        if (!connected || !btcAddress || !btcConnector) return;
+        if (!connected || !btcAddress || !btcConnector || !mintIdCoinOrder) return;
 
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
         if (!IdCoinInfo) return;
-
-        const { feeRate, } = form.getFieldsValue();
-        const prePayload = {
-            networkFeeRate: feeRate,
-            tickId: IdCoinInfo.mrc20Id,
-            outAddress: btcAddress,
-            outValue: 546,
-        }
-        const { code, message, data } = await mintIdCoinPre(network, prePayload, { headers: { ...authParams } })
-        if (code !== 0) throw new Error(message);
         const { rawTx } = await buildMintIdCointPsbt(
-            data,
+            mintIdCoinOrder,
             feeRate,
             btcAddress,
             network
         )
         const commitRes = await mintIdCoinCommit(network, {
-            orderId: data.orderId,
+            orderId: mintIdCoinOrder.orderId,
             commitTxOutInscribeIndex: 0,
             commitTxOutMintIndex: 1,
             commitTxRaw: rawTx,
@@ -338,6 +332,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         console.log(commitRes)
         if (commitRes.code !== 0) throw new Error(commitRes.message)
         await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 2 }])
+        setMintIdCoinOrder(undefined)
+        setComfirmVisible(false)
         setSuccessProp({
             show: true,
             onClose: () => {
@@ -357,15 +353,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             children: (
                 <div className="inscribeSuccess">
                     <div className="res">
-                        {/* {
-                            ret.data.commitCost && <div className="item">
-                                <div className="label">Transaction Cost</div>
-                                <div className="value">
-                                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
-                                </div>
-                            </div>
-                        } */}
-
                         <div className="item">
                             <div className="label">TxId </div>
                             <div className="value">
@@ -453,42 +440,68 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (!connected || !btcAddress) return;
         await form.validateFields();
         const { type } = form.getFieldsValue();
-        if (type === 'deploy') {
-            const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', feeRate } = form.getFieldsValue();
+        try {
 
-            const payload: any = {
-                tick: deployTicker,
-                tokenName: deployTokenName,
-                decimals: String(deployDecimals),
-                amtPerMint: String(deployAmountPerMint),
-                mintCount: String(deployMaxMintCount),
-                premineCount: String(deployPremineCount),
-                blockheight: '',
-                pinCheck: {
-                    path: deployPath,
-                    count: String(deployCount),
-                    lvl: String(deployDifficultyLevel)
-                },
-            }
-            if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
-                message.error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
-                return
-            }
 
-            if (deployIcon) {
-                payload.metadata = JSON.stringify({ icon: deployIcon })
+            if (type === 'deploy') {
+                const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '' } = form.getFieldsValue();
+
+                const payload: any = {
+                    tick: deployTicker,
+                    tokenName: deployTokenName,
+                    decimals: String(deployDecimals),
+                    amtPerMint: String(deployAmountPerMint),
+                    mintCount: String(deployMaxMintCount),
+                    premineCount: String(deployPremineCount),
+                    blockheight: '',
+                    pinCheck: {
+                        path: deployPath,
+                        count: String(deployCount),
+                        lvl: String(deployDifficultyLevel)
+                    },
+                }
+                if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
+                    message.error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
+                    return
+                }
+
+                if (deployIcon) {
+                    payload.metadata = JSON.stringify({ icon: deployIcon })
+                }
+                setDeployComfirmProps({
+                    show: true,
+                    onClose: () => {
+                        setDeployComfirmProps(defaultDeployComfirmProps)
+                    },
+                    onConfirm: submit,
+                    submiting: submiting,
+                    deployInfo: payload
+                })
+            } else {
+                if (type === 'mint' && IdCoinInfo) {
+                    if (!connected || !btcAddress || !btcConnector) return;
+                    const pass = await checkWallet();
+                    if (!pass) throw new Error("Account change");
+                    if (!IdCoinInfo) return;
+
+                    const prePayload = {
+                        networkFeeRate: feeRate,
+                        tickId: IdCoinInfo.mrc20Id,
+                        outAddress: btcAddress,
+                        outValue: 546,
+                    }
+                    const { code, message, data } = await mintIdCoinPre(network, prePayload, { headers: { ...authParams } })
+                    if (code !== 0) throw new Error(message);
+                    setMintIdCoinOrder(data)
+                    setComfirmVisible(true)
+
+                } else {
+                    await submit()
+                }
+
             }
-            setDeployComfirmProps({
-                show: true,
-                onClose: () => {
-                    setDeployComfirmProps(defaultDeployComfirmProps)
-                },
-                onConfirm: submit,
-                submiting: submiting,
-                deployInfo: payload
-            })
-        } else {
-            await submit()
+        } catch (err) {
+            message.error(err.message)
         }
     }
 
@@ -496,7 +509,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (!connected || !btcAddress) return;
         await form.validateFields();
         setSubmiting(true);
-        const { type, feeRate, pins = [], transferTickerId, amount, recipient } = form.getFieldsValue();
+        const { type, pins = [], transferTickerId, amount, recipient } = form.getFieldsValue();
         try {
 
             if (type === 'deploy') {
@@ -1035,7 +1048,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     <Row gutter={[0, 0]}>
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading}>
                                             {
-                                                IdCoinInfo && <div style={{ color: 'var(--primary)', marginBottom: 20 }}><IdCoinCard mintMrc20Info={IdCoinInfo} /></div>
+                                                IdCoinInfo && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><IdCoinCard mintMrc20Info={IdCoinInfo} /></>
                                             }
 
                                             {
@@ -1084,9 +1097,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 </Form.Item>
 
 
-                <Form.Item label="FeeRate" name="feeRate">
-                    <SeleceFeeRateItem feeRates={feeRates} />
-                </Form.Item>
+
 
 
 
@@ -1124,6 +1135,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         </Row>
         <DeployComfirm {...deployComfirmProps} submiting={submiting} />
         <SuccessModal {...successProp}></SuccessModal>
+        <ComfirmMintIdCoin show={comfirmVisible} onClose={() => { setComfirmVisible(false) }} idCoin={IdCoinInfo} order={mintIdCoinOrder} submiting={submiting} handleSubmit={submit} />
     </div>
 
 } 

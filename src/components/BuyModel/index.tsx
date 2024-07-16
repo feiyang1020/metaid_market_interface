@@ -31,7 +31,7 @@ type Props = {
 };
 export default ({ order, show, onClose }: Props) => {
   const {
-    feeRates,
+    feeRate,
     userBal,
     network,
     btcAddress,
@@ -41,7 +41,6 @@ export default ({ order, show, onClose }: Props) => {
   } = useModel("wallet")
   const { updateOrders } = useModel('orders')
   const [submiting, setSubmiting] = useState<boolean>(false);
-  const [customRate, setCustomRate] = useState<string | number>();
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
   const [calcing, setCalcing] = useState<boolean>(false);
   const [totalSpent, setTotalSpent] = useState<number>();
@@ -52,7 +51,6 @@ export default ({ order, show, onClose }: Props) => {
     confirmed: number;
     unconfirmed: number;
   }>();
-  const [feeRateTab, setFeeRateTab] = useState<string>("Avg");
   const [successProp, setSuccessProp] =
     useState<SuccessProps>(DefaultSuccessProps);
 
@@ -107,25 +105,7 @@ export default ({ order, show, onClose }: Props) => {
   useEffect(() => {
     fetchTakePsbt();
   }, [fetchTakePsbt]);
-  // useEffect(() => {
-  //   const find = feeRates.find((item) => item.label === "Avg");
-  //   if (find) {
-  //     setFeeRate((prev) => {
-  //       if (!prev) return find.value;
-  //       return prev;
-  //     });
-  //   }
-  // }, [feeRates]);
 
-  const feeRate = useMemo(() => {
-    if (feeRateTab !== "custom") {
-      const find = feeRates.find((item) => item.label === feeRateTab);
-      if (find) return find.value;
-      return 0;
-    } else {
-      return customRate || 0;
-    }
-  }, [feeRateTab, customRate, feeRates]);
 
   useEffect(() => {
     let didCancel = false;
@@ -331,57 +311,30 @@ export default ({ order, show, onClose }: Props) => {
                 <div className="label">
                   Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
                 </div>
-                <div className="value">{formatSat(order.fee)}BTC</div>
+                <div className="value">{formatSat(order.fee)} BTC</div>
               </div>
               <div className="feeItem">
                 <div className="label">Transaction Fee</div>
                 <div className="value">
-                  <Spin spinning={calcing}>{formatSat(fee || "0")}BTC</Spin>
+                  <Spin spinning={calcing}>{formatSat(fee || "0")} BTC</Spin>
                 </div>
               </div>
-            </div>
-            <div className="netFee">
-              <div className="netFeeTitle">Network Fee</div>
-              <div className="netFeeOpts">
-                {feeRates.map((item) => (
-                  <div
-                    onClick={() => setFeeRateTab(item.label)}
-                    className={`feeRateItem ${item.label === feeRateTab ? "active" : ""
-                      }`}
-                    key={item.label}
-                  >
-                    <div className="label">{item.label}</div>
-                    <div className="value">{item.value} sat/vB</div>
-                    <div className="time">{item.time}</div>
-                  </div>
-                ))}
-                <div
-                  className={`feeRateItem ${feeRateTab === "custom" ? "active" : ""
-                    }`}
-                  onClick={() => {
-                    setFeeRateTab("custom");
-                  }}
-                >
-                  <div className="label">Custom rates</div>
-                  <div className="value">
-                    <InputNumber
-                      value={customRate}
-                      onChange={setCustomRate}
-                      style={{ textAlign: "center" }}
-                      controls={false}
-                    />
-                  </div>
-                  <div className="time">sat/vB</div>
+              <div className="feeItem">
+                <div className="label">
+                  Network Fee
                 </div>
+                <div className="value">{feeRate} sat/vB</div>
               </div>
             </div>
+
+
             <Spin spinning={calcing}>
               <div className="payInfo">
                 <div className="label">You Pay</div>
                 <div className="value">
                   <img src={btcIcon} alt="" className="btc" />
                   <span>
-                    {totalSpent ? formatSat(totalSpent || 0) : "--"}BTC
+                    {totalSpent ? formatSat(totalSpent || 0) : "--"} BTC
                   </span>
                 </div>
               </div>

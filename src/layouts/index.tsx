@@ -21,6 +21,8 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import SetProfile from "@/components/SetProfile";
+import NumberFormat from "@/components/NumberFormat";
+import SetFeeRate from "@/components/SetFeeRate";
 
 const _themes = {
   token: {
@@ -63,6 +65,9 @@ export default function Layout() {
     userBal,
     avatar,
     disConnect,
+    feeRate,
+    feeRateType,
+    setFeeRateModelVisible
   } = useModel("wallet");
   const { pathname } = useLocation();
   const [editViseble, setEditVisible] = useState<boolean>(false)
@@ -106,6 +111,14 @@ export default function Layout() {
                 >
                   List for sale
                 </Button>
+                <div className="feerate" style={{ display: "flex", alignItems: 'center', gap: 4, fontSize: 14, cursor: 'pointer' }} onClick={() => {
+                  setFeeRateModelVisible(true)
+                }}>
+                  <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4F66B' }}></div>
+                  <div>
+                    Gas <span className="colorPrimary"><NumberFormat prefix={` ${feeRateType} `} value={feeRate} /> </span>
+                  </div>
+                </div>
                 <Dropdown
                   arrow
                   dropdownRender={() => (
@@ -183,7 +196,9 @@ export default function Layout() {
                   placement="bottomRight"
                 >
                   <div className="userInfo">
-                    <div className="bal">{userBal} BTC</div>
+
+                    <Divider type='vertical' style={{ margin: 0 }} />
+                    <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
                     <Avatar
                       src={<img src={avatar || defaultAvatar} alt="avatar" />}
                     ></Avatar>
@@ -205,6 +220,7 @@ export default function Layout() {
 
         <div className="footer">MetaID.market@2024 All Rights Reserved</div>
         <SetProfile show={false} editVisible={editViseble} onClose={() => { setEditVisible(false) }} />
+        <SetFeeRate />
       </div>
 
     </ConfigProvider>

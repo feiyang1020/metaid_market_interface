@@ -50,93 +50,72 @@ export default () => {
             title: 'Ticker',
             dataIndex: 'tick',
             width: 220,
-            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }}
-            />
-        },
-        {
-            title: 'Deployer',
-            dataIndex: 'deployer',
-            width: 220,
-            render: (_, record) =>  <div className="detail">
-            <span className='avatars'><MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /> {record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
-            <span className='metaid'>MetaID : {record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
-          </div>
+            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }} />
         },
 
-        {
-            title: 'Path',
-            dataIndex: 'pinCheck',
-            width: 200,
-            render: (price, record) => {
-                return <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path && record.pinCheck.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
-            }
-        },
+        // {
+        //     title: 'Path',
+        //     dataIndex: 'pinCheck',
+        //     render: (price, record) => {
+        //         return <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path && record.pinCheck.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
+        //     }
+        // },
         // {
         //     title: 'Difficulty Level',
         //     dataIndex: 'level',
-        //     width: 200,
         //     render: (item, record) => {
-        //         return record.qual.lvl || '--'
+        //         return record.pinCheck.lvl || '--'
         //     }
         // },
         // {
         //     title: 'Count',
         //     dataIndex: 'count',
-        //     width: 200,
         //     render: (item, record) => {
-        //         return record.qual.count || '--'
+        //         return record.pinCheck.count || '--'
         //     }
         // },
-        // {
-        //     title: 'Max mint Count',
-        //     dataIndex: 'mintCount',
-        //     width: 200,
-        // },
+        {
+            title: 'Followers Limit',
+            dataIndex: 'followersLimit',
+
+        },
         {
             title: 'Amount Per Mint',
             dataIndex: 'amtPerMint',
-            width: 200,
+
+        },
+        {
+            title: 'Liquidity Per Mint',
+            dataIndex: 'liquidityPerMint',
+
         },
         // {
         //     title: 'Decimals',
         //     dataIndex: 'decimals',
-        //     width: 200,
+
         // },
         // {
         //     title: 'Premine Count',
         //     dataIndex: 'premineCount',
-        //     width: 200,
+
         // },
         {
             title: 'Type',
-            dataIndex: 'mintState',
-            width: 100,
+            dataIndex: 'deployState',
             render: (item) => {
-                return <>{item===1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item===0?'Pending':'Failure'}</span>}</>
+                return <>{item === 1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item === 0 ? 'Pending' : 'Failure'}</span>}</>
             }
         },
-        {
-            title: 'PIN',
-            dataIndex: 'Pin',
-            width: 200,
-            render: (item, record) => {
-                return <>{record.usedPins.map((item) => (<p className="userPin">{item.replace(/(\w{5})\w+(\w{5})\-/, "$1...$2")} <PopLvl lvl={item.split('-')[1]}></PopLvl></p>))}</>
-            }
-
-        },
-
         {
             title: "Time",
             dataIndex: "timestamp",
             key: "timestamp",
-            width: 200,
             render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
         },
         {
             title: "Hash",
             dataIndex: "txId",
             key: "txId",
-            width: 200,
             render: (text, record) => (
                 <Tooltip title={text}>
                     <a
@@ -155,7 +134,7 @@ export default () => {
         },
 
 
-    ];
+    ];;
     return (
         <>
 
@@ -184,7 +163,7 @@ export default () => {
                         return {
                             style: { cursor: 'pointer' },
                             onClick: () => {
-                                history.push(`/mrc20/${record.tickId}`)
+                                history.push(`/mrc20/${record.tick}`)
                             },
                         }
                     }}

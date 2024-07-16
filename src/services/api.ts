@@ -724,7 +724,9 @@ export async function mintIdCoinCommit(
 export async function getIdCoinInfo(
   network: API.Network,
   params: {
-    tickId: string;
+    tickId?: string;
+    issuerAddress?: string;
+    tick?: string;
   },
   options?: { [key: string]: any }
 ) {

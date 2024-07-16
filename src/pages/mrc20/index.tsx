@@ -39,7 +39,13 @@ export default () => {
     const [mrc20Info, setMrc20Info] = useState<API.MRC20TickInfo>();
     const fetchData = useCallback(async () => {
         if (!match || !match.params.mrc20Id) return;
-        const { data } = await getMrc20Info(network, { tickId: match.params.mrc20Id });
+        const params: any = {};
+        if (match.params.mrc20Id.length > 24) {
+            params.tickId = match.params.mrc20Id
+        } else {
+            params.tick = match.params.mrc20Id
+        }
+        const { data } = await getMrc20Info(network, params);
         setMrc20Info(data);
     }, [match, network])
     const update = useIntervalAsync(fetchData, 100000)
@@ -87,7 +93,7 @@ export default () => {
                             <span>Supply : <NumberFormat value={mrc20Info.totalSupply} /> </span>
                         </div>
                         <div className="slider">
-                            <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false}  />
+                            <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false} />
                         </div>
                         <div className="sliderNumber">
 
@@ -99,7 +105,7 @@ export default () => {
                     <div className="desc">
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" value={Number(mrc20Info.floorPrice)<0.01?0.01:mrc20Info.floorPrice} precision={2} suffix='sats' />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" value={Number(mrc20Info.floorPrice) < 0.01 ? 0.01 : mrc20Info.floorPrice} precision={2} suffix='sats' />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={mrc20Info.holders} />
                     </div>
                 </div>
@@ -127,28 +133,29 @@ export default () => {
                 },
             }}
         >
-            <Tabs size='small' style={{ marginTop: 22 }} defaultActiveKey="1" items={[
+            {mrc20Info && <Tabs size='small' style={{ marginTop: 22 }} defaultActiveKey="1" items={[
                 {
                     key: '1',
                     label: 'Listed',
-                    children: <Listed mrc20Id={match && match.params.mrc20Id || ''} />,
+                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} />,
                 },
                 {
                     key: '2',
                     label: 'Activity',
-                    children: <Activeity mrc20Id={match && match.params.mrc20Id || ''} />,
+                    children: <Activeity mrc20Id={mrc20Info.mrc20Id || ''} />,
                 },
                 {
                     key: '3',
                     label: 'My Activity',
-                    children: <Activeity mrc20Id={match && match.params.mrc20Id || ''} showMy />,
+                    children: <Activeity mrc20Id={mrc20Info.mrc20Id || ''} showMy />,
                 },
                 {
                     key: '4',
                     label: 'My Listed',
-                    children: <Listed mrc20Id={match && match.params.mrc20Id || ''} showMy />,
+                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} showMy />,
                 },
-            ]} /></ConfigProvider>
+            ]} />}
+        </ConfigProvider>
 
     </div>
 }

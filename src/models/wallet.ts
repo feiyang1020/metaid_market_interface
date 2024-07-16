@@ -42,8 +42,14 @@ export default () => {
       label: string;
       value: number;
       time: string;
+      icon: string;
+      activeIcon: string;
     }[]
   >([]);
+  const [feeRate, setFeeRate] = useState<number>(0);
+  const [feeRateType, setFeeRateType] = useState<string>("");
+  const [feeRateModalVisible, setFeeRateModelVisible] =
+    useState<boolean>(false);
 
   const connect = async () => {
     if (!checkExtension()) return;
@@ -127,6 +133,19 @@ export default () => {
     if (network) {
       const ret = await getFeeRate(network);
       setFeeRates(ret);
+
+      setFeeRate((prev) => {
+        if (prev === 0) {
+          return ret[1].value;
+        }
+        return prev;
+      });
+      setFeeRateType((prev) => {
+        if (prev === "") {
+          return ret[1].label;
+        }
+        return prev;
+      });
     }
   }, [network]);
 
@@ -212,7 +231,6 @@ export default () => {
         setUserName(_btcConnector.user.name);
         setInitializing(false);
       }
-      
     }
     setInitializing(false);
   }, [walletName]);
@@ -267,5 +285,11 @@ export default () => {
     updateFeeRate,
     init,
     initializing,
+    setFeeRate,
+    feeRate,
+    feeRateType,
+    setFeeRateType,
+    setFeeRateModelVisible,
+    feeRateModalVisible,
   };
 };

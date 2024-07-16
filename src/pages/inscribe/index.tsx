@@ -44,72 +44,13 @@ const formItemLayout = {
 };
 const { useBreakpoint } = Grid;
 
-type FeeRateProps = {
-  customRate: number | undefined;
-  setCustomRate: (feeRate: number) => void;
-  feeRates: any[];
-  feeRateTab: string;
-  setFeeRateTab: (tab: string) => void;
-};
-
-const SeleceFeeRate = ({
-  customRate,
-  setCustomRate,
-  feeRates,
-  feeRateTab,
-  setFeeRateTab,
-}: FeeRateProps) => {
-  return (
-    <div className="FeeRateWrap">
-      <Row gutter={[12, 12]}>
-        {feeRates.map((item) => (
-          <Col
-            span={8}
-            onClick={() => setFeeRateTab(item.label)}
-            key={item.label}
-          >
-            <div
-              className={`feeRateItem ${item.label === feeRateTab ? "active" : ""
-                }`}
-            >
-              <div className="Feelabel">{item.label}</div>
-              <div className="Feevalue">{item.value} sat/vB</div>
-              <div className="Feetime">{item.time}</div>
-            </div>
-          </Col>
-        ))}
-      </Row>
-      <Row
-        className={`custom ${"custom" === feeRateTab ? "active" : ""}`}
-        onClick={() => {
-          setFeeRateTab("custom");
-        }}
-      >
-        <Col span={24} style={{ textAlign: "left" }}>
-          Customize fee rate
-        </Col>
-        <Col span={24} style={{ textAlign: "left" }}>
-          <InputNumber
-            value={customRate}
-            onChange={setCustomRate}
-            style={{ width: "80px", textAlign: "right" }}
-            className="customInput"
-            variant="borderless"
-            controls={false}
-          />
-          sat/vB
-        </Col>
-      </Row>
-    </div>
-  );
-};
 export default () => {
   const [query] = useSearchParams();
   const _tab = query.get('tab');
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("MRC-20");
   const [submiting, setSubmiting] = useState(false);
-  const { btcConnector, connected, connect, feeRates, network, disConnect } =
+  const { btcConnector, connected, connect, feeRate, network, disConnect } =
     useModel("wallet");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [buzz, setBuzz] = useState<string>("");
@@ -139,17 +80,8 @@ export default () => {
     }
 
   }, [_tab])
-  const [customRate, setCustomRate] = useState<string | number>(0);
-  const [feeRateTab, setFeeRateTab] = useState<string>("Avg");
-  const feeRate = useMemo(() => {
-    if (feeRateTab !== "custom") {
-      const find = feeRates.find((item) => item.label === feeRateTab);
-      if (find) return find.value;
-      return 0;
-    } else {
-      return customRate || 0;
-    }
-  }, [feeRateTab, customRate, feeRates]);
+
+
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -264,7 +196,7 @@ export default () => {
         throw new Error("unknow error");
       }
     } catch (err) {
-      console.log(err,typeof err === 'string');
+      console.log(err, typeof err === 'string');
       message.error(typeof err === 'string' ? err : err.message);
     }
     setSubmiting(false);
@@ -337,8 +269,8 @@ export default () => {
       } else {
         throw new Error("unknow error");
       }
-    } catch (err:any) {
-      console.log(err,typeof err === 'string');
+    } catch (err: any) {
+      console.log(err, typeof err === 'string');
       message.error(typeof err === 'string' ? err : err.message);
     }
     setSubmiting(false);
@@ -415,7 +347,7 @@ export default () => {
         throw new Error(typeof ret === "string" ? ret : "unknow error");
       }
     } catch (err: any) {
-      console.log(err,typeof err === 'string');
+      console.log(err, typeof err === 'string');
       message.error(typeof err === 'string' ? err : err.message);
     }
     setSubmiting(false);
@@ -489,8 +421,8 @@ export default () => {
               >
                 <div className="uploadWrap">
                   <div className="label"></div>
-                  <div className="upload">
-                    <Dragger {...props} className="uploadInput" listType={fileList && fileList[0] && fileList[0].type?.includes('image') ? 'picture' : 'text'}>
+                  <div className="upload" style={{height:400}}>
+                    <Dragger {...props} className="uploadInput"  listType={fileList && fileList[0] && fileList[0].type?.includes('image') ? 'picture' : 'text'}>
                       <p className="ant-upload-text">Upload file</p>
                       <p className="ant-upload-hint">Any file type. Max 300kb</p>
                       <p className="ant-upload-drag-icon">
@@ -506,15 +438,7 @@ export default () => {
               variant="filled"
               style={{ maxWidth: "96vw", width: 632 }}
             >
-              <Form.Item label="Fee Rate" name="Input">
-                <SeleceFeeRate
-                  feeRates={feeRates}
-                  customRate={customRate}
-                  setCustomRate={setCustomRate}
-                  feeRateTab={feeRateTab}
-                  setFeeRateTab={setFeeRateTab}
-                />
-              </Form.Item>
+
             </Form>
             <Row gutter={[0, 0]}>
               <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
@@ -559,19 +483,11 @@ export default () => {
                   onChange={onChange}
                   className="textarea"
                   autoSize={false}
-                  style={{ height: 140 }}
+                  style={{ height: 340 }}
                   value={buzz}
                 />
               </Form.Item>
-              <Form.Item label="Fee Rate" name="TextArea">
-                <SeleceFeeRate
-                  feeRates={feeRates}
-                  customRate={customRate}
-                  setCustomRate={setCustomRate}
-                  feeRateTab={feeRateTab}
-                  setFeeRateTab={setFeeRateTab}
-                />
-              </Form.Item>
+
             </Form>
             <Row>
               <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
@@ -649,7 +565,7 @@ export default () => {
                 <Input.TextArea
                   size="large"
                   autoSize={false}
-                  style={{ height: 140 }}
+                  style={{ height: 240 }}
                   value={payload}
                   status={checkPayload ? "" : "error"}
                   onChange={(e) => {
@@ -657,15 +573,7 @@ export default () => {
                   }}
                 />
               </Form.Item>
-              <Form.Item label="Fee Rate" name="TextArea">
-                <SeleceFeeRate
-                  feeRates={feeRates}
-                  customRate={customRate}
-                  setCustomRate={setCustomRate}
-                  feeRateTab={feeRateTab}
-                  setFeeRateTab={setFeeRateTab}
-                />
-              </Form.Item>
+
             </Form>
 
             <Row gutter={[0, 0]}>

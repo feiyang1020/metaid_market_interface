@@ -180,7 +180,7 @@ export default () => {
                         return {
                             style: { cursor: 'pointer' },
                             onClick: () => {
-                                history.push(`/mrc20/${record.tickId}`)
+                                history.push(`/mrc20/${record.tick}`)
                             },
                         }
                     }}

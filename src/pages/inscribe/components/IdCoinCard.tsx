@@ -10,7 +10,7 @@ type Props = {
 }
 export default ({ mintMrc20Info }: Props) => {
     const { network } = useModel('wallet')
-    return <Card style={{ marginBottom: 20, border: '1px solid #FF8B13' }} className="mrc20CardInfo">
+    return <><Card style={{ marginBottom: 20, border: '1px solid #FF8B13' }} className="mrc20CardInfo">
         <div className="idCoinDeploy">
             <MetaIdAvatar size={72} avatar={mintMrc20Info.deployerUserInfo.avatar} />
             <div className="rightIndfo">
@@ -45,7 +45,7 @@ export default ({ mintMrc20Info }: Props) => {
 
                 {
                     key: 'Follow',
-                    label: 'Followers limit',
+                    label: 'Followers Limit',
                     children: <NumberFormat value={mintMrc20Info.followersLimit} />
                 },
                 {
@@ -54,20 +54,21 @@ export default ({ mintMrc20Info }: Props) => {
                     children: <NumberFormat value={mintMrc20Info.amtPerMint} />
                 },
                 {
-                    key: 'Foliqllow',
-                    label: 'Liquidity Per Mint',
-                    children: <NumberFormat value={mintMrc20Info.liquidityPerMint} suffix={' BTC'} isBig decimal={8} />
+                    key: 'totalSupply',
+                    label: <span>Total Supply <Tooltip title={<p>The total amount of tokens that have been created, minus any tokens that have been burned (taken out of circulation).<br />Total Supply = In-Chain Supply - Burned Tokens.</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
+                    children: <NumberFormat value={mintMrc20Info.totalSupply} />
                 },
+                // {
+                //     key: 'Foliqllow',
+                //     label: 'Liquidity Per Mint',
+                //     children: <NumberFormat value={mintMrc20Info.liquidityPerMint} suffix={' BTC'} isBig decimal={8} />
+                // },
                 // {
                 //     key: 'mc',
                 //     label: <span>Market Cap <Tooltip title={<p>Market Capitalization = Current Price x Circulating Supply <br></br> The total market value of the cryptocurrency's circulating supply.</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
                 //     children: <NumberFormat value={mintMrc20Info.amtPerMint} isBig decimal={8} suffix=' BTC' />
                 // },
-                {
-                    key: 'totalSupply',
-                    label: <span>Total Supply <Tooltip title={<p>The total amount of tokens that have been created, minus any tokens that have been burned (taken out of circulation).<br />Total Supply = In-Chain Supply - Burned Tokens.</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
-                    children: <NumberFormat value={mintMrc20Info.totalSupply} />
-                },
+
                 {
                     key: 'Pool',
                     label: 'Pool',
@@ -80,31 +81,40 @@ export default ({ mintMrc20Info }: Props) => {
 
                 },
                 {
-                    key: 'Decimals',
-                    label: 'Decimals',
-                    children: <>{mintMrc20Info.decimals}</>
+                    key: 'Foliqllow',
+                    label: 'Liquidity Per Mint',
+                    children: <NumberFormat value={mintMrc20Info.liquidityPerMint} suffix={' BTC'} isBig decimal={8} />
                 },
-                {
-                    key: 'PremineCount',
-                    label: 'Premine Count',
-                    children: <>{mintMrc20Info.premineCount}</>
-                },
-                {
-                    key: 'Path',
-                    label: 'Path',
-                    children: <Tooltip title={mintMrc20Info.pinCheck.path}>{mintMrc20Info.pinCheck.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip>
-                },
-                {
-                    key: 'Difficultylevel',
-                    label: 'Difficulty Level',
-                    children: <>{mintMrc20Info.pinCheck.lvl || '--'}</>
-                },
-                {
-                    key: 'Count',
-                    label: 'Count',
-                    children: <>{mintMrc20Info.pinCheck.count || '--'}</>
-                }
+                // {
+                //     key: 'Decimals',
+                //     label: 'Decimals',
+                //     children: <>{mintMrc20Info.decimals}</>
+                // },
+                // {
+                //     key: 'PremineCount',
+                //     label: 'Premine Count',
+                //     children: <>{mintMrc20Info.premineCount}</>
+                // },
+                // {
+                //     key: 'Path',
+                //     label: 'Path',
+                //     children: <Tooltip title={mintMrc20Info.pinCheck.path}>{mintMrc20Info.pinCheck.path.replace(/(.{6}).+(.{5})/, "$1...$2")}</Tooltip>
+                // },
+                // {
+                //     key: 'Difficultylevel',
+                //     label: 'Difficulty Level',
+                //     children: <>{mintMrc20Info.pinCheck.lvl || '--'}</>
+                // },
+                // {
+                //     key: 'Count',
+                //     label: 'Count',
+                //     children: <>{mintMrc20Info.pinCheck.count || '--'}</>
+                // }
             ]}></Descriptions>
     </Card>
+        <Card style={{ marginBottom: 20, border: '1px solid #D4F66B' }} styles={{ body: { padding: '10px 15px',textAlign:"left", color: '#D4F66B', fontSize: 12 } }}>
+            Mint your ID-coins* and we'll guide you to follow the deployment if you haven't already, ensuring a smooth and complete user experience
+        </Card>
+    </>
 }
 

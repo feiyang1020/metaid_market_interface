@@ -45,8 +45,9 @@ export default () => {
     }
     const onChange: CheckboxProps['onChange'] = (e) => {
         console.log(`checked = ${e.target.checked}`);
+        localStorage.setItem('tradeNotice', e.target.checked ? '1' : '0')
     };
-    const showTradeNotice = () => {
+    const showTradeNotice = (record: API.IdCoin) => {
         modal.warning({
             title: 'Trade  Notification',
             content: <div>
@@ -58,6 +59,7 @@ export default () => {
             </div>,
             onOk() {
                 message.info('coming soon...')
+                window.open(`https://orders-mrc20.vercel.app/orderbook/idcoin/btc-${record.tick}`, '_blank')
             }
 
         })
@@ -112,11 +114,16 @@ export default () => {
             dataIndex: 'deployerUserInfo',
             render: (_, record) => {
                 return <div className="idCoinDeploy">
-                    <MetaIdAvatar size={72} avatar={record.deployerUserInfo.avatar} />
+                    <MetaIdAvatar style={{ minWidth: 72 }} size={72} avatar={record.deployerUserInfo.avatar} />
                     <div>
-                        <div className="name">{record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")} <a onClick={(e) => e.stopPropagation()} href={`${network === 'mainnet' ? 'https://www.bitbuzz.io' : 'https://bitbuzz-testnet.vercel.app'}/profile/${record.deployerAddress}`} target='_blank'>
-                            <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
-                        </a></div>
+                        <div className="nameWrap">
+                            <div className="name">
+                                {record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
+                            </div>
+                            <a onClick={(e) => e.stopPropagation()} href={`${network === 'mainnet' ? 'https://www.bitbuzz.io' : 'https://bitbuzz-testnet.vercel.app'}/profile/${record.deployerAddress}`} target='_blank'>
+                                <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
+                            </a>
+                        </div>
                         <div className="metaid">MetaID : {record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</div>
                         <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>
                     </div>
@@ -195,7 +202,11 @@ export default () => {
                         </Progress>
                     </div>
 
-                    <Button size='small' onClick={(e) => { e.stopPropagation(); showMintNotice(record) }} type='primary'>Mint</Button>
+                    <Button size='small' onClick={(e) => {
+                        e.stopPropagation();
+                        showMintNotice(record)
+
+                    }} type='primary'>Mint</Button>
 
                 </div>
             }
@@ -206,7 +217,16 @@ export default () => {
             // fixed: 'right',
             width: 80,
             render: (_, record) => {
-                return <Button size='small' onClick={(e) => { e.stopPropagation(); showTradeNotice() }} type='primary'>Trade</Button>
+                return <Button size='small' onClick={(e) => {
+                    e.stopPropagation();
+                    if (localStorage.getItem('tradeNotice') === '1') {
+                        window.open(`https://orders-mrc20.vercel.app/orderbook/idcoin/btc-${record.tick}`, '_blank')
+
+                    } else {
+                        showTradeNotice(record)
+                    }
+
+                }} type='primary'>Trade</Button>
             }
         },
 

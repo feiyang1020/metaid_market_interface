@@ -52,30 +52,30 @@ export default () => {
             render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }} />
         },
 
+        // {
+        //     title: 'Path',
+        //     dataIndex: 'pinCheck',
+        //     render: (price, record) => {
+        //         return <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path && record.pinCheck.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
+        //     }
+        // },
+        // {
+        //     title: 'Difficulty Level',
+        //     dataIndex: 'level',
+        //     render: (item, record) => {
+        //         return record.pinCheck.lvl || '--'
+        //     }
+        // },
+        // {
+        //     title: 'Count',
+        //     dataIndex: 'count',
+        //     render: (item, record) => {
+        //         return record.pinCheck.count || '--'
+        //     }
+        // },
         {
-            title: 'Path',
-            dataIndex: 'pinCheck',
-            render: (price, record) => {
-                return <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path && record.pinCheck.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
-            }
-        },
-        {
-            title: 'Difficulty Level',
-            dataIndex: 'level',
-            render: (item, record) => {
-                return record.pinCheck.lvl || '--'
-            }
-        },
-        {
-            title: 'Count',
-            dataIndex: 'count',
-            render: (item, record) => {
-                return record.pinCheck.count || '--'
-            }
-        },
-        {
-            title: 'Max Mint Count',
-            dataIndex: 'mintCount',
+            title: 'Followers Limit',
+            dataIndex: 'followersLimit',
 
         },
         {
@@ -84,15 +84,20 @@ export default () => {
 
         },
         {
-            title: 'Decimals',
-            dataIndex: 'decimals',
+            title: 'Liquidity Per Mint',
+            dataIndex: 'liquidityPerMint',
 
         },
-        {
-            title: 'Premine Count',
-            dataIndex: 'premineCount',
+        // {
+        //     title: 'Decimals',
+        //     dataIndex: 'decimals',
 
-        },
+        // },
+        // {
+        //     title: 'Premine Count',
+        //     dataIndex: 'premineCount',
+
+        // },
         {
             title: 'Type',
             dataIndex: 'deployState',
@@ -156,7 +161,7 @@ export default () => {
                         return {
                             style: { cursor: 'pointer' },
                             onClick: () => {
-                                history.push(`/mrc20/${record.tickId}`)
+                                history.push(`/mrc20/${record.tick}`)
                             },
                         }
                     }}

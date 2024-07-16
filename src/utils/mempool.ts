@@ -1,4 +1,11 @@
 import mempoolJS from "@mempool/mempool.js";
+import Slow from "@/assets/icons/motorcycle.svg";
+import activeSlow from "@/assets/icons/motorcycle (1).svg";
+import Avg from "@/assets/icons/van.svg";
+import activeAvg from "@/assets/icons/van (1).svg";
+
+import fast from "@/assets/icons/rocket.svg";
+import activefast from "@/assets/icons/rocket (1).svg";
 
 export const getFeeRate = async (network: API.Network) => {
   const {
@@ -15,26 +22,32 @@ export const getFeeRate = async (network: API.Network) => {
       minimumFee === fastestFee &&
       minimumFee === halfHourFee &&
       minimumFee === hourFee;
-    if(network==='testnet'){
-      fastestFee+=10;
-      halfHourFee+=10;
-      hourFee+=10;
+    if (network === "testnet") {
+      fastestFee += 10;
+      halfHourFee += 10;
+      hourFee += 10;
     }
     return [
       {
         label: "Fast",
         value: isInvalid ? fastestFee + 4 : fastestFee,
         time: "15 minutes",
+        icon: fast,
+        activeIcon: activefast,
       },
       {
         label: "Avg",
         value: isInvalid ? halfHourFee + 4 : halfHourFee,
         time: "30 minutes",
+        icon: Avg,
+        activeIcon: activeAvg,
       },
       {
         label: "Slow",
         value: isInvalid ? hourFee + 4 : hourFee,
         time: "about 1 hour",
+        icon: Slow,
+        activeIcon: activeSlow,
       },
     ];
   } catch (e) {
