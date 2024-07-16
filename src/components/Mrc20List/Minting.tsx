@@ -78,6 +78,7 @@ export default () => {
             dataIndex: 'totalMinted',
             sorter: true,
             width: 160,
+            align:'center',
             render: (totalMinted) => {
                 return <NumberFormat value={totalMinted} />
             }
@@ -87,6 +88,7 @@ export default () => {
             dataIndex: 'holders',
             sorter: true,
             width: 160,
+            align:'center',
             render: (price) => {
                 return <NumberFormat value={price} />
             }
@@ -115,6 +117,7 @@ export default () => {
             title: 'Time',
             dataIndex: 'deployTime',
             // sorter: true,
+            align:'center',
             width: 200,
             render: (price) => {
                 return dayjs(price * 1000).format('MM/DD/YYYY,HH:mm')
@@ -157,7 +160,8 @@ export default () => {
                 },
                 "Table": {
                     "borderColor": "rgba(240, 240, 240, 0)",
-                    "rowHoverBg": "rgba(110, 208, 63, 0.13)"
+                    "rowHoverBg": "rgba(110, 208, 63, 0.13)",
+                    "fontSize": 16
                 }
             },
         }}><Table

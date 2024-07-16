@@ -137,6 +137,7 @@ export default () => {
             title: 'Ticker',
             dataIndex: 'tick',
             width: 220,
+            align:'center',
             render: (item) => {
                 return <div style={{ color: '#F68819', fontSize: 16, fontWeight: 'bold' }}>{item}</div>
             }
@@ -144,13 +145,14 @@ export default () => {
         {
             title: 'Followers limit',
             dataIndex: 'followersLimit',
-
+            align:'center',
             width: 160
         },
         {
             title: 'Supply',
             dataIndex: 'supply',
             sorter: true,
+            align:'center',
             width: 160
         },
         {
@@ -158,6 +160,7 @@ export default () => {
             dataIndex: 'price',
             sorter: true,
             width: 140,
+            align:'center',
             render: (price) => {
                 return <NumberFormat value={price} suffix=' sats' />
             }
@@ -168,6 +171,7 @@ export default () => {
             dataIndex: 'pool',
             sorter: true,
             width: 140,
+            align:'center',
             render: (price) => {
                 return <NumberFormat value={price} decimal={8} isBig suffix=' BTC' />
             }
@@ -175,6 +179,7 @@ export default () => {
         {
             title: 'Message',
             dataIndex: 'metaData',
+            align:'center',
             ellipsis: {
                 showTitle: false,
             },
@@ -192,6 +197,7 @@ export default () => {
             title: 'Progress%',
             dataIndex: 'totalSupply',
             width: 200,
+            align:'center',
             render: (price, record) => {
                 const percent = (Number(record.supply / record.totalSupply) * 100) || 0;
                 return <div className="progressAndMint">
@@ -216,6 +222,7 @@ export default () => {
             title: 'Trade',
             dataIndex: 'Trade',
             // fixed: 'right',
+            align:'center',
             width: 80,
             render: (_, record) => {
                 return <Button size='small' onClick={(e) => {

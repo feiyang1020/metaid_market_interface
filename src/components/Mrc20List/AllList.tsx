@@ -49,6 +49,7 @@ export default () => {
             title: 'Price',
             dataIndex: 'price',
             sorter: true,
+            align:'center',
             render: (price) => {
                 return <NumberFormat value={price} suffix=' sats' />
             }
@@ -57,6 +58,7 @@ export default () => {
             title: 'Change 24H',
             dataIndex: 'change24h',
             sorter: true,
+            align:'center',
             render: (item) => {
                 return <div style={{ color: item[0] === '+' ? '#40BA68' : '#B94041' }}>{item}</div>
             }
@@ -65,6 +67,7 @@ export default () => {
             title: 'Market Cap',
             dataIndex: 'marketCap',
             sorter: true,
+            align:'center',
             render: (price) => {
                 return <NumberFormat value={price} decimal={8} isBig suffix=' BTC' />
             }
@@ -73,6 +76,7 @@ export default () => {
             title: 'Total Supply',
             dataIndex: 'totalSupply',
             // sorter: true,
+            align:'center',
             render: (price) => {
                 return <NumberFormat value={price} />
             }
@@ -80,6 +84,7 @@ export default () => {
         {
             title: 'Holders',
             dataIndex: 'holders',
+            align:'center',
             sorter: true,
         },
     ]
@@ -95,7 +100,8 @@ export default () => {
                 },
                 "Table": {
                     "borderColor": "rgba(240, 240, 240, 0)",
-                    "rowHoverBg": "rgba(110, 208, 63, 0.13)"
+                    "rowHoverBg": "rgba(110, 208, 63, 0.13)",
+                    "fontSize": 16
                 }
             },
         }}><Table

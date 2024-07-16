@@ -28,7 +28,7 @@ const formItemLayout = {
     },
 };
 export default ({ show = false, onClose, editVisible = false, setEditVisible }: SetProfileProps) => {
-    const { btcConnector, init, connect, feeRates, network, disConnect, userName, avatar } =
+    const { btcConnector, init, connect, feeRate, network, disConnect, userName, avatar } =
         useModel("wallet");
     const [submiting, setSubmiting] = useState<boolean>(false)
     const [form] = Form.useForm();
@@ -39,7 +39,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
 
             setSubmiting(true)
 
-            const { name, avatar: newAvatar, feeRate } = form.getFieldsValue();
+            const { name, avatar: newAvatar } = form.getFieldsValue();
             const userData: any = { name };
             if (newAvatar) {
                 const [image] = await image2Attach([newAvatar]);
@@ -128,9 +128,9 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                     <Form.Item label={avatar ? "New Avatar" : 'Avatar'}  name="avatar" >
                         <UploadAvatar />
                     </Form.Item>
-                    <Form.Item label="FeeRate" required name="feeRate">
+                    {/* <Form.Item label="FeeRate" required name="feeRate">
                         <SeleceFeeRateItem feeRates={feeRates} />
-                    </Form.Item>
+                    </Form.Item> */}
 
 
                 </Form>
