@@ -85,7 +85,7 @@ export default () => {
                         </div>
                         <div className="sliderNumber">
 
-                            <NumberFormat value={Number(idCoin.supply / idCoin.totalSupply) * 100} precision={4} suffix=' %' />
+                            <NumberFormat value={(Number(idCoin.supply / idCoin.totalSupply) * 10)||0} precision={4} suffix=' %' />
                         </div>
                     </div>
                 </Card>

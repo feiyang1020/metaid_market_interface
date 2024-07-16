@@ -90,12 +90,12 @@ export default () => {
             if (followRes.status) throw new Error(followRes.status)
             if (followRes && followRes.revealTxIds && followRes.revealTxIds[0]) {
                 message.success('Follow successfully! Please wait for the transaction to be confirmed!')
-                 setList(list.map(item => {
+                setList(list.map(item => {
                     if (item.deployerMetaId === record.deployerMetaId) {
                         item.isFollowing = true
                     }
                     return item
-                 }))
+                }))
                 // await fetchData()
             } else {
                 throw new Error('Follow failed')
@@ -203,7 +203,7 @@ export default () => {
                         </Progress>
                     </div>
 
-                    <Button size='small' onClick={(e) => {
+                    <Button size='small' disabled={!record.mintable} onClick={(e) => {
                         e.stopPropagation();
                         showMintNotice(record)
 
