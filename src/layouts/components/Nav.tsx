@@ -60,7 +60,7 @@ export default () => {
         </div>
       ))}
     </Space>
-    <Dropdown menu={{
+    <Dropdown className="DropdownMenu" menu={{
       items: items.map(item => {
         return {
           key: item.key,
