@@ -98,7 +98,7 @@ export default () => {
             render: (_, record) => {
                if(!record.pinCheck) return <div className="condition">--</div>
                 return <div className="condition"><div>
-                    <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 45 ? record.pinCheck.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.pinCheck.path}</Tooltip></div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> X {record.pinCheck.count || '1'}</span></div></div>
+                    <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 45 ? record.pinCheck.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.pinCheck.path}</Tooltip></div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> x {record.pinCheck.count || '0'}</span></div></div>
             }
         },
         {
