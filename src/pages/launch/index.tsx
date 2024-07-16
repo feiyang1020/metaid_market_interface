@@ -233,8 +233,8 @@ export default () => {
                         className='formWrap'
                         colon={false}
                         initialValues={{
-                            tick: 'OhMyCoin',
-                            followersNum: 1000,
+                            // tick: 'OhMyCoin',
+                            // followersNum: 1000,
                             amountPerMint: 21000000,
                             liquidityPerMint: 1200,
                             // description: "come on!"
