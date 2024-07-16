@@ -101,7 +101,7 @@ export default () => {
         // },
         {
             title: 'Type',
-            dataIndex: 'deployState',
+            dataIndex: 'mintState',
             render: (item) => {
                 return <>{item === 1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item === 0 ? 'Pending' : 'Failure'}</span>}</>
             }
