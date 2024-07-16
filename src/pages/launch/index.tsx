@@ -30,22 +30,22 @@ export default () => {
     }>();
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
-    // const totalSupply = useMemo(() => {
-    //     if (_amountPerMint && _followersNum) {
-    //         return BigInt(Math.round(_amountPerMint)) * BigInt(Math.round(_followersNum))
-    //     } else {
-    //         return BigInt(0)
-    //     }
-    // }, [_followersNum, _amountPerMint])
+    const totalSupply = useMemo(() => {
+        if (_amountPerMint && _followersNum) {
+            return BigInt(Math.round(_amountPerMint)) * BigInt(Math.round(_followersNum))
+        } else {
+            return BigInt(0)
+        }
+    }, [_followersNum, _amountPerMint])
 
 
-    // const InitialPrice = useMemo(() => {
-    //     if (_amountPerMint && _liquidityPerMint) {
-    //         return BigInt(Math.round(_liquidityPerMint)) / BigInt(Math.round(_amountPerMint))
-    //     } else {
-    //         return BigInt(0)
-    //     }
-    // }, [_liquidityPerMint, _amountPerMint])
+    const InitialPrice = useMemo(() => {
+        if (_amountPerMint && _liquidityPerMint) {
+            return BigInt(Math.round(_liquidityPerMint)) / BigInt(Math.round(_amountPerMint))
+        } else {
+            return BigInt(0)
+        }
+    }, [_liquidityPerMint, _amountPerMint])
     const { sm } = useBreakpoint();
     const [visible, setVisible] = useState(false);
     const [editVisible, setEidtVisible] = useState(false);
@@ -278,7 +278,7 @@ export default () => {
                                     } controls={false} />
 
                                 </Form.Item>
-                                {/* <div className='totalSupply'> Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} /></div> */}
+                                <div className='totalSupply'> Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} /></div>
 
                             </Col>
                             <Col md={12} xs={24} >
@@ -289,7 +289,7 @@ export default () => {
                                         </Tooltip>
                                     }/>
                                 </Form.Item>
-                                {/* <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' stas' /></div> */}
+                                <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' stas' /></div>
                             </Col>
                             <Col md={24} xs={24} >
                                 <Form.Item label="Message" name='description' className='formItem' >
