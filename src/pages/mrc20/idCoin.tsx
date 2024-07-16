@@ -1,6 +1,6 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
 import { getIdCoinInfo, getMrc20Info } from '@/services/api';
-import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col } from 'antd';
+import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip } from 'antd';
 import { useCallback, useState } from 'react';
 import { useMatch, useModel, history } from 'umi';
 import './idCoin.less'
@@ -106,7 +106,7 @@ export default () => {
                 <Row >
                     <Card bordered={false} styles={{ body: { padding: '24px 16px' } }} style={{ background: 'rgba(27, 27, 27, 0.5)', width: 443 }}>
                         <div className='orders'>
-                            <img src={orders} alt="" /> <QuestionCircleOutlined />
+                            <img src={orders} alt="" /> <Tooltip title='ID-coin can be traded on third-party orders and can also be listed for trading on the market. In third-party order trading, the liquidity of the pool is different from that of the market.'><QuestionCircleOutlined /></Tooltip>
                         </div>
                         <div className='tradeInfo'>
                             <div className="item">
@@ -115,7 +115,7 @@ export default () => {
                             <div className="item">
                                 <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.price} isBig decimal={8} />
                             </div>
-                            <Button type='primary'  onClick={() => { window.open(`https://orders-mrc20.vercel.app/orderbook/idcoin/btc-${idCoin.tick}`, '_blank')}}>Trade</Button>
+                            <Button type='primary' onClick={() => { window.open(`https://orders-mrc20.vercel.app/orderbook/idcoin/btc-${idCoin.tick}`, '_blank') }}>Trade</Button>
                         </div>
                     </Card>
                 </Row>
