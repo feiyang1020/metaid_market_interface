@@ -24,7 +24,7 @@ export default ({ idCoid }: Props) => {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                         <div>
                             <Typography.Title level={4} style={{ margin: 0 }}>
-                                 {idCoid.deployerUserInfo.name || idCoid.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
+                                {idCoid.deployerUserInfo.name || idCoid.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
                             </Typography.Title>
                             <Typography.Text copyable={{ text: idCoid.deployerMetaId }} className="metaid"> MetaID: {idCoid.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
                         </div>
@@ -42,6 +42,10 @@ export default ({ idCoid }: Props) => {
                     </div>
                     <div className="slider" style={{ marginTop: 12 }}>
                         <Progress percent={Number(idCoid.supply / idCoid.totalSupply) * 100} showInfo={false} />
+                    </div>
+                    <div className="sliderNumber">
+
+                        <NumberFormat value={(Number(idCoid.supply / idCoid.totalSupply) * 10) || 0} precision={4} suffix=' %' />
                     </div>
                 </div>
             </Card>
