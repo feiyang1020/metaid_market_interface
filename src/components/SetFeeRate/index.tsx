@@ -76,8 +76,8 @@ export default () => {
                                     <InputNumber
                                         value={customRate}
                                         onChange={setCustomRate}
-                                        formatter={(value) => `${value}sat/vB`}
-                                        parser={(value) => value?.replace('sat/vB', '') as unknown as number}
+                                        formatter={(value) => `${value} sat/vB`}
+                                        parser={(value) => value?.replace(' sat/vB', '') as unknown as number}
                                         style={{width:'100%',padding:0}}
                                         className="customInput"
                                         variant="borderless"
