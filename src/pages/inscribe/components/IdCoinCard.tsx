@@ -39,7 +39,7 @@ export default ({ mintMrc20Info }: Props) => {
                 // },
                 {
                     key: 'Ticker',
-                    label: 'Decimals',
+                    label: 'Ticker',
                     children: <>{mintMrc20Info.tick}</>
                 },
 
