@@ -64,7 +64,7 @@ export default () => {
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                             <div>
                                 <Typography.Title level={4} style={{ margin: 0 }}>
-                                    {idCoin.deployerUserInfo.name || idCoin.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
+                                    {idCoin.tick}
                                 </Typography.Title>
                                 <Typography.Text copyable={{ text: idCoin.deployerMetaId }} className="metaid"> MetaID: {idCoin.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
                             </div>
