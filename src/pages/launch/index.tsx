@@ -53,7 +53,7 @@ export default () => {
         useModel("wallet");
     const [submiting, setSubmiting] = useState<boolean>(false);
     //if launched
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [idCoin, setIDCoin] = useState<API.IdCoin>()
     const fetchOrder = useCallback(async () => {
         if (btcAddress) {
@@ -65,6 +65,7 @@ export default () => {
             }
             setLoading(false)
         }
+        setLoading(false)
     }, [btcAddress])
     useEffect(() => {
         fetchOrder()
@@ -202,6 +203,7 @@ export default () => {
             }
         }
     }, [connected, userName, initializing])
+    console.log(initializing, loading, idCoin)
     return <div className="launchPage">
         <Spin spinning={initializing || loading} style={{ minHeight: '50vh' }}>
             {(initializing || loading) ? <></> : idCoin ? <IdCoinDetail idCoid={idCoin} /> :
