@@ -257,12 +257,16 @@ export default () => {
                                         },
                                     })]}
                                     validateTrigger="onBlur" className='formItem'>
-                                    <Input placeholder="input ticker" />
+                                    <Input placeholder="2~24 charaters" />
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={24} >
                                 <Form.Item label="Followers Limit" name='followersNum' rules={[{ required: true }]} className='formItem'>
-                                    <InputNumber placeholder="Followers Limit" style={{ width: '100%' }} controls={false} />
+                                    <InputNumber placeholder="Followers Limit" style={{ width: '100%' }} controls={false}  addonAfter={
+                                        <Tooltip title="Followers limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）">
+                                            <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                        </Tooltip>
+                                    } />
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={24} >
@@ -279,7 +283,11 @@ export default () => {
                             </Col>
                             <Col md={12} xs={24} >
                                 <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }]} className='formItem'>
-                                    <InputNumber placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} />
+                                    <InputNumber placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
+                                        <Tooltip title="Liquidity Per Mint：The amount of liquidity required for each transaction. The minimum liquidity requirement is 1,200 stat, with a maximum liquidity supply of 1,000,000,000,000 (1e12)">
+                                            <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                        </Tooltip>
+                                    }/>
                                 </Form.Item>
                                 {/* <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' stas' /></div> */}
                             </Col>
