@@ -325,74 +325,82 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (!connected || !btcAddress || !btcConnector || !mintIdCoinOrder) return;
 
         const pass = await checkWallet();
-        if (!pass) throw new Error("Account change");
         if (!IdCoinInfo) return;
-        const { rawTx } = await buildMintIdCointPsbt(
-            mintIdCoinOrder,
-            feeRate,
-            btcAddress,
-            network
-        )
-        const commitRes = await mintIdCoinCommit(network, {
-            orderId: mintIdCoinOrder.orderId,
-            commitTxOutInscribeIndex: 0,
-            commitTxOutMintIndex: 1,
-            commitTxRaw: rawTx,
-        }, { headers: authParams })
-        console.log(commitRes)
-        if (commitRes.code !== 0) throw new Error(commitRes.message)
-        await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 2 }])
-        setMintIdCoinOrder(undefined)
-        setComfirmVisible(false)
-        setSuccessProp({
-            show: true,
-            onClose: () => {
-                setSuccessProp(DefaultSuccessProps);
-                form.resetFields();
-                form.setFieldValue('type', 'mint')
-            },
-            onDown: () => {
-                setSuccessProp(DefaultSuccessProps);
-                form.resetFields();
-                history.push('/mrc20History?tab=ID-Coins Mint')
+        try {
 
-            },
-            title: "Mint",
-            tip: "Successful",
-            okText: 'OK',
-            children: (
-                <div className="inscribeSuccess">
-                    <div className="res">
-                        <div className="item">
-                            <div className="label">TxId </div>
-                            <div className="value">
-                                <Tooltip title={commitRes.data.revealMintTxId}>
-                                    <a
-                                        style={{ color: "#fff", textDecoration: "underline" }}
-                                        target="_blank"
-                                        href={
-                                            network === "testnet"
-                                                ? `https://mempool.space/testnet/tx/${commitRes.data.revealMintTxId}`
-                                                : `https://mempool.space/tx/${commitRes.data.revealMintTxId}`
-                                        }
-                                    >
-                                        <Typography.Text copyable={{ text: commitRes.data.revealMintTxId }}>
-                                            {commitRes.data.revealMintTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
-                                        </Typography.Text>
-                                    </a>
-                                </Tooltip>
+
+            if (!pass) throw new Error("Account change");
+
+            const { rawTx } = await buildMintIdCointPsbt(
+                mintIdCoinOrder,
+                feeRate,
+                btcAddress,
+                network
+            )
+            const commitRes = await mintIdCoinCommit(network, {
+                orderId: mintIdCoinOrder.orderId,
+                commitTxOutInscribeIndex: 0,
+                commitTxOutMintIndex: 1,
+                commitTxRaw: rawTx,
+            }, { headers: authParams })
+            console.log(commitRes)
+            if (commitRes.code !== 0) throw new Error(commitRes.message)
+            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 2 }])
+            setMintIdCoinOrder(undefined)
+            setComfirmVisible(false)
+            setSuccessProp({
+                show: true,
+                onClose: () => {
+                    setSuccessProp(DefaultSuccessProps);
+                    form.resetFields();
+                    form.setFieldValue('type', 'mint')
+                },
+                onDown: () => {
+                    setSuccessProp(DefaultSuccessProps);
+                    form.resetFields();
+                    history.push('/mrc20History?tab=ID-Coins Mint')
+
+                },
+                title: "Mint",
+                tip: "Successful",
+                okText: 'OK',
+                children: (
+                    <div className="inscribeSuccess">
+                        <div className="res">
+                            <div className="item">
+                                <div className="label">TxId </div>
+                                <div className="value">
+                                    <Tooltip title={commitRes.data.revealMintTxId}>
+                                        <a
+                                            style={{ color: "#fff", textDecoration: "underline" }}
+                                            target="_blank"
+                                            href={
+                                                network === "testnet"
+                                                    ? `https://mempool.space/testnet/tx/${commitRes.data.revealMintTxId}`
+                                                    : `https://mempool.space/tx/${commitRes.data.revealMintTxId}`
+                                            }
+                                        >
+                                            <Typography.Text copyable={{ text: commitRes.data.revealMintTxId }}>
+                                                {commitRes.data.revealMintTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                            </Typography.Text>
+                                        </a>
+                                    </Tooltip>
+                                </div>
                             </div>
                         </div>
+                        <div className="tips">
+                            <InfoCircleOutlined />
+                            <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
+                        </div>
                     </div>
-                    <div className="tips">
-                        <InfoCircleOutlined />
-                        <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
-                    </div>
-                </div>
-            ),
-        });
+                ),
+            });
+        } catch (err) {
+            setMintIdCoinOrder(undefined)
+            setComfirmVisible(false)
 
-
+            throw err
+        }
     }
 
     const success = (title: string, ret: any) => {
