@@ -35,11 +35,11 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
         <div className="mintContent">
             <div className="users">
                 <div className='userAvatar'>
-                    <MetaIdAvatar avatar={avatar} size={60} />
+                    <MetaIdAvatar avatar={idCoin.deployerUserInfo.avatar} size={60} />
                 </div>
 
-                <div className="name">{userName || 'Unnamed'}</div>
-                <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
+                <div className="name">{idCoin.deployerUserInfo.name || 'Unnamed'}</div>
+                <div className="metaid">Metaid:{idCoin.deployerMetaId ? idCoin.deployerMetaId.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
             </div>
             <Divider style={{ margin: '12px 0' }} />
             <DescItem label="Ticker" value={idCoin.tick} />
