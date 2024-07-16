@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useSearchParams, history } from "umi";
 import "./index.less";
-import { broadcastBTCTx, broadcastTx, deployCommit, getIdCoinInfo, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
+import { broadcastBTCTx, broadcastTx, deployCommit, getIdCoinInfo, getIdCoinMintOrder, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
 import { Psbt, Transaction, networks, address as addressLib } from "bitcoinjs-lib";
@@ -88,6 +88,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     // mint Idcoin 
     const [comfirmVisible, setComfirmVisible] = useState(false)
     const [mintIdCoinOrder, setMintIdCoinOrder] = useState<API.MintIdCoinPreRes>();
+    const [addressMintState, setAddressMintState] = useState<number>(0)
 
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
@@ -162,13 +163,21 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             const { code, message, data } = await getMrc20Info(network, params);
             let _shovels: API.MRC20Shovel[] = [];
             let _idCoin: API.IdCoin | undefined = undefined;
+            let _addressMintState = 0;
             if (data && data.mrc20Id) {
                 const idCoinRet = await getIdCoinInfo(network, { tickId: data.mrc20Id });
                 if (idCoinRet.code === 0 && idCoinRet.data) {
-                    _idCoin = idCoinRet.data
+                    _idCoin = idCoinRet.data;
+                    if (btcAddress && authParams) {
+                        const mintOrder = await getIdCoinMintOrder(network, { tickId: data.mrc20Id, address: btcAddress }, { headers: { ...authParams } });
+                        console.log(mintOrder, mintOrder.data, 'mintOrder')
+                        if (mintOrder.code === 0 && mintOrder.data && mintOrder.data.addressMintState === 1) {
+                            _addressMintState = 1
+                        }
+                    }
                 }
             }
-            if (!_idCoin) {
+            if (!_idCoin || _addressMintState === 1) {
                 if (btcAddress && data && data.pinCheck && data.pinCheck.count) {
                     const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: data.mrc20Id, address: btcAddress, cursor: 0, size: 100 });
                     if (code === 0 && ret && ret.list) {
@@ -181,6 +190,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             setMintInfoLoading(false)
             setShowel(_shovels)
             setIdCoinInfo(_idCoin)
+            setAddressMintState(_addressMintState)
             if (data && data.mrc20Id) {
                 setMintMrc20Info(data);
                 setMintInfoStatus('success')
@@ -195,7 +205,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         return () => {
             didCancel = true
         }
-    }, [mintTokenID, btcAddress, network])
+    }, [mintTokenID, btcAddress, network, authParams])
 
 
     const deploy = async () => {
@@ -478,7 +488,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     deployInfo: payload
                 })
             } else {
-                if (type === 'mint' && IdCoinInfo) {
+                if (type === 'mint' && IdCoinInfo && addressMintState === 0) {
                     if (!connected || !btcAddress || !btcConnector) return;
                     const pass = await checkWallet();
                     if (!pass) throw new Error("Account change");
@@ -517,7 +527,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
             }
             if (type === 'mint') {
-                if (IdCoinInfo) {
+                if (IdCoinInfo && addressMintState === 0) {
                     await mintIdCoin()
 
                 } else {
@@ -1057,7 +1067,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         </Spin>
                                         </Col>
                                     </Row>
-                                    {(!IdCoinInfo && mintMrc20Info && Number(mintMrc20Info.pinCheck.count) > 0) && <>
+                                    {((!IdCoinInfo || (IdCoinInfo && addressMintState === 1)) && mintMrc20Info && Number(mintMrc20Info.pinCheck.count) > 0) && <>
                                         {(shovel && shovel.length > 0) ?
                                             <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>

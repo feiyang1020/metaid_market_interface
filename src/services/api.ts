@@ -739,3 +739,21 @@ export async function getIdCoinInfo(
     }
   );
 }
+
+export async function getIdCoinMintOrder(
+  network: API.Network,
+  params: {
+    tickId?: string;
+    address?: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<{ addressMintState: number }>>(
+    `${getHost(network)}/api/v1/id-coins/address/mint/order`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}

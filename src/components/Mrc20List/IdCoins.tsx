@@ -12,7 +12,7 @@ const { useBreakpoint } = Grid;
 export default () => {
     const screens = useBreakpoint();
     const [modal, contextHolder] = Modal.useModal();
-    const { network, btcAddress, connect, connected, btcConnector, feeRates } = useModel("wallet")
+    const { network, btcAddress, connect, connected, btcConnector, feeRate } = useModel("wallet")
     const [list, setList] = useState<API.IdCoin[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
@@ -83,7 +83,7 @@ export default () => {
                 ],
                 options: {
                     noBroadcast: 'no',
-                    feeRate: feeRates[1].value,
+                    feeRate: feeRate,
                     service: getCreatePinFeeByNet(network),
                 },
             });
