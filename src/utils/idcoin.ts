@@ -76,7 +76,9 @@ export const buildDeployIdCointPsbt = async (
   order: API.DeployIdCoinPreRes,
   feeRate: number,
   address: string,
-  network: API.Network
+  network: API.Network,
+  extract: boolean=true,
+  signPsbt: boolean=true
 ) => {
   initEccLib(ecc);
   const { totalFee } = order;
@@ -100,8 +102,8 @@ export const buildDeployIdCointPsbt = async (
     },
     address,
     _buildDeployIdCoinPsbt,
-    true,
-    true
+    extract,
+    signPsbt
   );
   return ret;
 };
