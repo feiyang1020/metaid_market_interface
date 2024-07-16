@@ -265,7 +265,7 @@ export default () => {
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={24} >
-                                <Form.Item label="Followers Limit" name='followersNum' rules={[{ required: true },{ min: 1, max: 1000000000000, message: '1-1e12 ' }]} className='formItem'>
+                                <Form.Item label="Followers Limit" name='followersNum' rules={[{ required: true },{type: 'number', min: 1, max: 1000000000000, message: '1-1e12 ' }]} className='formItem'>
                                     <InputNumber placeholder="Followers Limit" style={{ width: '100%' }} controls={false} addonAfter={
                                         <Tooltip title="Followers limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）">
                                             <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
@@ -286,7 +286,7 @@ export default () => {
 
                             </Col>
                             <Col md={12} xs={24} >
-                                <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { min: 1200, max: 1000000000000, message: '1200-1e12 ' }]} className='formItem'>
+                                <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, {type: 'number', min: 1200, max: 1000000000000, message: '1200-1e12 ' }]} className='formItem'>
                                     <InputNumber placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
                                         <Tooltip title="Liquidity Per Mint：The amount of liquidity required for each transaction. The minimum liquidity requirement is 1,200 stas, with a maximum liquidity supply of 1,000,000,000,000 (1e12)">
                                             <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
