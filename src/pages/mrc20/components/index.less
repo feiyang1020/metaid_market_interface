@@ -1,6 +1,6 @@
 .orderCard {
   padding: 0;
-  
+
   .cardWrap {
     position: relative;
   }
@@ -191,24 +191,44 @@
     align-items: center;
     justify-content: space-between;
     .token {
+      width: 50%;
+      max-width: 50%;
       .tokenName {
         font-size: 15px;
         font-weight: 500;
         color: #d4f66b;
         margin-bottom: 5px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       .tokenId {
         font-size: 10px;
         color: rgba(255, 255, 255, 0.6);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
     .sellerWrap {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
+      width: 50%;
+      max-width: 50%;
+      position: relative;
+      flex-grow: 1;
+      .seller {
+        max-width: 100%;
+      }
       .tokenId {
         font-size: 10px;
         color: rgba(255, 255, 255, 0.6);
+      }
+      .name {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
     .seller {
@@ -220,7 +240,7 @@
 }
 
 .activeityTable {
-  .tickInfo{
+  .tickInfo {
     display: flex;
     flex-direction: column;
     gap: 8px;
