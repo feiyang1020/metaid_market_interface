@@ -104,7 +104,7 @@ export default () => {
                     </Col>
                 </Row>
                 <Row >
-                    <Card bordered={false} styles={{ body: { padding: '24px 16px' } }} style={{ background: 'rgba(27, 27, 27, 0.5)', width: 443 }}>
+                    <Card bordered={false} styles={{ body: { padding: '24px 16px' } }} style={{ background: 'rgba(27, 27, 27, 0.5)', width: 443,borderRadius:16 }}>
                         <div className='orders'>
                             <img src={orders} alt="" /> <Tooltip title='ID-coin can be traded on third-party orders and can also be listed for trading on the market. In third-party order trading, the liquidity of the pool is different from that of the market.'><QuestionCircleOutlined /></Tooltip>
                         </div>

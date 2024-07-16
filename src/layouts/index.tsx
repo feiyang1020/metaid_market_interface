@@ -98,6 +98,7 @@ export default function Layout() {
             <div className="navWrap">
               <Nav />
             </div>
+            
           </div>
           <div className="navWrap">
             {connected ? (

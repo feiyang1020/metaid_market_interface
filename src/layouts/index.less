@@ -146,6 +146,7 @@
         }
       }
       .navs {
+        display: none;
         gap: 10px;
         .nav {
           font-size: 12px;
@@ -169,5 +170,34 @@
     .forsale {
       display: flex;
     }
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 44px;
+  letter-spacing: 0px;
+  font-weight: 900;
+  font-variation-settings: "opsz" auto;
+  color: #ffffff;
+  cursor: pointer;
+  animation: all ease-in-out 0.5s;
+  &.Launch {
+    background: linear-gradient(90deg, #ff0f57 5%, #ff6224 108%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .text {
+    padding-left: 5px;
+  }
+  .icon {
+    width: 16px;
+    height: 16px;
+  }
+  &.active {
+    color: #d4f66b;
   }
 }
