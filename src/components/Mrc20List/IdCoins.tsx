@@ -90,13 +90,13 @@ export default () => {
             if (followRes.status) throw new Error(followRes.status)
             if (followRes && followRes.revealTxIds && followRes.revealTxIds[0]) {
                 message.success('Follow successfully! Please wait for the transaction to be confirmed!')
-                //  setList(list.map(item => {
-                //     if (item.deployerMetaId === record.deployerMetaId) {
-                //         item.isFollowing = true
-                //     }
-                //     return item
-                //  }))
-                await fetchData()
+                 setList(list.map(item => {
+                    if (item.deployerMetaId === record.deployerMetaId) {
+                        item.isFollowing = true
+                    }
+                    return item
+                 }))
+                // await fetchData()
             } else {
                 throw new Error('Follow failed')
             }
@@ -125,7 +125,8 @@ export default () => {
                             </a>
                         </div>
                         <div className="metaid">MetaID : {record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</div>
-                        <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>
+                        {btcAddress !== record.deployerAddress && <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>}
+
                     </div>
                 </div>
             },
@@ -192,7 +193,7 @@ export default () => {
             dataIndex: 'totalSupply',
             width: 200,
             render: (price, record) => {
-                const percent = Number(record.supply / record.totalSupply) * 100
+                const percent = (Number(record.supply / record.totalSupply) * 100) || 0;
                 return <div className="progressAndMint">
 
                     <div className="progress ">

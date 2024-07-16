@@ -1,7 +1,7 @@
 import { Avatar, Button, Grid, List, Popover, Space } from "antd";
 import { FilterOutlined, SyncOutlined, UserOutlined } from "@ant-design/icons";
 import "./index.less";
-import { useModel,useSearchParams } from "umi";
+import { useModel, useSearchParams, useNavigate } from "umi";
 import Order from "@/components/Order";
 import SortArrow from "@/components/SortArrow";
 import { useEffect, useState } from "react";
@@ -31,6 +31,7 @@ export default () => {
     filterKey
   } = useModel("orders");
   const [query] = useSearchParams();
+  const nav = useNavigate()
   const [curOrder, setCurOrder] = useState<API.Order>();
   const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
   const handleSort = (key: string) => {
@@ -43,7 +44,7 @@ export default () => {
     setLoading(true);
   };
 
-  
+
   const _tab = query.get("tab");
   useEffect(() => {
     if (_tab && items.includes(_tab)) {
@@ -64,7 +65,10 @@ export default () => {
             <Button
               key={item}
               type={tab === item ? "link" : "text"}
-              onClick={() => setTab(item)}
+              onClick={() => {
+                nav({ search: '?tab='+item })
+                setTab(item)
+              }}
               size="large"
             >
               {item}
@@ -117,8 +121,8 @@ export default () => {
                 }
               ></SortArrow>
             </div>
-            <Popover content={<FilterForm /> } trigger={'click'} placement='bottomLeft'>
-              <Button type={Object.keys(filterKey).length>0?'link':'text'} icon={<FilterOutlined  />}></Button>
+            <Popover content={<FilterForm />} trigger={'click'} placement='bottomLeft'>
+              <Button type={Object.keys(filterKey).length > 0 ? 'link' : 'text'} icon={<FilterOutlined />}></Button>
             </Popover>
 
             <Button
