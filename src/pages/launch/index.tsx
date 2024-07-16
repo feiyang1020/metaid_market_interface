@@ -64,6 +64,8 @@ export default () => {
                 setIDCoin(tickExist.data)
             }
             setLoading(false)
+        } else {
+            setIDCoin(undefined)
         }
         setLoading(false)
     }, [btcAddress])
