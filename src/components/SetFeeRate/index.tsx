@@ -10,7 +10,7 @@ import Actcus from '@/assets/icons/gauge-low (1).svg'
 export default () => {
     const { feeRate, feeRateType, feeRates, setFeeRate, setFeeRateModelVisible, setFeeRateType, feeRateModalVisible } = useModel("wallet");
 
-    const [customRate, setCustomRate] = useState<string | number>(1);
+    const [customRate, setCustomRate] = useState<string | number>(feeRate);
     useEffect(() => {
         if (feeRateType === "Custom") {
             setFeeRate(Number(customRate) || 1);

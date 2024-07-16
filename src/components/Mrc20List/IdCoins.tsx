@@ -156,7 +156,7 @@ export default () => {
         {
             title: 'Price',
             dataIndex: 'price',
-            // sorter: true,
+            sorter: true,
             width: 140,
             render: (price) => {
                 return <NumberFormat value={price} suffix=' sats' />
