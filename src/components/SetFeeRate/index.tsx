@@ -10,10 +10,10 @@ import Actcus from '@/assets/icons/gauge-low (1).svg'
 export default () => {
     const { feeRate, feeRateType, feeRates, setFeeRate, setFeeRateModelVisible, setFeeRateType, feeRateModalVisible } = useModel("wallet");
 
-    const [customRate, setCustomRate] = useState<string | number>(feeRate);
+    const [customRate, setCustomRate] = useState<string | number>(0);
     useEffect(() => {
         if (feeRateType === "Custom") {
-            setFeeRate(Number(customRate) || 1);
+            setFeeRate(Number(customRate)||0);
         }
     }, [feeRateType, customRate])
     return <Popup
