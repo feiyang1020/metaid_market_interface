@@ -112,9 +112,7 @@ export default ({ mintMrc20Info }: Props) => {
                 // }
             ]}></Descriptions>
     </Card>
-        <Card style={{ marginBottom: 20, border: '1px solid #D4F66B' }} styles={{ body: { padding: '10px 15px',textAlign:"left", color: '#D4F66B', fontSize: 12 } }}>
-            Mint your ID-coins* and we'll guide you to follow the deployment if you haven't already, ensuring a smooth and complete user experience
-        </Card>
+       
     </>
 }
 
