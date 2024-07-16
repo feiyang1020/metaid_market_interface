@@ -137,7 +137,7 @@ export default () => {
             title: 'Ticker',
             dataIndex: 'tick',
             width: 220,
-            align:'center',
+            align: 'center',
             render: (item) => {
                 return <div style={{ color: '#F68819', fontSize: 16, fontWeight: 'bold' }}>{item}</div>
             }
@@ -145,22 +145,28 @@ export default () => {
         {
             title: 'Followers limit',
             dataIndex: 'followersLimit',
-            align:'center',
-            width: 160
+            align: 'center',
+            width: 160,
+            render: (item) => {
+                return <NumberFormat value={item} />
+            }
         },
         {
             title: 'Supply',
             dataIndex: 'supply',
             sorter: true,
-            align:'center',
-            width: 160
+            align: 'center',
+            width: 160,
+            render: (item) => {
+                return <NumberFormat value={item} />
+            }
         },
         {
             title: 'Price',
             dataIndex: 'price',
             sorter: true,
             width: 140,
-            align:'center',
+            align: 'center',
             render: (price) => {
                 return <NumberFormat value={price} suffix=' sats' />
             }
@@ -171,7 +177,7 @@ export default () => {
             dataIndex: 'pool',
             sorter: true,
             width: 140,
-            align:'center',
+            align: 'center',
             render: (price) => {
                 return <NumberFormat value={price} decimal={8} isBig suffix=' BTC' />
             }
@@ -179,7 +185,7 @@ export default () => {
         {
             title: 'Message',
             dataIndex: 'metaData',
-            align:'center',
+            align: 'center',
             ellipsis: {
                 showTitle: false,
             },
@@ -197,7 +203,7 @@ export default () => {
             title: 'Progress%',
             dataIndex: 'totalSupply',
             width: 200,
-            align:'center',
+            align: 'center',
             render: (price, record) => {
                 const percent = (Number(record.supply / record.totalSupply) * 100) || 0;
                 return <div className="progressAndMint">
@@ -222,7 +228,7 @@ export default () => {
             title: 'Trade',
             dataIndex: 'Trade',
             // fixed: 'right',
-            align:'center',
+            align: 'center',
             width: 80,
             render: (_, record) => {
                 return <Button size='small' onClick={(e) => {
