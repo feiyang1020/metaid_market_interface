@@ -168,7 +168,7 @@ export default () => {
             width: 140,
             align: 'center',
             render: (price) => {
-                return <NumberFormat value={price} isBig decimal={8} tiny suffix=' BTC' />
+                return <NumberFormat value={price} isBig decimal={8}  suffix=' BTC' />
             }
         },
 
