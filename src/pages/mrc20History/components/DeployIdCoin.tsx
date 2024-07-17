@@ -86,6 +86,9 @@ export default () => {
         {
             title: 'Liquidity Per Mint',
             dataIndex: 'liquidityPerMint',
+            render: (item) => {
+                return <NumberFormat value={item} isBig decimal={8} suffix=' BTC' />
+            }
 
         },
         // {

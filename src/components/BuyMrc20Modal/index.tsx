@@ -26,6 +26,7 @@ import JSONView from "../JSONView";
 import { buildBuyMrc20TakePsbt, buyMrc20Order } from "@/utils/mrc20";
 import MRC20Icon from "../MRC20Icon";
 import { addUtxoSafe } from "@/utils/psbtBuild";
+import NumberFormat from "../NumberFormat";
 type Props = {
   order: API.Mrc20Order | undefined;
   show: boolean;
@@ -244,7 +245,7 @@ export default ({ order, show, onClose }: Props) => {
             <div className="fees">
               <div className="feeItem">
                 <div className="label">Price</div>
-                <div className="value">{order.priceAmount} sats</div>
+                <div className="value"><NumberFormat value={order.priceAmount} isBig decimal={8} suffix=" BTC"  /></div>
               </div>
               <div className="feeItem">
                 <div className="label">

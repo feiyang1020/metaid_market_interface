@@ -24,6 +24,7 @@ import SuccessModal, {
 import { number } from "bitcoinjs-lib/src/script";
 import JSONView from "../JSONView";
 import { addUtxoSafe } from "@/utils/psbtBuild";
+import NumberFormat from "../NumberFormat";
 type Props = {
   order: API.Order | undefined;
   show: boolean;
@@ -305,7 +306,7 @@ export default ({ order, show, onClose }: Props) => {
             <div className="fees">
               <div className="feeItem">
                 <div className="label">Price</div>
-                <div className="value">{order.sellPriceAmount} sats</div>
+                <div className="value"><NumberFormat value={order.sellPriceAmount} isBig decimal={8} suffix=' BTC'/>  </div>
               </div>
               <div className="feeItem">
                 <div className="label">
