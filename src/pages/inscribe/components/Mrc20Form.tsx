@@ -1109,7 +1109,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     <Row gutter={[0, 0]}>
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
                                             {
-                                                IdCoinInfo && <> <Card style={{ marginBottom: 20, border: '1px solid #D4F66B' }} styles={{ body: { padding: '10px 15px', textAlign: "left", color: '#D4F66B', fontSize: 12 } }}>
+                                                (IdCoinInfo&&addressMintState === 0) && <> <Card style={{ marginBottom: 20, border: '1px solid #D4F66B' }} styles={{ body: { padding: '10px 15px', textAlign: "left", color: '#D4F66B', fontSize: 12 } }}>
                                                     Mint your ID-coins* and we'll guide you to follow the deployment if you haven't already, ensuring a smooth and complete user experience
                                                 </Card></>
                                             }
