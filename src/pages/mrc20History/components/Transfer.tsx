@@ -69,7 +69,7 @@ export default () => {
       dataIndex: 'amount',
       sorter: true,
       render: (price) => {
-          return <NumberFormat value={price} suffix=' sats' />
+          return <NumberFormat value={price} isBig decimal={8} suffix=' BTC' />
       }
   },
   {
