@@ -421,7 +421,7 @@ export default () => {
               >
                 <div className="uploadWrap">
                   <div className="label"></div>
-                  <div className="upload" style={{height:400}}>
+                  <div className="upload" >
                     <Dragger {...props} className="uploadInput"  listType={fileList && fileList[0] && fileList[0].type?.includes('image') ? 'picture' : 'text'}>
                       <p className="ant-upload-text">Upload file</p>
                       <p className="ant-upload-hint">Any file type. Max 300kb</p>
