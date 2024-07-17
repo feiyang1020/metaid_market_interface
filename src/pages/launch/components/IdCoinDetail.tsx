@@ -18,7 +18,7 @@ export default ({ idCoid }: Props) => {
     if (!idCoid) return <></>
     return <Row gutter={[20, 20]} style={{ marginTop: 100, width: 784, maxWidth: 'calc(100vw - 24px)' }} className="idCoinDetails">
         <Col span={24}>
-            <Card bordered={false} styles={{body:{padding:'12px 23px'}}} >
+            <Card bordered={false} styles={{ body: { padding: '12px 23px' } }} >
                 <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: "center" }}>
                     <MetaIdAvatar avatar={idCoid.deployerUserInfo.avatar} size={62} />
                     <div className="right" style={{ flexGrow: 1 }}>
@@ -64,7 +64,7 @@ export default ({ idCoid }: Props) => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoid.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" value={Number(idCoid.floorPrice) < 0.01 ? 0.01 : idCoid.floorPrice} precision={2} suffix='sats' />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" formatter={()=><NumberFormat value={idCoid.floorPrice} isBig decimal={8} suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoid.holders} />

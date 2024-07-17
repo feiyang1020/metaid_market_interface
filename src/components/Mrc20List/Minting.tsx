@@ -65,14 +65,7 @@ export default () => {
                 </div>
             }
         },
-        // {
-        //     title: 'Pending',
-        //     dataIndex: 'Pending',
-        //     sorter: true,
-        //     render: (price) => {
-        //         return <NumberFormat value={price} suffix=' sats' />
-        //     }
-        // },
+       
         {
             title: 'Minted',
             dataIndex: 'totalMinted',
