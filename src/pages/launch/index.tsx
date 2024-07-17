@@ -41,7 +41,7 @@ export default () => {
 
     const InitialPrice = useMemo(() => {
         if (_amountPerMint && _liquidityPerMint) {
-            return BigInt(Math.round(_liquidityPerMint)) / BigInt(Math.round(_amountPerMint))
+            return Number(_liquidityPerMint) / Number(_amountPerMint)
         } else {
             return BigInt(0)
         }
@@ -99,7 +99,7 @@ export default () => {
             if (commitRes.code !== 0) throw new Error(commitRes.message)
             await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 1 }])
             // message.success('Successfully launched')
-            
+
             setFields(undefined)
             setOrder(undefined)
             fetchOrder()
@@ -186,7 +186,7 @@ export default () => {
                 message: description,
                 followersNum,
                 amountPerMint,
-                liquidityPerMint
+                liquidityPerMint: Number(BigInt(liquidityPerMint * 1e8))
             }
             const { code, data, message: msg } = await deployIdCoinPre(network, payload, { headers: authParams });
             if (code !== 0) throw new Error(msg);
@@ -207,11 +207,11 @@ export default () => {
         }
     }
 
-    useEffect(()=>{
-        if(!btcAddress){
+    useEffect(() => {
+        if (!btcAddress) {
             form.resetFields()
         }
-    },[btcAddress])
+    }, [btcAddress])
 
     useEffect(() => {
         if (!initializing && connected) {
@@ -255,9 +255,9 @@ export default () => {
                         colon={false}
                         initialValues={{
                             // tick: 'OhMyCoin',
-                            // followersNum: 1000,
-                            amountPerMint: 21000000,
-                            liquidityPerMint: 1200,
+                            followersNum: 1000,
+                            amountPerMint: 10000,
+                            liquidityPerMint: 0.001,
                             // description: "come on!"
                         }}
                     >
@@ -303,14 +303,14 @@ export default () => {
 
                             </Col>
                             <Col md={12} xs={24} >
-                                <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 1200, max: 1000000000000, message: '1200-1e12 ' }]} className='formItem'>
-                                    <InputNumber precision={0} placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
+                                <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 0.000012, max: 10000, message: '0.000012-10000 ' }]} className='formItem'>
+                                    <InputNumber precision={8} formatter={(value) => `${value} BTC`} parser={(value) => value?.replace(' BTC', '') as unknown as number} placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
                                         <Tooltip title="Liquidity Per Mint：The amount of liquidity required for each transaction. The minimum liquidity requirement is 1,200 stas, with a maximum liquidity supply of 1,000,000,000,000 (1e12)">
                                             <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                         </Tooltip>
                                     } />
                                 </Form.Item>
-                                <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' stas' /></div>
+                                <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' BTC' /></div>
                             </Col>
                             <Col md={24} xs={24} >
                                 <Form.Item label="Message" name='description' className='formItem' >

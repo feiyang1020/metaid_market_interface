@@ -82,7 +82,7 @@ export default ({ idCoid }: Props) => {
             <DescItem label="Amount Per Mint" value={<NumberFormat value={idCoid.amtPerMint} />} />
         </Col>
         <Col md={12} xs={24} >
-            <DescItem label="Liquidity Per Mint" value={<NumberFormat value={idCoid.liquidityPerMint} />} />
+            <DescItem label="Liquidity Per Mint" value={<NumberFormat value={idCoid.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
         </Col>
         <Col span={24} >
             <DescItem label="Message" value={<IdCoinMessage maxWidth={300} info={idCoid.metaData} />} />

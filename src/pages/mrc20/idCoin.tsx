@@ -97,7 +97,7 @@ export default () => {
                     <div className="right" style={{ flexGrow: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                             <div>
-                                <Typography.Title level={4} style={{ margin: 0 }}>
+                                <Typography.Title level={4} style={{ margin: 0,color:'#fff' }}>
                                     {idCoin.tick}
                                 </Typography.Title>
                                 <Typography.Text copyable={{ text: idCoin.deployerMetaId }} className="metaid"> MetaID: {idCoin.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
