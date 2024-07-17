@@ -207,6 +207,12 @@ export default () => {
         }
     }
 
+    useEffect(()=>{
+        if(!btcAddress){
+            form.resetFields()
+        }
+    },[btcAddress])
+
     useEffect(() => {
         if (!initializing && connected) {
             if (!userName) {
