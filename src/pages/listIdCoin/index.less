@@ -1,0 +1,279 @@
+.listIdCoinPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(100vh - 138px);
+  max-height: calc(100vh - 138px);
+  box-sizing: border-box;
+  .idCoins {
+    margin: 0 71px 10px 71px;
+    display: flex;
+    align-items: center;
+    .info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      .count {
+        margin-left: 90px;
+      }
+    }
+  }
+  .saleContent {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: calc(100vh - 210px);
+    max-height: calc(100vh - 210px);
+  }
+  .tabs {
+    margin: 0 71px 10px 71px;
+  }
+  .listWrap {
+    padding: 0 71px;
+    flex-grow: 1;
+    overflow-y: scroll;
+    padding-bottom: 100px;
+  }
+  .title {
+    cursor: pointer;
+    padding: 0 71px;
+    margin-top: 36px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+  .sellCard {
+    padding: 0;
+    .levelInfo {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      .level {
+        border-radius: 2px;
+        background: rgba(71, 80, 53, 0.47);
+        text-align: center;
+        color: #d4f66b;
+        display: flex;
+        align-items: baseline;
+        padding: 1px 4px;
+        font-size: 10.59px;
+        min-width: 20px;
+        justify-content: center;
+        font-style: oblique;
+        span {
+          font-weight: bold;
+          color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+    .cardWrap {
+      position: relative;
+    }
+    &:hover {
+      border: 1px solid #d4f66b;
+    }
+    &.checked {
+      border: 1px solid #d4f66b;
+    }
+    .contetn {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 280px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 8px 8px 0 0;
+      background: #0c0e09;
+      cursor: pointer;
+      .imageCont {
+        display: block;
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+      }
+      .info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 18px;
+      }
+      .textCont {
+        word-break: break-all;
+        padding: 10px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+      }
+    }
+    .assetNumber {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 200;
+    }
+    .checkBox {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      z-index: 200;
+      height: 24px;
+      width: 24px;
+      display: flex;
+      align-items: center;
+      border-radius: 0px 0px 0px 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      .checked {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: #d4f66b;
+        color: #000;
+        font-weight: 700;
+      }
+      .unchecked {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        color: #000;
+        font-weight: 700;
+      }
+    }
+    .desc {
+      margin: 14px 12px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .pinStatus {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        color: #ff8f1f;
+        font-size: 14px;
+        font-weight: 500;
+        gap: 8px;
+      }
+      .number {
+        font-size: 15px;
+        font-weight: 500;
+        line-height: normal;
+
+        letter-spacing: 0em;
+
+        font-variation-settings: "opsz" auto;
+        font-feature-settings: "kern" on;
+        color: #d4f66b;
+      }
+      .path {
+        font-size: 10px;
+        font-weight: normal;
+        line-height: 18px;
+
+        letter-spacing: 0px;
+        font-variation-settings: "opsz" auto;
+        color: rgba(255, 255, 255, 0.4);
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    .inputWrap {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      .input {
+        width: 100%;
+        input {
+          height: 44px;
+        }
+      }
+    }
+    .btcAmount {
+      padding: 12px;
+      padding-top: 0;
+      text-align: right;
+      font-size: 14px;
+      color: #ffffff;
+    }
+  }
+  .totalPrice {
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
+    // right: 0;
+    // height: 80px;
+    background: #1f2216;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 228px 12px 71px;
+    .aciotns {
+      display: flex;
+      align-items: center;
+      .prices {
+        text-align: right;
+        font-size: 16px;
+        color: #ffffff;
+        margin-right: 36px;
+        .btc {
+          margin-top: 10px;
+        }
+      }
+    }
+  }
+}
+.saleSuccess {
+  margin-top: 30px;
+}
+
+@media screen and (max-width: 767px) {
+  .listIdCoinPage {
+    .listWrap {
+      padding: 20px;
+    }
+    .idCoins {
+      padding: 20px;
+    }
+    .idCoins {
+      margin: 0 20px 10px 20px;
+      .info {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        .count {
+          margin-left: 0px;
+        }
+      }
+    }
+
+    .title {
+      padding: 20px;
+      margin: 0;
+    }
+    .totalPrice {
+      padding: 10px 20px;
+      font-size: 14px;
+      .aciotns {
+        .prices {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
