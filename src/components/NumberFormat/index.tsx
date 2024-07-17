@@ -7,7 +7,7 @@ import { useIntl } from "umi";
 
 
 type Props = {
-    value: string | number | BigNumber ,
+    value: string | number | BigNumber,
     prefix?: React.ReactNode,
     suffix?: React.ReactNode,
     precision?: number,
@@ -24,12 +24,17 @@ const NumberFormat: React.FC<Props> = (props) => {
     const { prefix, suffix, } = props;
 
     const beautyNumber = useMemo(() => {
-        const { value, precision = 10, kmt, isBig = false, decimal, tiny = false } = props;
+        const { value, precision = 16, kmt, isBig = false, decimal, tiny = false } = props;
 
         let _value = value
         if (Number.isNaN(Number(_value))) return '--'
         if (isBig && decimal) {
-            _value = bigint2Number(new BigNumber(_value), decimal)
+            if (String(_value).indexOf('.')>-1) {
+                _value = bigint2Number(new BigNumber(_value).multipliedBy(1e8), Number(decimal)+8)
+            } else {
+                _value = bigint2Number(new BigNumber(_value), decimal)
+            }
+
         }
         try {
             if (tiny && Number(_value) < 0.000001 && Number(_value) > 0) {

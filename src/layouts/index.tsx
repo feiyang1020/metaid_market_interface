@@ -4,6 +4,7 @@ import logo from "@/assets/logo.svg";
 import defaultAvatar from "@/assets/avatar@2x.png";
 import Nav from "./components/Nav";
 import {
+  Alert,
   Avatar,
   Button,
   ConfigProvider,
@@ -67,7 +68,8 @@ export default function Layout() {
     disConnect,
     feeRate,
     feeRateType,
-    setFeeRateModelVisible
+    setFeeRateModelVisible,
+    network
   } = useModel("wallet");
   const { pathname } = useLocation();
   const [editViseble, setEditVisible] = useState<boolean>(false)
@@ -84,8 +86,9 @@ export default function Layout() {
         algorithm: theme.darkAlgorithm,
         ..._themes,
       }}
-    >
+    >{network === 'testnet' && <Alert type="error" message="This is a test network. Coins have no value." banner showIcon={false} style={{ textAlign: 'center' }} />}
       <div className="page">
+
         <div className="header">
           <div className="pageLeft">
             <img
@@ -98,7 +101,7 @@ export default function Layout() {
             <div className="navWrap">
               <Nav />
             </div>
-            
+
           </div>
           <div className="navWrap">
             {connected ? (
