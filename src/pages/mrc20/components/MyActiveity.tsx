@@ -40,7 +40,7 @@ export default ({ mrc20Id }: Props) => {
             dataIndex: 'tokenPriceRate',
             sorter: true,
             render: (price,record) => {
-              return <NumberFormat value={price} suffix={` sats/${record.tick}`} />
+              return <NumberFormat value={price} isBig decimal={8}  suffix={` BTC/${record.tick}`} />
             }
           },
         {
