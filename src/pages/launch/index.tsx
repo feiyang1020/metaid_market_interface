@@ -99,8 +99,10 @@ export default () => {
             if (commitRes.code !== 0) throw new Error(commitRes.message)
             await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 1 }])
             // message.success('Successfully launched')
+            
             setFields(undefined)
             setOrder(undefined)
+            fetchOrder()
             setComfirmVisible(false)
             setSuccessProp({
                 show: true,
@@ -114,7 +116,7 @@ export default () => {
                     history.push('/mrc20History?tab=ID-Coins Deploy')
 
                 },
-                title: "Deploy",
+                title: "Launch",
                 tip: "Successful",
                 okText: 'OK',
                 children: (
