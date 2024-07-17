@@ -253,6 +253,8 @@ declare namespace API {
     timestamp: number;
     txId: string;
     vout: number;
+    tag: string;
+    orderId:string
   };
 
   type MRC20Info = {

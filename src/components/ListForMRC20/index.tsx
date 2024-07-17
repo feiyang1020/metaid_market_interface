@@ -9,7 +9,13 @@ import { listMrc20Order } from "@/utils/mrc20"
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "../SuccessModal"
 import MRC20Icon from "../MRC20Icon"
 
-const ListForMRC20 = () => {
+const tags: Record<string, string> = {
+    "MRC-20": "",
+    "ID-Coins": "id-coins"
+
+}
+
+const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
     const { btcAddress, connect, connected, network, authParams } =
         useModel("wallet");
     const [list, setList] = useState<API.MRC20Info[]>([]);
@@ -36,7 +42,7 @@ const ListForMRC20 = () => {
                 if (code !== 0) { continue }
 
                 utxoList.list.forEach((item) => {
-                    if (item.orderId === '') {
+                    if (item.orderId === '' && tags[tag] === item.tag) {
                         item.mrc20s.forEach((mrc20) => {
 
                             _list.push({
@@ -53,7 +59,7 @@ const ListForMRC20 = () => {
         setLoading(false)
 
 
-    }, [btcAddress, network])
+    }, [btcAddress, network, tag])
     useEffect(() => {
         fetchList()
     }, [fetchList])
@@ -175,10 +181,10 @@ const ListForMRC20 = () => {
                                         <div className="unchecked"></div>
                                     )}
                                 </div>
-                                <div className="info"><MRC20Icon size={32} tick={item.tick}  metadata={item.metaData} /> {item.amount} {item.tick}</div>
+                                <div className="info"><MRC20Icon size={32} tick={item.tick} metadata={item.metaData} /> {item.amount} {item.tick}</div>
                             </div>
 
-                           
+
 
                             <div className="inputWrap">
                                 <InputNumber
