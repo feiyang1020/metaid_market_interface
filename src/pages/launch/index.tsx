@@ -218,7 +218,7 @@ export default () => {
             if (!userName) {
                 setVisible(true)
             } else {
-
+                setVisible(false)
             }
         }
     }, [connected, userName, initializing])
