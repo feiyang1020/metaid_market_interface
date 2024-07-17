@@ -18,29 +18,33 @@ export default ({ idCoid }: Props) => {
     if (!idCoid) return <></>
     return <Row gutter={[20, 20]} style={{ marginTop: 100, width: 784, maxWidth: 'calc(100vw - 24px)' }} className="idCoinDetails">
         <Col span={24}>
-            <Card bordered={false} styles={{ body: { display: 'flex', gap: 16, flexWrap: 'wrap' } }}>
-                <MetaIdAvatar avatar={idCoid.deployerUserInfo.avatar} size={100} />
-                <div className="right" style={{ flexGrow: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                        <div>
-                            <Typography.Title level={4} style={{ margin: 0 }}>
-                                {idCoid.tick}
-                            </Typography.Title>
-                            <Typography.Text copyable={{ text: idCoid.deployerMetaId }} className="metaid"> MetaID: {idCoid.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
-                        </div>
-                        <div>
-                            <Typography.Text className="ticker"><NumberFormat value={idCoid.followersCount} /> </Typography.Text>
+            <Card bordered={false} styles={{body:{padding:'12px 23px'}}} >
+                <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: "center" }}>
+                    <MetaIdAvatar avatar={idCoid.deployerUserInfo.avatar} size={62} />
+                    <div className="right" style={{ flexGrow: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                             <div>
-                                Followers
+                                <Typography.Title level={4} style={{ margin: 0 }}>
+                                    {idCoid.tick}
+                                </Typography.Title>
+                                <Typography.Text copyable={{ text: idCoid.deployerMetaId }} className="metaid"> MetaID: {idCoid.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
                             </div>
-                        </div>
+                            <div style={{ display: 'flex', gap: 4, justifyContent: "center", flexDirection: 'column', alignItems: "center" }}>
+                                <Typography.Text className="ticker"><NumberFormat value={idCoid.followersCount} /> </Typography.Text>
+                                <div>
+                                    Followers
+                                </div>
+                            </div>
 
+                        </div>
                     </div>
-                    <div className="mint colorPrimary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 20 }}>
+                </div>
+                <div>
+                    <div className="mint colorPrimary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
                         <span>Minted : <NumberFormat value={idCoid.totalMinted} />  </span>
                         <span>Supply : <NumberFormat value={idCoid.totalSupply} /> </span>
                     </div>
-                    <div className="slider" style={{ marginTop: 12 }}>
+                    <div className="slider" style={{ marginTop: 0 }}>
                         <Progress percent={Number(idCoid.supply / idCoid.totalSupply) * 100} showInfo={false} />
                     </div>
                     <div className="sliderNumber">
