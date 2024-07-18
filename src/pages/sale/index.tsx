@@ -19,6 +19,7 @@ import SuccessModal, {
 } from "@/components/SuccessModal";
 import JSONView from "@/components/JSONView";
 import ListForMRC20 from "@/components/ListForMRC20";
+import NumberFormat from "@/components/NumberFormat";
 const items = ["PIN", 'MRC-20', 'ID-Coins'];
 export default () => {
   const { btcAddress, connect, connected, network, authParams } =
@@ -61,7 +62,7 @@ export default () => {
     if (!btcAddress || !network) return;
 
     const ret = await buildAskLimit({
-      total: price,
+      total: Number(price * 1e8),
       utxoId,
       network,
     });
@@ -243,16 +244,16 @@ export default () => {
                         controls={false}
                         className="input"
                         value={sellPrices[item.assetId]}
-                        suffix="sats"
+                        suffix="BTC"
                         disabled={item.pinStatus !== 0}
                         onFocus={() => {
                           handleCheck(item.assetId);
                         }}
                       />
                     </div>
-                    <div className="btcAmount">
+                    {/* <div className="btcAmount">
                       {formatSat(sellPrices[item.assetId] || 0)} {" "} BTC
-                    </div>
+                    </div> */}
                   </div>
                 </Card>
               </List.Item>
@@ -262,8 +263,8 @@ export default () => {
               <div className="label">Total Price</div>
               <div className="aciotns">
                 <div className="prices">
-                  <div className="sats">{totalStas}sats</div>
-                  <div className="btc">{formatSat(totalStas)}BTC</div>
+                  <div className="sats"><NumberFormat value={totalStas} suffix=" BTC" /></div>
+                  {/* <div className="btc">{formatSat(totalStas)}BTC</div> */}
                 </div>
                 {connected ? (
                   <Button

@@ -8,6 +8,7 @@ import { formatSat } from "@/utils/utlis"
 import { listMrc20Order } from "@/utils/mrc20"
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "../SuccessModal"
 import MRC20Icon from "../MRC20Icon"
+import NumberFormat from "../NumberFormat"
 
 const tags: Record<string, string> = {
     "MRC-20": "",
@@ -97,7 +98,7 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
             outputIndex: Number(txPoint.split(':')[1]),
             confirmed: true
         }
-        const psbtRaw = await listMrc20Order(utxo, price, network, btcAddress);
+        const psbtRaw = await listMrc20Order(utxo, Number(price * 1e8), network, btcAddress);
         console.log('psbtRaw', psbtRaw)
         const { code, message } = await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
             headers: {
@@ -192,16 +193,16 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
                                     controls={false}
                                     className="input"
                                     value={sellPrices[item.txPoint]}
-                                    suffix="sats"
-                                    min={2000}
+                                    suffix="BTC"
+                                    min={0.00002}
                                     onFocus={() => {
                                         handleCheck(item.txPoint);
                                     }}
                                 />
                             </div>
-                            <div className="btcAmount">
+                            {/* <div className="btcAmount">
                                 {formatSat(sellPrices[item.txPoint] || 0)} BTC
-                            </div>
+                            </div> */}
                         </div>
                     </Card>
                 </List.Item>
@@ -211,8 +212,8 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
             <div className="label">Total Price</div>
             <div className="aciotns">
                 <div className="prices">
-                    <div className="sats">{totalStas}sats</div>
-                    <div className="btc">{formatSat(totalStas)}BTC</div>
+                    <div className="sats"><NumberFormat value={totalStas} suffix=" BTC" /> </div>
+                    {/* <div className="btc">{formatSat(totalStas)}BTC</div> */}
                 </div>
                 {connected ? (
                     <Button

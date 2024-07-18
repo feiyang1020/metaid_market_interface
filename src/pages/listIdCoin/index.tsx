@@ -128,7 +128,7 @@ export default () => {
             outputIndex: Number(txPoint.split(':')[1]),
             confirmed: true
         }
-        const psbtRaw = await listMrc20Order(utxo, price, network, btcAddress);
+        const psbtRaw = await listMrc20Order(utxo, Number(price * 1e8), network, btcAddress);
         console.log('psbtRaw', psbtRaw)
         const { code, message } = await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
             headers: {
@@ -255,8 +255,8 @@ export default () => {
                                             controls={false}
                                             className="input"
                                             value={sellPrices[item.txPoint]}
-                                            suffix="sats"
-                                            min={2000}
+                                            suffix="BTC"
+                                            min={0.00002}
                                             onFocus={() => {
                                                 handleCheck(item.txPoint);
                                             }}
@@ -274,8 +274,8 @@ export default () => {
                     <div className="label">Total Price</div>
                     <div className="aciotns">
                         <div className="prices">
-                            <div className="sats">{totalStas}sats</div>
-                            <div className="btc">{formatSat(totalStas)}BTC</div>
+                            <div className="sats"><NumberFormat value={totalStas} suffix=" BTC" /></div>
+                            {/* <div className="btc">{formatSat(totalStas)}BTC</div> */}
                         </div>
                         {connected ? (
                             <Button
