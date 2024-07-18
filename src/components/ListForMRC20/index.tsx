@@ -9,6 +9,7 @@ import { listMrc20Order } from "@/utils/mrc20"
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "../SuccessModal"
 import MRC20Icon from "../MRC20Icon"
 import NumberFormat from "../NumberFormat"
+import Decimal from "decimal.js"
 
 const tags: Record<string, string> = {
     "MRC-20": "",
@@ -98,7 +99,7 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
             outputIndex: Number(txPoint.split(':')[1]),
             confirmed: true
         }
-        const psbtRaw = await listMrc20Order(utxo, Number(price * 1e8), network, btcAddress);
+        const psbtRaw = await listMrc20Order(utxo, Number(new Decimal(price).times(1e8).toFixed(0)), network, btcAddress);
         console.log('psbtRaw', psbtRaw)
         const { code, message } = await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
             headers: {
@@ -194,7 +195,7 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
                                     className="input"
                                     value={sellPrices[item.txPoint]}
                                     suffix="BTC"
-                                    min={0.00002}
+                                    min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(item.amount) / 1e8}
                                     onFocus={() => {
                                         handleCheck(item.txPoint);
                                     }}

@@ -24,6 +24,7 @@ import MetaIdAvatar from "@/components/MetaIdAvatar";
 import NumberFormat from "@/components/NumberFormat";
 import { listMrc20Order } from "@/utils/mrc20";
 import MRC20Icon from "@/components/MRC20Icon";
+import Decimal from "decimal.js";
 const items = ["PIN", 'MRC-20', 'ID-Coins'];
 export default () => {
     const { btcAddress, connect, connected, network, authParams } =
@@ -128,7 +129,7 @@ export default () => {
             outputIndex: Number(txPoint.split(':')[1]),
             confirmed: true
         }
-        const psbtRaw = await listMrc20Order(utxo, Number(price * 1e8), network, btcAddress);
+        const psbtRaw = await listMrc20Order(utxo, Number(new Decimal(price).times(1e8).toFixed(0)), network, btcAddress);
         console.log('psbtRaw', psbtRaw)
         const { code, message } = await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
             headers: {
