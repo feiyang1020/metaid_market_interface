@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from "react";
 import "./index.less";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { FileToAttachmentItem, formatSat, image2Attach } from "@/utils/utlis";
-import { useModel, useSearchParams } from "umi";
+import { useModel, useSearchParams, useNavigate } from "umi";
 import { CreateOptions, IBtcConnector, IBtcEntity } from "@metaid/metaid";
 import uploadIcon from "@/assets/upload.svg";
 import { getCreatePinFeeByNet } from "@/config";
@@ -47,6 +47,7 @@ const { useBreakpoint } = Grid;
 export default () => {
   const [query] = useSearchParams();
   const _tab = query.get('tab');
+  const nav = useNavigate()
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("MRC-20");
   const [submiting, setSubmiting] = useState(false);
@@ -400,7 +401,7 @@ export default () => {
             <Button
               key={item}
               type={tab === item ? "link" : "text"}
-              onClick={() => setTab(item)}
+              onClick={() => { nav({ search: '?tab=' + item }); setTab(item) }}
               size="large"
             >
               {item}
@@ -422,7 +423,7 @@ export default () => {
                 <div className="uploadWrap">
                   <div className="label"></div>
                   <div className="upload" >
-                    <Dragger {...props} className="uploadInput"  listType={fileList && fileList[0] && fileList[0].type?.includes('image') ? 'picture' : 'text'}>
+                    <Dragger {...props} className="uploadInput" listType={fileList && fileList[0] && fileList[0].type?.includes('image') ? 'picture' : 'text'}>
                       <p className="ant-upload-text">Upload file</p>
                       <p className="ant-upload-hint">Any file type. Max 300kb</p>
                       <p className="ant-upload-drag-icon">
