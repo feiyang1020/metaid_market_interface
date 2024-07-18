@@ -1,6 +1,6 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
 import { getIdCoinInfo, getMrc20AddressUtxo, getMrc20Info } from '@/services/api';
-import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip } from 'antd';
+import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useMatch, useModel, history, Link } from 'umi';
 import './idCoin.less'
@@ -97,7 +97,7 @@ export default () => {
                     <div className="right" style={{ flexGrow: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                             <div>
-                                <Typography.Title level={4} style={{ margin: 0,color:'#fff' }}>
+                                <Typography.Title level={4} style={{ margin: 0, color: '#fff' }}>
                                     {idCoin.tick}
                                 </Typography.Title>
                                 <Typography.Text copyable={{ text: idCoin.deployerMetaId }} className="metaid"> MetaID: {idCoin.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
@@ -131,7 +131,7 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoin.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price"  formatter={()=><NumberFormat value={idCoin.floorPrice} isBig decimal={8} suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoin.holders} />
@@ -157,25 +157,27 @@ export default () => {
                         </div>
                     </Card>
                 </Row>
-                <div className='mintBtn'>
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Button: {
-                                    "defaultBorderColor": "rgb(212, 246, 107)",
-                                    "defaultColor": "rgb(212, 246, 107)"
+                <Space>
+                    <div className='mintBtn'>
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        "defaultBorderColor": "rgb(212, 246, 107)",
+                                        "defaultColor": "rgb(212, 246, 107)"
+                                    },
                                 },
-                            },
-                        }}
-                    >
-                        <Button loading={loading} style={{ height: 48 }} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List for sale </Button>
-                    </ConfigProvider>
-                </div>
-                {
-                    idCoin.mintable && <div className='mintBtn'>
-                        <Button type='primary' style={{ height: 48, width: 102 }} block onClick={() => { history.push('/inscribe?tab=MRC-20&tickerId=' + idCoin.mrc20Id) }}>Mint</Button>
+                            }}
+                        >
+                            <Button loading={loading} style={{ height: 48 }} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List for sale </Button>
+                        </ConfigProvider>
                     </div>
-                }
+                    {
+                        idCoin.mintable && <div className='mintBtn'>
+                            <Button type='primary' style={{ height: 48, width: 102 }} block onClick={() => { history.push('/inscribe?tab=MRC-20&tickerId=' + idCoin.mrc20Id) }}>Mint</Button>
+                        </div>
+                    }
+                </Space>
 
 
             </div>
