@@ -352,7 +352,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 show: true,
                 onClose: () => {
                     setSuccessProp(DefaultSuccessProps);
-                    form.resetFields();
                     form.setFieldValue('type', 'mint')
                 },
                 onDown: () => {
