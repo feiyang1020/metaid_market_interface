@@ -262,9 +262,9 @@ export default () => {
                                             }}
                                         />
                                     </div>
-                                    <div className="btcAmount">
+                                    {/* <div className="btcAmount">
                                         {formatSat(sellPrices[item.txPoint] || 0)} BTC
-                                    </div>
+                                    </div> */}
                                 </div>
                             </Card>
                         </List.Item>
