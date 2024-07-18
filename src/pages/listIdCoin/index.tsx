@@ -191,7 +191,7 @@ export default () => {
                 <div className="idCoins">
                     {idCoin && <div className="idInfo">
                         <div className="info">
-                            <MetaIdAvatar avatar={idCoin.deployerUserInfo.avatar} size={59} style={{minWidth:59}} />
+                            <MetaIdAvatar avatar={idCoin.deployerUserInfo.avatar} size={59} style={{ minWidth: 59 }} />
                             <div>
                                 <Typography.Title level={5} style={{ margin: 0 }}>
                                     {idCoin.tick}
@@ -257,7 +257,7 @@ export default () => {
                                             className="input"
                                             value={sellPrices[item.txPoint]}
                                             suffix="BTC"
-                                            min={0.00002}
+                                            min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
                                             onFocus={() => {
                                                 handleCheck(item.txPoint);
                                             }}
