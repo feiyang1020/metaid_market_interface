@@ -195,7 +195,8 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
                                     className="input"
                                     value={sellPrices[item.txPoint]}
                                     suffix="BTC"
-                                    min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
+                                    // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
+                                    min={0.00002}
                                     onFocus={() => {
                                         handleCheck(item.txPoint);
                                     }}
