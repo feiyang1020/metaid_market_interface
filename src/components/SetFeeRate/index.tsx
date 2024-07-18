@@ -76,7 +76,7 @@ export default () => {
                                     <InputNumber
                                         value={customRate}
                                         onChange={setCustomRate}
-                                      
+                                        min={0}
                                         style={{width:'74px' ,background:'#28310C'}}
                                         className="customInput"
                                         variant="borderless"
