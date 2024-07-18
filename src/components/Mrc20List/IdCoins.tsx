@@ -118,13 +118,13 @@ export default () => {
                     <div>
                         <div className="nameWrap">
                             <div className="name">
-                                {record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
+                                <Tooltip title={record.deployerUserInfo.name || record.deployerAddress}>{record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</Tooltip>
                             </div>
                             <a onClick={(e) => e.stopPropagation()} href={`${network === 'mainnet' ? 'https://www.bitbuzz.io' : 'https://bitbuzz-testnet.vercel.app'}/profile/${record.deployerAddress}`} target='_blank'>
                                 <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
                             </a>
                         </div>
-                        <div className="metaid">MetaID : {record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</div>
+                        <div className="metaid">MetaID :<Tooltip title={record.deployerMetaId}>{record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Tooltip> </div>
                         {btcAddress !== record.deployerAddress && <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>}
 
                     </div>

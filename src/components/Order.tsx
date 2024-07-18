@@ -6,6 +6,7 @@ import {
   Divider,
   Menu,
   MenuProps,
+  Tooltip,
   Typography,
 } from "antd";
 import { HomeOutlined, EditOutlined, UserOutlined } from "@ant-design/icons";
@@ -22,19 +23,7 @@ type Props = {
   item: API.Order;
   handleBuy: (order: API.Order) => void;
 };
-const { Text } = Typography;
-const EllipsisMiddle: React.FC<{ suffixCount: number; children: string }> = ({
-  suffixCount,
-  children,
-}) => {
-  const start = children.slice(0, children.length - suffixCount);
-  const suffix = children.slice(-suffixCount).trim();
-  return (
-    <Text style={{ maxWidth: "100%" }} ellipsis={{ suffix }}>
-      {start}
-    </Text>
-  );
-};
+
 
 export default ({ item, handleBuy }: Props) => {
   const { connected, connect } = useModel("wallet");
@@ -98,7 +87,7 @@ export default ({ item, handleBuy }: Props) => {
                 size={20}
                 style={{ minWidth: 20 }}
               />
-              <div className="name">{name}</div>
+              <div className="name"><Tooltip title={(item.seller && item.seller.name)||item.sellerAddress}>{name}</Tooltip></div>
             </div>
           </div>
           <Divider type="vertical" />
