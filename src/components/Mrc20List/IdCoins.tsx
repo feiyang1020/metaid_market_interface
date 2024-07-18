@@ -165,7 +165,7 @@ export default () => {
             title: 'Price',
             dataIndex: 'price',
             sorter: true,
-            width: 140,
+            width: 240,
             align: 'center',
             render: (price) => {
                 return <NumberFormat value={price} isBig decimal={8}  suffix=' BTC' />
