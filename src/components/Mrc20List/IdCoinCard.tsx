@@ -14,7 +14,7 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
     const { network, btcAddress } = useModel('wallet')
 
     const percent = (Number(record.supply / record.totalSupply) * 100) || 0;
-    return <Card className="IdCoinCard" bordered={false} style={{ background: '#101110' }} onClick={() => {
+    return <Card className="IdCoinCard" bordered={false} style={{ background: '#101110', borderRadius: 16 }} styles={{ body: { padding: '12px 18px' } }} onClick={() => {
         history.push(`/idCoin/${record.tick}`)
     }} >
         <div className="top">
