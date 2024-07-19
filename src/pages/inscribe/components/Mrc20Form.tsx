@@ -84,7 +84,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     // mint Idcoin 
     const [comfirmVisible, setComfirmVisible] = useState(false)
-    const [mintIdCoinOrder, setMintIdCoinOrder] = useState<API.MintIdCoinPreRes>();
+    const [mintIdCoinOrder, setMintIdCoinOrder] = useState<API.MintIdCoinPreRes & { _gasFee: number }>();
     const [addressMintState, setAddressMintState] = useState<number>(0)
 
     const [successProp, setSuccessProp] =
@@ -506,7 +506,15 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     }
                     const { code, message, data } = await mintIdCoinPre(network, prePayload, { headers: { ...authParams } })
                     if (code !== 0) throw new Error(message);
-                    setMintIdCoinOrder(data)
+                    const { fee } = await buildMintIdCointPsbt(
+                        data,
+                        feeRate,
+                        btcAddress,
+                        network,
+                        false,
+                        false
+                    )
+                    setMintIdCoinOrder({ ...data, _gasFee: Number(fee) })
                     setComfirmVisible(true)
 
                 } else {

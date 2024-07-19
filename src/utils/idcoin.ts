@@ -177,7 +177,9 @@ export const buildMintIdCointPsbt = async (
   order: API.MintIdCoinPreRes,
   feeRate: number,
   address: string,
-  network: API.Network
+  network: API.Network,
+  extract: boolean=true,
+  signPsbt: boolean=true
 ) => {
   initEccLib(ecc);
   const { totalFee } = order;
@@ -201,8 +203,8 @@ export const buildMintIdCointPsbt = async (
     },
     address,
     _buildMintIdCoinPsbt,
-    true,
-    true
+    extract,
+    signPsbt
   );
   return ret;
 };
