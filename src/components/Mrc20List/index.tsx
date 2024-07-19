@@ -4,7 +4,7 @@ import AllList from "./AllList";
 import "./index.less";
 import Minting from "./Minting";
 import IdCoins from "./IdCoins";
-import { useSearchParams, useNavigate, useResolvedPath } from "umi";
+import { useSearchParams, useNavigate, useMatch } from "umi";
 import { useEffect, useState } from "react";
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
@@ -29,8 +29,9 @@ export default () => {
     const screens = useBreakpoint();
     const [activeKey, setActiveKey] = useState('0');
     const nav = useNavigate()
-    const [query] = useSearchParams();
-    const _tab = query.get("mt");
+    const match = useMatch('/market/:tab/:mrc20Tab');
+
+    const _tab = match?.params.mrc20Tab;
     useEffect(() => {
         if (_tab) {
             setActiveKey(_tab)
@@ -51,6 +52,6 @@ export default () => {
             },
         }}
     ><Tabs onChange={(item) => {
-        nav({ search: `?tab=MRC-20&mt=${item}` })
+        nav('/market/MRC-20/' + item,{ replace: false })
     }} tabBarStyle={{ paddingLeft: screens.lg ? 20 : 20 }} className="mrc20ListWrap" activeKey={activeKey} defaultActiveKey="0" items={items} /></ConfigProvider>
 }

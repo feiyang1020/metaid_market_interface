@@ -3,6 +3,8 @@ export default defineConfig({
   routes: [
     { path: "/", component: "index", title: "" },
     { path: "/market", component: "index" },
+    { path: "/market/:tab", component: "index" },
+    { path: "/market/:tab/:mrc20Tab", component: "index" },
     { path: "/inscribe", component: "inscribe" },
     { path: "/launch", component: "launch" },
     { path: "/sale", component: "sale" },

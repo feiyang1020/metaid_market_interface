@@ -1,7 +1,7 @@
 import { Avatar, Button, Grid, List, Popover, Space } from "antd";
 import { FilterOutlined, SyncOutlined, UserOutlined } from "@ant-design/icons";
 import "./index.less";
-import { useModel, useSearchParams, useNavigate } from "umi";
+import { useModel, useMatch, useNavigate } from "umi";
 import Order from "@/components/Order";
 import SortArrow from "@/components/SortArrow";
 import { useEffect, useState } from "react";
@@ -30,7 +30,7 @@ export default () => {
     setTab,
     filterKey
   } = useModel("orders");
-  const [query] = useSearchParams();
+  const match = useMatch('/market/:tab');
   const nav = useNavigate()
   const [curOrder, setCurOrder] = useState<API.Order>();
   const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
@@ -45,7 +45,7 @@ export default () => {
   };
 
 
-  const _tab = query.get("tab");
+  const _tab = match?.params.tab;
   useEffect(() => {
     if (_tab && items.includes(_tab)) {
       setTab(_tab as "PIN" | "MRC-20");
@@ -58,7 +58,7 @@ export default () => {
   }, []);
 
   return (
-    <div className="indexPage animation-slide-bottom">
+    <div className="indexPage ">
       <div className="tabs">
         <Space>
           {items.map((item) => (
@@ -66,7 +66,8 @@ export default () => {
               key={item}
               type={tab === item ? "link" : "text"}
               onClick={() => {
-                nav({ search: '?tab='+item })
+                // nav({ search: '?tab=' + item })
+                nav('/market/' + item, { replace: false })
                 setTab(item)
               }}
               size="large"
