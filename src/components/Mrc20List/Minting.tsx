@@ -1,6 +1,6 @@
 import usePageList from "@/hooks/usePageList"
 import { getMrc20List } from "@/services/api"
-import { ConfigProvider, Table, TableColumnsType, Grid, Tooltip, Slider, Progress, Button } from "antd"
+import { ConfigProvider, Table, TableColumnsType, Grid, Tooltip, Slider, Progress, Button, List } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
 import Item from "./Item";
@@ -9,6 +9,7 @@ import Meta from "antd/es/card/Meta";
 import MetaIdAvatar from "../MetaIdAvatar";
 import PopLvl from "../PopLvl";
 import dayjs from "dayjs";
+import MintingCard from "./MintingCard";
 const { useBreakpoint } = Grid;
 export default () => {
     const screens = useBreakpoint();
@@ -121,7 +122,7 @@ export default () => {
             dataIndex: 'totalSupply',
             width: 200,
             render: (price, record) => {
-                const percent = Number(record.supply / record.totalSupply) * 100
+                const percent = Number(record.supply / record.totalSupply) * 100||0;
                 return <div className="progress">
                     <NumberFormat value={percent} precision={2} suffix='%' />
                     <Progress className="Progress" percent={percent > 1 ? percent : 1} showInfo={false}>
@@ -157,7 +158,7 @@ export default () => {
                     "fontSize": 16
                 }
             },
-        }}><Table
+        }}> {screens.md ? <Table
             style={{ margin: screens.lg ? '0 20px ' : '0 0px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
@@ -190,6 +191,27 @@ export default () => {
                     },
                 }
             }}
-        />
+        /> : <List
+            loading={loading}
+            grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
+            dataSource={list}
+            renderItem={(item) => (
+                <List.Item>
+                    <MintingCard record={item} />
+                </List.Item>
+            )}
+            rowKey={"mrc20Id"}
+            pagination={{
+                onChange: (page) => {
+                    setLoading(true);
+                    setPage(page - 1);
+                },
+                position: "bottom",
+                align: "center",
+                pageSize: 10,
+                total: total,
+                current: page + 1,
+            }}
+        />}
     </ConfigProvider>
 }
