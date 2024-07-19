@@ -1,19 +1,22 @@
 import { Button, Card, Divider, Progress, Space, Tooltip } from "antd"
 import MetaIdAvatar from "../MetaIdAvatar";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { useModel } from "umi";
+import { useModel, history } from "umi";
 import NumberFormat from "../NumberFormat";
 import './index.less'
 type Props = {
     record: API.IdCoin
     showMintNotice: (record: API.IdCoin) => void;
     showTradeNotice: (record: API.IdCoin) => void;
+    handleFollow: (record: API.IdCoin) => void;
 }
-export default ({ record, showMintNotice, showTradeNotice }: Props) => {
+export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props) => {
     const { network, btcAddress } = useModel('wallet')
 
     const percent = (Number(record.supply / record.totalSupply) * 100) || 0;
-    return <Card className="IdCoinCard" bordered={false} style={{background:'#101110'}}>
+    return <Card className="IdCoinCard" bordered={false} style={{ background: '#101110' }} onClick={() => {
+        history.push(`/idCoin/${record.tick}`)
+    }} >
         <div className="top">
             <div className="topLeft">
                 <MetaIdAvatar size={48} avatar={record.deployerUserInfo.avatar} />
@@ -58,7 +61,7 @@ export default ({ record, showMintNotice, showTradeNotice }: Props) => {
                 </Space>
             </div>
         </div>
-        <Divider/>
+        <Divider />
         <div className="bottom">
             <div className="bottomLeft">
                 <div className="item">

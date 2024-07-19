@@ -312,7 +312,7 @@ export default () => {
             dataSource={list}
             renderItem={(item) => (
                 <List.Item>
-                    <IdCoinCard record={item} showMintNotice={showMintNotice} showTradeNotice={showMintNotice} />
+                    <IdCoinCard record={item} showMintNotice={showMintNotice} showTradeNotice={showTradeNotice} handleFollow={handleFollow} />
                 </List.Item>
             )}
             rowKey={"mrc20Id"}
