@@ -52,9 +52,9 @@ export default ({ show, onClose, fields = {}, order, submiting, handleSubmit }: 
             <DescItem label="Followers limit" value={<NumberFormat value={followersNum} />} />
             <DescItem label="Amount Per Mint" value={<NumberFormat value={amountPerMint} />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem dark label="Liquidity Per Mint" value={<NumberFormat value={liquidityPerMint}  suffix=' BTC' />} />
+            <DescItem dark label="Liquidity Per Mint" value={<NumberFormat value={liquidityPerMint} suffix=' BTC' />} />
             <DescItem dark label="Gas" value={<NumberFormat value={fields.gasFee} isBig decimal={8} suffix=' BTC' />} />
-            <DescItem dark label="Service Fee" value={<NumberFormat value={order.totalFee} isBig decimal={8} suffix=' BTC' />} />
+            <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
             <DescItem label="You will Spend" value={<NumberFormat value={Number(order.totalFee) + Number(fields.gasFee)} isBig decimal={8} suffix=' BTC' />} />
             <DescItem label="Available Balance" value={<NumberFormat value={userBal} suffix=' BTC' />} />
