@@ -1,10 +1,11 @@
 import usePageList from "@/hooks/usePageList"
 import { getMrc20List } from "@/services/api"
-import { ConfigProvider, Table, TableColumnsType, Grid } from "antd"
+import { ConfigProvider, Table, TableColumnsType, Grid, List } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
 import Item from "./Item";
 import { useCallback, useEffect, useState } from "react";
+import AllCard from "./AllCard";
 const { useBreakpoint } = Grid;
 export default () => {
     const screens = useBreakpoint();
@@ -14,7 +15,7 @@ export default () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(0);
     const [size, setSize] = useState<number>(10);
-    const [params, setParams] = useState<Record<string, any>>({orderBy:'marketCap',sortType:-1});
+    const [params, setParams] = useState<Record<string, any>>({ orderBy: 'marketCap', sortType: -1 });
     const fetchData = useCallback(async () => {
         console.log(network, page, size, params)
         setLoading(true);
@@ -49,16 +50,16 @@ export default () => {
             title: 'Price',
             dataIndex: 'price',
             sorter: true,
-            align:'center',
+            align: 'center',
             render: (price) => {
-                return <NumberFormat value={price} isBig decimal={8} suffix=' BTC' />
+                return <NumberFormat value={price} isBig tiny decimal={8} suffix=' BTC' />
             }
         },
         {
             title: 'Change 24H',
             dataIndex: 'change24h',
             sorter: true,
-            align:'center',
+            align: 'center',
             render: (item) => {
                 return <div style={{ color: item[0] === '+' ? '#40BA68' : '#B94041' }}>{item}</div>
             }
@@ -67,7 +68,7 @@ export default () => {
             title: 'Market Cap',
             dataIndex: 'marketCap',
             sorter: true,
-            align:'center',
+            align: 'center',
             render: (price) => {
                 return <NumberFormat value={price} decimal={8} isBig suffix=' BTC' />
             }
@@ -76,7 +77,7 @@ export default () => {
             title: 'Total Supply',
             dataIndex: 'totalSupply',
             // sorter: true,
-            align:'center',
+            align: 'center',
             render: (price) => {
                 return <NumberFormat value={price} />
             }
@@ -84,7 +85,7 @@ export default () => {
         {
             title: 'Holders',
             dataIndex: 'holders',
-            align:'center',
+            align: 'center',
             sorter: true,
         },
     ]
@@ -101,10 +102,11 @@ export default () => {
                 "Table": {
                     "borderColor": "rgba(240, 240, 240, 0)",
                     "rowHoverBg": "rgba(110, 208, 63, 0.13)",
-                   
+
                 }
             },
-        }}><Table
+        }}>
+        {screens.md ? <Table
             style={{ margin: screens.lg ? '0 20px ' : '0 0px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
@@ -123,8 +125,8 @@ export default () => {
                 if (!current) current = 1
                 if (sorter.order) {
                     setParams({ orderBy: sorter.field === 'price' ? 'lastPrice' : sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
-                }else{
-                    setParams({}) 
+                } else {
+                    setParams({})
                 }
                 setPage(current - 1)
             }}
@@ -136,6 +138,27 @@ export default () => {
                     },
                 }
             }}
-        />
+        /> : <List
+            loading={loading}
+            grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
+            dataSource={list}
+            renderItem={(item) => (
+                <List.Item>
+                    <AllCard record={item} />
+                </List.Item>
+            )}
+            rowKey={"mrc20Id"}
+            pagination={{
+                onChange: (page) => {
+                    setLoading(true);
+                    setPage(page - 1);
+                },
+                position: "bottom",
+                align: "center",
+                pageSize: 10,
+                total: total,
+                current: page + 1,
+            }}
+        />}
     </ConfigProvider>
 }
