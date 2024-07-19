@@ -9,6 +9,7 @@ import MetaIdAvatar from "../MetaIdAvatar";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { getCreatePinFeeByNet } from "@/config";
 const { useBreakpoint } = Grid;
+
 export default () => {
     const screens = useBreakpoint();
     const [modal, contextHolder] = Modal.useModal();
@@ -111,10 +112,11 @@ export default () => {
     const columns: TableColumnsType<API.IdCoin> = [
         {
             title: 'Name',
+            key: 'name',
             dataIndex: 'deployerUserInfo',
             render: (_, record) => {
                 return <div className="idCoinDeploy">
-                    <MetaIdAvatar style={{ minWidth: 72 }} size={72} avatar={record.deployerUserInfo.avatar} />
+                    <MetaIdAvatar  size={screens.xl?72:50} avatar={record.deployerUserInfo.avatar} />
                     <div>
                         <div className="nameWrap">
                             <div className="name">
@@ -131,20 +133,23 @@ export default () => {
                 </div>
             },
             // fixed: 'left',
-            width: 220
+            width: 200
         },
         {
             title: 'Ticker',
             dataIndex: 'tick',
-            width: 220,
+            key: 'tick',
+            width: 110,
             align: 'center',
+            ellipsis: true,
             render: (item) => {
-                return <div style={{ color: '#F68819', fontSize: 16, fontWeight: 'bold' }}>{item}</div>
+                return <div style={{ color: '#F68819', fontWeight: 'bold' }}>{item}</div>
             }
         },
         {
             title: 'Followers limit',
             dataIndex: 'followersLimit',
+            key: 'followersLimit',
             align: 'center',
             width: 160,
             render: (item) => {
@@ -154,6 +159,7 @@ export default () => {
         {
             title: 'Supply',
             dataIndex: 'supply',
+            key: 'supply',
             sorter: true,
             align: 'center',
             width: 160,
@@ -164,17 +170,19 @@ export default () => {
         {
             title: 'Price',
             dataIndex: 'price',
+            key: 'price',
             sorter: true,
-            width: 240,
+            width: 140,
             align: 'center',
             render: (price) => {
-                return <NumberFormat value={price} isBig decimal={8}  suffix=' BTC' />
+                return <NumberFormat value={price} isBig decimal={8} tiny suffix=' BTC' />
             }
         },
 
         {
             title: 'Pool',
             dataIndex: 'pool',
+            key: 'pool',
             sorter: true,
             width: 140,
             align: 'center',
@@ -185,6 +193,7 @@ export default () => {
         {
             title: 'Message',
             dataIndex: 'metaData',
+            key: 'metaData',
             align: 'center',
             ellipsis: {
                 showTitle: false,
@@ -197,11 +206,12 @@ export default () => {
                     return <></>
                 }
             },
-            width: 220
+            width: 120
         },
         {
             title: 'Progress%',
             dataIndex: 'totalSupply',
+            key: 'totalSupply',
             width: 200,
             align: 'center',
             render: (price, record) => {
@@ -228,6 +238,7 @@ export default () => {
             title: 'Trade',
             dataIndex: 'Trade',
             // fixed: 'right',
+            key: 'Trade',
             align: 'center',
             width: 80,
             render: (_, record) => {
@@ -258,27 +269,28 @@ export default () => {
                 "Table": {
                     "borderColor": "rgba(240, 240, 240, 0)",
                     "rowHoverBg": "rgba(110, 208, 63, 0.13)",
-                    "fontSize": 16
+                    // "fontSize": 16
                 }
             },
         }}><Table
-            style={{ margin: screens.lg ? '0 20px ' : '0 20px' }}
-            columns={columns}
+            style={{ margin: screens.xl ? '0 20px ' : '0 0px' }}
+            columns={columns.filter(item => !['followersLimit', 'metaData'].includes(item.dataIndex) || screens.xl)}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}
+            size={screens.xl ? 'middle' : 'small'}
             pagination={{
                 position: ['bottomCenter'],
                 pageSize: size,
                 current: page + 1,
                 total
             }}
-            scroll={{ x: 1000 }}
+            scroll={{ x: 800 }}
             loading={loading}
             onChange={({ current, ...params }, _, sorter) => {
                 console.log(sorter, 'params')
                 if (!current) current = 1
                 if (sorter.order) {
-                    setParams({ orderBy:  sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
+                    setParams({ orderBy: sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
                 } else {
                     setParams({})
                 }
