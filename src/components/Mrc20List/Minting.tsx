@@ -158,7 +158,7 @@ export default () => {
                 }
             },
         }}><Table
-            style={{ margin: screens.lg ? '0 20px ' : '0 20px' }}
+            style={{ margin: screens.lg ? '0 20px ' : '0 0px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}
@@ -169,6 +169,7 @@ export default () => {
                 current: page + 1,
                 total
             }}
+            size={screens.xl ? 'middle' : 'small'}
             scroll={{ x: 1000 }}
             loading={loading}
             onChange={({ current, ...params }, _, sorter) => {

@@ -1,6 +1,6 @@
 import usePageList from "@/hooks/usePageList"
 import { getIdCoinList, getMrc20List } from "@/services/api"
-import { ConfigProvider, Table, TableColumnsType, Grid, Progress, Button, Tooltip, Popconfirm, Modal, Checkbox, CheckboxProps, message } from "antd"
+import { ConfigProvider, Table, TableColumnsType, Grid, Progress, Button, Tooltip, Popconfirm, Modal, Checkbox, CheckboxProps, message, List } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
 import Item from "./Item";
@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import MetaIdAvatar from "../MetaIdAvatar";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { getCreatePinFeeByNet } from "@/config";
+import IdCoinCard from "./IdCoinCard";
 const { useBreakpoint } = Grid;
 
 export default () => {
@@ -272,7 +273,8 @@ export default () => {
                     // "fontSize": 16
                 }
             },
-        }}><Table
+        }}>
+        {screens.md ? <Table
             style={{ margin: screens.xl ? '0 20px ' : '0 0px' }}
             columns={columns.filter(item => !['followersLimit', 'metaData'].includes(item.dataIndex) || screens.xl)}
             rowKey={(record) => record.mrc20Id}
@@ -304,7 +306,29 @@ export default () => {
                     },
                 }
             }}
-        />
+        /> : <List
+            loading={loading}
+            grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
+            dataSource={list}
+            renderItem={(item) => (
+                <List.Item>
+                    <IdCoinCard record={item} showMintNotice={showMintNotice} showTradeNotice={showMintNotice} />
+                </List.Item>
+            )}
+            rowKey={"mrc20Id"}
+            pagination={{
+                onChange: (page) => {
+                    setLoading(true);
+                    setPage(page - 1);
+                },
+                position: "bottom",
+                align: "center",
+                pageSize: 10,
+                total: total,
+                current: page + 1,
+            }}
+        />}
+
         {contextHolder}
     </ConfigProvider>
 }

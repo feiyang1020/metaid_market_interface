@@ -15,7 +15,7 @@ const items: TabsProps['items'] = [
     },
     {
         key: '1',
-        label: 'Minted',
+        label: 'All',
         children: <AllList />,
     },
     {

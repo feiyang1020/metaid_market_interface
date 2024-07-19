@@ -462,5 +462,6 @@ declare namespace API {
     supply: string;
     mintable: true;
     remaining: "21000000000";
+    isFollowing?: boolean;
   };
 }

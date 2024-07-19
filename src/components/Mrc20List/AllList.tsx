@@ -101,11 +101,11 @@ export default () => {
                 "Table": {
                     "borderColor": "rgba(240, 240, 240, 0)",
                     "rowHoverBg": "rgba(110, 208, 63, 0.13)",
-                    "fontSize": 16
+                   
                 }
             },
         }}><Table
-            style={{ margin: screens.lg ? '0 20px ' : '0 20px' }}
+            style={{ margin: screens.lg ? '0 20px ' : '0 0px' }}
             columns={columns}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}
@@ -117,6 +117,7 @@ export default () => {
             }}
             scroll={{ x: 1000 }}
             loading={loading}
+            size={screens.xl ? 'middle' : 'small'}
             onChange={({ current, ...params }, _, sorter) => {
                 console.log(sorter, 'params')
                 if (!current) current = 1

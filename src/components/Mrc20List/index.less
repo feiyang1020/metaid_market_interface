@@ -31,7 +31,7 @@
     align-items: center;
     gap: 12px;
     min-width: 220px;
-    .nameWrap{
+    .nameWrap {
       display: flex;
       align-items: center;
     }
@@ -52,10 +52,10 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    .progress{
+    .progress {
       display: flex;
       flex-direction: column;
-      .ant-progress-line{
+      .ant-progress-line {
         width: 88px !important;
       }
     }
@@ -103,6 +103,67 @@
       margin-top: 8px;
       font-size: 10px;
       color: rgba(255, 255, 255, 0.6);
+    }
+  }
+  .IdCoinCard {
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .topLeft {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        .nameWrap {
+          display: flex;
+          align-items: center;
+          .name {
+            font-size: 12px;
+            font-weight: bold;
+          }
+        }
+        .metaid {
+          margin-top: 3px;
+          font-size: 10px;
+          font-weight: normal;
+          color: rgba(255, 255, 255, 0.5);
+        }
+      }
+    }
+    .bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .bottomLeft {
+        width: 45%;
+      }
+      .bottomRight {
+        width: 45%;
+      }
+      .item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        &.item {
+          margin-top: 16px;
+        }
+        gap: 4px;
+        .label {
+          font-size: 12px;
+          font-weight: normal;
+          color: rgba(255, 255, 255, 0.5);
+        }
+        .value {
+          font-size: 12px;
+          color: #ffffff;
+          &.tick {
+            font-size: 12px;
+            font-weight: bold;
+            color: #f68819;
+          }
+        }
+      }
     }
   }
 }
