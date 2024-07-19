@@ -13,6 +13,8 @@ export default defineConfig({
     { path: "/mrc20/:mrc20Id", component: "mrc20" },
     { path: "/idCoin/:tick", component: "mrc20/idCoin" },
     { path: "/list/idCoins/:tick", component: "listIdCoin" },
+    { path: "/inscribe/:tab", component: "inscribe" },
+    { path: "/inscribe/:tab/:tick", component: "inscribe" },
   ],
   title: "MetaID-Market",
   npmClient: "pnpm",

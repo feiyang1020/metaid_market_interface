@@ -174,7 +174,7 @@ export default () => {
                     </div>
                     {
                         idCoin.mintable && <div className='mintBtn'>
-                            <Button type='primary' style={{ height: 48, width: 102 }} block onClick={() => { history.push('/inscribe?tab=MRC-20&tickerId=' + idCoin.mrc20Id) }}>Mint</Button>
+                            <Button type='primary' style={{ height: 48, width: 102 }} block onClick={() => { history.push('/inscribe/MRC-20/' + idCoin.tick) }}>Mint</Button>
                         </div>
                     }
                 </Space>

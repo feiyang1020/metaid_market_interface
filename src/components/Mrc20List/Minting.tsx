@@ -65,13 +65,13 @@ export default () => {
                 </div>
             }
         },
-       
+
         {
             title: 'Minted',
             dataIndex: 'totalMinted',
             sorter: true,
             width: 160,
-            align:'center',
+            align: 'center',
             render: (totalMinted) => {
                 return <NumberFormat value={totalMinted} />
             }
@@ -81,7 +81,7 @@ export default () => {
             dataIndex: 'holders',
             sorter: true,
             width: 160,
-            align:'center',
+            align: 'center',
             render: (price) => {
                 return <NumberFormat value={price} />
             }
@@ -91,7 +91,7 @@ export default () => {
             dataIndex: 'pinCheck',
             width: 170,
             render: (_, record) => {
-               if(!record.pinCheck) return <div className="condition">--</div>
+                if (!record.pinCheck) return <div className="condition">--</div>
                 return <div className="condition"><div>
                     <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 45 ? record.pinCheck.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.pinCheck.path}</Tooltip></div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> x {record.pinCheck.count || '0'}</span></div></div>
             }
@@ -110,7 +110,7 @@ export default () => {
             title: 'Time',
             dataIndex: 'deployTime',
             // sorter: true,
-            align:'center',
+            align: 'center',
             width: 200,
             render: (price) => {
                 return dayjs(price * 1000).format('MM/DD/YYYY,HH:mm')
@@ -136,7 +136,7 @@ export default () => {
             // fixed: 'right',
             width: 80,
             render: (_, record) => {
-                return <Button size='small' onClick={(e) => { e.stopPropagation(); history.push('/inscribe?tab=MRC-20&tickerId=' + record.mrc20Id) }} type='primary'>Mint</Button>
+                return <Button size='small' onClick={(e) => { e.stopPropagation(); history.push('/inscribe/MRC-20/' + record.tick) }} type='primary'>Mint</Button>
             }
         },
 

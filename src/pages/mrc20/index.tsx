@@ -111,7 +111,7 @@ export default () => {
                 </div>
                 {
                     mrc20Info.mintable && <div className='mintBtn'>
-                        <Button type='primary' block onClick={() => { history.push('/inscribe?tab=MRC-20&tickerId=' + mrc20Info.mrc20Id) }}>Mint</Button>
+                        <Button type='primary' block onClick={() => { history.push('/inscribe/MRC-20/' + mrc20Info.tick) }}>Mint</Button>
                     </div>
                 }
 

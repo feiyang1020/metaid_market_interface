@@ -1,15 +1,12 @@
 import { Button, Card, Checkbox, Col, Modal, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
-import { useModel, useSearchParams, history } from "umi";
+import { useModel, useMatch, history } from "umi";
 import "./index.less";
 import { broadcastBTCTx, broadcastTx, deployCommit, getIdCoinInfo, getIdCoinMintOrder, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
-import { Psbt, Transaction, networks, address as addressLib } from "bitcoinjs-lib";
-import level from "@/assets/level.svg";
-import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
-import { getCreatePinFeeByNet } from "@/config";
+
 import { ArrowRightOutlined, DownOutlined, FileTextOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
 import btcIcon from "@/assets/logo_btc@2x.png";
@@ -50,7 +47,7 @@ export interface MRC20TransferParams {
     }
 }
 export default ({ setTab }: { setTab: (tab: string) => void }) => {
-    const [query] = useSearchParams();
+    const match = useMatch('/inscribe/:tab/:tick');
 
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
@@ -75,8 +72,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             return BigInt(0)
         }
     }, [_deployPremineCount, _deployAmountPerMint])
-    const _tab = query.get('tab');
-    const _tickerId = query.get('tickerId');
+    const _tab = match?.params.tab;
+    const _tickerId = match?.params.tick;
     const [mintTokenID, setMintTokenID] = useState<string>('');
     const [mintInfoLoading, setMintInfoLoading] = useState(false);
     const [mintInfoStatus, setMintInfoStatus] = useState('');
@@ -1108,7 +1105,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     <Row gutter={[0, 0]}>
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
                                             {
-                                                (IdCoinInfo&&addressMintState === 0) && <> <Card style={{ marginBottom: 20, border: '1px solid #D4F66B' }} styles={{ body: { padding: '10px 15px', textAlign: "left", color: '#D4F66B', fontSize: 12 } }}>
+                                                (IdCoinInfo && addressMintState === 0) && <> <Card style={{ marginBottom: 20, border: '1px solid #D4F66B' }} styles={{ body: { padding: '10px 15px', textAlign: "left", color: '#D4F66B', fontSize: 12 } }}>
                                                     Mint your ID-coins* and we'll guide you to follow the deployment if you haven't already, ensuring a smooth and complete user experience
                                                 </Card></>
                                             }

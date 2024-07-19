@@ -42,7 +42,7 @@ export default () => {
         //     title: 'Mint Notification',
         //     content: 'You have not yet been granted the right to mint tokens! Follow the deployed user to gain the ability to mint'
         // })
-        history.push('/inscribe?tab=MRC-20&tickerId=' + record.mrc20Id)
+        history.push('/inscribe/MRC-20/' + record.tick)
     }
     const onChange: CheckboxProps['onChange'] = (e) => {
         console.log(`checked = ${e.target.checked}`);
@@ -116,7 +116,7 @@ export default () => {
             dataIndex: 'deployerUserInfo',
             render: (_, record) => {
                 return <div className="idCoinDeploy">
-                    <MetaIdAvatar  size={screens.xl?72:50} avatar={record.deployerUserInfo.avatar} />
+                    <MetaIdAvatar size={screens.xl ? 72 : 50} avatar={record.deployerUserInfo.avatar} />
                     <div>
                         <div className="nameWrap">
                             <div className="name">

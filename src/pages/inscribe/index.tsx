@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from "react";
 import "./index.less";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { FileToAttachmentItem, formatSat, image2Attach } from "@/utils/utlis";
-import { useModel, useSearchParams, useNavigate } from "umi";
+import { useModel, useMatch, useNavigate } from "umi";
 import { CreateOptions, IBtcConnector, IBtcEntity } from "@metaid/metaid";
 import uploadIcon from "@/assets/upload.svg";
 import { getCreatePinFeeByNet } from "@/config";
@@ -45,8 +45,8 @@ const formItemLayout = {
 const { useBreakpoint } = Grid;
 
 export default () => {
-  const [query] = useSearchParams();
-  const _tab = query.get('tab');
+  const match = useMatch('/inscribe/:tab');
+  const _tab = match?.params.tab;
   const nav = useNavigate()
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("MRC-20");
@@ -401,7 +401,7 @@ export default () => {
             <Button
               key={item}
               type={tab === item ? "link" : "text"}
-              onClick={() => { nav({ search: '?tab=' + item }); setTab(item) }}
+              onClick={() => { nav('/inscribe/'+item); setTab(item) }}
               size="large"
             >
               {item}
@@ -413,7 +413,7 @@ export default () => {
 
 
         {tab === "File" && (
-          <div className=" animation-slide-bottom">
+          <div className="animation-slide-bottom">
             <Row>
               <Col
                 offset={sm ? 4 : 0}
