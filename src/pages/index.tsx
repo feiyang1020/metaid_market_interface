@@ -31,6 +31,7 @@ export default () => {
     filterKey
   } = useModel("orders");
   const match = useMatch('/market/:tab');
+  const match2 = useMatch('/market/:tab/:mrc20Tab');
   const nav = useNavigate()
   const [curOrder, setCurOrder] = useState<API.Order>();
   const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
@@ -45,7 +46,7 @@ export default () => {
   };
 
 
-  const _tab = match?.params.tab;
+  const _tab = match?.params.tab || match2?.params.tab;
   useEffect(() => {
     if (_tab && items.includes(_tab)) {
       setTab(_tab as "PIN" | "MRC-20");
