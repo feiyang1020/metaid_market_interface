@@ -21,6 +21,7 @@ import SelectPins from "./SelectPins";
 import { buildMintIdCointPsbt } from "@/utils/idcoin";
 import IdCoinCard from "./IdCoinCard";
 import ComfirmMintIdCoin from "./ComfirmMintIdCoin";
+import idCoin from "@/pages/mrc20/idCoin";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -716,6 +717,29 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     //         setValidateTickerStatus('error')
     //     } 
     // }
+    const submitBtnText = useMemo(() => {
+        if (type === 'deploy') {
+            return 'Deploy'
+        }
+        if (type === 'transfer') {
+            return 'Transfer'
+        }
+        if (type === 'mint') {
+            if (IdCoinInfo) {
+                if (!IdCoinInfo.isFollowing) {
+                    return 'Follow And Mint'
+                } 
+            }
+            if (mintMrc20Info) {
+                if (mintMrc20Info.mintable === false) {
+                    return 'Non-mintable'
+                } 
+            }
+            return 'Mint'
+        }
+        { type === 'deploy' ? 'Deploy' : type === 'mint' ? (mintMrc20Info && mintMrc20Info.mintable === false) ? 'Non-mintable' : 'Mint' : 'Transfer' }
+    }, [type, mintMrc20Info, IdCoinInfo])
+
     return <div className="mrc20Form">
         <ConfigProvider
             theme={{
@@ -1160,7 +1184,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         className="submit"
                         disabled={mintMrc20Info && mintMrc20Info.mintable === false}
                     >
-                        {type === 'deploy' ? 'Deploy' : type === 'mint' ? (mintMrc20Info && mintMrc20Info.mintable === false) ? 'Non-mintable' : 'Mint' : 'Transfer'}
+                        {submitBtnText}
                     </Button>
                 )}
             </Col>

@@ -48,10 +48,10 @@ export default ({ show, onClose, fields = {}, order, submiting, handleSubmit }: 
                 <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
             </div>
             <Divider />
-            <DescItem label="Ticker" value={tick} />
+            <DescItem label="Ticker" value={<span style={{ color: '#F68819', fontWeight: 'bold' }}>{tick}</span>} />
             <DescItem label="Followers Limit" value={<NumberFormat value={followersNum} />} />
             <DescItem label="Amount Per Mint" value={<NumberFormat value={amountPerMint} />} />
-            <DescItem dark label="Liquidity Per Mint" value={<NumberFormat value={liquidityPerMint} suffix=' BTC' />} />
+            <DescItem  label="Liquidity Per Mint" value={<NumberFormat value={liquidityPerMint} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
 
             <DescItem dark label="Gas" value={<NumberFormat value={Number(fields.gasFee) + Number(order.minerFee)} isBig decimal={8} suffix=' BTC' />} />

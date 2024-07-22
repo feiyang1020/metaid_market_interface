@@ -24,7 +24,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
 
     if (!order || !idCoin) return <></>
     return <Popup
-        title="Mint"
+        title={idCoin.isFollowing ? 'Mint' : 'Follow And Mint'}
         modalWidth={452}
         show={show}
         onClose={onClose}
@@ -48,7 +48,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem label="Total Supply" value={<NumberFormat value={idCoin.totalSupply} />} />
             <DescItem label="Pool" value={<NumberFormat value={idCoin.pool} />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem dark label="Liquidity Per Mint" value={<NumberFormat value={idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
+            <DescItem dark label="Liquidity Required" value={<NumberFormat value={idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
             <DescItem dark label="Gas" value={<NumberFormat value={order._gasFee + order.revealInscribeFee + order.revealMintFee - idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />

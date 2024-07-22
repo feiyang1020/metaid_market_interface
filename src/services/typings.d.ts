@@ -193,6 +193,7 @@ declare namespace API {
     tokenName: string;
     totalMinted: number;
     type: string;
+    mintable: boolean;
   };
   type MRC20Shovel = {
     address: string;
