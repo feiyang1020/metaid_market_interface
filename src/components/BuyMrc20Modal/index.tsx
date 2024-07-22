@@ -287,7 +287,7 @@ export default ({ order, show, onClose }: Props) => {
               )}
 
               <div className="avail">
-                <div className="label">Available balance</div>
+                <div className="label">Available Balance</div>
 
                 <div className="value">
                   {userBalInfo && formatSat(userBalInfo.total)} BTC
