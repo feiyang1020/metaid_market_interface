@@ -37,7 +37,7 @@ const NumberFormat: React.FC<Props> = (props) => {
 
         }
         try {
-            if (tiny && Number(_value) < 0.00000001 && Number(_value) > 0) {
+            if (tiny && Number(_value) < 0.0000001 && Number(_value) > 0) {
                 let string = String(parseFloat(String(_value)));
                 let ret = string.replace('.', '').match(/(\d+)e-(\d+)/);
                 let left = '';
