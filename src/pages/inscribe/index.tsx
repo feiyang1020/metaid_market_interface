@@ -395,7 +395,7 @@ export default () => {
   return (
     <div className="inscribePage animation-slide-bottom">
       <div className="title">Inscribe PINs</div>
-      <div className="subTitle">Inscribe your PINs to Bitcoin</div>
+      <div className="subTitle">Inscribe Your PINs To Bitcoin</div>
       <div className="tabs">
         <Space>
           {items.map((item) => (
