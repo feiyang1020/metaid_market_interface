@@ -172,7 +172,7 @@ export default () => {
             title: 'Liquidity Per Mint',
             dataIndex: 'liquidityPerMint',
             key: 'liquidityPerMint',
-            sorter: true,
+            // sorter: true,
             width: 140,
             align: 'center',
             render: (price) => {
