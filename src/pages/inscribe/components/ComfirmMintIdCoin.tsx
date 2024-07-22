@@ -52,7 +52,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem dark label="Gas" value={<NumberFormat value={order._gasFee + order.revealInscribeFee + order.revealMintFee - idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem label="You will Spend" value={<NumberFormat value={order.totalFee + order._gasFee} isBig decimal={8} suffix=' BTC' />} />
+            <DescItem label="You Will Spend" value={<NumberFormat value={order.totalFee + order._gasFee} isBig decimal={8} suffix=' BTC' />} />
             <DescItem label="Available Balance" value={<NumberFormat value={userBal} suffix=' BTC' />} />
             <Row gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>
