@@ -219,6 +219,7 @@ export default () => {
                 setVisible(true)
             } else {
                 setVisible(false)
+                form.setFieldsValue({ tick: userName })
             }
         }
     }, [connected, userName, initializing])
@@ -278,13 +279,13 @@ export default () => {
                                         },
                                     })]}
                                     validateTrigger="onBlur" className='formItem'>
-                                    <Input placeholder="2~24 charaters" />
+                                    <Input placeholder="2~24 Charaters" />
                                 </Form.Item>
                             </Col>
                             <Col md={12} xs={24} >
                                 <Form.Item label="Followers Limit" name='followersNum' rules={[{ required: true }, { type: 'number', min: 1, max: 1000000000000, message: '1-1e12 ' }]} className='formItem'>
                                     <InputNumber precision={0} placeholder="Followers Limit" style={{ width: '100%' }} controls={false} addonAfter={
-                                        <Tooltip title="Followers limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）">
+                                        <Tooltip title="Followers Limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）">
                                             <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                         </Tooltip>
                                     } />

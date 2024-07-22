@@ -29,6 +29,7 @@ import SuccessModal, {
 } from "@/components/SuccessModal";
 import Mrc20Form from "./components/Mrc20Form";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
+import { UploadOutlined } from "@ant-design/icons";
 const items = ['MRC-20', "File", "Buzz", "PINs",];
 const { Dragger } = Upload;
 const { TextArea } = Input;
@@ -401,7 +402,7 @@ export default () => {
             <Button
               key={item}
               type={tab === item ? "link" : "text"}
-              onClick={() => { nav('/inscribe/'+item); setTab(item) }}
+              onClick={() => { nav('/inscribe/' + item); setTab(item) }}
               size="large"
             >
               {item}
@@ -424,11 +425,13 @@ export default () => {
                   <div className="label"></div>
                   <div className="upload" >
                     <Dragger {...props} className="uploadInput" listType={fileList && fileList[0] && fileList[0].type?.includes('image') ? 'picture' : 'text'}>
-                      <p className="ant-upload-text">Upload file</p>
+                      <p className="ant-upload-text">Upload File</p>
                       <p className="ant-upload-hint">Any file type. Max 300kb</p>
-                      <p className="ant-upload-drag-icon">
-                        <img src={uploadIcon} alt="" />
+                      <p className="colorPrimary">
+                        <UploadOutlined style={{fontSize:24}} />
+
                       </p>
+                      <p className="colorPrimary">Choose File</p>
                     </Dragger>
                   </div>
                 </div>

@@ -138,7 +138,7 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
             show: true,
             onClose: () => setSuccessProp(DefaultSuccessProps),
             onDown: () => setSuccessProp(DefaultSuccessProps),
-            title: "List for sale",
+            title: "List For Sale",
             tip: "Successful",
             children: <div className="saleSuccess"></div>,
         });
@@ -224,7 +224,7 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
                         onClick={handleSale}
                         loading={submiting}
                     >
-                        List for sale
+                        List For Sale
                     </Button>
                 ) : (
                     <Button type="primary" onClick={connect}>

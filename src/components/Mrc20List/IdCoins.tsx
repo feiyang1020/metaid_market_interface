@@ -128,7 +128,7 @@ export default () => {
                             </a>
                         </div>
                         <div className="metaid">MetaID :<Tooltip title={record.deployerMetaId}>{record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Tooltip> </div>
-                        {btcAddress !== record.deployerAddress && <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>}
+                         <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>
 
                     </div>
                 </div>
@@ -148,7 +148,7 @@ export default () => {
             }
         },
         {
-            title: 'Followers limit',
+            title: 'Followers Limit',
             dataIndex: 'followersLimit',
             key: 'followersLimit',
             align: 'center',

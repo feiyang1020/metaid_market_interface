@@ -42,8 +42,8 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
                 <div className="metaid">Metaid:{idCoin.deployerMetaId ? idCoin.deployerMetaId.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
             </div>
             <Divider style={{ margin: '12px 0' }} />
-            <DescItem label="Ticker" value={idCoin.tick} />
-            <DescItem label="Followers limit" value={<NumberFormat value={idCoin.followersLimit} />} />
+            <DescItem label="Ticker" value={<span style={{ color: '#F68819', fontWeight: 'bold' }}>{idCoin.tick}</span>} />
+            <DescItem label="Followers Limit" value={<NumberFormat value={idCoin.followersLimit} />} />
             <DescItem label="Amount Per Mint" value={<NumberFormat value={idCoin.amtPerMint} />} />
             <DescItem label="Total Supply" value={<NumberFormat value={idCoin.totalSupply} />} />
             <DescItem label="Pool" value={<NumberFormat value={idCoin.pool} />} />

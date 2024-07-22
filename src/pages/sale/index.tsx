@@ -113,7 +113,7 @@ export default () => {
       show: true,
       onClose: () => setSuccessProp(DefaultSuccessProps),
       onDown: () => setSuccessProp(DefaultSuccessProps),
-      title: "List for sale",
+      title: "List For Sale",
       tip: "Successful",
       children: <div className="saleSuccess"></div>,
     });
@@ -129,7 +129,7 @@ export default () => {
           history.back();
         }}
       >
-        <LeftOutlined /> List for sale
+        <LeftOutlined /> List For Sale
       </div>
       <div className="saleContent">
         <div className="tabs">
@@ -273,7 +273,7 @@ export default () => {
                     onClick={handleSale}
                     loading={submiting}
                   >
-                    List for sale
+                    List For Sale
                   </Button>
                 ) : (
                   <Button type="primary" onClick={connect}>

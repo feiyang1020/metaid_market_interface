@@ -23,7 +23,7 @@ const items = [
     activeIvon: inscribe2,
   },
   {
-    label: "Launch me",
+    label: "Launch Me",
     key: "/launch",
     className: 'Launch',
     icon: launch,

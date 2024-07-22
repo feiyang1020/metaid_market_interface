@@ -58,13 +58,13 @@ export default ({ idCoid }: Props) => {
             <Card bordered={false} >
                 <Row gutter={[20, 20]}>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total volume" value={formatSat(idCoid.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(idCoid.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoid.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" formatter={()=><NumberFormat value={idCoid.floorPrice} isBig decimal={8} suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={()=><NumberFormat value={idCoid.floorPrice} isBig decimal={8} suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoid.holders} />
@@ -76,7 +76,7 @@ export default ({ idCoid }: Props) => {
             <DescItem label="Ticker" value={idCoid.tick} />
         </Col>
         <Col md={12} xs={24} >
-            <DescItem label="Followers limit" value={<NumberFormat value={idCoid.followersLimit} />} />
+            <DescItem label="Followers Limit" value={<NumberFormat value={idCoid.followersLimit} />} />
         </Col>
         <Col md={12} xs={24} >
             <DescItem label="Amount Per Mint" value={<NumberFormat value={idCoid.amtPerMint} />} />

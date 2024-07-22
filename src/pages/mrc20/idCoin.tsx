@@ -125,13 +125,13 @@ export default () => {
                 </Card>
                 <Row gutter={[20, 20]} style={{ width: 474 }}>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total volume" value={formatSat(idCoin.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(idCoin.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoin.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoin.holders} />
@@ -169,7 +169,7 @@ export default () => {
                                 },
                             }}
                         >
-                            <Button loading={loading} style={{ height: 48 }} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List for sale </Button>
+                            <Button loading={loading} style={{ height: 48 }} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
                         </ConfigProvider>
                     </div>
                     {

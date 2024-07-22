@@ -40,12 +40,12 @@ export default ({ mintMrc20Info }: Props) => {
                 {
                     key: 'Ticker',
                     label: 'Ticker',
-                    children: <>{mintMrc20Info.tick}</>
+                    children: <span style={{ color: '#F68819', fontWeight: 'bold' }}>{mintMrc20Info.tick}</span>
                 },
 
                 {
                     key: 'Follow',
-                    label: <span>Followers Limit <Tooltip title={<p>Followers limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
+                    label: <span>Followers Limit <Tooltip title={<p>Followers Limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
                     children: <NumberFormat value={mintMrc20Info.followersLimit} />
                 },
                 {

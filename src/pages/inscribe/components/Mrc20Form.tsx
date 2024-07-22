@@ -776,7 +776,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Input
                                             size="large"
                                             maxLength={24}
-                                            placeholder="2~24 charaters"
+                                            placeholder="2~24 Charaters"
                                         />
                                     </Form.Item>
 
@@ -823,7 +823,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     <Collapse className="collapse" style={{ padding: 0 }} ghost items={[
                                         {
                                             key: '1',
-                                            label: <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}><div className="collapsePanel"> more options<div
+                                            label: <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}><div className="collapsePanel"> More Options<div
                                                 className="collapseIcon"
                                             >
                                                 <DownOutlined /></div>
@@ -918,7 +918,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         maxLength={48}
                                                         placeholder=""
                                                         addonAfter={
-                                                            <Tooltip title="">
+                                                            <Tooltip title="Pay To">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
@@ -932,7 +932,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         maxLength={48}
                                                         placeholder=""
                                                         addonAfter={
-                                                            <Tooltip title="">
+                                                            <Tooltip title="Pay Amount">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }

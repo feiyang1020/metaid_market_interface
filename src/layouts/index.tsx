@@ -113,7 +113,7 @@ export default function Layout() {
                   }}
                   className="listforsale"
                 >
-                  List for sale
+                  List For Sale
                 </Button>
                 <div className="feerate" style={{ display: "flex", alignItems: 'center', gap: 4, fontSize: 14, cursor: 'pointer' }} onClick={() => {
                   setFeeRateModelVisible(true)
@@ -161,7 +161,7 @@ export default function Layout() {
                             history.push("/sale");
                           }}
                         >
-                          <div className="path">List for sale</div>
+                          <div className="path">List For Sale</div>
                           <RightOutlined />
                         </div>
                         <div
