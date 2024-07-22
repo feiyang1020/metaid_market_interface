@@ -189,7 +189,7 @@ export default () => {
             </div>
             <div className="saleContent">
                 <div className="idCoins">
-                    {idCoin && <div className="idInfo">
+                    {/* {idCoin && <div className="idInfo">
                         <div className="info">
                             <MetaIdAvatar avatar={idCoin.deployerUserInfo.avatar} size={59} style={{ minWidth: 59 }} />
                             <div>
@@ -205,7 +205,7 @@ export default () => {
                                 <Typography.Text className="metaid">Total Quantity</Typography.Text>
                             </div>
                         </div>
-                    </div>}
+                    </div>} */}
 
 
 
