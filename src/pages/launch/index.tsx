@@ -14,6 +14,7 @@ import SuccessModal, { DefaultSuccessProps, SuccessProps } from '@/components/Su
 import { EditFilled, InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import ComfirmLaunch from './components/ComfirmLaunch';
 import IdCoinDetail from './components/IdCoinDetail';
+import CustomizeRequiredMark from '@/components/CustomReqMark';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
@@ -250,7 +251,7 @@ export default () => {
                         labelAlign='left'
                         form={form}
                         layout="horizontal"
-                        requiredMark='optional'
+                        requiredMark={CustomizeRequiredMark}
                         variant="borderless"
                         className='formWrap'
                         colon={false}

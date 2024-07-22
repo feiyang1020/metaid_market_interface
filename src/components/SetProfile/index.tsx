@@ -10,6 +10,7 @@ import { getCreatePinFeeByNet } from "@/config";
 import { image2Attach } from "@/utils/utlis";
 import Meta from "antd/es/card/Meta";
 import MetaIdAvatar from "../MetaIdAvatar";
+import CustomizeRequiredMark from "../CustomReqMark";
 
 type SetProfileProps = {
     show?: boolean;
@@ -103,7 +104,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                     {...formItemLayout}
                     variant="filled"
                     layout="vertical"
-                    requiredMark='optional'
+                    requiredMark={CustomizeRequiredMark}
                     form={form}
                     initialValues={{
                         name: userName,
