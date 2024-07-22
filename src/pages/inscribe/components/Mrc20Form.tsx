@@ -342,7 +342,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }, { headers: authParams })
             console.log(commitRes)
             if (commitRes.code !== 0) throw new Error(commitRes.message)
-            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 2 }])
+            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: Number(mintIdCoinOrder.serviceFee) > 0 ? 3 : 2 }])
             setMintIdCoinOrder(undefined)
             setComfirmVisible(false)
             setSuccessProp({

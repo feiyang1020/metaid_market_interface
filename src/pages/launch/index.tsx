@@ -98,7 +98,7 @@ export default () => {
             }, { headers: authParams })
             console.log(commitRes)
             if (commitRes.code !== 0) throw new Error(commitRes.message)
-            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 1 }])
+            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: Number(order.serviceFee) > 0 ? 2 : 1 }])
             // message.success('Successfully launched')
 
             setFields(undefined)

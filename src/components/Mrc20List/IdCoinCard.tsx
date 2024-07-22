@@ -69,8 +69,8 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
                     <div className="value tick">{record.tick}</div>
                 </div>
                 <div className="item">
-                    <div className="label">Price</div>
-                    <div className="value"><NumberFormat value={record.price} isBig decimal={8} tiny suffix=' BTC' /></div>
+                    <div className="label">Liquidity Per Mint</div>
+                    <div className="value"><NumberFormat value={record.liquidityPerMint}  /></div>
                 </div>
 
             </div>

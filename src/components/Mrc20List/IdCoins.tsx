@@ -169,14 +169,14 @@ export default () => {
             }
         },
         {
-            title: 'Price',
-            dataIndex: 'price',
-            key: 'price',
+            title: 'Liquidity Per Mint',
+            dataIndex: 'liquidityPerMint',
+            key: 'liquidityPerMint',
             sorter: true,
             width: 140,
             align: 'center',
             render: (price) => {
-                return <NumberFormat value={price} isBig decimal={8} tiny suffix=' BTC' />
+                return <NumberFormat value={price}  />
             }
         },
 

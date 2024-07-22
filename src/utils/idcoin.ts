@@ -126,6 +126,8 @@ const _buildMintIdCoinPsbt = async (
     revealInscribeAddress,
     revealInscribeFee,
     network,
+    serviceFee,
+    serviceAddress
   } = params;
   const psbt = new Psbt({ network: getNetworks(network) });
   for (const utxo of selectedUTXOs) {
@@ -147,12 +149,12 @@ const _buildMintIdCoinPsbt = async (
     address: revealMintAddress,
     value: revealMintFee,
   });
-  // if (serviceFee > 0) {
-  //   psbt.addOutput({
-  //     address: receiveAddress,
-  //     value: serviceFee,
-  //   });
-  // }
+  if (serviceFee > 0) {
+    psbt.addOutput({
+      address: serviceAddress,
+      value: serviceFee,
+    });
+  }
   if (needChange || change.gt(DUST_SIZE)) {
     psbt.addOutput({
       address: address,
