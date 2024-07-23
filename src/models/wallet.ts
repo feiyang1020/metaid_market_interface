@@ -57,27 +57,28 @@ export default () => {
     let _wallet: IMetaletWalletForBtc | undefined = undefined;
     if (status === "not-connected") {
       _wallet = await MetaletWalletForBtc.create();
-      const ret = await window.metaidwallet.getNetwork();
-      _net = ret.network;
+      _net = (await window.metaidwallet.getNetwork()).network;
     }
     if (_net !== curNetwork) {
-      await window.metaidwallet.switchNetwork(
+      const ret = await window.metaidwallet.switchNetwork(
         curNetwork === "testnet" ? "testnet" : "livenet"
       );
-    }
-    const { network } = await window.metaidwallet.getNetwork();
-    if (network !== curNetwork) {
-      return;
+      if (ret.status === "canceled") return;
+      const { network } = await window.metaidwallet.getNetwork();
+      if (network !== curNetwork) {
+        return;
+      }
     }
     if (_wallet === undefined) {
       _wallet = await MetaletWalletForBtc.create();
     }
     if (!_wallet.address) return;
-    setNetwork(network);
+    
     const publicKey = await window.metaidwallet.btc.getPublicKey();
     const publicKeySign =
       await window.metaidwallet.btc.signMessage("metaid.market");
     if (publicKeySign.status) return;
+    setNetwork(curNetwork);
     setAuthParams({ "X-Public-Key": publicKey, "X-Signature": publicKeySign });
     sessionStorage.setItem(
       "authParams",
@@ -249,7 +250,6 @@ export default () => {
       window.metaidwallet.on("accountsChanged", handleAccountChange);
       window.metaidwallet.on("networkChanged", handleNetChange);
     }
-    
 
     return () => {
       if (walletName === "metalet" && window.metaidwallet && connected) {
