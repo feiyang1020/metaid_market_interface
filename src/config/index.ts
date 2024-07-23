@@ -13,7 +13,6 @@ export const getHostByNet = (network: API.Network) => {
 
 export const curNetwork: API.Network =
   window.METAID_MARKET_NETWORK || "mainnet";
-console.log(curNetwork,'curNetwork')
 export const getCreatePinFeeByNet = (
   network: API.Network
 ): { address: string; satoshis: string } => {

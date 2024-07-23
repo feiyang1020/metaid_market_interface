@@ -18,7 +18,6 @@ export default ({ mrc20Id, showMy = false }: Props) => {
   const [total, setTotal] = useState<number>(0);
   const [size, setSize] = useState<number>(10);
   const fetchOrders = useCallback(async () => {
-    console.log('fetchOrders', network, mrc20Id, page, size)
     if (!mrc20Id || (showMy && !btcAddress)) return;
     setLoading(true);
     const params: any = { assetType: 'mrc20', orderState: 3, sortKey: 'timestamp', sortType: -1, tickId: mrc20Id, cursor: page * size, size }

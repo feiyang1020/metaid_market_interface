@@ -17,7 +17,6 @@ export default () => {
   const fetchOrders = useCallback(
     async (retry: boolean = true) => {
       if (network) {
-        console.log('fetchOrders', filterKey)
         try {
           const ret = await getOrders(network, {
             assetType: "pins",

@@ -72,7 +72,6 @@ export default () => {
     if (_wallet === undefined) {
       _wallet = await MetaletWalletForBtc.create();
     }
-    console.log(_wallet.address, _wallet);
     if (!_wallet.address) return;
     setNetwork(network);
     const publicKey = await window.metaidwallet.btc.getPublicKey();
@@ -220,8 +219,6 @@ export default () => {
         } catch (err) {
           console.log(err, "getBalance");
         }
-
-        console.log(_btcConnector.user, "_btcConnector.user");
         setAvatar(
           _btcConnector.user.avatar
             ? `${getHostByNet(network)}${_btcConnector.user.avatar}`
@@ -252,6 +249,7 @@ export default () => {
       window.metaidwallet.on("accountsChanged", handleAccountChange);
       window.metaidwallet.on("networkChanged", handleNetChange);
     }
+    
 
     return () => {
       if (walletName === "metalet" && window.metaidwallet && connected) {

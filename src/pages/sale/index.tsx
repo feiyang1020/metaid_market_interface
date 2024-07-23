@@ -83,7 +83,6 @@ export default () => {
     if (res.code !== 0) {
       throw new Error(res.message);
     }
-    console.log(res);
   };
 
   const handleSale = async () => {

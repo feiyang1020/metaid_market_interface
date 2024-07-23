@@ -16,7 +16,6 @@ export const getFeeRate = async (network: API.Network) => {
   });
   try {
     const feesRecommended = await fees.getFeesRecommended();
-    console.log(feesRecommended);
     let { fastestFee, halfHourFee, hourFee, minimumFee } = feesRecommended;
     const isInvalid =
       minimumFee === fastestFee &&

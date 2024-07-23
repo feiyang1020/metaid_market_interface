@@ -17,7 +17,6 @@ export default ({ mrc20Id }: Props) => {
     const [total, setTotal] = useState<number>(0);
     const [size, setSize] = useState<number>(12);
     const fetchOrders = useCallback(async () => {
-        console.log('fetchOrders', network, mrc20Id, page, size)
         if (!mrc20Id || !btcAddress) return;
         setLoading(true);
 
@@ -127,7 +126,6 @@ export default ({ mrc20Id }: Props) => {
             scroll={{ x: 1000 }}
             loading={loading}
             onChange={({ current, ...params }, _, sorter) => {
-                console.log(sorter, 'params')
                 if (!current) current = 1
                 setPage(current - 1)
             }}

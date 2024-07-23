@@ -76,7 +76,6 @@ export default ({ order, show, onClose }: Props) => {
   }, [show]);
   const [buyPsbt, setBuyPsbt] = useState<Psbt>();
   const fetchTakePsbt = useCallback(async () => {
-    console.log(order, connected, authParams, "authParams");
     if (!order || !connected || !authParams) {
       setOrderWithPsbt(undefined);
       return;

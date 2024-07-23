@@ -22,7 +22,6 @@ export default () => {
   const [size, setSize] = useState<number>(12);
   const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
   const fetchOrders = useCallback(async () => {
-    console.log('fetchOrders', network, page, size)
     setLoading(true);
 
     const { data } = await getMrc20Orders(network, { assetType: 'mrc20', orderState: 1, address: btcAddress, sortKey: 'timestamp', sortType: -1, cursor: page * size, size });

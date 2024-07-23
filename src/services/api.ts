@@ -664,6 +664,7 @@ export async function getIdCoinList(
     cursor: number;
     size: number;
     address?: string;
+    followerAddress?: string;
   },
   options?: { [key: string]: any }
 ) {

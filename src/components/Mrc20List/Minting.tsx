@@ -22,7 +22,6 @@ export default () => {
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({});
     const fetchData = useCallback(async () => {
-        console.log(network, page, size, params)
         setLoading(true);
         const { code, message, data } = await getMrc20List(network, {
             cursor: page * size,
@@ -174,7 +173,6 @@ export default () => {
             scroll={{ x: 1000 }}
             loading={loading}
             onChange={({ current, ...params }, _, sorter) => {
-                console.log(sorter, 'params')
                 if (!current) current = 1;
                 if (sorter.order) {
                     setParams({ orderBy: sorter.field === 'price' ? 'lastPrice' : sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })

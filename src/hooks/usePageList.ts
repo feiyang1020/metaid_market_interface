@@ -16,7 +16,6 @@ const usePageList = <R = unknown>(
   const [size, setSize] = useState<number>(10);
   const [params, setParams] = useState<Record<string, any>>({});
   const fetchData = useCallback(async () => {
-    console.log(network, page, size, params)
     setLoading(true);
     const { code, message, data } = await fn(network, {
       cursor: page * size,

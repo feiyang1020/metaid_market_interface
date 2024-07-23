@@ -60,7 +60,6 @@ export default () => {
         if (btcAddress) {
             setLoading(true)
             const tickExist = await getIdCoinInfo(network, { issuerAddress: btcAddress });
-            console.log(tickExist)
             if (tickExist.code === 0) {
                 setIDCoin(tickExist.data)
             }
@@ -224,7 +223,6 @@ export default () => {
             }
         }
     }, [connected, userName, initializing])
-    console.log(initializing, loading, idCoin)
     return <div className="launchPage">
         <Spin spinning={initializing || loading} style={{ minHeight: '50vh' }}>
             {(initializing || loading) ? <></> : idCoin ? <IdCoinDetail idCoid={idCoin} /> :
