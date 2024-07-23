@@ -4,15 +4,69 @@ import { Link, useModel } from "umi";
 import dayjs from "dayjs";
 import "./index.less";
 import { formatSat } from "@/utils/utlis";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Popup from "@/components/ResponPopup";
-import { authTest, cancelOrder } from "@/services/api";
+import { cancelOrder, getContent, getOrders } from "@/services/api";
 import JSONView from "@/components/JSONView";
 import Mrc20Order from "./components/Mrc20Order";
+import useIntervalAsync from "@/hooks/useIntervalAsync";
 const items = ["PIN", 'MRC-20'];
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
-  const { orders, loading, updateOrders, setLoading, cursor,total,size,setCursor } = useModel("userOrders");
+
+  const size = 10;
+  const [sortKey, setSortKey] = useState<string>("timestamp");
+  const [sortType, setSortType] = useState<number>(-1);
+  const [cursor, setCursor] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
+  const [orders, setOrders] = useState<API.Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const fetchOrders = useCallback(
+    async (retry: boolean = true) => {
+      if (!btcAddress) {
+        setLoading(false);
+        return;
+      }
+      if (network) {
+        try {
+          const ret = await getOrders(network, {
+            assetType: "pins",
+            orderState: 1,
+            address: btcAddress,
+            sortKey,
+            sortType,
+            cursor: cursor * size,
+            size,
+          });
+          const list: API.Asset[] = ret.data.list.map((item) => {
+            return {
+              ...item,
+              info: JSON.parse(item.detail),
+            };
+          });
+          for (let i = 0; i < list.length; i++) {
+            if (
+              list[i].info &&
+              list[i].info.contentTypeDetect.indexOf("text") > -1
+            ) {
+              const cont = await getContent(list[i].content);
+              list[i].textContent = cont;
+            }
+          }
+          setOrders(list);
+          setTotal(ret.data.total);
+          setLoading(false);
+        } catch (err: any) {
+          console.log(err);
+          if (retry === true) {
+            fetchOrders(false);
+          }
+        }
+      }
+    },
+    [network, sortKey, sortType, cursor, btcAddress]
+  );
+  const updateOrders: any = useIntervalAsync(fetchOrders, 90000);
   const [show, setShow] = useState<boolean>(false);
   const [tab, setTab] = useState<"PIN" | "MRC-20">("PIN");
   const [submiting, setSubmiting] = useState<boolean>(false);
@@ -162,11 +216,11 @@ export default () => {
               current: cursor + 1,
               total,
               onChange: (page) => {
-  
-                  setLoading(true);
-                  setCursor(page - 1);
+
+                setLoading(true);
+                setCursor(page - 1);
               },
-          }}
+            }}
           />
         </div> : <Mrc20Order />
       }

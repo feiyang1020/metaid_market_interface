@@ -260,7 +260,6 @@ export async function exclusiveChange({
   // Add payment input
   const address = await window.metaidwallet.btc.getAddress();
   const filtered = await getUtxos(address, network);
-  console.log(filtered, "filtered");
   const pubKey = await window.metaidwallet.btc.getPublicKey();
   const paymentUtxos = filtered
     .sort((a, b) => {
@@ -656,7 +655,7 @@ export async function buildBuyTake({
   const buy = Psbt.fromHex(takePsbtRaw, {
     network: btcNetwork,
   });
-  console.log("🚀 ~ file: order-builder.ts:293 ~ askPsbt:", buy);
+  
 
   // 2. add service fee
   // 🚓🚓 UPDATE: Since now the transaction structure is controlled by backend, we dont' have to add service fees outputs on our own

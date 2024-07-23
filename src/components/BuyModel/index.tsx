@@ -134,6 +134,7 @@ export default ({ order, show, onClose }: Props) => {
       } catch (err: any) {
         console.log(err);
         if (didCancel) return;
+        setCalcing(false);
         setErrInfo(err.message || "unknow error");
       }
     };

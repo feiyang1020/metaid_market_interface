@@ -96,7 +96,7 @@ declare namespace API {
     detail: "string";
     fee: 0;
     feeRate: 0;
-    orderId: "string";
+    orderId: string;
     orderState: 1;
     outValue: 0;
     preview: "string";

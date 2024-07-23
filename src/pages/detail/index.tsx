@@ -36,7 +36,6 @@ export default () => {
       const cont = await getContent(data.content);
       data.textContent = cont;
     }
-    console.log(data.info, "Operation");
     setOrder(data);
     setLoading(false);
   }, [id]);

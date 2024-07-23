@@ -168,7 +168,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     _idCoin = idCoinRet.data;
                     if (btcAddress && authParams) {
                         const mintOrder = await getIdCoinMintOrder(network, { tickId: data.mrc20Id, address: btcAddress }, { headers: { ...authParams } });
-                        console.log(mintOrder, mintOrder.data, 'mintOrder')
                         if (mintOrder.code === 0 && mintOrder.data && mintOrder.data.addressMintState === 1) {
                             _addressMintState = 1
                         }
@@ -728,12 +727,12 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             if (IdCoinInfo) {
                 if (!IdCoinInfo.isFollowing) {
                     return 'Follow And Mint'
-                } 
+                }
             }
             if (mintMrc20Info) {
                 if (mintMrc20Info.mintable === false) {
                     return 'Non-mintable'
-                } 
+                }
             }
             return 'Mint'
         }
@@ -1092,7 +1091,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         />
                                     </Form.Item>
                                     <Row gutter={[0, 0]}>
-                                        <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading}>
+                                        <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading} style={{ minHeight: 100 }}>
+        
                                             {
                                                 IdCoinInfo && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><IdCoinCard mintMrc20Info={IdCoinInfo} /></>
                                             }

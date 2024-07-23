@@ -33,15 +33,15 @@ export default () => {
               info: JSON.parse(item.detail),
             };
           });
-          for (let i = 0; i < list.length; i++) {
-            if (
-              list[i].info &&
-              list[i].info.contentTypeDetect.indexOf("text") > -1
-            ) {
-              const cont = await getContent(list[i].content);
-              list[i].textContent = cont;
-            }
-          }
+          // for (let i = 0; i < list.length; i++) {
+          //   if (
+          //     list[i].info &&
+          //     list[i].info.contentTypeDetect.indexOf("text") > -1
+          //   ) {
+          //     const cont = await getContent(list[i].content);
+          //     list[i].textContent = cont;
+          //   }
+          // }
           setOrders(list);
           setTotal(ret.data.total);
           setLoading(false);
