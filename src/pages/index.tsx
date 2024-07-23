@@ -53,10 +53,7 @@ export default () => {
     }
   }, [_tab]);
 
-  useEffect(() => {
-    setLoading(true);
-    updateOrders();
-  }, []);
+
 
   return (
     <div className="indexPage ">
