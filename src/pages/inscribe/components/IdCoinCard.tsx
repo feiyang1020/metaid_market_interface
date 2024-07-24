@@ -72,7 +72,7 @@ export default ({ mintMrc20Info }: Props) => {
                 {
                     key: 'Pool',
                     label: 'Pool',
-                    children: <NumberFormat value={mintMrc20Info.pool} />
+                    children: <NumberFormat value={mintMrc20Info.pool} decimal={8} isBig suffix=' BTC'/>
                 },
                 {
                     key: 'Message',
