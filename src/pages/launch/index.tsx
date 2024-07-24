@@ -303,9 +303,9 @@ export default () => {
 
                             </Col>
                             <Col md={12} xs={24} >
-                                <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 0.000012, max: 10000, message: '0.000012-10000 ' }]} className='formItem'>
+                                <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 0.0001, max: 10, message: '0.0001-10 BTC' }]} className='formItem'>
                                     <InputNumber precision={8} formatter={(value) => `${value} BTC`} parser={(value) => value?.replace(' BTC', '') as unknown as number} placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
-                                        <Tooltip title="Liquidity Per Mint：The amount of liquidity required for each transaction. The minimum liquidity requirement is 1,200 stas, with a maximum liquidity supply of 1,000,000,000,000 (1e12)">
+                                        <Tooltip title={<span>We've partnered w/ Orders.exchange to offer 'Minting is Liquidating' for ID-Coin. When deploying ID-coin, users can set a requirement to provide liquidity to the corresponding trading pair on Orders.exchange. Min allowed is 0.0001 BTC, max is 10 BTC. <a>Click here for more info</a>.</span>}>
                                             <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                         </Tooltip>
                                     } />

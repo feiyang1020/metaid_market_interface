@@ -1,11 +1,12 @@
-import { ConfigProvider, Tabs, TabsProps, Grid } from "antd"
+import { ConfigProvider, Tabs, TabsProps, Grid, Input } from "antd"
 import AllList from "./AllList";
 
 import "./index.less";
 import Minting from "./Minting";
 import IdCoins from "./IdCoins";
-import { useSearchParams, useNavigate, useMatch } from "umi";
+import { useModel, useNavigate, useMatch } from "umi";
 import { useEffect, useState } from "react";
+import { SearchOutlined } from "@ant-design/icons";
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -30,6 +31,7 @@ export default () => {
     const [activeKey, setActiveKey] = useState('0');
     const nav = useNavigate()
     const match = useMatch('/market/:tab/:mrc20Tab');
+    const { searchWord, setSearchWord, setIdCoinPage,setAllPage,setMintingPage } = useModel('mrc20')
 
     const _tab = match?.params.mrc20Tab;
     useEffect(() => {
@@ -51,7 +53,33 @@ export default () => {
                 }
             },
         }}
-    ><Tabs onChange={(item) => {
-        nav('/market/MRC-20/' + item,{ replace: false })
-    }} tabBarStyle={{ paddingLeft: screens.lg ? 20 : 20 }} className="mrc20ListWrap" activeKey={activeKey} defaultActiveKey="0" items={items} /></ConfigProvider>
+    >
+        <Tabs
+            onChange={(item) => {
+                nav('/market/MRC-20/' + item, { replace: false })
+            }}
+            tabBarStyle={{ paddingLeft: screens.lg ? 20 : 20 }}
+            className="mrc20ListWrap" activeKey={activeKey}
+            defaultActiveKey="0"
+            items={items}
+            tabBarExtraContent={<div className="search">
+
+                <Input
+                    variant="filled"
+                    style={{ borderRadius: 20 }}
+                    placeholder="Search..."
+                    value={searchWord}
+                    onChange={(e) => {
+                        setIdCoinPage(0)
+                        setAllPage(0)
+                        setMintingPage(0)
+                        setSearchWord(e.target.value)
+                    }}
+                    suffix={
+                        <SearchOutlined style={{ color: '#D8D8D8' }} />
+                    }
+                />
+            </div>}
+        />
+    </ConfigProvider>
 }

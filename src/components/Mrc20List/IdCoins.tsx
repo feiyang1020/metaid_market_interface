@@ -15,27 +15,61 @@ export default () => {
     const screens = useBreakpoint();
     const [modal, contextHolder] = Modal.useModal();
     const { network, btcAddress, connect, connected, btcConnector, feeRate } = useModel("wallet")
+    const { searchWord, IdCoinPage: page, setIdCoinPage: setPage } = useModel('mrc20')
     const [list, setList] = useState<API.IdCoin[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-    const [page, setPage] = useState<number>(0);
+    // const [page, setPage] = useState<number>(0);
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({ orderBy: 'timestamp', sortType: -1 });
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        const { code, message, data } = await getIdCoinList(network, {
-            cursor: page * size,
-            size,
-            followerAddress: btcAddress || '',
-            ...params,
-        });
-        if (code !== 0) return
-        if (data.list) {
-            setList(data.list);
-            setTotal(data.total);
-        }
-        setLoading(false);
-    }, [network, page, size, params, btcAddress]);
+    const [orderBy, setOrderBy] = useState<string>('timestamp');
+    const [sortType, setSortType] = useState<number>(-1);
+
+    useEffect(() => {
+        let didCancel = false;
+        const fetchData = async () => {
+            setLoading(true);
+            const { code, message: msg, data } = await getIdCoinList(network, {
+                cursor: page * size,
+                size,
+                followerAddress: btcAddress || '',
+                searchWord,
+                orderBy,
+                sortType,
+            });
+            if (didCancel) return
+            if (code !== 0) {
+                message.error(msg)
+            }
+            if (data.list) {
+                setList(data.list);
+                setTotal(data.total);
+            } else {
+                setList([])
+                setTotal(0)
+            }
+            setLoading(false);
+        };
+        fetchData()
+        return () => {
+            didCancel = true;
+        };
+    }, [network, page, size, orderBy,sortType, btcAddress, searchWord])
+    // const fetchData = useCallback(async () => {
+    //     setLoading(true);
+    //     const { code, message, data } = await getIdCoinList(network, {
+    //         cursor: page * size,
+    //         size,
+    //         followerAddress: btcAddress || '',
+    //         ...params,
+    //     });
+    //     if (code !== 0) return
+    //     if (data.list) {
+    //         setList(data.list);
+    //         setTotal(data.total);
+    //     }
+    //     setLoading(false);
+    // }, [network, page, size, params, btcAddress]);
 
     const showMintNotice = (record: API.IdCoin) => {
         // modal.warning({
@@ -106,9 +140,9 @@ export default () => {
         }
     }
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    // useEffect(() => {
+    //     fetchData();
+    // }, [fetchData]);
     const columns: TableColumnsType<API.IdCoin> = [
         {
             title: 'Name',
@@ -127,7 +161,7 @@ export default () => {
                             </a>
                         </div>
                         <div className="metaid">MetaID :<Tooltip title={record.deployerMetaId}>{record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Tooltip> </div>
-                         <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>
+                        <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>
 
                     </div>
                 </div>
@@ -175,7 +209,7 @@ export default () => {
             width: 140,
             align: 'center',
             render: (price) => {
-                return <NumberFormat value={price}  />
+                return <NumberFormat value={price} />
             }
         },
 
@@ -283,18 +317,16 @@ export default () => {
                 position: ['bottomCenter'],
                 pageSize: size,
                 current: page + 1,
-                total
+                total,
+                onChange: (page) => {
+                    setPage(page - 1);
+                },
             }}
             scroll={{ x: 800 }}
             loading={loading}
-            onChange={({ current, ...params }, _, sorter) => {
-                if (!current) current = 1
-                if (sorter.order) {
-                    setParams({ orderBy: sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
-                } else {
-                    setParams({})
-                }
-                setPage(current - 1)
+            onChange={(_1, _2, sorter) => {
+                setOrderBy(sorter.field || 'timestamp');
+                setSortType(sorter.order === 'ascend' ? 1 : -1);
             }}
             onRow={(record) => {
                 return {
@@ -316,7 +348,6 @@ export default () => {
             rowKey={"mrc20Id"}
             pagination={{
                 onChange: (page) => {
-                    setLoading(true);
                     setPage(page - 1);
                 },
                 position: "bottom",

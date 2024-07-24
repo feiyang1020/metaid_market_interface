@@ -1,6 +1,6 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
 import { getIdCoinInfo, getMrc20AddressUtxo, getMrc20Info } from '@/services/api';
-import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip, Space } from 'antd';
+import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip, Space, message } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useMatch, useModel, history, Link } from 'umi';
 import './idCoin.less'
@@ -14,6 +14,7 @@ import MRC20Icon from '@/components/MRC20Icon';
 import { formatSat } from '@/utils/utlis';
 import btcIcon from "@/assets/logo_btc@2x.png";
 import orders from '@/assets/image.svg';
+import { getCreatePinFeeByNet } from '@/config';
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -36,17 +37,56 @@ const items: TabsProps['items'] = [
 export default () => {
     const screens = useBreakpoint();
     const match = useMatch('/idCoin/:tick');
-    const { network, btcAddress, authParams } = useModel('wallet')
+    const { network, btcAddress, authParams,btcConnector,connected,connect,feeRate } = useModel('wallet')
     const [idCoin, setIdCoin] = useState<API.IdCoin>();
     const [showListBtn, setShowListBtn] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
     const fetchData = useCallback(async () => {
         if (!match || !match.params.tick) return;
         const params: any = {};
-        params.tick = match.params.tick
+        params.tick = match.params.tick;
+        if(btcAddress){
+            params.address = btcAddress
+        }
         const { data } = await getIdCoinInfo(network, params);
         setIdCoin(data);
-    }, [match, network])
+    }, [match, network,btcAddress])
+
+    const handleFollow = async () => {
+        if (!connected) {
+            await connect();
+            return
+        }
+        if (!btcConnector||!idCoin) return
+        try {
+            const followRes = await btcConnector.inscribe({
+                inscribeDataArray: [
+                    {
+                        operation: 'create',
+                        path: '/follow',
+                        body: idCoin.deployerMetaId,
+                        contentType: 'text/plain;utf-8',
+                        flag: network === "mainnet" ? "metaid" : "testid",
+                    },
+                ],
+                options: {
+                    noBroadcast: 'no',
+                    feeRate: feeRate,
+                    service: getCreatePinFeeByNet(network),
+                },
+            });
+            if (followRes.status) throw new Error(followRes.status)
+            if (followRes && followRes.revealTxIds && followRes.revealTxIds[0]) {
+                message.success('Follow successfully! Please wait for the transaction to be confirmed!')
+                setIdCoin({ ...idCoin, isFollowing: true })
+                // await fetchData()
+            } else {
+                throw new Error('Follow failed')
+            }
+        } catch (err: any) {
+            message.error(err.message || 'Follow failed')
+        }
+    }
 
     const fetchUserUtxo = useCallback(async () => {
         try {
@@ -80,11 +120,18 @@ export default () => {
 
     useEffect(() => { fetchUserUtxo() }, [fetchUserUtxo])
     const update = useIntervalAsync(fetchData, 100000)
+
+    const shareX=()=>{
+        const shareText = `I found an interesting MetaID Token that's currently offering free minting! Join me in getting this ${idCoin?.tick} token for free:  ${window.location.href}`;
+        const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+            window.open(shareUrl, '_blank');
+    }
     return <div className='IdCoinPage'>
         <div
             className="pageBack"
             onClick={() => {
                 history.back();
+                // shareX()
             }}
         >
             <LeftOutlined /> Back
@@ -141,17 +188,17 @@ export default () => {
                     <Card bordered={false} styles={{ body: { padding: '24px 16px' } }} style={{ background: 'rgba(27, 27, 27, 0.5)', width: 328, borderRadius: 16 }}>
                         <div className="ordersWrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <div className='orders'>
-                                <img src={orders} alt="" /> <Tooltip title='ID-coin can be traded on third-party orders and can also be listed for trading on the market. In third-party order trading, the liquidity of the pool is different from that of the market.'><QuestionCircleOutlined /></Tooltip>
+                                <img src={orders} alt="" /> <Tooltip title='You can trade ID-coin on the third-party DEX Orders.exchange, which we have partnered with. Orders.exchange and this marketplace are two separate and independent applications.'><QuestionCircleOutlined /></Tooltip>
                             </div>
                             <a href={`https://orders-mrc20.vercel.app/orderbook/idcoin/btc-${idCoin.tick}`} style={{ borderBottom: '1px solid #D4F66B' }} target='_blank'>Trade</a>
                         </div>
 
                         <div className='tradeInfo'>
                             <div className="item">
-                                <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.pool} isBig decimal={8} />
+                                <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} />
                             </div>
                             <div className="item">
-                                <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.price} isBig decimal={8} />
+                                <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} />
                             </div>
 
                         </div>
@@ -171,6 +218,9 @@ export default () => {
                         >
                             <Button loading={loading} style={{ height: 48 }} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
                         </ConfigProvider>
+                    </div>
+                    <div className="mintBtn">
+                        <Button type='primary' style={{ height: 48, width: 102 }}  disabled={idCoin.isFollowing}  onClick={(e) => { e.stopPropagation(); handleFollow() }} > {idCoin.isFollowing ? 'Following' : 'Follow'}</Button>
                     </div>
                     {
                         idCoin.mintable && <div className='mintBtn'>
