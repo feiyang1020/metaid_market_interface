@@ -163,7 +163,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             let _idCoin: API.IdCoin | undefined = undefined;
             let _addressMintState = 0;
             if (data && data.mrc20Id) {
-                const idCoinRet = await getIdCoinInfo(network, { tickId: data.mrc20Id });
+                const params: any = { tickId: data.mrc20Id };
+                if (btcAddress) {
+                    params.address = btcAddress
+                }
+                const idCoinRet = await getIdCoinInfo(network, params);
                 if (idCoinRet.code === 0 && idCoinRet.data) {
                     _idCoin = idCoinRet.data;
                     if (btcAddress && authParams) {
@@ -1092,7 +1096,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     </Form.Item>
                                     <Row gutter={[0, 0]}>
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading} style={{ minHeight: 100 }}>
-        
+
                                             {
                                                 IdCoinInfo && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><IdCoinCard mintMrc20Info={IdCoinInfo} /></>
                                             }
