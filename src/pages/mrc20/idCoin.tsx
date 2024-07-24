@@ -1,12 +1,12 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
 import { getIdCoinInfo, getMrc20AddressUtxo, getMrc20Info } from '@/services/api';
-import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip, Space, message } from 'antd';
+import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip, Space, message, Popover } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useMatch, useModel, history, Link } from 'umi';
 import './idCoin.less'
 import Listed from './components/Listed';
 import NumberFormat from '@/components/NumberFormat';
-import { LeftOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { LeftOutlined, LinkOutlined, QuestionCircleOutlined, ShareAltOutlined, XOutlined } from '@ant-design/icons';
 import Activeity from './components/Activeity';
 import MyActiveity from './components/MyActiveity';
 import MetaIdAvatar from '@/components/MetaIdAvatar';
@@ -15,6 +15,7 @@ import { formatSat } from '@/utils/utlis';
 import btcIcon from "@/assets/logo_btc@2x.png";
 import orders from '@/assets/image.svg';
 import { getCreatePinFeeByNet } from '@/config';
+import copy from 'copy-to-clipboard';
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -37,7 +38,7 @@ const items: TabsProps['items'] = [
 export default () => {
     const screens = useBreakpoint();
     const match = useMatch('/idCoin/:tick');
-    const { network, btcAddress, authParams,btcConnector,connected,connect,feeRate } = useModel('wallet')
+    const { network, btcAddress, authParams, btcConnector, connected, connect, feeRate } = useModel('wallet')
     const [idCoin, setIdCoin] = useState<API.IdCoin>();
     const [showListBtn, setShowListBtn] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
@@ -45,19 +46,19 @@ export default () => {
         if (!match || !match.params.tick) return;
         const params: any = {};
         params.tick = match.params.tick;
-        if(btcAddress){
+        if (btcAddress) {
             params.address = btcAddress
         }
         const { data } = await getIdCoinInfo(network, params);
         setIdCoin(data);
-    }, [match, network,btcAddress])
+    }, [match, network, btcAddress])
 
     const handleFollow = async () => {
         if (!connected) {
             await connect();
             return
         }
-        if (!btcConnector||!idCoin) return
+        if (!btcConnector || !idCoin) return
         try {
             const followRes = await btcConnector.inscribe({
                 inscribeDataArray: [
@@ -121,10 +122,14 @@ export default () => {
     useEffect(() => { fetchUserUtxo() }, [fetchUserUtxo])
     const update = useIntervalAsync(fetchData, 100000)
 
-    const shareX=()=>{
+    const shareX = () => {
         const shareText = `I found an interesting MetaID Token that's currently offering free minting! Join me in getting this ${idCoin?.tick} token for free:  ${window.location.href}`;
         const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-            window.open(shareUrl, '_blank');
+        window.open(shareUrl, '_blank');
+    }
+    const copyLink = () => {
+        copy(window.location.href)
+        message.success('Link copied to clipboard')
     }
     return <div className='IdCoinPage'>
         <div
@@ -140,7 +145,10 @@ export default () => {
             idCoin && <div className='IdCoinInfo'>
 
                 <Card bordered={false} styles={{ body: { display: 'flex', gap: 16, flexWrap: 'wrap', padding: 0 } }} style={{ background: 'rgba(0,0,0,0)' }}>
-                    <MetaIdAvatar avatar={idCoin.deployerUserInfo.avatar} size={100} />
+                    <div style={{ cursor: 'pointer' }} onClick={() => { window.open('https://metaid.io/pin') }}>
+                        <MetaIdAvatar avatar={idCoin.deployerUserInfo.avatar} size={100} />
+                    </div>
+
                     <div className="right" style={{ flexGrow: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                             <div>
@@ -220,13 +228,27 @@ export default () => {
                         </ConfigProvider>
                     </div>
                     <div className="mintBtn">
-                        <Button type='primary' style={{ height: 48, width: 102 }}  disabled={idCoin.isFollowing}  onClick={(e) => { e.stopPropagation(); handleFollow() }} > {idCoin.isFollowing ? 'Following' : 'Follow'}</Button>
+                        <Button type='primary' style={{ height: 48, width: 102 }} disabled={idCoin.isFollowing} onClick={(e) => { e.stopPropagation(); handleFollow() }} > {idCoin.isFollowing ? 'Following' : 'Follow'}</Button>
                     </div>
                     {
                         idCoin.mintable && <div className='mintBtn'>
                             <Button type='primary' style={{ height: 48, width: 102 }} block onClick={() => { history.push('/inscribe/MRC-20/' + idCoin.tick) }}>Mint</Button>
                         </div>
                     }
+
+                    <div className="mintBtn">
+                        <Popover trigger={['click']} content={<div className='sharePop' >
+                            <div className="item" onClick={copyLink}>
+                                <LinkOutlined /> Copy link
+                            </div>
+                            <Divider className='shareDivider' />
+                            <div className="item" onClick={shareX}>
+                                <XOutlined /> Share on X
+                            </div>
+                        </div>} title="">
+                            <Button type='text' style={{ height: 48, width: 102 }} icon={<ShareAltOutlined />} ></Button>
+                        </Popover>
+                    </div>
                 </Space>
 
 

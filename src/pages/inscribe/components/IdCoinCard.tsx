@@ -5,6 +5,7 @@ import MetaIdAvatar from "@/components/MetaIdAvatar"
 import NumberFormat from "@/components/NumberFormat"
 import { ArrowRightOutlined, QuestionCircleOutlined } from "@ant-design/icons"
 import { Card, Descriptions, Tooltip, Typography } from "antd"
+import LiqPerMintNotice from "@/components/LiqPerMintNotice"
 type Props = {
     mintMrc20Info: API.IdCoin
 }
@@ -82,7 +83,7 @@ export default ({ mintMrc20Info }: Props) => {
                 },
                 {
                     key: 'Foliqllow',
-                    label: <span>Liquidity Per Mint <Tooltip title={<p>Liquidity Per Mint：The amount of liquidity required for each transaction. The minimum liquidity requirement is 1,200 stat, with a maximum liquidity supply of 1,000,000,000,000 (1e12)</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
+                    label: <span>Liquidity Per Mint <Tooltip title={<LiqPerMintNotice/>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
                     children: <NumberFormat value={mintMrc20Info.liquidityPerMint} suffix={' BTC'} isBig decimal={8} />
                 },
                 // {

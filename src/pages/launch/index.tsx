@@ -15,6 +15,7 @@ import { EditFilled, InfoCircleOutlined, QuestionCircleOutlined } from '@ant-des
 import ComfirmLaunch from './components/ComfirmLaunch';
 import IdCoinDetail from './components/IdCoinDetail';
 import CustomizeRequiredMark from '@/components/CustomReqMark';
+import LiqPerMintNotice from '@/components/LiqPerMintNotice';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
@@ -305,7 +306,7 @@ export default () => {
                             <Col md={12} xs={24} >
                                 <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 0.0001, max: 10, message: '0.0001-10 BTC' }]} className='formItem'>
                                     <InputNumber precision={8} formatter={(value) => `${value} BTC`} parser={(value) => value?.replace(' BTC', '') as unknown as number} placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
-                                        <Tooltip title={<span>We've partnered w/ Orders.exchange to offer 'Minting is Liquidating' for ID-Coin. When deploying ID-coin, users can set a requirement to provide liquidity to the corresponding trading pair on Orders.exchange. Min allowed is 0.0001 BTC, max is 10 BTC. <a>Click here for more info</a>.</span>}>
+                                        <Tooltip title={<LiqPerMintNotice />}>
                                             <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                         </Tooltip>
                                     } />

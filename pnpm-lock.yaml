@@ -32,6 +32,9 @@ importers:
       compressorjs:
         specifier: ^1.2.1
         version: 1.2.1
+      copy-to-clipboard:
+        specifier: ^3.3.3
+        version: 3.3.3
       crypto-js:
         specifier: ^4.2.0
         version: 4.2.0

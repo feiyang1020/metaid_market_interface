@@ -1,81 +1,33 @@
 .IdCoinPage {
-    padding: 20px 71px;
-    .pageBack {
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #ffffff;
-      margin-bottom: 20px;
+  padding: 20px 71px;
+  .pageBack {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+  .IdCoinInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    .slider {
+      width: 432px;
+      max-width: 90vw;
+      font-size: 14px;
+      .ant-progress-bg {
+        height: 4px !important;
+      }
     }
-    .IdCoinInfo {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      
-      .slider {
-        width: 432px;
-        max-width: 90vw;
-        font-size: 14px;
-        .ant-progress-bg {
-          height: 4px !important;
-        }
-      }
-      .sliderNumber {
-        text-align: right;
-        font-size: 12px;
-        color: var(--primary);
-      }
-      .ant-statistic {
-        display: flex;
-        flex-direction: column-reverse;
-        align-items: center;
-        .ant-statistic-title {
-          color: #ffffff;
-        }
-        .ant-statistic-value {
-          color: #ffffff;
-          white-space: nowrap;
-        }
-        .ant-statistic-content-prefix {
-          display: flex;
-          align-items: center;
-        }
-      }
-      .orders{
-        display: flex;
-        align-items: center;
-        gap:8px;
-      }
-      .tradeInfo{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        margin-top: 16px;
-        gap:29px;
-        width: 100%;
-        .item{
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          img{
-            width: 16px;
-            height: 16px;
-            margin-left: 10px;
-            margin-right: 4px;
-          }
-        }
-      }
-      
-      .mintBtn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+    .sliderNumber {
+      text-align: right;
+      font-size: 12px;
+      color: var(--primary);
     }
     .ant-statistic {
       display: flex;
@@ -86,29 +38,91 @@
       }
       .ant-statistic-value {
         color: #ffffff;
+        white-space: nowrap;
       }
       .ant-statistic-content-prefix {
         display: flex;
         align-items: center;
       }
     }
-  }
-  
-  @media screen and (max-width: 767px) {
-    .IdCoinPage {
-      padding: 20px;
-      .IdCoinInfo {
-        gap: 10px;
-        .left {
-          gap: 10px;
-          .tick{
-            max-width: 200px!important;
-          }
-        }
-        .mintBtn {
-          flex-grow: 1;
+    .orders {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tradeInfo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      gap: 29px;
+      width: 100%;
+      .item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+          width: 16px;
+          height: 16px;
+          margin-left: 10px;
+          margin-right: 4px;
         }
       }
     }
+
+    .mintBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
+  .ant-statistic {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    .ant-statistic-title {
+      color: #ffffff;
+    }
+    .ant-statistic-value {
+      color: #ffffff;
+    }
+    .ant-statistic-content-prefix {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+}
+
+@media screen and (max-width: 767px) {
+  .IdCoinPage {
+    padding: 20px;
+    .IdCoinInfo {
+      gap: 10px;
+      .left {
+        gap: 10px;
+        .tick {
+          max-width: 200px !important;
+        }
+      }
+      .mintBtn {
+        flex-grow: 1;
+      }
+    }
+  }
+}
+
+.sharePop {
   
+  .shareDivider{
+    margin: 0;
+  }
+  .item {
+    display: flex;
+    align-content: center;
+    cursor: pointer;
+    gap:10px;
+    line-height: 40px;
+  }
+}
