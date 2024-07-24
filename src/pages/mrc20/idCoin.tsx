@@ -213,7 +213,7 @@ export default () => {
                     </Card>
                 </Row>
                 <Space>
-                    <div className='mintBtn'>
+                    
                         <ConfigProvider
                             theme={{
                                 components: {
@@ -224,20 +224,20 @@ export default () => {
                                 },
                             }}
                         >
-                            <Button loading={loading} style={{ height: 48 }} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
+                            <Button loading={loading}  disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
                         </ConfigProvider>
-                    </div>
-                    <div className="mintBtn">
-                        <Button type='primary' style={{ height: 48, width: 102 }} disabled={idCoin.isFollowing} onClick={(e) => { e.stopPropagation(); handleFollow() }} > {idCoin.isFollowing ? 'Following' : 'Follow'}</Button>
-                    </div>
+                    
+                   
+                        <Button type='primary'  disabled={idCoin.isFollowing} onClick={(e) => { e.stopPropagation(); handleFollow() }} > {idCoin.isFollowing ? 'Following' : 'Follow'}</Button>
+                   
                     {
                         idCoin.mintable && <div className='mintBtn'>
-                            <Button type='primary' style={{ height: 48, width: 102 }} block onClick={() => { history.push('/inscribe/MRC-20/' + idCoin.tick) }}>Mint</Button>
+                            <Button type='primary'  block onClick={() => { history.push('/inscribe/MRC-20/' + idCoin.tick) }}>Mint</Button>
                         </div>
                     }
 
-                    <div className="mintBtn">
-                        <Popover trigger={['click']} content={<div className='sharePop' >
+                  
+                        <Popover  content={<div className='sharePop' >
                             <div className="item" onClick={copyLink}>
                                 <LinkOutlined /> Copy link
                             </div>
@@ -246,9 +246,9 @@ export default () => {
                                 <XOutlined /> Share on X
                             </div>
                         </div>} title="">
-                            <Button type='text' style={{ height: 48, width: 102 }} icon={<ShareAltOutlined />} ></Button>
+                            <Button type='text' icon={<ShareAltOutlined />} ></Button>
                         </Popover>
-                    </div>
+                    
                 </Space>
 
 
