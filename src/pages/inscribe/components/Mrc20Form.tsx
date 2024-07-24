@@ -1142,7 +1142,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
                                             {
                                                 (IdCoinInfo && addressMintState === 0) && <> <Card style={{ marginBottom: 20, border: '1px solid #D4F66B' }} styles={{ body: { padding: '10px 15px', textAlign: "left", color: '#D4F66B', fontSize: 12 } }}>
-                                                    Mint your ID-coins* and we'll guide you to follow the deployment if you haven't already, ensuring a smooth and complete user experience
+                                                    To mint the ID Coin, you need to become a follower of the Deployer. We will help you complete the follow and mint the ID Coin.
                                                 </Card></>
                                             }
                                         </Col>

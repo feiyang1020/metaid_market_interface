@@ -1,5 +1,5 @@
 import { Avatar } from "antd";
-import defaultAvatar from "@/assets/avatar@2x.png";
+import defaultAvatar from "@/assets/avatar.svg";
 import { getHostByNet } from "@/config";
 import { useModel } from "umi";
 import React from "react";

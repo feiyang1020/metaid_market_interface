@@ -1,7 +1,7 @@
 import { Link, Outlet, history, useLocation, useModel } from "umi";
 import "./index.less";
 import logo from "@/assets/logo.svg";
-import defaultAvatar from "@/assets/avatar@2x.png";
+import defaultAvatar from "@/assets/avatar.svg";
 import Nav from "./components/Nav";
 import {
   Alert,
