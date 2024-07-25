@@ -57,7 +57,7 @@ export default ({ record, }: Props) => {
                 <div className="item">
                     <div className="label">Condition</div>
                     <div className="value"><div className="condition"><div>
-                        <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 10 ? record.pinCheck.path.replace(/(.{4}).+(.{5})/, "$1...$2") : record.pinCheck.path}</Tooltip></div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> x {record.pinCheck.count || '0'}</span></div></div></div>
+                        {record.pinCheck.path&&<Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 10 ? record.pinCheck.path.replace(/(.{4}).+(.{5})/, "$1...$2") : record.pinCheck.path}</Tooltip>}</div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> x {record.pinCheck.count || '0'}</span></div></div></div>
                 </div>
             </div>
         </div>
