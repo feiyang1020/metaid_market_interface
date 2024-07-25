@@ -163,7 +163,7 @@ export default () => {
                 // setSortType(sorter.order === 'ascend' ? 1 : -1);
                 const { field, order } = sorter as Sorts;
                 if (order) {
-                    setOrderBy(( field || '').toString());
+                    setOrderBy(( field === 'price' ? 'lastPrice' : field || '').toString());
                     setSortType(order === 'ascend' ? 1 : -1);
                 } else {
                     setOrderBy('marketCap');
