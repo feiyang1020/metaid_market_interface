@@ -91,7 +91,7 @@ export default ({ mrc20Id, showMy=false }: Props) => {
                                         <div className="units">
 
                                             <span className="colorPrimary">
-                                                <NumberFormat value={item.tokenPriceRate} isBig  decimal={8} />
+                                                <NumberFormat value={item.tokenPriceRate} isBig  decimal={8} tiny/>
                                             </span> BTC/{item.tick}
                                         </div>
 
