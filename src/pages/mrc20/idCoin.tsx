@@ -186,7 +186,7 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoin.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16,whiteSpace:'nowrap' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoin.holders} />
@@ -203,10 +203,10 @@ export default () => {
 
                         <div className='tradeInfo'>
                             <div className="item">
-                                <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} />
+                                <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} tiny/>
                             </div>
                             <div className="item">
-                                <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} />
+                                <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} tiny/>
                             </div>
 
                         </div>
