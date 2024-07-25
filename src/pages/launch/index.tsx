@@ -19,6 +19,7 @@ import LiqPerMintNotice from '@/components/LiqPerMintNotice';
 import safeIcon from '@/assets/safe.svg';
 import userIcon from '@/assets/user.svg';
 import idCoinIcon from '@/assets/idCoin.svg';
+import down from '@/assets/chevron-down.svg';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
@@ -272,8 +273,8 @@ export default () => {
 
                         </Collapse>
                         <div className="collapseIcon">
-                            <Button type='text' icon={<DownOutlined className={`${activeKey==='1'?'spanRotate':'spanReset'}`} />} onClick={()=>setActiveKey(activeKey==='1'?'':'1')}>
-
+                            <Button type='text'  onClick={()=>setActiveKey(activeKey==='1'?'':'1')}>
+                                <img src={down} alt=""  className={`${activeKey==='1'?'spanRotate':'spanReset'}`} />
                             </Button>
 
                         </div>
