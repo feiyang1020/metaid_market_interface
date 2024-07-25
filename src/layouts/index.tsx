@@ -52,6 +52,9 @@ const _themes = {
     },
     "Progress": {
       "colorSuccess": "#d4f66b"
+    },
+    "Card": {
+      "colorBgContainer": "rgba(25, 27, 24, 0.84)"
     }
   },
 };
