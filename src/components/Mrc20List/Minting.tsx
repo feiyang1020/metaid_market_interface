@@ -21,7 +21,7 @@ export default () => {
     // const [page, setPage] = useState<number>(0);
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({});
-    const [orderBy, setOrderBy] = useState<string>('marketCap');
+    const [orderBy, setOrderBy] = useState<string>('holders');
     const [sortType, setSortType] = useState<number>(-1);
     // const fetchData = useCallback(async () => {
     //     setLoading(true);
