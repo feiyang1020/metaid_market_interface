@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, Grid, Button, InputNumber, message, Tooltip, Typography, Spin, Modal } from 'antd';
+import { Col, Form, Input, Row, Grid, Button, InputNumber, message, Tooltip, Typography, Spin, Modal, Card, Collapse } from 'antd';
 import './index.less'
 import { useModel, useSearchParams, history } from "umi";
 import MetaIdAvatar from '@/components/MetaIdAvatar';
@@ -11,11 +11,14 @@ import { buildDeployIdCointPsbt } from '@/utils/idcoin';
 import { testnet } from 'bitcoinjs-lib/src/networks';
 import { addUtxoSafe } from '@/utils/psbtBuild';
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from '@/components/SuccessModal';
-import { EditFilled, InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { DownOutlined, EditFilled, InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import ComfirmLaunch from './components/ComfirmLaunch';
 import IdCoinDetail from './components/IdCoinDetail';
 import CustomizeRequiredMark from '@/components/CustomReqMark';
 import LiqPerMintNotice from '@/components/LiqPerMintNotice';
+import safeIcon from '@/assets/safe.svg';
+import userIcon from '@/assets/user.svg';
+import idCoinIcon from '@/assets/idCoin.svg';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
@@ -24,6 +27,7 @@ export default () => {
     const _amountPerMint = Form.useWatch('amountPerMint', form);
     const _liquidityPerMint = Form.useWatch('liquidityPerMint', form);
     const [order, setOrder] = useState<API.DeployIdCoinPreRes>();
+    const [activeKey, setActiveKey] = useState<string>('')
     const [fields, setFields] = useState<{
         tick: string,
         followersNum: number,
@@ -227,132 +231,196 @@ export default () => {
     return <div className="launchPage">
         <Spin spinning={initializing || loading} style={{ minHeight: '50vh' }}>
             {(initializing || loading) ? <></> : idCoin ? <IdCoinDetail idCoid={idCoin} /> :
-                <>
-                    <div className="user">
-                        <div className='userAvatar'>
-                            <MetaIdAvatar avatar={avatar} size={100} />
+                <div className='launchWrap'>
+                    <div className='launchCollapse'>
+                        <Collapse className="" style={{ padding: 0 }} ghost activeKey={activeKey} items={[
                             {
-                                (connected && !initializing) && <div className='mask' onClick={() => { setEidtVisible(true) }}>
-                                    <EditFilled />
-                                </div>
-                            }
+                                key: '1',
+                                label: <div className='collapseLabel'>
+                                    <div className="title">
+                                        ID Coin: Launch a Liquid Personal Token Just for Your Followers
+                                    </div>
+                                    <div className="subTitle">
+                                        Following is Minting & Minting is Liquidating
+                                    </div>
 
+                                </div>,
+
+                                showArrow: false,
+                                children: <>
+                                    <div className="card">
+                                        <div className="item">
+                                            <img src={idCoinIcon} alt="" className='icon' />
+                                            <div>
+                                                ID Coin is an MRC-20 token deployment & minting use case example from metaid.market, showcasing MRC-20's possibilities.
+                                            </div>
+                                        </div>
+                                        <div className="item">
+                                            <div className="icon">99</div>
+                                            <div>
+                                                Only 99 deployments available for now.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="tip">
+                                        This is an experimental feature, be aware of potential risks.
+                                    </div>
+                                </>,
+
+                            }
+                        ]}>
+
+                        </Collapse>
+                        <div className="collapseIcon">
+                            <Button type='text' icon={<DownOutlined className={`${activeKey==='1'?'spanRotate':'spanReset'}`} />} onClick={()=>setActiveKey(activeKey==='1'?'':'1')}>
+
+                            </Button>
 
                         </div>
-
-                        <div className="name">{userName || 'Unnamed'}</div>
-                        <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
                     </div>
 
-                    <Form
-                        labelCol={{ span: 9 }}
-                        wrapperCol={{ span: 15 }}
-                        labelAlign='left'
-                        form={form}
-                        layout="horizontal"
-                        requiredMark={CustomizeRequiredMark}
-                        variant="borderless"
-                        className='formWrap'
-                        colon={false}
-                        initialValues={{
-                            // tick: 'OhMyCoin',
-                            followersNum: 1000,
-                            amountPerMint: 10000,
-                            liquidityPerMint: 0.001,
-                            // description: "come on!"
-                        }}
-                    >
+                    <Card bordered={false} styles={{ body: { boxSizing: 'border-box', width: 784, maxWidth: 'calc(100vw - 24px)', display: 'flex', flexDirection: 'column', alignContent: 'center' } }}>
+                        <div className="user">
+                            <div className='userAvatar'>
+                                <MetaIdAvatar avatar={avatar} size={100} />
+                                {
+                                    (connected && !initializing) && <div className='mask' onClick={() => { setEidtVisible(true) }}>
+                                        <EditFilled />
+                                    </div>
+                                }
 
-                        <Row gutter={[24, 0]}>
-                            <Col md={12} xs={24} >
-                                <Form.Item label="Ticker" name='tick'
-                                    rules={[{ required: true }, { type: 'string', min: 2, max: 24 }, { pattern: new RegExp(/^[a-zA-Z0-9\-]*$/), message: "No Space or Special Characters Allowed" }, () => ({
-                                        async validator(_, value) {
-                                            if (!value || value.length < 2) {
-                                                return Promise.resolve();
-                                            }
-                                            const { data } = await getIdCoinInfo(network, { tick: value.toUpperCase() });
-                                            if (data && data.mrc20Id) {
-                                                return Promise.reject(new Error('This tick already exists.'));
-                                            }
 
-                                        },
-                                    })]}
-                                    validateTrigger="onBlur" className='formItem'>
-                                    <Input placeholder="2~24 Charaters" />
-                                </Form.Item>
-                            </Col>
-                            <Col md={12} xs={24} >
-                                <Form.Item label="Followers Limit" name='followersNum' rules={[{ required: true }, { type: 'number', min: 1, max: 1000000000000, message: '1-1e12 ' }]} className='formItem'>
-                                    <InputNumber precision={0} placeholder="Followers Limit" style={{ width: '100%' }} controls={false} addonAfter={
-                                        <Tooltip title="Followers Limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）">
-                                            <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                        </Tooltip>
-                                    } />
-                                </Form.Item>
-                            </Col>
-                            <Col md={12} xs={24} >
-                                <Form.Item label="Amount Per Mint" name='amountPerMint' rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: '1-1e12 ' }]} className='formItem'>
-                                    <InputNumber precision={0} placeholder="Amount Per Mint" style={{ width: '100%' }} addonAfter={
-                                        <Tooltip title="Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).">
-                                            <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                        </Tooltip>
-                                    } controls={false} />
+                            </div>
 
-                                </Form.Item>
-                                <div className='totalSupply'> Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} /></div>
+                            <div className="name">{userName || 'Unnamed'}</div>
+                            <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
+                        </div>
 
-                            </Col>
-                            <Col md={12} xs={24} >
-                                <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 0.0001, max: 10, message: '0.0001-10 BTC' }]} className='formItem'>
-                                    <InputNumber precision={8} formatter={(value) => `${value} BTC`} parser={(value) => value?.replace(' BTC', '') as unknown as number} placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
-                                        <Tooltip title={<LiqPerMintNotice />}>
-                                            <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                        </Tooltip>
-                                    } />
-                                </Form.Item>
-                                <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' BTC' /></div>
-                            </Col>
-                            <Col md={24} xs={24} >
-                                <Form.Item label="Message" name='description' className='formItem' >
-                                    <Input placeholder="Leave your message to your followers." />
-                                </Form.Item>
-                            </Col>
-                            {/* <Col md={24} xs={24} >
+                        <Form
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }}
+                            labelAlign='left'
+                            form={form}
+                            layout="horizontal"
+                            requiredMark={CustomizeRequiredMark}
+                            variant="borderless"
+                            className='formWrap'
+                            colon={false}
+                            initialValues={{
+                                // tick: 'OhMyCoin',
+                                followersNum: 1000,
+                                amountPerMint: 10000,
+                                liquidityPerMint: 0.001,
+                                // description: "come on!"
+                            }}
+                        >
+
+                            <Row gutter={[24, 0]}>
+                                <Col md={12} xs={24} >
+                                    <Form.Item label="Ticker" name='tick'
+                                        rules={[{ required: true }, { type: 'string', min: 2, max: 24 }, { pattern: new RegExp(/^[a-zA-Z0-9\-]*$/), message: "No Space or Special Characters Allowed" }, () => ({
+                                            async validator(_, value) {
+                                                if (!value || value.length < 2) {
+                                                    return Promise.resolve();
+                                                }
+                                                const { data } = await getIdCoinInfo(network, { tick: value.toUpperCase() });
+                                                if (data && data.mrc20Id) {
+                                                    return Promise.reject(new Error('This tick already exists.'));
+                                                }
+
+                                            },
+                                        })]}
+                                        validateTrigger="onBlur" className='formItem'>
+                                        <Input placeholder="2~24 Charaters" />
+                                    </Form.Item>
+                                </Col>
+                                <Col md={12} xs={24} >
+                                    <Form.Item label="Followers Limit" name='followersNum' rules={[{ required: true }, { type: 'number', min: 1, max: 1000000000000, message: '1-1e12 ' }]} className='formItem'>
+                                        <InputNumber precision={0} placeholder="Followers Limit" style={{ width: '100%' }} controls={false} addonAfter={
+                                            <Tooltip title="Followers Limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）">
+                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                            </Tooltip>
+                                        } />
+                                    </Form.Item>
+                                </Col>
+                                <Col md={12} xs={24} >
+                                    <Form.Item label="Amount Per Mint" name='amountPerMint' rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: '1-1e12 ' }]} className='formItem'>
+                                        <InputNumber precision={0} placeholder="Amount Per Mint" style={{ width: '100%' }} addonAfter={
+                                            <Tooltip title="Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).">
+                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                            </Tooltip>
+                                        } controls={false} />
+
+                                    </Form.Item>
+                                    <div className='totalSupply'> Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} /></div>
+
+                                </Col>
+                                <Col md={12} xs={24} >
+                                    <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 0.0001, max: 10, message: '0.0001-10 BTC' }]} className='formItem'>
+                                        <InputNumber precision={8} formatter={(value) => `${value} BTC`} parser={(value) => value?.replace(' BTC', '') as unknown as number} placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
+                                            <Tooltip title={<LiqPerMintNotice />}>
+                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                            </Tooltip>
+                                        } />
+                                    </Form.Item>
+                                    <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' BTC' /></div>
+                                </Col>
+                                <Col md={24} xs={24} >
+                                    <Form.Item label="Message" name='description' className='formItem' >
+                                        <Input placeholder="Leave your message to your followers." />
+                                    </Form.Item>
+                                </Col>
+                                {/* <Col md={24} xs={24} >
                     <Form.Item label="FeeRate" required name='feeRate' className="formItem">
                         <SeleceFeeRateItem feeRates={feeRates} />
                     </Form.Item>
                 </Col> */}
-                            <Col span={24}>
-                                {!connected ? (
-                                    <Button
-                                        block
-                                        className="submit"
-                                        size="large"
-                                        type="primary"
-                                        onClick={connect}
-                                        style={{ height: 48 }}
-                                    >
-                                        Connect Wallet
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        block
-                                        size="large"
-                                        loading={submiting}
-                                        type="primary"
-                                        onClick={launchBefore}
-                                        style={{ height: 48 }}
-                                        className="submit"
 
-                                    >
-                                        Launch
-                                    </Button>
-                                )}
-                            </Col>
-                        </Row>
+                            </Row>
 
-                    </Form></>}
+                        </Form>
+                    </Card>
+                    <Col span={24} style={{ marginTop: 32 }}>
+                        {!connected ? (
+                            <Button
+                                block
+                                className="submit"
+                                size="large"
+                                type="primary"
+                                onClick={connect}
+                                style={{ height: 48 }}
+                            >
+                                Connect Wallet
+                            </Button>
+                        ) : (
+                            <Button
+                                block
+                                size="large"
+                                loading={submiting}
+                                type="primary"
+                                onClick={launchBefore}
+                                style={{ height: 48 }}
+                                className="submit"
+
+                            >
+                                Launch
+                            </Button>
+                        )}
+                    </Col>
+                    <Row className='requirement' gutter={[6, 6]}>
+                        <Col span={24} className="title">
+                            Requirement
+                        </Col>
+                        <Col md={12} xs={24} className='item' >
+                            <img src={safeIcon} alt="" />
+                            ID Coin Deployment: Users w/{'>'}5 MetalD PINs
+                        </Col>
+                        <Col md={12} xs={24} className='item' >
+                            <img src={userIcon} alt="" />
+                            ID Coin Minting: Only followers of deployer can mint
+                        </Col>
+                    </Row>
+                </div>}
         </Spin>
         <SetProfile show={visible} editVisible={editVisible} setEditVisible={() => { setVisible(false); setEidtVisible(true) }} onClose={() => { setVisible(false); setEidtVisible(false) }} />
         <SuccessModal {...successProp}></SuccessModal>

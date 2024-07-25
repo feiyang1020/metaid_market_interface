@@ -192,8 +192,8 @@ export default () => {
         },
         {
             title: 'Supply',
-            dataIndex: 'supply',
-            key: 'supply',
+            dataIndex: 'totalSupply',
+            key: 'totalSupply',
             sorter: true,
             align: 'center',
             width: 160,
