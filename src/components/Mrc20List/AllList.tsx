@@ -1,12 +1,15 @@
 import usePageList from "@/hooks/usePageList"
 import { getMrc20List } from "@/services/api"
-import { ConfigProvider, Table, TableColumnsType, Grid, List, message } from "antd"
+import { ConfigProvider, Table, TableColumnsType, Grid, List, message, TableProps } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
 import Item from "./Item";
 import { useCallback, useEffect, useState } from "react";
 import AllCard from "./AllCard";
 const { useBreakpoint } = Grid;
+type OnChange = NonNullable<TableProps<API.MRC20Info>['onChange']>;
+type GetSingle<T> = T extends (infer U)[] ? U : never;
+type Sorts = GetSingle<Parameters<OnChange>[2]>;
 export default () => {
     const screens = useBreakpoint();
     const { network } = useModel("wallet")
@@ -28,7 +31,7 @@ export default () => {
                 cursor: page * size,
                 size,
                 completed: true,
-                searchTick:searchWord,
+                searchTick: searchWord,
                 orderBy,
                 sortType,
             });
@@ -36,7 +39,7 @@ export default () => {
             if (code !== 0) {
                 message.error(msg)
             }
-            if (data.list) {
+            if (data && data.list) {
                 setList(data.list);
                 setTotal(data.total);
             } else {
@@ -49,7 +52,7 @@ export default () => {
         return () => {
             didCancel = true;
         };
-    }, [network, page, size, orderBy,sortType, searchWord])
+    }, [network, page, size, orderBy, sortType, searchWord])
     // const fetchData = useCallback(async () => {
     //     setLoading(true);
     //     const { code, message, data } = await getMrc20List(network, {
@@ -94,7 +97,7 @@ export default () => {
             sorter: true,
             align: 'center',
             render: (item) => {
-                return <div style={{ color: item[0] === '+' ? '#40BA68' : '#B94041' }}>{item}</div>
+                return <div style={{ color: item[0] !== '-' ? '#40BA68' : '#B94041' }}>{item}</div>
             }
         },
         {
@@ -156,8 +159,16 @@ export default () => {
             scroll={{ x: 800 }}
             loading={loading}
             onChange={(_1, _2, sorter) => {
-                setOrderBy(sorter.field || 'marketCap');
-                setSortType(sorter.order === 'ascend' ? 1 : -1);
+                // setOrderBy(sorter.field || 'marketCap');
+                // setSortType(sorter.order === 'ascend' ? 1 : -1);
+                const { field, order } = sorter as Sorts;
+                if (order) {
+                    setOrderBy(( field || '').toString());
+                    setSortType(order === 'ascend' ? 1 : -1);
+                } else {
+                    setOrderBy('marketCap');
+                    setSortType(-1);
+                }
             }}
             onRow={(record) => {
                 return {

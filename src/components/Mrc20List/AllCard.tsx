@@ -33,7 +33,7 @@ export default ({ record, }: Props) => {
                 </div>
                 <div className="item">
                     <div className="label">Change 24H</div>
-                    <div className="value" style={{ color: record.change24h[0] === '+' ? '#40BA68' : '#B94041' }}>{record.change24h}</div>
+                    <div className="value" style={{ color: record.change24h[0] !== '-' ? '#40BA68' : '#B94041' }}>{record.change24h}</div>
                 </div>
 
             </div>

@@ -1,6 +1,6 @@
 import usePageList from "@/hooks/usePageList"
 import { getIdCoinList, getMrc20List } from "@/services/api"
-import { ConfigProvider, Table, TableColumnsType, Grid, Progress, Button, Tooltip, Popconfirm, Modal, Checkbox, CheckboxProps, message, List } from "antd"
+import { ConfigProvider, Table, TableColumnsType, Grid, Progress, Button, Tooltip, Popconfirm, Modal, Checkbox, CheckboxProps, message, List, TableProps } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
 import Item from "./Item";
@@ -10,6 +10,9 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { getCreatePinFeeByNet } from "@/config";
 import IdCoinCard from "./IdCoinCard";
 const { useBreakpoint } = Grid;
+type OnChange = NonNullable<TableProps<API.IdCoin>['onChange']>;
+type GetSingle<T> = T extends (infer U)[] ? U : never;
+type Sorts = GetSingle<Parameters<OnChange>[2]>;
 
 export default () => {
     const screens = useBreakpoint();
@@ -33,7 +36,7 @@ export default () => {
                 cursor: page * size,
                 size,
                 followerAddress: btcAddress || '',
-                searchTick:searchWord,
+                searchTick: searchWord,
                 orderBy,
                 sortType,
             });
@@ -41,7 +44,7 @@ export default () => {
             if (code !== 0) {
                 message.error(msg)
             }
-            if (data.list) {
+            if (data && data.list) {
                 setList(data.list);
                 setTotal(data.total);
             } else {
@@ -54,7 +57,7 @@ export default () => {
         return () => {
             didCancel = true;
         };
-    }, [network, page, size, orderBy,sortType, btcAddress, searchWord])
+    }, [network, page, size, orderBy, sortType, btcAddress, searchWord])
     // const fetchData = useCallback(async () => {
     //     setLoading(true);
     //     const { code, message, data } = await getIdCoinList(network, {
@@ -258,12 +261,14 @@ export default () => {
 
                         </Progress>
                     </div>
+                    {
+                        record.mintable && <Button size='small' disabled={!record.mintable} onClick={(e) => {
+                            e.stopPropagation();
+                            showMintNotice(record)
 
-                    <Button size='small' disabled={!record.mintable} onClick={(e) => {
-                        e.stopPropagation();
-                        showMintNotice(record)
+                        }} type='primary'>Mint</Button>
+                    }
 
-                    }} type='primary'>Mint</Button>
 
                 </div>
             }
@@ -325,8 +330,16 @@ export default () => {
             scroll={{ x: 800 }}
             loading={loading}
             onChange={(_1, _2, sorter) => {
-                setOrderBy(sorter.field || 'timestamp');
-                setSortType(sorter.order === 'ascend' ? 1 : -1);
+                // setOrderBy(sorter.field || 'timestamp');
+                // setSortType(sorter.order === 'ascend' ? 1 : -1);
+                const { field, order } = sorter as Sorts;
+                if (order) {
+                    setOrderBy((field || '').toString());
+                    setSortType(order === 'ascend' ? 1 : -1);
+                } else {
+                    setOrderBy('holders');
+                    setSortType(-1);
+                }
             }}
             onRow={(record) => {
                 return {

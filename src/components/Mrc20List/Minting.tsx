@@ -1,6 +1,6 @@
 import usePageList from "@/hooks/usePageList"
 import { getMrc20List } from "@/services/api"
-import { ConfigProvider, Table, TableColumnsType, Grid, Tooltip, Slider, Progress, Button, List, message } from "antd"
+import { ConfigProvider, Table, TableColumnsType, Grid, Tooltip, Slider, Progress, Button, List, message, TableProps } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
 import Item from "./Item";
@@ -11,6 +11,9 @@ import PopLvl from "../PopLvl";
 import dayjs from "dayjs";
 import MintingCard from "./MintingCard";
 const { useBreakpoint } = Grid;
+type OnChange = NonNullable<TableProps<API.MRC20Info>['onChange']>;
+type GetSingle<T> = T extends (infer U)[] ? U : never;
+type Sorts = GetSingle<Parameters<OnChange>[2]>;
 export default () => {
     const screens = useBreakpoint();
     const { network } = useModel("wallet")
@@ -50,7 +53,7 @@ export default () => {
                 cursor: page * size,
                 size,
                 completed: false,
-                searchTick:searchWord,
+                searchTick: searchWord,
                 orderBy,
                 sortType,
             });
@@ -58,7 +61,7 @@ export default () => {
             if (code !== 0) {
                 message.error(msg)
             }
-            if (data.list) {
+            if (data && data.list) {
                 setList(data.list);
                 setTotal(data.total);
             } else {
@@ -71,7 +74,11 @@ export default () => {
         return () => {
             didCancel = true;
         };
-    }, [network, page, size, orderBy,sortType, searchWord])
+    }, [network, page, size, orderBy, sortType, searchWord])
+
+    const onChange: TableProps<API.MRC20Info>['onChange'] = (pagination, filters, sorter, extra) => {
+        console.log('params', pagination, filters, sorter, extra);
+    };
     const columns: TableColumnsType<API.MRC20Info> = [
         {
             title: 'Token',
@@ -125,7 +132,7 @@ export default () => {
             render: (_, record) => {
                 if (!record.pinCheck) return <div className="condition">--</div>
                 return <div className="condition"><div>
-                    {record.pinCheck.path&&<Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 45 ? record.pinCheck.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.pinCheck.path}</Tooltip>}</div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> x {record.pinCheck.count || '0'}</span></div></div>
+                    {record.pinCheck.path && <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 45 ? record.pinCheck.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.pinCheck.path}</Tooltip>}</div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> x {record.pinCheck.count || '0'}</span></div></div>
             }
         },
         {
@@ -153,7 +160,7 @@ export default () => {
             dataIndex: 'totalSupply',
             width: 200,
             render: (price, record) => {
-                const percent = Number(record.supply / record.totalSupply) * 100||0;
+                const percent = Number(record.supply / record.totalSupply) * 100 || 0;
                 return <div className="progress">
                     <NumberFormat value={percent} precision={2} suffix='%' />
                     <Progress className="Progress" percent={percent > 1 ? percent : 1} showInfo={false}>
@@ -217,8 +224,15 @@ export default () => {
             //     setPage(current - 1)
             // }}
             onChange={(_1, _2, sorter) => {
-                setOrderBy(sorter.field === 'price' ? 'lastPrice' : sorter.field || 'marketCap');
-                setSortType(sorter.order === 'ascend' ? 1 : -1);
+                const { field, order } = sorter as Sorts;
+                if (order) {
+                    setOrderBy((field === 'price' ? 'lastPrice' : field || '').toString());
+                    setSortType(order === 'ascend' ? 1 : -1);
+                } else {
+                    setOrderBy('holders');
+                    setSortType(-1);
+                }
+
             }}
             onRow={(record) => {
                 return {

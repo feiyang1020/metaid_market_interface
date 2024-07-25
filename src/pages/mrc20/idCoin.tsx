@@ -152,8 +152,8 @@ export default () => {
                     <div className="right" style={{ flexGrow: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                             <div>
-                                <Typography.Title level={4} style={{ margin: 0, color: '#fff' }}>
-                                    {idCoin.tick}
+                                <Typography.Title level={4} style={{ margin: 0, color: '#fff', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                    {idCoin.tick} <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={idCoin.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow() }} type='link'> {idCoin.isFollowing ? 'Following' : 'Follow'}</Button>
                                 </Typography.Title>
                                 <Typography.Text copyable={{ text: idCoin.deployerMetaId }} className="metaid"> MetaID: {idCoin.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
                             </div>
@@ -186,7 +186,7 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoin.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16,whiteSpace:'nowrap' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoin.holders} />
@@ -203,52 +203,52 @@ export default () => {
 
                         <div className='tradeInfo'>
                             <div className="item">
-                                <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} tiny/>
+                                <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} tiny />
                             </div>
                             <div className="item">
-                                <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} tiny/>
+                                <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} tiny />
                             </div>
 
                         </div>
                     </Card>
                 </Row>
                 <Space>
-                    
-                        <ConfigProvider
-                            theme={{
-                                components: {
-                                    Button: {
-                                        "defaultBorderColor": "rgb(212, 246, 107)",
-                                        "defaultColor": "rgb(212, 246, 107)"
-                                    },
+
+                    <ConfigProvider
+                        theme={{
+                            components: {
+                                Button: {
+                                    "defaultBorderColor": "rgb(212, 246, 107)",
+                                    "defaultColor": "rgb(212, 246, 107)"
                                 },
-                            }}
-                        >
-                            <Button loading={loading}  disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
-                        </ConfigProvider>
-                    
-                   
-                        <Button type='primary'  disabled={idCoin.isFollowing} onClick={(e) => { e.stopPropagation(); handleFollow() }} > {idCoin.isFollowing ? 'Following' : 'Follow'}</Button>
-                   
+                            },
+                        }}
+                    >
+                        <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
+                    </ConfigProvider>
+
+
+                    {/* <Button type='primary'  disabled={idCoin.isFollowing} onClick={(e) => { e.stopPropagation(); handleFollow() }} > {idCoin.isFollowing ? 'Following' : 'Follow'}</Button> */}
+
                     {
                         idCoin.mintable && <div className='mintBtn'>
-                            <Button type='primary'  block onClick={() => { history.push('/inscribe/MRC-20/' + idCoin.tick) }}>Mint</Button>
+                            <Button type='primary' block onClick={() => { history.push('/inscribe/MRC-20/' + idCoin.tick) }}>Mint</Button>
                         </div>
                     }
 
-                  
-                        <Popover  content={<div className='sharePop' >
-                            <div className="item" onClick={copyLink}>
-                                <LinkOutlined /> Copy link
-                            </div>
-                            <Divider className='shareDivider' />
-                            <div className="item" onClick={shareX}>
-                                <XOutlined /> Share on X
-                            </div>
-                        </div>} title="">
-                            <Button type='text' icon={<ShareAltOutlined />} ></Button>
-                        </Popover>
-                    
+
+                    <Popover content={<div className='sharePop' >
+                        <div className="item" onClick={copyLink}>
+                            <LinkOutlined /> Copy link
+                        </div>
+                        <Divider className='shareDivider' />
+                        <div className="item" onClick={shareX}>
+                            <XOutlined /> Share on X
+                        </div>
+                    </div>} title="">
+                        <Button type='text' icon={<ShareAltOutlined />} ></Button>
+                    </Popover>
+
                 </Space>
 
 
