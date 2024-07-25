@@ -27,7 +27,8 @@ export default () => {
             const { code, message: msg, data } = await getMrc20List(network, {
                 cursor: page * size,
                 size,
-                searchWord,
+                completed: true,
+                searchTick:searchWord,
                 orderBy,
                 sortType,
             });

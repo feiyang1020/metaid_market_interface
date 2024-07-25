@@ -33,7 +33,7 @@ export default () => {
                 cursor: page * size,
                 size,
                 followerAddress: btcAddress || '',
-                searchWord,
+                searchTick:searchWord,
                 orderBy,
                 sortType,
             });

@@ -337,6 +337,8 @@ export async function getMrc20List(
     cursor: number;
     size: number;
     completed?: boolean;
+    searchTick?: string;
+    sortType?: number;
     orderBy?: string; //pinnumber/totalminted/holders/txcount
   },
   options?: { [key: string]: any }
@@ -357,6 +359,7 @@ export async function getUserMrc20List(
     address?: string;
     cursor: number;
     size: number;
+    
   },
   options?: { [key: string]: any }
 ) {
@@ -665,6 +668,9 @@ export async function getIdCoinList(
     size: number;
     address?: string;
     followerAddress?: string;
+    searchTick?: string;
+    orderBy?: string;
+    sortType?: number;
   },
   options?: { [key: string]: any }
 ) {
