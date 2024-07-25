@@ -135,7 +135,7 @@ export default function Layout() {
                           src={
                             <img src={avatar || defaultAvatar} alt="avatar" />
                           }
-                          style={{ width: 46, height: 46 }}
+                          style={{ minWidth: 46, minHeight: 46 }}
                         ></Avatar>
                         <div className="nameWrap">
                           <div className="name">
@@ -145,6 +145,7 @@ export default function Layout() {
                                   /(\w{4})\w+(\w{3})/,
                                   "$1...$2"
                                 ))}
+                                
                           </div>
                           {metaid && (
                             <div className="metaId">
@@ -207,7 +208,8 @@ export default function Layout() {
                     <Divider type='vertical' style={{ margin: 0 }} />
                     <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
                     <Avatar
-                      src={<img src={avatar || defaultAvatar} alt="avatar" />}
+                    style={{ minWidth: 30, minHeight: 30 }}
+                      src={<img src={avatar || defaultAvatar} alt="avatar"  />}
                     ></Avatar>
                     <DownOutlined />
                   </div>
