@@ -1,5 +1,4 @@
 import { bigint2Number, formatNumberToKMBT } from "@/utils/utlis";
-import { Tooltip } from "antd"
 import { BigNumber } from 'bignumber.js';
 import { useMemo } from "react";
 import { useIntl } from "umi";
@@ -29,8 +28,8 @@ const NumberFormat: React.FC<Props> = (props) => {
         let _value = value
         if (Number.isNaN(Number(_value))) return '--'
         if (isBig && decimal) {
-            if (String(_value).indexOf('.')>-1) {
-                _value = bigint2Number(new BigNumber(_value).multipliedBy(1e8), Number(decimal)+8)
+            if (String(_value).indexOf('.') > -1) {
+                _value = bigint2Number(new BigNumber(_value).multipliedBy(1e8), Number(decimal) + 8)
             } else {
                 _value = bigint2Number(new BigNumber(_value), decimal)
             }
@@ -62,10 +61,18 @@ const NumberFormat: React.FC<Props> = (props) => {
 
 
     return <>
-        {prefix}{typeof beautyNumber === 'string' ? beautyNumber : <>0.0<span style={{ fontSize: '0.8em', top: "0.2em", position: "relative" }}>
-            {beautyNumber.dex}
-        </span>{beautyNumber.left}
-        </>}{suffix}
+        {prefix}
+        {typeof beautyNumber === 'string' ?
+            beautyNumber
+            :
+            <>0.0
+                <span style={{ fontSize: '0.8em', top: "0.2em", position: "relative" }}>
+                    {beautyNumber.dex}
+                </span>
+                {beautyNumber.left}
+            </>
+        }
+        {suffix}
     </>
 }
 

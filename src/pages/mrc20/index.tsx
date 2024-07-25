@@ -1,18 +1,19 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
-import { getMrc20Info } from '@/services/api';
-import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid } from 'antd';
-import { useCallback, useState } from 'react';
+import { getMrc20AddressUtxo, getMrc20Info } from '@/services/api';
+import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Space, Popover, message } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 import { useMatch, useModel, history } from 'umi';
 import './index.less'
 import Listed from './components/Listed';
 import NumberFormat from '@/components/NumberFormat';
-import { LeftOutlined } from '@ant-design/icons';
+import { LeftOutlined, LinkOutlined, ShareAltOutlined, XOutlined } from '@ant-design/icons';
 import Activeity from './components/Activeity';
 import MyActiveity from './components/MyActiveity';
 import MetaIdAvatar from '@/components/MetaIdAvatar';
 import MRC20Icon from '@/components/MRC20Icon';
 import { formatSat } from '@/utils/utlis';
 import btcIcon from "@/assets/logo_btc@2x.png";
+import copy from 'copy-to-clipboard';
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -35,8 +36,10 @@ const items: TabsProps['items'] = [
 export default () => {
     const screens = useBreakpoint();
     const match = useMatch('/mrc20/:mrc20Id');
-    const { network, btcAddress } = useModel('wallet')
+    const { network, btcAddress,authParams } = useModel('wallet')
     const [mrc20Info, setMrc20Info] = useState<API.MRC20TickInfo>();
+    const [showListBtn, setShowListBtn] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
     const fetchData = useCallback(async () => {
         if (!match || !match.params.mrc20Id) return;
         const params: any = {};
@@ -49,6 +52,47 @@ export default () => {
         setMrc20Info(data);
     }, [match, network])
     const update = useIntervalAsync(fetchData, 100000)
+
+    const fetchUserUtxo = useCallback(async () => {
+        try {
+            if (!mrc20Info || !btcAddress) throw new Error('no MRC20 or btcAddress')
+            const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: mrc20Info.mrc20Id, cursor: 0, size: 100 }, {
+                headers: {
+                    ...authParams,
+                },
+            });
+            let _showListBtn = false;
+            if (code === 0) {
+                const find = utxoList.list.find((item) => {
+                    return item.orderId === '' && item.mrc20s.length > 0
+                })
+                if (find) {
+                    _showListBtn = true
+                }
+            }
+            setShowListBtn(_showListBtn)
+        } catch (err) {
+
+        }
+        setLoading(false)
+
+    }, [
+        btcAddress,
+        network,
+        authParams,
+        mrc20Info
+    ])
+    useEffect(() => { fetchUserUtxo() }, [fetchUserUtxo])
+
+    const shareX = () => {
+        const shareText = `I found an interesting MetaID Token that's currently offering free minting! Join me in getting this ${mrc20Info?.tick} token for free:  ${window.location.href}`;
+        const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+        window.open(shareUrl, '_blank');
+    }
+    const copyLink = () => {
+        copy(window.location.href)
+        message.success('Link copied to clipboard')
+    }
     return <div className='mrc20Page'>
         <div
             className="pageBack"
@@ -105,15 +149,49 @@ export default () => {
                     <div className="desc">
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={()=><NumberFormat value={mrc20Info.floorPrice} isBig decimal={8} tiny suffix=' BTC' />}   />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={mrc20Info.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={mrc20Info.holders} />
                     </div>
                 </div>
-                {
-                    mrc20Info.mintable && <div className='mintBtn'>
-                        <Button type='primary' block onClick={() => { history.push('/inscribe/MRC-20/' + mrc20Info.tick) }}>Mint</Button>
-                    </div>
-                }
+                <Space>
+
+                    <ConfigProvider
+                        theme={{
+                            components: {
+                                Button: {
+                                    "defaultBorderColor": "rgb(212, 246, 107)",
+                                    "defaultColor": "rgb(212, 246, 107)"
+                                },
+                            },
+                        }}
+                    >
+                        <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/mrc20/' + mrc20Info.tick) }}>List For Sale </Button>
+                    </ConfigProvider>
+
+
+                    
+
+                    {
+                        mrc20Info.mintable && <div className='mintBtn'>
+                            <Button type='primary' block onClick={() => { history.push('/inscribe/MRC-20/' + mrc20Info.tick) }}>Mint</Button>
+                        </div>
+                    }
+
+
+                    <Popover content={<div className='sharePop' >
+                        <div className="item" onClick={copyLink}>
+                            <LinkOutlined /> Copy link
+                        </div>
+                        <Divider className='shareDivider' />
+                        <div className="item" onClick={shareX}>
+                            <XOutlined /> Share on X
+                        </div>
+                    </div>} title="">
+                        <Button type='text' icon={<ShareAltOutlined />} ></Button>
+                    </Popover>
+
+                </Space>
+
 
 
             </div>

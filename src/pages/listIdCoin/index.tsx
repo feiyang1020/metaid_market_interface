@@ -1,5 +1,5 @@
 import Order from "@/components/Order";
-import { getIdCoinInfo, getMrc20AddressUtxo, sellMRC20Order, sellOrder } from "@/services/api";
+import { getIdCoinInfo, getMrc20AddressUtxo, getMrc20Info, sellMRC20Order, sellOrder } from "@/services/api";
 import { buildAskLimit } from "@/utils/orders";
 import { Button, Card, ConfigProvider, InputNumber, List, Space, Typography, message } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -29,8 +29,8 @@ const items = ["PIN", 'MRC-20', 'ID-Coins'];
 export default () => {
     const { btcAddress, connect, connected, network, authParams } =
         useModel("wallet");
-    const match = useMatch('/list/idCoins/:tick');
-    const [idCoin, setIdCoin] = useState<API.IdCoin>();
+    const match = useMatch('/list/:assetType/:tick');
+    const [idCoin, setIdCoin] = useState<API.IdCoin|API.MRC20TickInfo>();
     const [showListBtn, setShowListBtn] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
     const [list, setList] = useState<API.MRC20Info[]>([]);
@@ -46,8 +46,14 @@ export default () => {
         if (!match || !match.params.tick) return;
         const params: any = {};
         params.tick = match.params.tick
-        const { data } = await getIdCoinInfo(network, params);
-        setIdCoin(data);
+        if(match.params.assetType === 'idCoins'){
+            const { data } = await getIdCoinInfo(network, params);
+            setIdCoin(data);
+        }else{
+            const { data } = await getMrc20Info(network, params);
+            setIdCoin(data);
+        }
+        
     }, [match, network])
     const fetchUserUtxo = useCallback(async () => {
         try {
