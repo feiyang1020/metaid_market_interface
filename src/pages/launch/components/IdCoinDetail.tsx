@@ -1,10 +1,12 @@
 import MetaIdAvatar from "@/components/MetaIdAvatar"
 import NumberFormat from "@/components/NumberFormat"
-import { Card, Col, Progress, Row, Statistic, Tooltip, Typography } from "antd"
+import { Button, Card, Col, Progress, Row, Statistic, Tooltip, Typography } from "antd"
 import btcIcon from "@/assets/logo_btc@2x.png";
+import arrow from '@/assets/list_icon_ins.svg'
 import './details.less'
 import { formatSat } from "@/utils/utlis"
 import IdCoinMessage from "@/components/IdCoinMessage";
+import { history } from 'umi'
 type Props = {
     idCoid: API.IdCoin | undefined
 }
@@ -29,11 +31,18 @@ export default ({ idCoid }: Props) => {
                                 </Typography.Title>
                                 <Typography.Text copyable={{ text: idCoid.deployerMetaId }} className="metaid"> MetaID: {idCoid.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
                             </div>
-                            <div style={{ display: 'flex', gap: 4, justifyContent: "center", flexDirection: 'column', alignItems: "center" }}>
-                                <Typography.Text className="ticker"><NumberFormat value={idCoid.followersCount} /> </Typography.Text>
-                                <div>
-                                    Followers
+                            <div style={{ display: 'flex', gap: 13, justifyContent: "center", alignItems: "center" }}>
+
+
+                                <div style={{ display: 'flex', gap: 4, justifyContent: "center", flexDirection: 'column', alignItems: "center" }}>
+                                    <Typography.Text className="ticker"><NumberFormat value={idCoid.followersCount} /> </Typography.Text>
+                                    <div>
+                                        Followers
+                                    </div>
                                 </div>
+                                <Button shape='circle' type="text" style={{ background: '#21251A',width:28,height:28 }} onClick={() => { history.push(`/idCoin/${idCoid.tick}`) }}>
+                                    <img src={arrow} alt="" />
+                                </Button>
                             </div>
 
                         </div>
@@ -64,7 +73,7 @@ export default ({ idCoid }: Props) => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoid.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={()=><NumberFormat value={idCoid.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={idCoid.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoid.holders} />
