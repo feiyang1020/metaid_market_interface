@@ -113,7 +113,7 @@
     }
   }
   .IdCoinCard {
-    .ant-divider-horizontal{
+    .ant-divider-horizontal {
       margin: 12px 0;
     }
     .top {
@@ -223,5 +223,29 @@
 @media screen and (max-width: 767px) {
   .mrc20ListWrap {
     padding: 0 0px;
+    .ant-tabs-top > .ant-tabs-nav::before {
+      display: none;
+    }
+    .ant-tabs-nav-operations{
+      display: none;
+    }
+    &.ant-tabs > .ant-tabs-nav {
+      &::before {
+        display: none;
+      }
+      // flex-wrap: wrap;
+      .ant-tabs-nav-wrap {
+        // width: 100%;
+        transform: none;
+        .ant-tabs-nav-list {
+          transform: none !important;
+        }
+      }
+      .ant-tabs-extra-content {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      flex-direction: column;
+    }
   }
 }
