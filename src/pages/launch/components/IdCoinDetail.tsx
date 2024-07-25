@@ -40,7 +40,7 @@ export default ({ idCoid }: Props) => {
                                         Followers
                                     </div>
                                 </div>
-                                <Button shape='circle' type="text" style={{ background: '#21251A',width:28,height:28 }} onClick={() => { history.push(`/idCoin/${idCoid.tick}`) }}>
+                                <Button shape='circle' type="text" style={{ background: '#21251A' }} onClick={() => { history.push(`/idCoin/${idCoid.tick}`) }}>
                                     <img src={arrow} alt="" />
                                 </Button>
                             </div>
