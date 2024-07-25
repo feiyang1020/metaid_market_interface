@@ -109,7 +109,7 @@ export default () => {
         {
             title: 'Total Supply',
             dataIndex: 'totalSupply',
-            // sorter: true,
+            sorter: true,
             align: 'center',
             render: (price) => {
                 return <NumberFormat value={price} />
