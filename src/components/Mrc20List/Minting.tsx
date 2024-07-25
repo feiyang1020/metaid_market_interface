@@ -1,6 +1,6 @@
 import usePageList from "@/hooks/usePageList"
 import { getMrc20List } from "@/services/api"
-import { ConfigProvider, Table, TableColumnsType, Grid, Tooltip, Slider, Progress, Button, List } from "antd"
+import { ConfigProvider, Table, TableColumnsType, Grid, Tooltip, Slider, Progress, Button, List, message } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
 import Item from "./Item";
@@ -14,32 +14,64 @@ const { useBreakpoint } = Grid;
 export default () => {
     const screens = useBreakpoint();
     const { network } = useModel("wallet")
-
+    const { searchWord, MintingPage: page, setMintingPage: setPage } = useModel('mrc20')
     const [list, setList] = useState<API.MRC20Info[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-    const [page, setPage] = useState<number>(0);
+    // const [page, setPage] = useState<number>(0);
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({});
-    const fetchData = useCallback(async () => {
-        setLoading(true);
-        const { code, message, data } = await getMrc20List(network, {
-            cursor: page * size,
-            size,
-            completed: false,
-            ...params,
-        });
-        if (code !== 0) return
-        if (data.list) {
-            setList(data.list);
-            setTotal(data.total);
-        }
-        setLoading(false);
-    }, [network, page, size, params]);
+    const [orderBy, setOrderBy] = useState<string>('marketCap');
+    const [sortType, setSortType] = useState<number>(-1);
+    // const fetchData = useCallback(async () => {
+    //     setLoading(true);
+    //     const { code, message, data } = await getMrc20List(network, {
+    //         cursor: page * size,
+    //         size,
+    //         completed: false,
+    //         ...params,
+    //     });
+    //     if (code !== 0) return
+    //     if (data.list) {
+    //         setList(data.list);
+    //         setTotal(data.total);
+    //     }
+    //     setLoading(false);
+    // }, [network, page, size, params]);
 
+    // useEffect(() => {
+    //     fetchData();
+    // }, [fetchData]);
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        let didCancel = false;
+        const fetchData = async () => {
+            setLoading(true);
+            const { code, message: msg, data } = await getMrc20List(network, {
+                cursor: page * size,
+                size,
+                completed: false,
+                searchTick:searchWord,
+                orderBy,
+                sortType,
+            });
+            if (didCancel) return
+            if (code !== 0) {
+                message.error(msg)
+            }
+            if (data.list) {
+                setList(data.list);
+                setTotal(data.total);
+            } else {
+                setList([])
+                setTotal(0)
+            }
+            setLoading(false);
+        };
+        fetchData()
+        return () => {
+            didCancel = true;
+        };
+    }, [network, page, size, orderBy,sortType, searchWord])
     const columns: TableColumnsType<API.MRC20Info> = [
         {
             title: 'Token',
@@ -167,19 +199,26 @@ export default () => {
                 position: ['bottomCenter'],
                 pageSize: size,
                 current: page + 1,
-                total
+                total,
+                onChange: (page) => {
+                    setPage(page - 1);
+                },
             }}
             size={screens.xl ? 'middle' : 'small'}
             scroll={{ x: 1000 }}
             loading={loading}
-            onChange={({ current, ...params }, _, sorter) => {
-                if (!current) current = 1;
-                if (sorter.order) {
-                    setParams({ orderBy: sorter.field === 'price' ? 'lastPrice' : sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
-                } else {
-                    setParams({})
-                }
-                setPage(current - 1)
+            // onChange={({ current, ...params }, _, sorter) => {
+            //     if (!current) current = 1;
+            //     if (sorter.order) {
+            //         setParams({ orderBy: sorter.field === 'price' ? 'lastPrice' : sorter.field, sortType: sorter.order === 'ascend' ? 1 : -1 })
+            //     } else {
+            //         setParams({})
+            //     }
+            //     setPage(current - 1)
+            // }}
+            onChange={(_1, _2, sorter) => {
+                setOrderBy(sorter.field === 'price' ? 'lastPrice' : sorter.field || 'marketCap');
+                setSortType(sorter.order === 'ascend' ? 1 : -1);
             }}
             onRow={(record) => {
                 return {
