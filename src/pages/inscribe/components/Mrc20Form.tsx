@@ -22,6 +22,7 @@ import { buildMintIdCointPsbt } from "@/utils/idcoin";
 import IdCoinCard from "./IdCoinCard";
 import ComfirmMintIdCoin from "./ComfirmMintIdCoin";
 import idCoin from "@/pages/mrc20/idCoin";
+import Decimal from "decimal.js";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -214,7 +215,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         const pass = await checkWallet();
         if (!pass) throw new Error("Account change");
-        const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', deployPayTo = '', deployPayAmount = '' } = form.getFieldsValue();
+        const { deployTicker, deployTokenName, deployCreator = '', deployBeginHeight = '', deployEndHeight = '', deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '', deployPayTo = '', deployPayAmount = '' } = form.getFieldsValue();
 
         const payload: any = {
             tick: deployTicker,
@@ -225,13 +226,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             premineCount: String(deployPremineCount),
             blockheight: '',
             pinCheck: {
+                creator: deployCreator,
                 path: deployPath,
                 count: String(deployCount),
                 lvl: String(deployDifficultyLevel)
             },
             payCheck: {
                 payTo: deployPayTo,
-                payAmount: deployPayAmount
+                payAmount: deployPayAmount ? new Decimal(deployPayAmount).times(1e8).toFixed(0) : ''
             }
         }
         if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
@@ -935,39 +937,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         }
                                                     />
                                                 </Form.Item>
-                                                <Row gutter={[0, 0]}>
-                                                    <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
-                                                        <Popover title='PIN Payment Settings' content={<Typography style={{ maxWidth: '400px' }}>
-
-                                                        </Typography>}>
-                                                            <div style={{display:'flex',alignItems:'center',gap:4,justifyContent:"center"}}>
-                                                                PIN Payment Settings<QuestionCircleOutlined />
-                                                            </div>
-
-
-                                                        </Popover>
-                                                    </Col>
-                                                </Row>
-                                                <Form.Item label="Pay To" name="deployPayTo"
-                                                    rules={[]}
-                                                >
-                                                    <Input
-                                                        size="large"
-                                                        maxLength={48}
-                                                        placeholder=""
-                                                        
-                                                    />
-                                                </Form.Item>
-                                                <Form.Item label="Pay Amount" name="deployPayAmount"
-                                                    rules={[]}
-                                                >
-                                                    <Input
-                                                        size="large"
-                                                        maxLength={48}
-                                                        placeholder=""
-                                                        
-                                                    />
-                                                </Form.Item>
                                                 {
                                                     _deployPremineCount > 0 && <Row gutter={[0, 0]} style={{ marginBottom: 20 }}>
                                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
@@ -976,6 +945,75 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         </Col>
                                                     </Row>
                                                 }
+
+                                                <Form.Item label="Begin Height" name="deployBeginHeight"
+
+                                                >
+                                                    <InputNumber
+                                                        size="large"
+                                                        style={{ width: '100%' }}
+                                                        min={0}
+
+                                                        precision={0}
+
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item label="End Height" name="deployEndHeight"
+
+                                                >
+                                                    <InputNumber
+                                                        size="large"
+                                                        style={{ width: '100%' }}
+                                                        min={0}
+                                                        precision={0}
+
+                                                    />
+                                                </Form.Item>
+                                                <Row gutter={[0, 0]}>
+                                                    <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
+                                                        <Popover title='PIN Payment Settings Explanation:' content={<Typography style={{ maxWidth: '400px' }}>
+                                                            <Typography.Paragraph>
+                                                                If the deployer sets the PIN Payment Settings, each minting transaction will be checked to ensure that the specified amount of BTC has been paid to the designated address. If the requirements are not met, the minting will be invalid.
+                                                            </Typography.Paragraph>
+                                                            <ul>
+                                                                <li>
+                                                                    <Typography.Text code strong>
+                                                                        Pay To
+                                                                    </Typography.Text>: The address to which the payment must be made during minting.
+                                                                </li>
+                                                                <li>
+                                                                    <Typography.Text code strong>Pay Amount:</Typography.Text>
+                                                                    The amount of BTC that must be transferred to the Pay To address during minting.
+                                                                </li>
+
+                                                            </ul>
+                                                        </Typography>}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: 4, justifyContent: "center" }}>
+                                                                PIN Payment Settings<QuestionCircleOutlined />
+                                                            </div>
+                                                        </Popover>
+                                                    </Col>
+                                                </Row>
+                                                <Form.Item label="Pay To" name="deployPayTo"
+                                                    rules={[]}
+                                                >
+                                                    <Input
+                                                        size="large"
+                                                       
+                                                        placeholder=""
+
+                                                    />
+                                                </Form.Item>
+                                                <Form.Item label="Pay Amount" name="deployPayAmount"
+                                                    rules={[]}
+                                                >
+                                                    <InputNumber
+                                                        size="large"
+                                                        style={{ width: '100%' }}
+
+                                                    />
+                                                </Form.Item>
+
 
                                                 <Row gutter={[0, 0]}>
                                                     <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
@@ -1015,6 +1053,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 </Row>
 
 
+                                                <Form.Item rules={[]} label="Creator" name="deployCreator"
+
+                                                >
+                                                    <Input
+                                                        size="large"
+                                                        style={{ width: '100%' }}
+                                                    />
+                                                </Form.Item>
                                                 <Form.Item rules={[]} label="Path" name="deployPath"
 
                                                 >
