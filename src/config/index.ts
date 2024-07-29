@@ -11,6 +11,11 @@ export const getHostByNet = (network: API.Network) => {
   return MAINNET_CONTENT_HOST;
 };
 
+const TESTNET_ORDERS_TRADE_URL =
+  "https://testnet.orders.exchange/orderbook/idcoin/btc-";
+const MAINNET_ORDERS_TRADE_URL =
+  "https://orders.exchange/orderbook/idcoin/btc-";
+
 export const curNetwork: API.Network =
   window.METAID_MARKET_NETWORK || "mainnet";
 export const getCreatePinFeeByNet = (
@@ -25,4 +30,9 @@ export const getCreatePinFeeByNet = (
     address: MAINNET_PIN_FEE_ADDRESS,
     satoshis: MAINNET_PIN_FEE_AMOUNT,
   };
+};
+
+export const getOrdersTradeUrlByNet = (network: API.Network): string => {
+  if (network === "testnet") return TESTNET_ORDERS_TRADE_URL;
+  return MAINNET_ORDERS_TRADE_URL;
 };

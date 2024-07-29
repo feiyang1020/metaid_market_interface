@@ -4,6 +4,7 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { useModel, history } from "umi";
 import NumberFormat from "../NumberFormat";
 import './index.less'
+import { getOrdersTradeUrlByNet } from "@/config";
 type Props = {
     record: API.IdCoin
     showMintNotice: (record: API.IdCoin) => void;
@@ -51,7 +52,7 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
                     <Button size='small' onClick={(e) => {
                         e.stopPropagation();
                         if (localStorage.getItem('tradeNotice') === '1') {
-                            window.open(`https://orders-mrc20.vercel.app/orderbook/idcoin/btc-${record.tick}`, '_blank')
+                            window.open(`${getOrdersTradeUrlByNet(network)}${record.tick}`, '_blank')
 
                         } else {
                             showTradeNotice(record)
@@ -70,7 +71,7 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
                 </div>
                 <div className="item">
                     <div className="label">Liquidity Per Mint</div>
-                    <div className="value"><NumberFormat value={record.liquidityPerMint}  /></div>
+                    <div className="value"><NumberFormat value={record.liquidityPerMint} /></div>
                 </div>
 
             </div>

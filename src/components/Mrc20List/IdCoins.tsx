@@ -7,7 +7,7 @@ import Item from "./Item";
 import { useCallback, useEffect, useState } from "react";
 import MetaIdAvatar from "../MetaIdAvatar";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { getCreatePinFeeByNet } from "@/config";
+import { getCreatePinFeeByNet, getOrdersTradeUrlByNet } from "@/config";
 import IdCoinCard from "./IdCoinCard";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.IdCoin>['onChange']>;
@@ -97,7 +97,7 @@ export default () => {
             </div>,
             onOk() {
                 message.info('coming soon...')
-                window.open(`https://orders-mrc20.vercel.app/orderbook/idcoin/btc-${record.tick}`, '_blank')
+                window.open(`${getOrdersTradeUrlByNet(network)}${record.tick}`, '_blank')
             }
 
         })
@@ -284,7 +284,7 @@ export default () => {
                 return <Button size='small' onClick={(e) => {
                     e.stopPropagation();
                     if (localStorage.getItem('tradeNotice') === '1') {
-                        window.open(`https://orders-mrc20.vercel.app/orderbook/idcoin/btc-${record.tick}`, '_blank')
+                        window.open(`${getOrdersTradeUrlByNet(network)}${record.tick}`, '_blank')
 
                     } else {
                         showTradeNotice(record)
