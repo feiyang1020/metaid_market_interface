@@ -1,4 +1,5 @@
 import MRC20Icon from "@/components/MRC20Icon";
+import NumberFormat from "@/components/NumberFormat";
 import Popup from "@/components/ResponPopup";
 import Mrc20 from "@/pages/mrc20";
 import { Button, Tooltip } from "antd";
@@ -81,7 +82,7 @@ export default function DeployComfirm({ show, onClose, onConfirm, submiting, dep
             deployInfo.payCheck.payTo && <DescItem label='Pay To' value={<Tooltip title={deployInfo.payCheck.payTo}>{deployInfo.payCheck.payTo.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</Tooltip>} />
         }
         {
-            deployInfo.payCheck.payAmount && <DescItem label='Pay To' value={deployInfo.payCheck.payAmount} />
+            deployInfo.payCheck.payAmount && <DescItem label='Pay Amount' value={<NumberFormat value={deployInfo.payCheck.payAmount} isBig decimal={8} suffix=" BTC"/> } />
         }
 
         {

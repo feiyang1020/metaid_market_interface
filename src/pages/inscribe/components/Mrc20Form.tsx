@@ -225,8 +225,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             mintCount: String(deployMaxMintCount),
             premineCount: String(deployPremineCount),
             blockheight: '',
-            deployBeginHeight,
-            deployEndHeight,
+            beginHeight: String(deployBeginHeight),
+            endHeight: String(deployEndHeight),
             pinCheck: {
                 creator: deployCreator,
                 path: deployPath,
@@ -463,7 +463,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
 
             if (type === 'deploy') {
-                const { deployTicker, deployTokenName, deployCreator = '', deployBeginHeight, deployEndHeight, deployPayTo, deployPayAmount, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '' } = form.getFieldsValue();
+                const { deployTicker, deployTokenName, deployCreator = '', deployBeginHeight = '', deployEndHeight = '', deployPayTo = '', deployPayAmount = '', deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '' } = form.getFieldsValue();
 
                 const payload: any = {
                     tick: deployTicker,
@@ -473,8 +473,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     mintCount: String(deployMaxMintCount),
                     premineCount: String(deployPremineCount),
                     blockheight: '',
-                    deployBeginHeight,
-                    deployEndHeight,
+                    beginHeight: String(deployBeginHeight),
+                    endHeight: String(deployEndHeight),
                     pinCheck: {
                         creator: deployCreator,
                         path: deployPath,
