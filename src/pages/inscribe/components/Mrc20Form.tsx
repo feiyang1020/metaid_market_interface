@@ -251,10 +251,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 noBroadcast: false
             }
         }).catch(err => {
-            console.log(err, 'errrrr')
             throw new Error(err)
         })
-        console.log(ret)
         if (ret.status) throw new Error(ret.status)
         const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx }, {
             headers: {
@@ -937,6 +935,19 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         }
                                                     />
                                                 </Form.Item>
+                                                <Row gutter={[0, 0]}>
+                                                    <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
+                                                        <Popover title='PIN Payment Settings' content={<Typography style={{ maxWidth: '400px' }}>
+
+                                                        </Typography>}>
+                                                            <div style={{display:'flex',alignItems:'center',gap:4,justifyContent:"center"}}>
+                                                                PIN Payment Settings<QuestionCircleOutlined />
+                                                            </div>
+
+
+                                                        </Popover>
+                                                    </Col>
+                                                </Row>
                                                 <Form.Item label="Pay To" name="deployPayTo"
                                                     rules={[]}
                                                 >
@@ -944,11 +955,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         size="large"
                                                         maxLength={48}
                                                         placeholder=""
-                                                        addonAfter={
-                                                            <Tooltip title="Pay To">
-                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                                            </Tooltip>
-                                                        }
+                                                        
                                                     />
                                                 </Form.Item>
                                                 <Form.Item label="Pay Amount" name="deployPayAmount"
@@ -958,11 +965,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         size="large"
                                                         maxLength={48}
                                                         placeholder=""
-                                                        addonAfter={
-                                                            <Tooltip title="Pay Amount">
-                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                                            </Tooltip>
-                                                        }
+                                                        
                                                     />
                                                 </Form.Item>
                                                 {
