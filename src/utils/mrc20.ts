@@ -10,6 +10,7 @@ import {
   buildTx,
   createPsbtInput,
   fillInternalKey,
+  getNetworks,
   getUtxos,
 } from "./psbtBuild";
 import Decimal from "decimal.js";
@@ -417,4 +418,108 @@ export const buyMrc20Order = async (
     true
   );
   return { rawTx, txOutputs };
+};
+
+type BaseBuildParams = {
+  addressType: string;
+  address: string;
+  publicKey: Buffer;
+  script: Buffer;
+  network: API.Network;
+};
+
+type BuildDeployMRC20PsbtParams = BaseBuildParams & API.DeployMRC20PreRes;
+
+const _buildDeployMRC20Psbt = async (
+  params: BuildDeployMRC20PsbtParams,
+  selectedUTXOs: API.UTXO[],
+  change: Decimal,
+  needChange: boolean,
+  signPsbt: boolean = false
+) => {
+  const {
+    addressType,
+    address,
+    publicKey,
+    script,
+    serviceFee,
+    revealAddress,
+    minerFee,
+    network,
+  } = params;
+  const psbt = new Psbt({ network: getNetworks(network) });
+  for (const utxo of selectedUTXOs) {
+    const psbtInput = await createPsbtInput({
+      utxo: utxo,
+      addressType,
+      publicKey,
+      script,
+      network,
+    });
+    psbt.addInput(psbtInput);
+  }
+  psbt.addOutput({
+    address: revealAddress,
+    value: minerFee,
+  });
+  if (serviceFee > 0) {
+    psbt.addOutput({
+      address: revealAddress,
+      value: serviceFee,
+    });
+  }
+  if (needChange || change.gt(DUST_SIZE)) {
+    psbt.addOutput({
+      address: address,
+      value: change.toNumber(),
+    });
+  }
+  if (!signPsbt) return psbt;
+  const _signed = await window.metaidwallet.btc.signPsbt({
+    psbtHex: psbt.toHex(),
+    options: {
+      autoFinalized: true,
+    },
+  });
+  if (typeof _signed === "object") {
+    if (_signed.status === "canceled") throw new Error("canceled");
+    throw new Error("");
+  }
+  const signed = Psbt.fromHex(_signed);
+  return signed;
+};
+export const buildDeployMRC20Psbt = async (
+  order: API.DeployMRC20PreRes,
+  feeRate: number,
+  address: string,
+  network: API.Network,
+  extract: boolean = true,
+  signPsbt: boolean = true
+) => {
+  initEccLib(ecc);
+  const { totalFee } = order;
+  const utxos = await getUtxos(address, network);
+  console.log(utxos, "utxos in buildMrc20Psbt");
+  const addressType = determineAddressInfo(address).toUpperCase();
+  const publicKey = await window.metaidwallet.btc.getPublicKey();
+  const script = addressLib.toOutputScript(address, getNetworks(network));
+
+  const ret = await buildTx<BuildDeployMRC20PsbtParams>(
+    utxos,
+    new Decimal(totalFee),
+    feeRate,
+    {
+      addressType,
+      address,
+      publicKey: Buffer.from(publicKey, "hex"),
+      script,
+      network,
+      ...order,
+    },
+    address,
+    _buildDeployMRC20Psbt,
+    extract,
+    signPsbt
+  );
+  return ret;
 };

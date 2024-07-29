@@ -359,7 +359,6 @@ export async function getUserMrc20List(
     address?: string;
     cursor: number;
     size: number;
-    
   },
   options?: { [key: string]: any }
 ) {
@@ -540,7 +539,9 @@ export async function deployCommit(
   network: API.Network,
   params: {
     commitTxRaw: string;
-    revealTxRaw: string;
+    revealTxRaw?: string;
+    commitTxOutIndex?: number;
+    orderId?: string;
   },
   options?: { [key: string]: any }
 ) {
@@ -760,6 +761,21 @@ export async function getIdCoinMintOrder(
     {
       method: "GET",
       params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function deployMRC20Pre(
+  network: API.Network,
+  params: API.DeployMRC20PreReq,
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.DeployMRC20PreRes>>(
+    `${getHost(network)}/api/v1/inscribe/mrc20/deploy/pre`,
+    {
+      method: "POST",
+      data: params,
       ...(options || {}),
     }
   );

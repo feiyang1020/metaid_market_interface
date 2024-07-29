@@ -255,7 +255,7 @@ declare namespace API {
     txId: string;
     vout: number;
     tag: string;
-    orderId:string
+    orderId: string;
   };
 
   type MRC20Info = {
@@ -399,13 +399,30 @@ declare namespace API {
     amountPerMint: number;
     liquidityPerMint: number;
   };
-  type DeployIdCoinPreRes = {
-    orderId: "38f9a0384da868c85b6dad4a80e84d366d0fe2fb0a10790ca404e8cb1f5df5ec";
-    totalFee: 88000;
-    minerFee: 88000;
-    receiveAddress: "tb1pnp2hfgkef2yymsp4f4sqn5qgwqaws23ygjl7jk8apzpla63qy7mqhs8p37";
-    serviceFee: 0;
+  type DeployMRC20PreReq = {
+    address: string;
+    networkFeeRate: number;
+    payload: string;
   };
+
+   type DeployIdCoinPreRes = {
+    orderId: string;
+    totalFee: number;
+    minerFee: number;
+    receiveAddress: string;
+    serviceFee: number;
+  };
+
+  type DeployMRC20PreRes = {
+    extra:string;
+    orderId: string;
+    totalFee: number;
+    minerFee: number;
+    revealAddress: string;
+    serviceFee: number;
+  };
+
+
 
   type MintIdCoinPreRes = {
     orderId: string;
@@ -415,7 +432,7 @@ declare namespace API {
     revealInscribeAddress: string;
     revealMintAddress: string;
     serviceFee: number;
-    serviceAddress:string
+    serviceAddress: string;
   };
 
   type IdCoin = {

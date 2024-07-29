@@ -3,9 +3,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useMatch, history } from "umi";
 import "./index.less";
-import { broadcastBTCTx, broadcastTx, deployCommit, getIdCoinInfo, getIdCoinMintOrder, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
+import { broadcastBTCTx, broadcastTx, deployCommit, deployMRC20Pre, getIdCoinInfo, getIdCoinMintOrder, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
-import { commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
+import { buildDeployMRC20Psbt, commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
 
 import { ArrowRightOutlined, DownOutlined, FileTextOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
@@ -225,6 +225,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             mintCount: String(deployMaxMintCount),
             premineCount: String(deployPremineCount),
             blockheight: '',
+            deployBeginHeight,
+            deployEndHeight,
             pinCheck: {
                 creator: deployCreator,
                 path: deployPath,
@@ -243,26 +245,32 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         if (deployIcon) {
             payload.metadata = JSON.stringify({ icon: deployIcon })
         }
-        const ret = await window.metaidwallet.btc.deployMRC20({
-            flag: network === "mainnet" ? "metaid" : "testid",
-            commitFeeRate: Number(feeRate),
-            revealFeeRate: Number(feeRate),
-            body: payload,
-            options: {
-                markSafe: true,
-                noBroadcast: false
-            }
-        }).catch(err => {
-            throw new Error(err)
-        })
-        if (ret.status) throw new Error(ret.status)
-        const commitRes = await deployCommit(network, { commitTxRaw: ret.commitTx.rawTx, revealTxRaw: ret.revealTx.rawTx }, {
+
+        const { code, message, data: order } = await deployMRC20Pre(network, { address: btcAddress, networkFeeRate: Number(feeRate), payload: JSON.stringify(payload) }, { headers: { ...authParams } });
+        if (code !== 0) throw new Error(message)
+        const { rawTx } = await buildDeployMRC20Psbt(order, feeRate, btcAddress, network)
+
+        // const ret = await window.metaidwallet.btc.deployMRC20({
+        //     flag: network === "mainnet" ? "metaid" : "testid",
+        //     commitFeeRate: Number(feeRate),
+        //     revealFeeRate: Number(feeRate),
+        //     body: payload,
+        //     options: {
+        //         markSafe: true,
+        //         noBroadcast: false
+        //     }
+        // }).catch(err => {
+        //     throw new Error(err)
+        // })
+        // if (ret.status) throw new Error(ret.status)
+        const commitRes = await deployCommit(network, { commitTxRaw: rawTx, commitTxOutIndex: 0, orderId: order.orderId }, {
             headers: {
                 ...authParams,
             },
         })
-        await addUtxoSafe(btcAddress, [{ txId: ret.commitTx.txId, vout: 1 }])
+
         if (commitRes.code !== 0) throw new Error(commitRes.message)
+        await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: order.serviceFee ? 2 : 1 }])
         setDeployComfirmProps(defaultDeployComfirmProps)
         setSuccessProp({
             show: true,
@@ -283,14 +291,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             children: (
                 <div className="inscribeSuccess">
                     <div className="res">
-                        {
-                            ret.commitCost && <div className="item">
-                                <div className="label">Transaction Cost</div>
-                                <div className="value">
-                                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
-                                </div>
-                            </div>
-                        }
+
 
                         <div className="item">
                             <div className="label">TxId </div>
@@ -305,7 +306,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 : `https://mempool.space/tx/${commitRes.data.revealTxId}`
                                         }
                                     >
-                                        <Typography.Text copyable={{ text: ret.revealTxId }}>
+                                        <Typography.Text copyable={{ text: commitRes.data.revealTxId }}>
                                             {commitRes.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
                                         </Typography.Text>
 
@@ -462,7 +463,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
 
             if (type === 'deploy') {
-                const { deployTicker, deployTokenName, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '' } = form.getFieldsValue();
+                const { deployTicker, deployTokenName, deployCreator = '', deployBeginHeight, deployEndHeight, deployPayTo, deployPayAmount, deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '' } = form.getFieldsValue();
 
                 const payload: any = {
                     tick: deployTicker,
@@ -472,11 +473,18 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     mintCount: String(deployMaxMintCount),
                     premineCount: String(deployPremineCount),
                     blockheight: '',
+                    deployBeginHeight,
+                    deployEndHeight,
                     pinCheck: {
+                        creator: deployCreator,
                         path: deployPath,
                         count: String(deployCount),
                         lvl: String(deployDifficultyLevel)
                     },
+                    payCheck: {
+                        payTo: deployPayTo,
+                        payAmount: deployPayAmount ? new Decimal(deployPayAmount).times(1e8).toFixed(0) : ''
+                    }
                 }
                 if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
                     message.error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
@@ -999,7 +1007,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 >
                                                     <Input
                                                         size="large"
-                                                       
+
                                                         placeholder=""
 
                                                     />
