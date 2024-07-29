@@ -239,10 +239,10 @@ export default () => {
                                 key: '1',
                                 label: <div className='collapseLabel'>
                                     <div className="title">
-                                        ID Coin: Launch a Liquid Personal Token Just for Your Followers
+                                        ID Coin: Tokenize Your Influence
                                     </div>
                                     <div className="subTitle">
-                                        Following is Minting & Minting is Liquidating
+                                        Launch a Liquid Personal Token Just for Your Followers
                                     </div>
 
                                 </div>,
@@ -273,8 +273,8 @@ export default () => {
 
                         </Collapse>
                         <div className="collapseIcon">
-                            <Button type='text'  onClick={()=>setActiveKey(activeKey==='1'?'':'1')}>
-                                <img src={down} alt=""  className={`${activeKey==='1'?'spanRotate':'spanReset'}`} />
+                            <Button type='text' onClick={() => setActiveKey(activeKey === '1' ? '' : '1')}>
+                                <img src={down} alt="" className={`${activeKey === '1' ? 'spanRotate' : 'spanReset'}`} />
                             </Button>
 
                         </div>
