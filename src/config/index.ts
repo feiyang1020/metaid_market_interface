@@ -16,6 +16,9 @@ const TESTNET_ORDERS_TRADE_URL =
 const MAINNET_ORDERS_TRADE_URL =
   "https://orders.exchange/orderbook/idcoin/btc-";
 
+const TESTNET_METAID_URL = "https://metaid.io/metaid-detail/";
+const MAINNET_METAID_URL = "https://metaid.io/metaid-detail/";
+
 export const curNetwork: API.Network =
   window.METAID_MARKET_NETWORK || "mainnet";
 export const getCreatePinFeeByNet = (
@@ -35,4 +38,8 @@ export const getCreatePinFeeByNet = (
 export const getOrdersTradeUrlByNet = (network: API.Network): string => {
   if (network === "testnet") return TESTNET_ORDERS_TRADE_URL;
   return MAINNET_ORDERS_TRADE_URL;
+};
+export const getMetaIdUrlByNet = (network: API.Network): string => {
+  if (network === "testnet") return TESTNET_METAID_URL;
+  return MAINNET_METAID_URL;
 };

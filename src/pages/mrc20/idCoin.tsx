@@ -14,7 +14,7 @@ import MRC20Icon from '@/components/MRC20Icon';
 import { formatSat } from '@/utils/utlis';
 import btcIcon from "@/assets/logo_btc@2x.png";
 import orders from '@/assets/image.svg';
-import { getCreatePinFeeByNet, getOrdersTradeUrlByNet } from '@/config';
+import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from '@/config';
 import copy from 'copy-to-clipboard';
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
@@ -145,7 +145,7 @@ export default () => {
             idCoin && <div className='IdCoinInfo'>
 
                 <Card bordered={false} styles={{ body: { display: 'flex', gap: 16, flexWrap: 'wrap', padding: 0 } }} style={{ background: 'rgba(0,0,0,0)' }}>
-                    <div style={{ cursor: 'pointer' }} onClick={() => { window.open('https://metaid.io/pin') }}>
+                    <div style={{ cursor: 'pointer' }} onClick={() => { window.open(getMetaIdUrlByNet(network) + idCoin.deployerMetaId) }}>
                         <MetaIdAvatar avatar={idCoin.deployerUserInfo.avatar} size={100} />
                     </div>
 
