@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import NumberFormat from '@/components/NumberFormat';
 import SetProfile from '@/components/SetProfile';
 import SeleceFeeRateItem from '../inscribe/components/SeleceFeeRateItem';
-import { deployIdCoinCommit, deployIdCoinPre, getIdCoinInfo } from '@/services/api';
+import { checkUserCanDeployIdCoin, deployIdCoinCommit, deployIdCoinPre, getIdCoinInfo } from '@/services/api';
 import { buildDeployIdCointPsbt } from '@/utils/idcoin';
 import { testnet } from 'bitcoinjs-lib/src/networks';
 import { addUtxoSafe } from '@/utils/psbtBuild';
@@ -28,7 +28,8 @@ export default () => {
     const _amountPerMint = Form.useWatch('amountPerMint', form);
     const _liquidityPerMint = Form.useWatch('liquidityPerMint', form);
     const [order, setOrder] = useState<API.DeployIdCoinPreRes>();
-    const [activeKey, setActiveKey] = useState<string>('')
+    const [activeKey, setActiveKey] = useState<string>('');
+    const [checkAddrCanDeploy, setCheckAddrCanDeploy] = useState<{ canDeploy: boolean, msg: string }>();
     const [fields, setFields] = useState<{
         tick: string,
         followersNum: number,
@@ -68,6 +69,11 @@ export default () => {
             const tickExist = await getIdCoinInfo(network, { issuerAddress: btcAddress });
             if (tickExist.code === 0) {
                 setIDCoin(tickExist.data)
+            } else {
+                const checkRet = await checkUserCanDeployIdCoin(network, { address: btcAddress });
+                if (checkRet.code === 0) {
+                    setCheckAddrCanDeploy(checkRet.data)
+                }
             }
             setLoading(false)
         } else {
@@ -400,11 +406,11 @@ export default () => {
                                 loading={submiting}
                                 type="primary"
                                 onClick={launchBefore}
-                                style={{ height: 48 }}
+                                style={{ height: 48,textTransform: 'capitalize' }}
                                 className="submit"
-
+                                disabled={checkAddrCanDeploy?.canDeploy ? false : true}
                             >
-                                Launch
+                                {checkAddrCanDeploy?.canDeploy ? 'Launch' : checkAddrCanDeploy?.msg}
                             </Button>
                         )}
                     </Col>

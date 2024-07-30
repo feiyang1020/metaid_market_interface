@@ -780,3 +780,22 @@ export async function deployMRC20Pre(
     }
   );
 }
+
+export async function checkUserCanDeployIdCoin(
+  network: API.Network,
+  params: {
+    address: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      canDeploy: boolean;
+      msg: string;
+    }>
+  >(`${getHost(network)}/api/v1/id-coins/deploy/check/info`, {
+    method: "GET",
+    params,
+    ...(options || {}),
+  });
+}
