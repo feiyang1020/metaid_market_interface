@@ -46,12 +46,12 @@ const _buildDeployIdCoinPsbt = async (
     address: receiveAddress,
     value: minerFee,
   });
-  if (serviceFee > 0) {
-    psbt.addOutput({
-      address: receiveAddress,
-      value: serviceFee,
-    });
-  }
+  // if (serviceFee > 0) {
+  //   psbt.addOutput({
+  //     address: receiveAddress,
+  //     value: serviceFee,
+  //   });
+  // }
   if (needChange || change.gt(DUST_SIZE)) {
     psbt.addOutput({
       address: address,
@@ -149,12 +149,12 @@ const _buildMintIdCoinPsbt = async (
     address: revealMintAddress,
     value: revealMintFee,
   });
-  if (serviceFee > 0) {
-    psbt.addOutput({
-      address: serviceAddress,
-      value: serviceFee,
-    });
-  }
+  // if (serviceFee > 0) {
+  //   psbt.addOutput({
+  //     address: serviceAddress,
+  //     value: serviceFee,
+  //   });
+  // }
   if (needChange || change.gt(DUST_SIZE)) {
     psbt.addOutput({
       address: address,
