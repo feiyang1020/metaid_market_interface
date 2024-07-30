@@ -532,10 +532,12 @@ export default () => {
                   loading={submiting}
                   type="primary"
                   onClick={submit}
-                  disabled={!feeRate || fileList.length === 0}
+                  // disabled={!feeRate || fileList.length === 0}
                   className="submit"
+                  disabled
                 >
-                  Submit
+                  {/* Submit */}
+                  Under maintenance, please try again later.
                 </Button>
               )}
             </Col>
@@ -583,9 +585,11 @@ export default () => {
                   loading={submiting}
                   type="primary"
                   onClick={submitBuzz}
-                  disabled={!feeRate || !buzz}
+                  // disabled={!feeRate || !buzz}
+                  disabled
                 >
-                  Submit
+                  {/* Submit */}
+                  Under maintenance, please try again later.
                 </Button>
               )}
               <div className="tips">
@@ -684,12 +688,14 @@ export default () => {
                   loading={submiting}
                   type="primary"
                   onClick={inscribe}
-                  disabled={
-                    !feeRate || !path || !payload || !checkPayload || !checkPath
-                  }
+                  // disabled={
+                  //   !feeRate || !path || !payload || !checkPayload || !checkPath
+                  // }
                   className="submit"
+                  disabled
                 >
-                  Submit
+                  {/* Submit */}
+                  Under maintenance, please try again later.
                 </Button>
               )}
             </Col>
