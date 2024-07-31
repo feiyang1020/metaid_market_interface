@@ -22,28 +22,28 @@ export const getFeeRate = async (network: API.Network) => {
       minimumFee === halfHourFee &&
       minimumFee === hourFee;
     if (network === "testnet") {
-      fastestFee += 10;
-      halfHourFee += 10;
-      hourFee += 10;
+      fastestFee += 14;
+      halfHourFee += 14;
+      hourFee += 14;
     }
     return [
       {
         label: "Fast",
-        value: isInvalid ? fastestFee + 4 : fastestFee,
+        value:  fastestFee,
         time: "15 minutes",
         icon: fast,
         activeIcon: activefast,
       },
       {
         label: "Avg",
-        value: isInvalid ? halfHourFee + 4 : halfHourFee,
+        value:  halfHourFee,
         time: "30 minutes",
         icon: Avg,
         activeIcon: activeAvg,
       },
       {
         label: "Slow",
-        value: isInvalid ? hourFee + 4 : hourFee,
+        value:  hourFee,
         time: "about 1 hour",
         icon: Slow,
         activeIcon: activeSlow,
