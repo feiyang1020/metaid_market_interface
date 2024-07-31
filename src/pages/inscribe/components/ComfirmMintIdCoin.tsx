@@ -2,8 +2,9 @@ import MetaIdAvatar from "@/components/MetaIdAvatar";
 import Popup from "@/components/ResponPopup"
 import { useModel, useSearchParams, history } from "umi";
 import './comfirmMintIdCoin.less'
-import { Button, Col, Divider, Row } from "antd";
+import { Button, Col, Divider, Row, Space, Tooltip } from "antd";
 import NumberFormat from "@/components/NumberFormat";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 type Props = {
     show: boolean
     onClose: () => void;
@@ -12,7 +13,7 @@ type Props = {
     submiting?: boolean
     handleSubmit: () => Promise<void>
 }
-const DescItem = ({ label, value, dark }: { label: string, dark?: boolean, value: React.ReactNode }) => {
+const DescItem = ({ label, value, dark }: { label: React.ReactNode, dark?: boolean, value: React.ReactNode }) => {
     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '10px 0' }}>
         <div style={{ fontSize: '16px', color: dark ? 'rgba(255, 255, 255, 0.5)' : '#fff' }}>{label}</div>
         <div style={{ fontSize: '16px' }}>{value}</div>
@@ -49,7 +50,10 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem label="Pool" value={<NumberFormat value={idCoin.pool} />} />
             <Divider style={{ margin: '2px 0' }} />
             <DescItem dark label="Liquidity Required" value={<NumberFormat value={idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
-            <DescItem dark label="Gas" value={<NumberFormat value={order._gasFee + order.revealInscribeFee + order.revealMintFee - idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
+            <DescItem  label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<></>} />
+            <DescItem dark label="Commit Gas" value={<NumberFormat value={order._gasFee} isBig decimal={8} suffix=' BTC' />} />
+            <DescItem dark label="Reveal Gas" value={<NumberFormat value={order.revealInscribeFee + order.revealMintFee - idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
+            
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
             <DescItem label="You Will Spend" value={<NumberFormat value={order.totalFee + order._gasFee} isBig decimal={8} suffix=' BTC' />} />
