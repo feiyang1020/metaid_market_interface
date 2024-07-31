@@ -7,7 +7,7 @@ import Item from "./Item";
 import { useCallback, useEffect, useState } from "react";
 import MetaIdAvatar from "../MetaIdAvatar";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { getCreatePinFeeByNet, getOrdersTradeUrlByNet } from "@/config";
+import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from "@/config";
 import IdCoinCard from "./IdCoinCard";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.IdCoin>['onChange']>;
@@ -159,7 +159,7 @@ export default () => {
                             <div className="name">
                                 <Tooltip title={record.deployerUserInfo.name || record.deployerAddress}>{record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</Tooltip>
                             </div>
-                            <a onClick={(e) => e.stopPropagation()} href={`${network === 'mainnet' ? 'https://www.bitbuzz.io' : 'https://bitbuzz-testnet.vercel.app'}/profile/${record.deployerAddress}`} target='_blank'>
+                            <a onClick={(e) => e.stopPropagation()} href={`${getMetaIdUrlByNet(network)}${record.deployerMetaId}`} target='_blank'>
                                 <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
                             </a>
                         </div>

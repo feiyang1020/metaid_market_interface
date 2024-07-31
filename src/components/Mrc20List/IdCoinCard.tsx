@@ -4,7 +4,7 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { useModel, history } from "umi";
 import NumberFormat from "../NumberFormat";
 import './index.less'
-import { getOrdersTradeUrlByNet } from "@/config";
+import { getMetaIdUrlByNet, getOrdersTradeUrlByNet } from "@/config";
 type Props = {
     record: API.IdCoin
     showMintNotice: (record: API.IdCoin) => void;
@@ -26,7 +26,7 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
                         <div className="name">
                             <Tooltip title={record.deployerUserInfo.name || record.deployerAddress}>{record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</Tooltip>
                         </div>
-                        <a onClick={(e) => e.stopPropagation()} href={`${network === 'mainnet' ? 'https://www.bitbuzz.io' : 'https://bitbuzz-testnet.vercel.app'}/profile/${record.deployerAddress}`} target='_blank'>
+                        <a onClick={(e) => e.stopPropagation()} href={`${getMetaIdUrlByNet(network)}${record.deployerMetaId}`} target='_blank'>
                             <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
                         </a>
                     </div>
