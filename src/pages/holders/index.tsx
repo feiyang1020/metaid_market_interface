@@ -44,7 +44,7 @@ export default () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: 200,
+      width: 300,
       render: (text, record, index) => {
         return <div style={{display:'flex',alignItems:'center',gap:12}}>
           <div className="order">
