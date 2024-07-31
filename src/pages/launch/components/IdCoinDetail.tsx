@@ -1,12 +1,13 @@
 import MetaIdAvatar from "@/components/MetaIdAvatar"
 import NumberFormat from "@/components/NumberFormat"
-import { Button, Card, Col, Progress, Row, Statistic, Tooltip, Typography } from "antd"
+import { Button, Card, Col, Progress, Row, Space, Statistic, Tooltip, Typography } from "antd"
 import btcIcon from "@/assets/logo_btc@2x.png";
 import arrow from '@/assets/list_icon_ins.svg'
 import './details.less'
 import { formatSat } from "@/utils/utlis"
 import IdCoinMessage from "@/components/IdCoinMessage";
 import { history } from 'umi'
+import { RightOutlined } from "@ant-design/icons";
 type Props = {
     idCoid: API.IdCoin | undefined
 }
@@ -76,7 +77,7 @@ export default ({ idCoid }: Props) => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={idCoid.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoid.holders} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{cursor:'pointer'}} onClick={()=>{history.push('/holders/'+idCoid.tick)}}>Holders <RightOutlined style={{fontSize:10}}/></Space>}  value={idCoid.holders} />
                     </Col>
                 </Row>
             </Card>

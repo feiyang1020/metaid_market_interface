@@ -18,6 +18,7 @@ export default defineConfig({
     // { path: "/list/:assetType/:tick", component: "listIdCoin" },
     { path: "/inscribe/:tab", component: "inscribe" },
     { path: "/inscribe/:tab/:tick", component: "inscribe" },
+    { path: "/holders/:tick", component: "holders" },
   ],
   title: "MetaID-Market",
   npmClient: "pnpm",

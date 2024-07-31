@@ -799,3 +799,22 @@ export async function checkUserCanDeployIdCoin(
     ...(options || {}),
   });
 }
+
+export async function getTickHolders(
+  network: API.Network,
+  params: {
+    tick: string;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.Holder>>(
+    `${getHost(network)}/api/v1/common/mrc20/tick/holder-list`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}

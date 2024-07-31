@@ -6,7 +6,7 @@ import { useMatch, useModel, history, Link } from 'umi';
 import './idCoin.less'
 import Listed from './components/Listed';
 import NumberFormat from '@/components/NumberFormat';
-import { LeftOutlined, LinkOutlined, QuestionCircleOutlined, ShareAltOutlined, XOutlined } from '@ant-design/icons';
+import { LeftOutlined, LinkOutlined, QuestionCircleOutlined, RightOutlined, ShareAltOutlined, XOutlined } from '@ant-design/icons';
 import Activeity from './components/Activeity';
 import MyActiveity from './components/MyActiveity';
 import MetaIdAvatar from '@/components/MetaIdAvatar';
@@ -191,7 +191,7 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Holders" value={idCoin.holders} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }}  title={<Space size={4} style={{cursor:'pointer'}} onClick={()=>{history.push('/holders/'+idCoin.tick)}}>Holders <RightOutlined style={{fontSize:10}}/></Space>} value={idCoin.holders} />
                     </Col>
                 </Row>
                 <Row >

@@ -483,4 +483,17 @@ declare namespace API {
     remaining: "21000000000";
     isFollowing?: boolean;
   };
+  type Holder = {
+    tickId: string;
+    tick: string;
+    tokenName: string;
+    metaId: string;
+    address: string;
+    userInfo: {
+      name: string;
+      avatar: string;
+    };
+    balance: string;
+    proportion: string;
+  };
 }
