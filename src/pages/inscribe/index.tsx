@@ -29,7 +29,7 @@ import SuccessModal, {
 } from "@/components/SuccessModal";
 import Mrc20Form from "./components/Mrc20Form";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
-import { UploadOutlined } from "@ant-design/icons";
+import { LeftOutlined, UploadOutlined } from "@ant-design/icons";
 const items = ['MRC-20', "File", "Buzz", "PINs",];
 const { Dragger } = Upload;
 const { TextArea } = Input;
@@ -394,6 +394,14 @@ export default () => {
   };
   return (
     <div className="inscribePage animation-slide-bottom">
+      <div
+        className="action"
+        onClick={() => {
+          history.back();
+        }}
+      >
+        <LeftOutlined />
+      </div>
       <div className="title">Inscribe PINs</div>
       <div className="subTitle">Inscribe Your PINs To Bitcoin</div>
       <div className="tabs">
@@ -428,7 +436,7 @@ export default () => {
                       <p className="ant-upload-text">Upload File</p>
                       <p className="ant-upload-hint">Any file type. Max 300kb</p>
                       <p className="colorPrimary">
-                        <UploadOutlined style={{fontSize:24}} />
+                        <UploadOutlined style={{ fontSize: 24 }} />
 
                       </p>
                       <p className="colorPrimary">Choose File</p>
@@ -466,7 +474,7 @@ export default () => {
                     // disabled={!feeRate || fileList.length === 0}
                     className="submit"
                     disabled
-                    
+
                   >
                     {/* Submit */}
                     Under maintenance, please try again later.
