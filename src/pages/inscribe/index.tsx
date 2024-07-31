@@ -47,7 +47,9 @@ const { useBreakpoint } = Grid;
 
 export default () => {
   const match = useMatch('/inscribe/:tab');
+  const match2 = useMatch('/inscribe/:tab/:tick');
   const _tab = match?.params.tab;
+  const _tick = match2?.params.tick;
   const nav = useNavigate()
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("MRC-20");
@@ -394,14 +396,15 @@ export default () => {
   };
   return (
     <div className="inscribePage animation-slide-bottom">
-      <div
+      {_tick && <div
         className="action"
         onClick={() => {
           history.back();
         }}
       >
         <LeftOutlined />
-      </div>
+      </div>}
+
       <div className="title">Inscribe PINs</div>
       <div className="subTitle">Inscribe Your PINs To Bitcoin</div>
       <div className="tabs">
@@ -410,7 +413,7 @@ export default () => {
             <Button
               key={item}
               type={tab === item ? "link" : "text"}
-              onClick={() => { nav('/inscribe/' + item); setTab(item) }}
+              onClick={() => { nav('/inscribe/' + item,{replace:true}); setTab(item) }}
               size="large"
             >
               {item}
