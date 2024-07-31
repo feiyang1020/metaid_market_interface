@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
 import { Button, Space, Table, TableProps, Tooltip, message } from "antd";
-import { history, useModel } from "umi";
+import { history, useModel,Link } from "umi";
 import dayjs from "dayjs";
 import { formatSat } from "@/utils/utlis";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -87,6 +87,15 @@ export default () => {
         {
             title: 'Premine Count',
             dataIndex: 'premineCount',
+
+        },
+        {
+            title: 'Holders',
+            dataIndex: 'holders',
+            align: 'center',
+            render: (item, record) => {
+                return <Link onClick={e=>e.stopPropagation()} style={{textDecoration:'underline',color:'#fff'}} to={`/holders/${record.tick}`}>{item}</Link>
+            }
 
         },
         {
