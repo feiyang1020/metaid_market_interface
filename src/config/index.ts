@@ -16,7 +16,7 @@ const TESTNET_ORDERS_TRADE_URL =
 const MAINNET_ORDERS_TRADE_URL =
   "https://orders.exchange/orderbook/idcoin/btc-";
 
-const TESTNET_METAID_URL = "https://metaid.io/metaid-detail/";
+const TESTNET_METAID_URL = "https://metaid-testnet.vercel.app/metaid-detail/";
 const MAINNET_METAID_URL = "https://metaid.io/metaid-detail/";
 
 export const curNetwork: API.Network =

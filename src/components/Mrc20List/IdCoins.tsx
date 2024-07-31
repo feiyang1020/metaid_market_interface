@@ -79,7 +79,7 @@ export default () => {
         //     title: 'Mint Notification',
         //     content: 'You have not yet been granted the right to mint tokens! Follow the deployed user to gain the ability to mint'
         // })
-        history.push('/inscribe/MRC-20/' + record.tick)
+        history.push({ pathname: '/inscribe/MRC-20/' + record.tick }, { from: 'idCoins' })
     }
     const onChange: CheckboxProps['onChange'] = (e) => {
         console.log(`checked = ${e.target.checked}`);
