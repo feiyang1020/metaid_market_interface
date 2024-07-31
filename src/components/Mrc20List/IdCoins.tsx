@@ -96,7 +96,7 @@ export default () => {
                 <Checkbox onChange={onChange}>I am aware of the above risks</Checkbox>
             </div>,
             onOk() {
-                message.info('coming soon...')
+                // message.info('coming soon...')
                 window.open(`${getOrdersTradeUrlByNet(network)}${record.tick}`, '_blank')
             }
 
