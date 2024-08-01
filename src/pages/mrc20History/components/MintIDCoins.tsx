@@ -53,7 +53,7 @@ export default () => {
         setRefundOrderId(record.orderId);
         try {
             if (!btcAddress) throw new Error('Address is empty');
-            const { code, message:msg, data } = await refundIdCoinPre(network, { address: btcAddress, orderId: record.orderId }, {
+            const { code, message: msg, data } = await refundIdCoinPre(network, { address: btcAddress, orderId: record.orderId }, {
                 headers: {
                     ...authParams,
                 },
@@ -66,9 +66,9 @@ export default () => {
                     ...authParams,
                 },
             });
-            if(commitRes.code!==0) throw new Error(commitRes.message);
+            if (commitRes.code !== 0) throw new Error(commitRes.message);
             message.success('Refund success');
-            await addUtxoSafe(btcAddress,[{txId:commitRes.data.txId,vout:0},{txId:commitRes.data.txId,vout:1}]);
+            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.txId, vout: 0 }, { txId: commitRes.data.txId, vout: 1 }]);
             await fetchOrders();
         } catch (err: any) {
             message.error(err.message)
@@ -154,7 +154,21 @@ export default () => {
                                     Failure <Button loading={refundOrderId === record.orderId} size="small" type='link' onClick={(e) => { e.stopPropagation(); handleRefund(record) }}>Refund</Button>
                                 </Space> :
                                 item === 3 ?
-                                    <>Refunded</> :
+                                    <Tooltip title={record.refundTxId}>
+                                        <a
+                                            style={{ color: "#fff", textDecoration: "underline" }}
+                                            target="_blank"
+                                            onClick={(e) => e.stopPropagation()}
+                                            href={
+                                                network === "testnet"
+                                                    ? `https://mempool.space/testnet/tx/${record.refundTxId}`
+                                                    : `https://mempool.space/tx/${record.refundTxId}`
+                                            }
+                                        >
+                                            Refunded
+                                        </a>
+                                    </Tooltip>
+                                    :
                                     <></>
                 }</>
             }
