@@ -157,7 +157,8 @@ export default () => {
         },
         {
             title: 'Progress%',
-            dataIndex: 'totalSupply',
+            dataIndex: 'progress',
+            sorter: true,
             width: 200,
             render: (price, record) => {
                 const percent = Number(record.supply / record.totalSupply) * 100 || 0;

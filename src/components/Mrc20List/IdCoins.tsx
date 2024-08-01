@@ -122,7 +122,7 @@ export default () => {
                 options: {
                     noBroadcast: 'no',
                     feeRate: feeRate,
-                    service: getCreatePinFeeByNet(network),
+                    // service: getCreatePinFeeByNet(network),
                 },
             });
             if (followRes.status) throw new Error(followRes.status)
