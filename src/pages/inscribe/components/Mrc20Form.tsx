@@ -239,7 +239,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }
         }
         if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
-            throw new Error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
+            throw new Error('The decimals, Amount Per Mint, and Mint Limit values must not exceed 20 digits')
         }
 
         if (deployIcon) {
@@ -487,7 +487,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     }
                 }
                 if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
-                    message.error('The decimals, Amount Per Mint, and Max Mint Count values must not exceed 20 digits')
+                    message.error('The decimals, Amount Per Mint, and Mint Limit values must not exceed 20 digits')
                     return
                 }
 
@@ -818,7 +818,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
 
 
-                                    <Form.Item rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: 'Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).' }]} label="Max Mint Count" name="deployMaxMintCount"
+                                    <Form.Item rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: 'Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).' }]} label="Mint Limit" name="deployMaxMintCount"
 
                                     >
                                         <InputNumber
@@ -927,7 +927,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         if (!value || getFieldValue('deployMaxMintCount') >= value) {
                                                             return Promise.resolve();
                                                         }
-                                                        return Promise.reject(new Error('Premine Count cannot be greater than Max Mint Count !'));
+                                                        return Promise.reject(new Error('Premine Count cannot be greater than Mint Limit !'));
                                                     },
                                                 })]} label="Premine Count" name="deployPremineCount"
 
@@ -939,7 +939,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                         precision={0}
                                                         addonAfter={
-                                                            <Tooltip title="Pre-Minted Count. Value must be ≥ 0 and ≤ Max Mint Count. If this Token is a fair launch, please enter 0.">
+                                                            <Tooltip title="Pre-Minted Count. Value must be ≥ 0 and ≤ Mint Limit. If this Token is a fair launch, please enter 0.">
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }

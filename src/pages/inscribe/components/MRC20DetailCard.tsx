@@ -39,7 +39,7 @@ export default ({ mintMrc20Info }: Props) => {
 
                 {
                     key: 'mintCount',
-                    label: 'Max Mint Count',
+                    label: 'Mint Limit',
                     children: <>{mintMrc20Info.mintCount}</>
                 },
                 {

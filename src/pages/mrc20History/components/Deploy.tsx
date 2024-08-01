@@ -70,7 +70,7 @@ export default () => {
             }
         },
         {
-            title: 'Max Mint Count',
+            title: 'Mint Limit',
             dataIndex: 'mintCount',
 
         },

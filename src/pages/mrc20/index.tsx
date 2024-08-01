@@ -133,7 +133,7 @@ export default () => {
 
 
                         <div className="mint colorPrimary">
-                            <span>Minted : <NumberFormat value={mrc20Info.totalMinted} /> (Max Mint Count: <NumberFormat value={mrc20Info.mintCount} />) </span>
+                            <span>Minted : <NumberFormat value={mrc20Info.totalMinted} /> (Mint Limit: <NumberFormat value={mrc20Info.mintCount} />) </span>
                             <span>Supply : <NumberFormat value={mrc20Info.totalSupply} /> </span>
                         </div>
                         <div className="slider">

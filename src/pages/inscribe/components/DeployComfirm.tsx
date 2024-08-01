@@ -63,7 +63,7 @@ export default function DeployComfirm({ show, onClose, onConfirm, submiting, dep
     return <Popup show={show} onClose={onClose} closable title='Deploy'>
         <DescItem label='Ticker' value={deployInfo.tick} />
         <DescItem label='Token Name' value={deployInfo.tokenName} />
-        <DescItem label='Max Mint Count' value={deployInfo.mintCount} />
+        <DescItem label='Mint Limit' value={deployInfo.mintCount} />
         <DescItem label='Amount Per Mint' value={deployInfo.amtPerMint} />
 
         <DescItem label='Icon' value={<MRC20Icon {...deployInfo}></MRC20Icon>} />
