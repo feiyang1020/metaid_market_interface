@@ -347,7 +347,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }, { headers: authParams })
             console.log(commitRes)
             if (commitRes.code !== 0) throw new Error(commitRes.message)
-            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout:  2 }])
+            await addUtxoSafe(btcAddress, [{ txId: commitRes.data.commitTxId, vout: 2 }])
             setMintIdCoinOrder(undefined)
             setComfirmVisible(false)
             setSuccessProp({
@@ -369,7 +369,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     <div className="inscribeSuccess">
                         <div className="res">
                             <div className="item">
-                                <div className="label">TxId </div>
+                                <div className="label"> Reveal TxId </div>
                                 <div className="value">
                                     <Tooltip title={commitRes.data.revealMintTxId}>
                                         <a
@@ -383,6 +383,26 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         >
                                             <Typography.Text copyable={{ text: commitRes.data.revealMintTxId }}>
                                                 {commitRes.data.revealMintTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
+                                            </Typography.Text>
+                                        </a>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                            <div className="item">
+                                <div className="label">Commit TxId </div>
+                                <div className="value">
+                                    <Tooltip title={commitRes.data.commitTxId}>
+                                        <a
+                                            style={{ color: "#fff", textDecoration: "underline" }}
+                                            target="_blank"
+                                            href={
+                                                network === "testnet"
+                                                    ? `https://mempool.space/testnet/tx/${commitRes.data.commitTxId}`
+                                                    : `https://mempool.space/tx/${commitRes.data.commitTxId}`
+                                            }
+                                        >
+                                            <Typography.Text copyable={{ text: commitRes.data.commitTxId }}>
+                                                {commitRes.data.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
                                             </Typography.Text>
                                         </a>
                                     </Tooltip>

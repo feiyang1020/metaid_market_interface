@@ -92,7 +92,7 @@ const _commitMint = async (
     address: revealAddress,
     value: revealFee,
   });
-  if (serviceFee > 0) {
+  if (serviceFee > 0 && serviceAddress) {
     psbt.addOutput({
       address: serviceAddress,
       value: serviceFee,
