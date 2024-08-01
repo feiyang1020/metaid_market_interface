@@ -185,7 +185,8 @@ export const buildMintIdCointPsbt = async (
   signPsbt: boolean = true
 ) => {
   initEccLib(ecc);
-  const { totalFee } = order;
+  console.log(feeRate,'feeRate in buildMintIdCointPsbt');
+  const { revealInscribeFee,revealMintFee} = order;
   const utxos = await getUtxos(address, network);
   console.log(utxos, "utxos in buildMintIdCointPsbt");
   const addressType = determineAddressInfo(address).toUpperCase();
@@ -194,7 +195,7 @@ export const buildMintIdCointPsbt = async (
 
   const ret = await buildTx<BuildMintIdCoinPsbtParams>(
     utxos,
-    new Decimal(totalFee),
+    new Decimal(revealInscribeFee).add(revealMintFee),
     feeRate,
     {
       addressType,

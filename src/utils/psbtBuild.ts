@@ -14,6 +14,7 @@ import { determineAddressInfo } from "./utlis";
 const TX_EMPTY_SIZE = 4 + 1 + 1 + 4;
 const TX_INPUT_BASE = 32 + 4 + 1 + 4; // 41
 const TX_INPUT_PUBKEYHASH = 107;
+const TX_INPUT_PUBKEY_HASH = 107;
 const TX_INPUT_SEGWIT = 27;
 const TX_INPUT_TAPROOT = 17; // round up 16.5 bytes
 const TX_OUTPUT_BASE = 8 + 1;
@@ -22,6 +23,9 @@ const TX_OUTPUT_SCRIPTHASH = 23;
 const TX_OUTPUT_SEGWIT = 22;
 const TX_OUTPUT_SEGWIT_SCRIPTHASH = 34;
 const TX_INPUT_SCRIPT_BASE = 0;
+const TX_OUTPUT_SEGWIT_SCRIPT_HASH = 34;
+const TX_OUTPUT_SCRIPT_HASH = 23;
+const TX_OUTPUT_PUBKEY_HASH = 25;
 
 function selectUTXOs(utxos: API.UTXO[], targetAmount: Decimal) {
   let totalAmount = new Decimal(0);
@@ -65,55 +69,65 @@ export interface PsbtTxOutput extends TransactionOutput {
 }
 
 function inputBytes(input: PsbtInput) {
-  // todo: script length
-
-  if (isTaprootInput(input)) {
-    return TX_INPUT_BASE + TX_INPUT_TAPROOT;
-  }
-  if (input.redeemScript) return TX_INPUT_BASE + input.redeemScript.length;
-  if (input.nonWitnessUtxo) return TX_INPUT_BASE + TX_INPUT_PUBKEYHASH;
-  if (input.witnessUtxo) return TX_INPUT_BASE + TX_INPUT_SEGWIT;
-
-  return TX_INPUT_BASE + TX_INPUT_PUBKEYHASH;
+  return (
+    TX_INPUT_BASE +
+    (input.redeemScript ? input.redeemScript.length : 0) +
+    (input.witnessScript
+      ? input.witnessScript.length / 4
+      : isTaprootInput(input)
+        ? TX_INPUT_TAPROOT
+        : input.witnessUtxo
+          ? TX_INPUT_SEGWIT
+          : !input.redeemScript
+            ? TX_INPUT_PUBKEY_HASH
+            : 0)
+  );
 }
 
 function outputBytes(output: PsbtTxOutput) {
-  // if output is op-return, use it's buffer size
-
   return (
     TX_OUTPUT_BASE +
     (output.script
       ? output.script.length
       : output.address?.startsWith("bc1") || output.address?.startsWith("tb1")
-        ? output.address?.length === 42 // TODO: looks like something wrong here
+        ? output.address?.length === 42
           ? TX_OUTPUT_SEGWIT
-          : TX_OUTPUT_SEGWIT_SCRIPTHASH
+          : TX_OUTPUT_SEGWIT_SCRIPT_HASH
         : output.address?.startsWith("3") || output.address?.startsWith("2")
-          ? TX_OUTPUT_SCRIPTHASH
-          : TX_OUTPUT_PUBKEYHASH)
+          ? TX_OUTPUT_SCRIPT_HASH
+          : TX_OUTPUT_PUBKEY_HASH)
   );
 }
-function transactionBytes(inputs: PsbtInput[], outputs: PsbtTxOutput[]) {
+function transactionBytes(
+  inputs: PsbtInput[],
+  outputs: PsbtTxOutput[],
+  isTaproot = false
+) {
   const inputsSize = inputs.reduce(function (a, x) {
     return a + inputBytes(x);
   }, 0);
   const outputsSize = outputs.reduce(function (a, x, index) {
     return a + outputBytes(x);
   }, 0);
+  if (isTaproot) {
+    return TX_EMPTY_SIZE + Math.floor(inputsSize) + 1 + outputsSize;
+  }
 
-  console.log({
-    inputsSize,
-    outputsSize,
-    TX_EMPTY_SIZE,
-  });
   return TX_EMPTY_SIZE + inputsSize + outputsSize;
 }
+function calcSize(psbt: Psbt, isTaproot = false) {
+  const inputs = psbt.data.inputs;
 
-export function calcFee(psbt: Psbt, feeRate: number) {
+  const outputs = psbt.txOutputs;
+
+  return transactionBytes(inputs, outputs, isTaproot);
+}
+
+export function calcFee(psbt: Psbt, feeRate: number, isTaproot = false) {
   const inputs = psbt.data.inputs;
   const outputs = psbt.txOutputs;
 
-  const bytes = transactionBytes(inputs, outputs);
+  const bytes = transactionBytes(inputs, outputs, isTaproot);
   console.log({ bytes });
   return new Decimal(bytes).mul(feeRate);
 }
@@ -150,10 +164,13 @@ export async function buildTx<T>(
     true,
     false
   );
+   
   // let estimatedFee = manualCalcFee
   //   ? calcFee(psbt, feeRate)
   //   : calculateEstimatedFee(psbt, feeRate);
-  let estimatedFee = calcFee(psbt, feeRate);
+  const addressType = determineAddressInfo(address).toUpperCase();
+  let estimatedFee = calcFee(psbt, feeRate,addressType==='P2TR');
+  console.log(estimatedFee.toFixed(0), "estimatedFee");
   while (total.lt(amount.add(estimatedFee))) {
     if (selectedUTXOs.length === utxos.length) {
       throw new Error("Insufficient funds");
@@ -167,7 +184,7 @@ export async function buildTx<T>(
       true,
       false
     );
-    estimatedFee = calcFee(psbt, feeRate);
+    estimatedFee = calcFee(psbt, feeRate,addressType==='P2TR');
     // estimatedFee = manualCalcFee
     //   ? calcFee(psbt, feeRate)
     //   : calculateEstimatedFee(psbt, feeRate);
@@ -180,11 +197,14 @@ export async function buildTx<T>(
     false,
     signPsbt
   );
+
+
   console.log(
     estimatedFee,
     total
       .minus(psbt.txOutputs.reduce((acc, cur) => acc + Number(cur.value), 0))
       .toString()
+      ,'estimatedFee'
   );
   return {
     psbt,
