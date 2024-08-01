@@ -52,7 +52,7 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
                     <Button size='small' onClick={(e) => {
                         e.stopPropagation();
                         if (localStorage.getItem('tradeNotice') === '1') {
-                            window.open(`${getOrdersTradeUrlByNet(network)}${record.tick}`, '_blank')
+                            window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_blank')
 
                         } else {
                             showTradeNotice(record)

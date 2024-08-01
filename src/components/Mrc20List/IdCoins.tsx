@@ -97,7 +97,7 @@ export default () => {
             </div>,
             onOk() {
                 // message.info('coming soon...')
-                window.open(`${getOrdersTradeUrlByNet(network)}${record.tick}`, '_blank')
+                window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_blank')
             }
 
         })
@@ -284,7 +284,7 @@ export default () => {
                 return <Button size='small' onClick={(e) => {
                     e.stopPropagation();
                     if (localStorage.getItem('tradeNotice') === '1') {
-                        window.open(`${getOrdersTradeUrlByNet(network)}${record.tick}`, '_blank')
+                        window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_blank')
 
                     } else {
                         showTradeNotice(record)

@@ -35,9 +35,18 @@ export const getCreatePinFeeByNet = (
   };
 };
 
-export const getOrdersTradeUrlByNet = (network: API.Network): string => {
-  if (network === "testnet") return TESTNET_ORDERS_TRADE_URL;
-  return MAINNET_ORDERS_TRADE_URL;
+export const getOrdersTradeUrlByNet = (
+  network: API.Network,
+  tick: string,
+  address: string | undefined
+): string => {
+  let host = MAINNET_ORDERS_TRADE_URL;
+  if (network === "testnet") host = TESTNET_ORDERS_TRADE_URL;
+  if (address) {
+    return `${host}${tick}?address=${address}`;
+  } else {
+    return `${host}${tick}?clear=1`;
+  }
 };
 export const getMetaIdUrlByNet = (network: API.Network): string => {
   if (network === "testnet") return TESTNET_METAID_URL;
