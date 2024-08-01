@@ -131,33 +131,17 @@ export default () => {
                 title: "Launch",
                 tip: "Successful",
                 okText: 'OK',
+                txs: [{
+                    label: 'Reveal TxId',
+                    txid: commitRes.data.revealTxId
+                }, {
+                    label: 'Commit TxId',
+                    txid: commitRes.data.commitTxId
+                }
+                ],
                 children: (
                     <div className="inscribeSuccess">
-                        <div className="res">
-
-
-                            <div className="item">
-                                <div className="label">TxId </div>
-                                <div className="value">
-                                    <Tooltip title={commitRes.data.revealTxId}>
-                                        <a
-                                            style={{ color: "#fff", textDecoration: "underline" }}
-                                            target="_blank"
-                                            href={
-                                                network === "testnet"
-                                                    ? `https://mempool.space/testnet/tx/${commitRes.data.revealTxId}`
-                                                    : `https://mempool.space/tx/${commitRes.data.revealTxId}`
-                                            }
-                                        >
-                                            <Typography.Text copyable={{ text: commitRes.data.revealTxId }}>
-                                                {commitRes.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
-                                            </Typography.Text>
-
-                                        </a>
-                                    </Tooltip>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div className="tips">
                             <InfoCircleOutlined />
                             <span>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</span>
