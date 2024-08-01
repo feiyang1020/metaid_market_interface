@@ -3,6 +3,7 @@ import * as ecc from "@bitcoin-js/tiny-secp256k1-asmjs";
 import { determineAddressInfo } from "./utlis";
 import { buildTx, createPsbtInput, getNetworks, getUtxos } from "./psbtBuild";
 import Decimal from "decimal.js";
+import { SIGHASH_ALL } from "./orders";
 const DUST_SIZE = 546;
 type BaseBuildParams = {
   addressType: string;
@@ -77,8 +78,8 @@ export const buildDeployIdCointPsbt = async (
   feeRate: number,
   address: string,
   network: API.Network,
-  extract: boolean=true,
-  signPsbt: boolean=true
+  extract: boolean = true,
+  signPsbt: boolean = true
 ) => {
   initEccLib(ecc);
   const { totalFee } = order;
@@ -127,7 +128,7 @@ const _buildMintIdCoinPsbt = async (
     revealInscribeFee,
     network,
     serviceFee,
-    serviceAddress
+    serviceAddress,
   } = params;
   const psbt = new Psbt({ network: getNetworks(network) });
   for (const utxo of selectedUTXOs) {
@@ -180,8 +181,8 @@ export const buildMintIdCointPsbt = async (
   feeRate: number,
   address: string,
   network: API.Network,
-  extract: boolean=true,
-  signPsbt: boolean=true
+  extract: boolean = true,
+  signPsbt: boolean = true
 ) => {
   initEccLib(ecc);
   const { totalFee } = order;
@@ -207,6 +208,92 @@ export const buildMintIdCointPsbt = async (
     _buildMintIdCoinPsbt,
     extract,
     signPsbt
+  );
+  return ret;
+};
+type BuildRefundIdCoinPsbtParams = BaseBuildParams & API.RefundIdCoinPreRes;
+const _buildRefundIdCoinPsbt = async (
+  params: BuildRefundIdCoinPsbtParams,
+  selectedUTXOs: API.UTXO[],
+  change: Decimal,
+  needChange: boolean,
+  signPsbt: boolean = false
+) => {
+  const { addressType, address, publicKey, script, psbtRaw, network } = params;
+  const psbt = Psbt.fromHex(psbtRaw, {
+    network: getNetworks(network),
+  });
+  let toSignIndex = psbt.data.inputs.length;
+  const toSignInputs = [];
+  for (const utxo of selectedUTXOs) {
+    const psbtInput = await createPsbtInput({
+      utxo: utxo,
+      addressType,
+      publicKey,
+      script,
+      network,
+    });
+    psbtInput.sighashType = SIGHASH_ALL;
+    psbt.addInput(psbtInput);
+    toSignInputs.push({
+      index: toSignIndex,
+      address,
+      sighashTypes: [SIGHASH_ALL],
+    });
+    toSignIndex += 1;
+  }
+  if (needChange || change.gt(DUST_SIZE)) {
+    psbt.addOutput({
+      address: address,
+      value: change.toNumber(),
+    });
+  }
+  if (!signPsbt) return psbt;
+  const _signPsbt = await window.metaidwallet.btc.signPsbt({
+    psbtHex: psbt.toHex(),
+    options: {
+      toSignInputs,
+      autoFinalized: false,
+    },
+  });
+  if (typeof _signPsbt === "object") {
+    if (_signPsbt.status === "canceled") throw new Error("canceled");
+    throw new Error("");
+  }
+  const signed = Psbt.fromHex(_signPsbt);
+  console.log(signed);
+  return signed;
+};
+
+export const buildRefundIdCoinPsbt = async (
+  order: API.RefundIdCoinPreRes,
+  feeRate: number,
+  address: string,
+  network: API.Network
+) => {
+  initEccLib(ecc);
+  const utxos = await getUtxos(address, network);
+  console.log(utxos, "utxos in buildRefundIdCoinPsbt");
+  const addressType = determineAddressInfo(address).toUpperCase();
+  const publicKey = await window.metaidwallet.btc.getPublicKey();
+  const script = addressLib.toOutputScript(address, getNetworks(network));
+
+  const ret = await buildTx<BuildRefundIdCoinPsbtParams>(
+    utxos,
+    new Decimal(0),
+    feeRate,
+    {
+      addressType,
+      address,
+      publicKey: Buffer.from(publicKey, "hex"),
+      script,
+      network,
+      ...order,
+    },
+    address,
+    _buildRefundIdCoinPsbt,
+    false,
+    true
   );
   return ret;
 };

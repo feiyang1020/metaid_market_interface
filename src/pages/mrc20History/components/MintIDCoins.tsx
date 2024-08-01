@@ -5,16 +5,19 @@ import dayjs from "dayjs";
 import { formatSat } from "@/utils/utlis";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Popup from "@/components/ResponPopup";
-import { authTest, cancelMRC20Order, cancelOrder, getIdCoinInscribeOrders, getMrc20InscribeOrders, getMrc20Orders } from "@/services/api";
+import { authTest, cancelMRC20Order, cancelOrder, getIdCoinInscribeOrders, getMrc20InscribeOrders, getMrc20Orders, refundIdCoinCommit, refundIdCoinPre } from "@/services/api";
 import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import PopLvl from "@/components/PopLvl";
+import { buildRefundIdCoinPsbt } from "@/utils/idcoin";
+import { addUtxoSafe } from "@/utils/psbtBuild";
 export default () => {
-    const { btcAddress, network, authParams } = useModel("wallet");
+    const { btcAddress, network, authParams, feeRate } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);
     const [submiting, setSubmiting] = useState<boolean>(false);
+    const [refundOrderId, setRefundOrderId] = useState<string>('');
     const [list, setList] = useState<API.Mrc20InscribeOrder[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(0);
@@ -44,6 +47,38 @@ export default () => {
         setLoading(false);
     }, [network, btcAddress, page, size])
     useEffect(() => { fetchOrders() }, [fetchOrders]);
+
+    const handleRefund = async (record: API.Mrc20InscribeOrder) => {
+        setSubmiting(true);
+        setRefundOrderId(record.orderId);
+        try {
+            if (!btcAddress) throw new Error('Address is empty');
+            const { code, message:msg, data } = await refundIdCoinPre(network, { address: btcAddress, orderId: record.orderId }, {
+                headers: {
+                    ...authParams,
+                },
+            });
+            if (code !== 0) throw new Error(msg);
+            const ret = await buildRefundIdCoinPsbt(data, feeRate, btcAddress, network);
+            console.log(ret, "ret in handleRefund");
+            const commitRes = await refundIdCoinCommit(network, { orderId: data.orderId, psbtRaw: ret.rawTx }, {
+                headers: {
+                    ...authParams,
+                },
+            });
+            if(commitRes.code!==0) throw new Error(commitRes.message);
+            message.success('Refund success');
+            await addUtxoSafe(btcAddress,[{txId:commitRes.data.txId,vout:0},{txId:commitRes.data.txId,vout:1}]);
+            await fetchOrders();
+        } catch (err: any) {
+            message.error(err.message)
+        }
+
+
+
+        setSubmiting(false);
+        setRefundOrderId('');
+    }
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
         {
@@ -104,8 +139,24 @@ export default () => {
         {
             title: 'Type',
             dataIndex: 'mintState',
-            render: (item) => {
-                return <>{item === 1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item === 0 ? 'Pending' : 'Failure'}</span>}</>
+            align: 'center',
+            render: (item, record) => {
+
+                return <>{
+                    item === 1 ?
+                        <>Confirmed</> :
+                        item === 0 ?
+                            <span style={{ color: '#FF5252' }}>
+                                Pending
+                            </span> :
+                            item === 2 ?
+                                <Space style={{ color: '#FF5252' }}>
+                                    Failure <Button loading={refundOrderId === record.orderId} size="small" type='link' onClick={(e) => { e.stopPropagation(); handleRefund(record) }}>Refund</Button>
+                                </Space> :
+                                item === 3 ?
+                                    <>Refunded</> :
+                                    <></>
+                }</>
             }
         },
         {
@@ -123,6 +174,7 @@ export default () => {
                     <a
                         style={{ color: "#fff", textDecoration: "underline" }}
                         target="_blank"
+                        onClick={(e) => e.stopPropagation()}
                         href={
                             network === "testnet"
                                 ? `https://mempool.space/testnet/tx/${text}`

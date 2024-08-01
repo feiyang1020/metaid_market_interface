@@ -818,3 +818,43 @@ export async function getTickHolders(
     }
   );
 }
+
+export async function refundIdCoinPre(
+  network: API.Network,
+  params: {
+    orderId: string;
+    address: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.RefundIdCoinPreRes>>(
+    `${getHost(network)}/api/v1/id-coins/invalid/refund/pre`,
+    {
+      method: "POST",
+      data: params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function refundIdCoinCommit(
+  network: API.Network,
+  params: {
+    orderId: string;
+    psbtRaw: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      orderId: "string";
+      refundAddress: "string";
+      refundAmount: 0;
+      txId: "string";
+    }>
+  >(`${getHost(network)}/api/v1/id-coins/invalid/refund/commit`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
+}

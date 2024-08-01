@@ -496,4 +496,11 @@ declare namespace API {
     balance: string;
     proportion: string;
   };
+
+  type RefundIdCoinPreRes = {
+    orderId: string;
+    refundAmount: number;
+    refundAddress: string;
+    psbtRaw: string;
+  };
 }
