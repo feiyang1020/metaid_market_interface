@@ -82,7 +82,7 @@ export const buildDeployIdCointPsbt = async (
   signPsbt: boolean = true
 ) => {
   initEccLib(ecc);
-  const { totalFee } = order;
+  const { minerFee } = order;
   const utxos = await getUtxos(address, network);
   console.log(utxos, "utxos in buildTicketPsbt");
   const addressType = determineAddressInfo(address).toUpperCase();
@@ -91,7 +91,7 @@ export const buildDeployIdCointPsbt = async (
 
   const ret = await buildTx<BuildDeployIdCoinPsbtParams>(
     utxos,
-    new Decimal(totalFee),
+    new Decimal(minerFee),
     feeRate,
     {
       addressType,
