@@ -58,7 +58,7 @@ export default () => {
             onChange={(item) => {
                 nav('/market/MRC-20/' + item, { replace: false })
             }}
-            tabBarStyle={{ paddingLeft: screens.lg ? 20 : 20 }}
+            tabBarStyle={{ paddingLeft: screens.lg ? 20 : 0 }}
             className="mrc20ListWrap" activeKey={activeKey}
             defaultActiveKey="0"
             items={items}
