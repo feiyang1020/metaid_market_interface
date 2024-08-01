@@ -13,18 +13,18 @@ export default ({ size = 40, tick, metadata = '' }: Props) => {
         if (metadata && !err) {
             try {
                 const data = JSON.parse(metadata);
-                if(data.icon){
+                if (data.icon) {
                     return data.icon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)
                 }
-                if(data.cover){
+                if (data.cover) {
                     return data.cover.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)
                 }
-                
+
             } catch (err) {
                 return ''
             }
         }
         return ''
     }, [metadata, err])
-    return <Avatar src={src ? <img src={src} onError={() => { setErr(true) }}></img> : null} style={{ background: 'var(--primary)', color: '#000', fontWeight: 'bold', fontSize: size * 16 / 40 }} size={size}>{tick && tick[0].toUpperCase()}</Avatar>
+    return <Avatar src={src ? <img src={src} onError={() => { setErr(true) }}></img> : null} style={{ background: 'var(--primary)', color: '#000', fontWeight: 'bold', fontSize: size * 16 / 40, minWidth: size }} size={size}>{tick && tick[0].toUpperCase()}</Avatar>
 }

@@ -53,10 +53,10 @@ export default () => {
             title: 'Deployer',
             dataIndex: 'deployer',
             width: 220,
-            render: (_, record) =>  <div className="detail">
-            <span className='avatars'><MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /> {record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
-            <span className='metaid'>MetaID : {record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
-          </div>
+            render: (_, record) => <div className="detail">
+                <span className='avatars'><MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /> {record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                <span className='metaid'>MetaID : {record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
+            </div>
         },
 
         {
@@ -108,7 +108,7 @@ export default () => {
             dataIndex: 'mintState',
             width: 100,
             render: (item) => {
-                return <>{item===1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item===0?'Pending':'Failure'}</span>}</>
+                return <>{item === 1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item === 0 ? 'Pending' : 'Failure'}</span>}</>
             }
         },
         {
@@ -138,6 +138,7 @@ export default () => {
                     <a
                         style={{ color: "#fff", textDecoration: "underline" }}
                         target="_blank"
+                        onClick={(e) => e.stopPropagation()}
                         href={
                             network === "testnet"
                                 ? `https://mempool.space/testnet/tx/${text}`
