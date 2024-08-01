@@ -474,13 +474,13 @@ export default () => {
                     loading={submiting}
                     type="primary"
                     onClick={submit}
-                    // disabled={!feeRate || fileList.length === 0}
+                    disabled={!feeRate || fileList.length === 0}
                     className="submit"
-                    disabled
+                    // disabled
 
                   >
-                    {/* Submit */}
-                    Under maintenance, please try again later.
+                    Submit
+                    {/* Under maintenance, please try again later. */}
                   </Button>
                 )}
               </Col>
@@ -520,11 +520,11 @@ export default () => {
                     loading={submiting}
                     type="primary"
                     onClick={submitBuzz}
-                    // disabled={!feeRate || !buzz}
-                    disabled
+                    disabled={!feeRate || !buzz}
+                    // disabled
                   >
-                    {/* Submit */}
-                    Under maintenance, please try again later.
+                    Submit
+                    {/* Under maintenance, please try again later. */}
                   </Button>
                 )}
                 <div className="tips">
@@ -615,14 +615,14 @@ export default () => {
                     loading={submiting}
                     type="primary"
                     onClick={inscribe}
-                    // disabled={
-                    //   !feeRate || !path || !payload || !checkPayload || !checkPath
-                    // }
-                    disabled
+                    disabled={
+                      !feeRate || !path || !payload || !checkPayload || !checkPath
+                    }
+                    // disabled
                     className="submit"
                   >
-                    {/* Submit */}
-                    Under maintenance, please try again later.
+                    Submit
+                    {/* Under maintenance, please try again later. */}
                   </Button>
                 )}
               </Col>
