@@ -50,10 +50,10 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem label="Pool" value={<NumberFormat value={idCoin.pool} />} />
             <Divider style={{ margin: '2px 0' }} />
             <DescItem dark label="Liquidity Required" value={<NumberFormat value={idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
-            <DescItem  label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<></>} />
+            <DescItem label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<></>} />
             <DescItem dark label="Commit Gas" value={<NumberFormat value={order._gasFee} isBig decimal={8} suffix=' BTC' />} />
-            <DescItem dark label="Reveal Gas" value={<NumberFormat value={order.revealInscribeFee + order.revealMintFee - idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
-            
+            <DescItem dark label="Reveal Gas" value={<NumberFormat value={order.revealMintFee - order.serviceFee - idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
+
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
             <DescItem label="You Will Spend" value={<NumberFormat value={order.totalFee + order._gasFee} isBig decimal={8} suffix=' BTC' />} />

@@ -288,33 +288,15 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             title: "Deploy",
             tip: "Successful",
             okText: 'OK',
+            txs: [{
+                label: 'Reveal TxId',
+                txid: commitRes.data.revealTxId
+            }, {
+                label: 'Commit TxId',
+                txid: commitRes.data.commitTxId
+            }],
             children: (
                 <div className="inscribeSuccess">
-                    <div className="res">
-
-
-                        <div className="item">
-                            <div className="label">TxId </div>
-                            <div className="value">
-                                <Tooltip title={commitRes.data.revealTxId}>
-                                    <a
-                                        style={{ color: "#fff", textDecoration: "underline" }}
-                                        target="_blank"
-                                        href={
-                                            network === "testnet"
-                                                ? `https://mempool.space/testnet/tx/${commitRes.data.revealTxId}`
-                                                : `https://mempool.space/tx/${commitRes.data.revealTxId}`
-                                        }
-                                    >
-                                        <Typography.Text copyable={{ text: commitRes.data.revealTxId }}>
-                                            {commitRes.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
-                                        </Typography.Text>
-
-                                    </a>
-                                </Tooltip>
-                            </div>
-                        </div>
-                    </div>
                     <div className="tips">
                         <InfoCircleOutlined />
                         <span>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</span>
@@ -365,50 +347,18 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 title: "Mint",
                 tip: "Successful",
                 okText: 'OK',
+                txs: [
+                    {
+                        label: 'Reveal TxId',
+                        txid: commitRes.data.revealMintTxId
+                    },
+                    {
+                        label: 'Commit TxId',
+                        txid: commitRes.data.commitTxId
+                    }
+                ],
                 children: (
                     <div className="inscribeSuccess">
-                        <div className="res">
-                            <div className="item">
-                                <div className="label"> Reveal TxId </div>
-                                <div className="value">
-                                    <Tooltip title={commitRes.data.revealMintTxId}>
-                                        <a
-                                            style={{ color: "#fff", textDecoration: "underline" }}
-                                            target="_blank"
-                                            href={
-                                                network === "testnet"
-                                                    ? `https://mempool.space/testnet/tx/${commitRes.data.revealMintTxId}`
-                                                    : `https://mempool.space/tx/${commitRes.data.revealMintTxId}`
-                                            }
-                                        >
-                                            <Typography.Text copyable={{ text: commitRes.data.revealMintTxId }}>
-                                                {commitRes.data.revealMintTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
-                                            </Typography.Text>
-                                        </a>
-                                    </Tooltip>
-                                </div>
-                            </div>
-                            <div className="item">
-                                <div className="label">Commit TxId </div>
-                                <div className="value">
-                                    <Tooltip title={commitRes.data.commitTxId}>
-                                        <a
-                                            style={{ color: "#fff", textDecoration: "underline" }}
-                                            target="_blank"
-                                            href={
-                                                network === "testnet"
-                                                    ? `https://mempool.space/testnet/tx/${commitRes.data.commitTxId}`
-                                                    : `https://mempool.space/tx/${commitRes.data.commitTxId}`
-                                            }
-                                        >
-                                            <Typography.Text copyable={{ text: commitRes.data.commitTxId }}>
-                                                {commitRes.data.commitTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
-                                            </Typography.Text>
-                                        </a>
-                                    </Tooltip>
-                                </div>
-                            </div>
-                        </div>
                         <div className="tips">
                             <InfoCircleOutlined />
                             <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
@@ -439,37 +389,16 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             },
             title: title,
             tip: "Successful",
+            txs: [{
+                label: 'Reveal TxId',
+                txid: ret.revealTxId
+            }, {
+                label: 'Commit TxId',
+                txid: ret.commitTxId
+            }],
             children: (
                 <div className="inscribeSuccess">
-                    <div className="res">
-                        {
-                            ret.commitCost && <div className="item">
-                                <div className="label">Transaction Cost</div>
-                                <div className="value">
-                                    <img src={btcIcon}></img> {formatSat(ret.commitCost)}
-                                </div>
-                            </div>
-                        }
-
-                        <div className="item">
-                            <div className="label">TxId </div>
-                            <div className="value">
-                                <Tooltip title={ret.revealTxId}>
-                                    <a
-                                        style={{ color: "#fff", textDecoration: "underline" }}
-                                        target="_blank"
-                                        href={
-                                            network === "testnet"
-                                                ? `https://mempool.space/testnet/tx/${ret.revealTxId}`
-                                                : `https://mempool.space/tx/${ret.revealTxId}`
-                                        }
-                                    >
-                                        <Typography.Text copyable={{ text: ret.revealTxId }}>{ret.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</Typography.Text>
-                                    </a>
-                                </Tooltip>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             ),
         });
@@ -517,6 +446,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 setDeployComfirmProps({
                     show: true,
                     onClose: () => {
+                        setSubmiting(false)
                         setDeployComfirmProps(defaultDeployComfirmProps)
                     },
                     onConfirm: submit,
@@ -622,39 +552,18 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         title: "Mint",
                         tip: "Successful",
                         okText: 'OK',
+                        txs: [
+                            {
+                                label: 'Reveal TxId',
+                                txid: ret.data.revealTxId
+                            },
+                            {
+                                label: 'Commit TxId',
+                                txid: ret.data.commitTxId
+                            }
+                        ],
                         children: (
                             <div className="inscribeSuccess">
-                                <div className="res">
-                                    {/* {
-                                        ret.data.commitCost && <div className="item">
-                                            <div className="label">Transaction Cost</div>
-                                            <div className="value">
-                                                <img src={btcIcon}></img> {formatSat(ret.commitCost)}
-                                            </div>
-                                        </div>
-                                    } */}
-
-                                    <div className="item">
-                                        <div className="label">TxId </div>
-                                        <div className="value">
-                                            <Tooltip title={ret.data.revealTxId}>
-                                                <a
-                                                    style={{ color: "#fff", textDecoration: "underline" }}
-                                                    target="_blank"
-                                                    href={
-                                                        network === "testnet"
-                                                            ? `https://mempool.space/testnet/tx/${ret.data.revealTxId}`
-                                                            : `https://mempool.space/tx/${ret.data.revealTxId}`
-                                                    }
-                                                >
-                                                    <Typography.Text copyable={{ text: ret.data.revealTxId }}>
-                                                        {ret.data.revealTxId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
-                                                    </Typography.Text>
-                                                </a>
-                                            </Tooltip>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div className="tips">
                                     <InfoCircleOutlined />
                                     <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>

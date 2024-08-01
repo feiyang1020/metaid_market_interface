@@ -2,6 +2,7 @@ import { Button } from "antd";
 import Popup from "../ResponPopup";
 import successIcon from "@/assets/status_img_hook.svg";
 import './index.less'
+import SuccessTx from "../SuccessTx";
 export type SuccessProps = {
   show: boolean;
   onClose: () => void;
@@ -9,16 +10,21 @@ export type SuccessProps = {
   tip: string;
   title?: string;
   children: React.ReactNode;
-  okText?:string
+  okText?: string;
+  txs?: {
+    label: string;
+    txid: string;
+  }[];
 };
 
 export const DefaultSuccessProps: SuccessProps = {
   show: false,
-  onClose: () => {},
-  onDown: () => {},
+  onClose: () => { },
+  onDown: () => { },
   tip: "",
   title: "",
   children: <></>,
+  txs: []
 };
 export default ({
   show,
@@ -27,7 +33,8 @@ export default ({
   tip,
   children,
   onDown,
-  okText='Done'
+  okText = 'Done',
+  txs = []
 }: SuccessProps) => {
   return (
     <Popup
@@ -41,8 +48,12 @@ export default ({
     >
       <img src={successIcon} alt="" className="successIcon" />
       <div className="tip">{tip}</div>
+      <div className="txs">
+        <SuccessTx txs={txs} />
+      </div>
+
       {children}
-      <Button type="primary" onClick={onDown} size='large'  block>
+      <Button type="primary" onClick={onDown} size='large' block>
         {okText}
       </Button>
     </Popup>
