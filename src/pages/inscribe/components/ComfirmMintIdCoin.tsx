@@ -69,7 +69,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem label="Pool" value={<NumberFormat value={idCoin.pool} decimal={8} isBig suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
 
-            <Collapse ghost items={items} style={{ width: '100%' }}  expandIconPosition='end'/>
+            <Collapse ghost items={items} style={{ width: '100%' }}  />
             {/* <DescItem label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<></>} />
             <DescItem dark label="Commit Gas" value={<NumberFormat value={order._gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem dark label="Reveal Inscribe Gas" value={<NumberFormat value={order.revealInscribeGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
