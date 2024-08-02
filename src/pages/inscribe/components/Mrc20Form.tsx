@@ -349,13 +349,18 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 okText: 'OK',
                 txs: [
                     {
-                        label: 'Reveal TxId',
-                        txid: commitRes.data.revealMintTxId
-                    },
-                    {
                         label: 'Commit TxId',
                         txid: commitRes.data.commitTxId
-                    }
+                    },
+                    {
+                        label: 'Reveal Inscribe TxId',
+                        txid: commitRes.data.revealInscribeTxId
+                    },
+                    {
+                        label: 'Reveal Mint TxId',
+                        txid: commitRes.data.revealMintTxId
+                    },
+                   
                 ],
                 children: (
                     <div className="inscribeSuccess">
