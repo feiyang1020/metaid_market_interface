@@ -97,7 +97,7 @@ export default () => {
             </div>,
             onOk() {
                 // message.info('coming soon...')
-                window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_self')
+                window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_blank')
             }
 
         })
@@ -247,10 +247,11 @@ export default () => {
         },
         {
             title: 'Progress%',
-            dataIndex: 'totalSupply',
-            key: 'totalSupply',
+            dataIndex: 'progress',
+            key: 'progress',
             width: 200,
             align: 'center',
+            sorter: true,
             render: (price, record) => {
                 const percent = (Number(record.supply / record.totalSupply) * 100) || 0;
                 return <div className="progressAndMint">
