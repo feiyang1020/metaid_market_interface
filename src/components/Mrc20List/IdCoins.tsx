@@ -9,6 +9,7 @@ import MetaIdAvatar from "../MetaIdAvatar";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from "@/config";
 import IdCoinCard from "./IdCoinCard";
+import Sorter from "../Sorter";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.IdCoin>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -26,7 +27,7 @@ export default () => {
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({ orderBy: 'timestamp', sortType: -1 });
     const [orderBy, setOrderBy] = useState<string>('timestamp');
-    const [sortType, setSortType] = useState<number>(-1);
+    const [sortType, setSortType] = useState<1 | -1>(-1);
 
     useEffect(() => {
         let didCancel = false;
@@ -97,7 +98,7 @@ export default () => {
             </div>,
             onOk() {
                 // message.info('coming soon...')
-                window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_blank')
+                window.open(getOrdersTradeUrlByNet(network, record.tick, btcAddress), '_blank')
             }
 
         })
@@ -286,7 +287,7 @@ export default () => {
                 return <Button size='small' onClick={(e) => {
                     e.stopPropagation();
                     if (localStorage.getItem('tradeNotice') === '1') {
-                        window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_blank')
+                        window.open(getOrdersTradeUrlByNet(network, record.tick, btcAddress), '_blank')
 
                     } else {
                         showTradeNotice(record)
@@ -351,27 +352,35 @@ export default () => {
                     },
                 }
             }}
-        /> : <List
-            loading={loading}
-            grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
-            dataSource={list}
-            renderItem={(item) => (
-                <List.Item>
-                    <IdCoinCard record={item} showMintNotice={showMintNotice} showTradeNotice={showTradeNotice} handleFollow={handleFollow} />
-                </List.Item>
-            )}
-            rowKey={"mrc20Id"}
-            pagination={{
-                onChange: (page) => {
-                    setPage(page - 1);
-                },
-                position: "bottom",
-                align: "center",
-                pageSize: 10,
-                total: total,
-                current: page + 1,
-            }}
-        />}
+        /> : <div>
+            <Sorter sorters={[
+                { label: 'Ticker', key: 'tick' },
+                { label: 'Supply', key: 'totalSupply' },
+                { label: 'Pool', key: 'pool' },
+                { label: 'Progress', key: 'progress' },
+            ]} sortKey={orderBy} sortType={sortType} setSortKey={setOrderBy} setSortType={setSortType} />
+            <List
+                loading={loading}
+                grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
+                dataSource={list}
+                renderItem={(item) => (
+                    <List.Item>
+                        <IdCoinCard record={item} showMintNotice={showMintNotice} showTradeNotice={showTradeNotice} handleFollow={handleFollow} />
+                    </List.Item>
+                )}
+                rowKey={"mrc20Id"}
+                pagination={{
+                    onChange: (page) => {
+                        setPage(page - 1);
+                    },
+                    position: "bottom",
+                    align: "center",
+                    pageSize: 10,
+                    total: total,
+                    current: page + 1,
+                }}
+            /></div>}
+
 
         {contextHolder}
     </ConfigProvider>

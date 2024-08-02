@@ -360,7 +360,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         label: 'Reveal Mint TxId',
                         txid: commitRes.data.revealMintTxId
                     },
-                   
+
                 ],
                 children: (
                     <div className="inscribeSuccess">
@@ -403,7 +403,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }],
             children: (
                 <div className="inscribeSuccess">
-                    
+
                 </div>
             ),
         });
@@ -448,6 +448,10 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 if (deployIcon) {
                     payload.metadata = JSON.stringify({ icon: deployIcon })
                 }
+
+                const { code, message: msg, data: order } = await deployMRC20Pre(network, { address: btcAddress, networkFeeRate: Number(feeRate), payload: JSON.stringify(payload) }, { headers: { ...authParams } });
+                if (code !== 0) throw new Error(msg)
+                const { fee } = await buildDeployMRC20Psbt(order, feeRate, btcAddress, network, false, false)
                 setDeployComfirmProps({
                     show: true,
                     onClose: () => {
@@ -456,7 +460,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     },
                     onConfirm: submit,
                     submiting: submiting,
-                    deployInfo: payload
+                    deployInfo: payload,
+                    fees: { ...order, commintGas: Number(fee) }
                 })
             } else {
                 if (type === 'mint' && IdCoinInfo && addressMintState === 0) {
