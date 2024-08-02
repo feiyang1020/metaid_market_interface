@@ -19,7 +19,7 @@ type Props = {
     submiting?: boolean
     handleSubmit: () => Promise<void>
 }
-const DescItem = ({ label, value, dark, style = {} }: { label:  React.ReactNode, dark?: boolean, value: React.ReactNode, style?: React.CSSProperties }) => {
+const DescItem = ({ label, value, dark, style = {} }: { label: React.ReactNode, dark?: boolean, value: React.ReactNode, style?: React.CSSProperties }) => {
     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '10px 0', ...style }}>
         <div style={{ fontSize: '16px', color: dark ? 'rgba(255, 255, 255, 0.5)' : '#fff' }}>{label}</div>
         <div style={{ fontSize: '16px' }}>{value}</div>
@@ -37,7 +37,7 @@ export default ({ show, onClose, fields = {}, order, submiting, handleSubmit }: 
             children: <div>
                 <DescItem dark label="Commit Gas" value={<NumberFormat value={fields.gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
                 <DescItem dark label="Reveal Gas" value={<NumberFormat value={Number(order.minerGas)} isBig decimal={8} minDig={8} suffix=' BTC' />} />
-                
+
             </div>
         },
 
@@ -68,7 +68,7 @@ export default ({ show, onClose, fields = {}, order, submiting, handleSubmit }: 
             <Divider style={{ margin: '2px 0' }} />
 
             {/* <DescItem dark label="Gas" value={<NumberFormat value={Number(fields.gasFee) + Number(order.minerGas)} isBig decimal={8} suffix=' BTC' minDig={8} />} /> */}
-            <Collapse ghost items={items} style={{ width: '100%' }}  />
+            <Collapse ghost items={items} style={{ width: '100%' }} />
             <DescItem dark label="Miner Out Value" value={<NumberFormat value={order.minerOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} suffix=' BTC' minDig={8} />} />
             <Divider style={{ margin: '2px 0' }} />
