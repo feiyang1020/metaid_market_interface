@@ -178,6 +178,7 @@ export default () => {
             key: 'tick',
             width: 110,
             align: 'center',
+            sorter: true,
             ellipsis: true,
             render: (item) => {
                 return <div style={{ color: '#F68819', fontWeight: 'bold' }}>{item}</div>
