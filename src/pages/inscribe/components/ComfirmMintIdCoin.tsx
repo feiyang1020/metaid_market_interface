@@ -36,7 +36,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
         },
         {
             key: 2,
-            label: <DescItem dark style={{ padding: 0 }} label={<Space>Reveal Out Value <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<NumberFormat value={ order.revealInscribeOutValue + order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />,
+            label: <DescItem dark style={{ padding: 0 }} label={<Space>Reveal Out Value </Space>} value={<NumberFormat value={ order.revealInscribeOutValue + order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />,
             children: <div>
                 <DescItem dark label="Reveal Inscribe Out Value" value={<NumberFormat value={order.revealInscribeOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
                 <DescItem dark label="Reveal Mint Out Value" value={<NumberFormat value={order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
