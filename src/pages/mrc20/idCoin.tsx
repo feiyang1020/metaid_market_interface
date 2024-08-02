@@ -11,7 +11,7 @@ import Activeity from './components/Activeity';
 import MyActiveity from './components/MyActiveity';
 import MetaIdAvatar from '@/components/MetaIdAvatar';
 import MRC20Icon from '@/components/MRC20Icon';
-import { formatSat } from '@/utils/utlis';
+import { formatSat, openWindowTarget } from '@/utils/utlis';
 import btcIcon from "@/assets/logo_btc@2x.png";
 import orders from '@/assets/image.svg';
 import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from '@/config';
@@ -200,7 +200,7 @@ export default () => {
                             <div className='orders'>
                                 <img src={orders} alt="" /> <Tooltip title='You can trade ID-coin on the third-party DEX Orders.exchange, which we have partnered with. Orders.exchange and this marketplace are two separate and independent applications.'><QuestionCircleOutlined /></Tooltip>
                             </div>
-                            <a href={getOrdersTradeUrlByNet(network,idCoin.tick,btcAddress)} style={{ borderBottom: '1px solid #D4F66B' }} target='_blank'>Trade</a>
+                            <a href={getOrdersTradeUrlByNet(network,idCoin.tick,btcAddress)} style={{ borderBottom: '1px solid #D4F66B' }} target={openWindowTarget()}>Trade</a>
                         </div>
 
                         <div className='tradeInfo'>

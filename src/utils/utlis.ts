@@ -161,7 +161,12 @@ export const bigint2Number = (value: any, unit: number) => {
   return formatSat(value.toString(), unit);
 };
 export const handlePrecent = (value: number) => {
-  return Math.floor(value * 100)/100 ;
-}
+  return Math.floor(value * 100) / 100;
+};
 
-
+export const openWindowTarget = () => {
+  if (window.innerWidth > 768) {
+    return "_blank";
+  }
+  return "_self";
+};

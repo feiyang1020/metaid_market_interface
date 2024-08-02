@@ -5,6 +5,7 @@ import { useModel, history } from "umi";
 import NumberFormat from "../NumberFormat";
 import './index.less'
 import { getMetaIdUrlByNet, getOrdersTradeUrlByNet } from "@/config";
+import { openWindowTarget } from "@/utils/utlis";
 type Props = {
     record: API.IdCoin
     showMintNotice: (record: API.IdCoin) => void;
@@ -26,7 +27,7 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
                         <div className="name">
                             <Tooltip title={record.deployerUserInfo.name || record.deployerAddress}>{record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</Tooltip>
                         </div>
-                        <a onClick={(e) => e.stopPropagation()} href={`${getMetaIdUrlByNet(network)}${record.deployerMetaId}`} target='_blank'>
+                        <a onClick={(e) => e.stopPropagation()} href={`${getMetaIdUrlByNet(network)}${record.deployerMetaId}`} target={openWindowTarget()}>
                             <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
                         </a>
                     </div>
@@ -52,8 +53,7 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
                     <Button size='small' onClick={(e) => {
                         e.stopPropagation();
                         if (localStorage.getItem('tradeNotice') === '1') {
-                            alert('_parent')
-                            window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_parent')
+                            window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_self')
 
                         } else {
                             showTradeNotice(record)

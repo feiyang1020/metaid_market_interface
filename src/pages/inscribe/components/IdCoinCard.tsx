@@ -7,6 +7,7 @@ import { ArrowRightOutlined, QuestionCircleOutlined } from "@ant-design/icons"
 import { Card, Descriptions, Tooltip, Typography } from "antd"
 import LiqPerMintNotice from "@/components/LiqPerMintNotice"
 import { getMetaIdUrlByNet } from "@/config"
+import { openWindowTarget } from "@/utils/utlis"
 type Props = {
     mintMrc20Info: API.IdCoin
 }
@@ -16,7 +17,7 @@ export default ({ mintMrc20Info }: Props) => {
         <div className="idCoinDeploy">
             <MetaIdAvatar size={72} avatar={mintMrc20Info.deployerUserInfo.avatar} />
             <div className="rightIndfo">
-                <div className="name">{mintMrc20Info.deployerUserInfo.name || mintMrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")} <a onClick={(e) => e.stopPropagation()} href={`${getMetaIdUrlByNet(network)}${mintMrc20Info.deployerMetaId}`} target='_blank'>
+                <div className="name">{mintMrc20Info.deployerUserInfo.name || mintMrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")} <a onClick={(e) => e.stopPropagation()} href={`${getMetaIdUrlByNet(network)}${mintMrc20Info.deployerMetaId}`} target={openWindowTarget()}>
                     <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
                 </a></div>
                 <div className="metaid"><Typography.Text copyable={{ text: mintMrc20Info.deployerMetaId }}>MetaID : {mintMrc20Info.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text> </div>

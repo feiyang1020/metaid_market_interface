@@ -18,7 +18,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import "./index.less";
 import btcIcon from "@/assets/logo_btc@2x.png";
-import { FileToAttachmentItem, formatSat, image2Attach } from "@/utils/utlis";
+import { FileToAttachmentItem, formatSat, image2Attach, openWindowTarget } from "@/utils/utlis";
 import { useModel, useMatch, useNavigate } from "umi";
 import { CreateOptions, IBtcConnector, IBtcEntity } from "@metaid/metaid";
 import uploadIcon from "@/assets/upload.svg";
@@ -529,7 +529,7 @@ export default () => {
                 )}
                 <div className="tips">
                   You can view your buzz in{" "}
-                  <a href="https://www.bitbuzz.io/" target="_blank">
+                  <a href="https://www.bitbuzz.io/" target={openWindowTarget()}>
                     bitbuzz.io
                   </a>{" "}
                   affer inscription

@@ -10,6 +10,7 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from "@/config";
 import IdCoinCard from "./IdCoinCard";
 import Sorter from "../Sorter";
+import { openWindowTarget } from "@/utils/utlis";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.IdCoin>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -98,7 +99,7 @@ export default () => {
             </div>,
             onOk() {
                 // message.info('coming soon...')
-                window.open(getOrdersTradeUrlByNet(network, record.tick, btcAddress), '_blank')
+                window.open(getOrdersTradeUrlByNet(network, record.tick, btcAddress), openWindowTarget())
             }
 
         })
@@ -160,7 +161,7 @@ export default () => {
                             <div className="name">
                                 <Tooltip title={record.deployerUserInfo.name || record.deployerAddress}>{record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</Tooltip>
                             </div>
-                            <a onClick={(e) => e.stopPropagation()} href={`${getMetaIdUrlByNet(network)}${record.deployerMetaId}`} target='_blank'>
+                            <a onClick={(e) => e.stopPropagation()} href={`${getMetaIdUrlByNet(network)}${record.deployerMetaId}`} target={openWindowTarget()}>
                                 <ArrowRightOutlined style={{ color: '#fff', transform: 'rotate(-0.125turn)' }} />
                             </a>
                         </div>
@@ -287,7 +288,7 @@ export default () => {
                 return <Button size='small' onClick={(e) => {
                     e.stopPropagation();
                     if (localStorage.getItem('tradeNotice') === '1') {
-                        window.open(getOrdersTradeUrlByNet(network, record.tick, btcAddress), '_blank')
+                        window.open(getOrdersTradeUrlByNet(network, record.tick, btcAddress), openWindowTarget())
 
                     } else {
                         showTradeNotice(record)
