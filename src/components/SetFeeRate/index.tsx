@@ -81,6 +81,7 @@ export default () => {
                                         className="customInput"
                                         variant="borderless"
                                         controls={false}
+                                        precision={0}
                                         
                                     />
                                     {" "}sat/vB
