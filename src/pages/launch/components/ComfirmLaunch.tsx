@@ -36,7 +36,7 @@ export default ({ show, onClose, fields = {}, order, submiting, handleSubmit }: 
             label: <DescItem dark style={{ padding: 0 }} label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<NumberFormat value={Number(fields.gasFee) + Number(order.minerGas)} isBig decimal={8} suffix=' BTC' minDig={8} />} />,
             children: <div>
                 <DescItem dark label="Commit Gas" value={<NumberFormat value={fields.gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
-                <DescItem dark label="Miner Gas" value={<NumberFormat value={Number(order.minerGas)} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+                <DescItem dark label="Reveal Gas" value={<NumberFormat value={Number(order.minerGas)} isBig decimal={8} minDig={8} suffix=' BTC' />} />
                 
             </div>
         },
