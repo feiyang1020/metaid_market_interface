@@ -37,7 +37,7 @@ export default ({ record, showMintNotice, showTradeNotice, handleFollow }: Props
             </div>
             <div className="topRight">
                 <div className="progress ">
-                    <NumberFormat value={percent} precision={2} suffix='%' />
+                    <NumberFormat value={percent} precision={2} floor suffix='%' />
                     <Progress className="Progress" percent={percent > 1 ? percent : 1} showInfo={false}>
 
                     </Progress>

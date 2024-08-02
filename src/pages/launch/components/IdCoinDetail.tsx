@@ -60,7 +60,7 @@ export default ({ idCoid }: Props) => {
                     </div>
                     <div className="sliderNumber">
 
-                        <NumberFormat value={(Number(idCoid.supply / idCoid.totalSupply) * 100) || 0} precision={4} suffix=' %' />
+                        <NumberFormat value={(Number(idCoid.supply / idCoid.totalSupply) * 100) || 0} floor precision={4} suffix=' %' />
                     </div>
                 </div>
             </Card>

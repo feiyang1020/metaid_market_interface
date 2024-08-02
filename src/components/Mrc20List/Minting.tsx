@@ -10,6 +10,7 @@ import MetaIdAvatar from "../MetaIdAvatar";
 import PopLvl from "../PopLvl";
 import dayjs from "dayjs";
 import MintingCard from "./MintingCard";
+import { handlePrecent } from "@/utils/utlis";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.MRC20Info>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -142,7 +143,8 @@ export default () => {
             width: 200,
             align: 'center',
             render: (_, record) => {
-                return <div className="premine">{Number(record.premineCount) > 0 ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100} suffix='%' precision={4} /> : 'Fair Launch'}</div>
+               
+                return <div className="premine">{Number(record.premineCount) > 0 ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100}  floor suffix='%' precision={4} /> : 'Fair Launch'}</div>
             }
         },
         {
@@ -162,8 +164,9 @@ export default () => {
             width: 200,
             render: (price, record) => {
                 const percent = Number(record.supply / record.totalSupply) * 100 || 0;
+
                 return <div className="progress">
-                    <NumberFormat value={percent} precision={2} suffix='%' />
+                    <NumberFormat value={handlePrecent(percent)} precision={2} floor suffix='%' />
                     <Progress className="Progress" percent={percent > 1 ? percent : 1} showInfo={false}>
 
                     </Progress>

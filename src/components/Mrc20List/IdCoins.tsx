@@ -256,7 +256,7 @@ export default () => {
                 return <div className="progressAndMint">
 
                     <div className="progress ">
-                        <NumberFormat value={percent} precision={2} suffix='%' />
+                        <NumberFormat value={percent} floor precision={2} suffix='%' />
                         <Progress className="Progress" percent={percent > 1 ? percent : 1} showInfo={false}>
 
                         </Progress>

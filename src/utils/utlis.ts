@@ -160,3 +160,8 @@ export function formatNumberToKMBT(num: number, digits: number = 2) {
 export const bigint2Number = (value: any, unit: number) => {
   return formatSat(value.toString(), unit);
 };
+export const handlePrecent = (value: number) => {
+  return Math.floor(value * 100)/100 ;
+}
+
+

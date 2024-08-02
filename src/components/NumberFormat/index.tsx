@@ -16,6 +16,7 @@ type Props = {
     isBig?: boolean,
     decimal?: number,
     tiny?: boolean
+    floor?: boolean
 }
 
 const NumberFormat: React.FC<Props> = (props) => {
@@ -23,7 +24,7 @@ const NumberFormat: React.FC<Props> = (props) => {
     const { prefix, suffix, } = props;
 
     const beautyNumber = useMemo(() => {
-        const { value, precision = 16, kmt, isBig = false, decimal, tiny = false } = props;
+        const { value, precision = 16, kmt, isBig = false, decimal, tiny = false, floor = false } = props;
 
         let _value = value
         if (Number.isNaN(Number(_value))) return '--'
@@ -50,7 +51,9 @@ const NumberFormat: React.FC<Props> = (props) => {
         } catch (err) {
             return '--'
         }
-
+        if (floor) {
+            _value = Math.floor(Number(_value) * Math.pow(10, precision)) / Math.pow(10, precision)
+        }
 
         if (kmt) {
             return formatNumberToKMBT(Number(_value), precision)

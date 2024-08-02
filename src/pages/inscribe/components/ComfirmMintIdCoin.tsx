@@ -52,7 +52,11 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem dark label="Liquidity Required" value={<NumberFormat value={idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
             <DescItem label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<></>} />
             <DescItem dark label="Commit Gas" value={<NumberFormat value={order._gasFee} isBig decimal={8} suffix=' BTC' />} />
-            <DescItem dark label="Reveal Gas" value={<NumberFormat value={order.revealMintFee - order.serviceFee - idCoin.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
+            <DescItem dark label="Reveal Inscribe Gas" value={<NumberFormat value={order.revealInscribeGas } isBig decimal={8} suffix=' BTC' />} />
+            <DescItem dark label="Reveal Mint Gas" value={<NumberFormat value={order.revealMintGas } isBig decimal={8} suffix=' BTC' />} />
+            <DescItem dark label="Reveal Inscribe Out Value" value={<NumberFormat value={order.revealInscribeOutValue } isBig decimal={8} suffix=' BTC' />} />
+            <DescItem dark label="Reveal Mint Out Value" value={<NumberFormat value={order.revealMintOutValue } isBig decimal={8} suffix=' BTC' />} />
+            
 
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
