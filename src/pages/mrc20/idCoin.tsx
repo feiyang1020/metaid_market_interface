@@ -16,6 +16,7 @@ import btcIcon from "@/assets/logo_btc@2x.png";
 import orders from '@/assets/image.svg';
 import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from '@/config';
 import copy from 'copy-to-clipboard';
+import { addUtxoSafe } from '@/utils/psbtBuild';
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -58,7 +59,7 @@ export default () => {
             await connect();
             return
         }
-        if (!btcConnector || !idCoin) return
+        if (!btcConnector || !idCoin || !btcAddress) return
         try {
             const followRes = await btcConnector.inscribe({
                 inscribeDataArray: [
@@ -81,6 +82,7 @@ export default () => {
                 message.success('Follow successfully! Please wait for the transaction to be confirmed!')
                 setIdCoin({ ...idCoin, isFollowing: true })
                 // await fetchData()
+                await addUtxoSafe(btcAddress, [{ txId: followRes.commitTxId, vout: 1 }])
             } else {
                 throw new Error('Follow failed')
             }
@@ -191,7 +193,7 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }}  title={<Space size={4} style={{cursor:'pointer'}} onClick={()=>{history.push('/holders/'+idCoin.tick)}}>Holders <RightOutlined style={{fontSize:10}}/></Space>} value={idCoin.holders} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + idCoin.tick) }}>Holders <RightOutlined style={{ fontSize: 10 }} /></Space>} value={idCoin.holders} />
                     </Col>
                 </Row>
                 <Row >
@@ -200,7 +202,7 @@ export default () => {
                             <div className='orders'>
                                 <img src={orders} alt="" /> <Tooltip title='You can trade ID-coin on the third-party DEX Orders.exchange, which we have partnered with. Orders.exchange and this marketplace are two separate and independent applications.'><QuestionCircleOutlined /></Tooltip>
                             </div>
-                            <a href={getOrdersTradeUrlByNet(network,idCoin.tick,btcAddress)} style={{ borderBottom: '1px solid #D4F66B' }} target={openWindowTarget()}>Trade</a>
+                            <a href={getOrdersTradeUrlByNet(network, idCoin.tick, btcAddress)} style={{ borderBottom: '1px solid #D4F66B' }} target={openWindowTarget()}>Trade</a>
                         </div>
 
                         <div className='tradeInfo'>

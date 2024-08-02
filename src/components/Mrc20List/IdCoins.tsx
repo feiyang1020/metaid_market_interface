@@ -11,6 +11,7 @@ import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from 
 import IdCoinCard from "./IdCoinCard";
 import Sorter from "../Sorter";
 import { openWindowTarget } from "@/utils/utlis";
+import { addUtxoSafe } from "@/utils/psbtBuild";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.IdCoin>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -109,7 +110,7 @@ export default () => {
             await connect();
             return
         }
-        if (!btcConnector) return
+        if (!btcConnector||!btcAddress) return
         try {
             const followRes = await btcConnector.inscribe({
                 inscribeDataArray: [
@@ -136,7 +137,7 @@ export default () => {
                     }
                     return item
                 }))
-                // await fetchData()
+                await addUtxoSafe(btcAddress,[{txId:followRes.commitTxId,vout:1}])
             } else {
                 throw new Error('Follow failed')
             }
