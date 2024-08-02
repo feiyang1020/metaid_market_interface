@@ -30,6 +30,7 @@ import SuccessModal, {
 import Mrc20Form from "./components/Mrc20Form";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
 import { LeftOutlined, UploadOutlined } from "@ant-design/icons";
+import { addUtxoSafe } from "@/utils/psbtBuild";
 const items = ['MRC-20', "File", "Buzz", "PINs",];
 const { Dragger } = Upload;
 const { TextArea } = Input;
@@ -54,7 +55,7 @@ export default () => {
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("MRC-20");
   const [submiting, setSubmiting] = useState(false);
-  const { btcConnector, connected, connect, feeRate, network, disConnect } =
+  const { btcConnector, connected, connect, feeRate, network, disConnect,btcAddress } =
     useModel("wallet");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [buzz, setBuzz] = useState<string>("");
@@ -102,7 +103,7 @@ export default () => {
     return true;
   };
   const submit = async () => {
-    if (!feeRate || fileList.length === 0 || !btcConnector) return;
+    if (!feeRate || fileList.length === 0 || !btcConnector||!btcAddress) return;
     try {
       setSubmiting(true);
       const pass = await checkWallet();
@@ -144,6 +145,9 @@ export default () => {
       });
       if (ret.status) throw new Error(ret.status);
       console.log(ret, "ret");
+      if(ret.commitTxId){
+        await addUtxoSafe(btcAddress,[{txId:ret.commitTxId,vout:2}])
+      }
       const [revealTxId] = ret.revealTxIds
       if (revealTxId) {
         setSuccessProp({
@@ -207,7 +211,7 @@ export default () => {
   };
 
   const submitBuzz = async () => {
-    if (!buzz || !feeRate || !btcConnector) return;
+    if (!buzz || !feeRate || !btcConnector||!btcAddress) return;
     setSubmiting(true);
     try {
       const pass = await checkWallet();
@@ -226,6 +230,9 @@ export default () => {
 
       });
       if (ret.status) throw new Error(ret.status);
+      if(ret.commitTxId){
+        await addUtxoSafe(btcAddress,[{txId:ret.commitTxId,vout:2}])
+      }
       const [revealTxId] = ret.revealTxIds
       if (revealTxId) {
         setSuccessProp({
@@ -281,7 +288,7 @@ export default () => {
   };
 
   const inscribe = async () => {
-    if (!btcConnector || !path || !payload || !checkPath) return;
+    if (!btcConnector || !path || !payload || !checkPath||!btcAddress) return;
 
     try {
       setSubmiting(true);
@@ -305,6 +312,9 @@ export default () => {
       }
       );
       if (ret.status) throw new Error(ret.status);
+      if(ret.commitTxId){
+        await addUtxoSafe(btcAddress,[{txId:ret.commitTxId,vout:2}])
+      }
       const [revealTxId] = ret.revealTxIds
       if (revealTxId) {
         setSuccessProp({
