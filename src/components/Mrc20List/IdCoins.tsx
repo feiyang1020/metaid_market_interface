@@ -97,7 +97,7 @@ export default () => {
             </div>,
             onOk() {
                 // message.info('coming soon...')
-                window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_blank')
+                window.open(getOrdersTradeUrlByNet(network,record.tick,btcAddress), '_self')
             }
 
         })
