@@ -11,6 +11,7 @@ import PopLvl from "../PopLvl";
 import dayjs from "dayjs";
 import MintingCard from "./MintingCard";
 import { handlePrecent } from "@/utils/utlis";
+import Sorter from "../Sorter";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.MRC20Info>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -26,7 +27,7 @@ export default () => {
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({});
     const [orderBy, setOrderBy] = useState<string>('holders');
-    const [sortType, setSortType] = useState<number>(-1);
+    const [sortType, setSortType] = useState<1 | -1>(-1);
     // const fetchData = useCallback(async () => {
     //     setLoading(true);
     //     const { code, message, data } = await getMrc20List(network, {
@@ -143,8 +144,8 @@ export default () => {
             width: 200,
             align: 'center',
             render: (_, record) => {
-               
-                return <div className="premine">{Number(record.premineCount) > 0 ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100}  floor suffix='%' precision={4} /> : 'Fair Launch'}</div>
+
+                return <div className="premine">{Number(record.premineCount) > 0 ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100} floor suffix='%' precision={4} /> : 'Fair Launch'}</div>
             }
         },
         {
@@ -246,27 +247,35 @@ export default () => {
                     },
                 }
             }}
-        /> : <List
-            loading={loading}
-            grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
-            dataSource={list}
-            renderItem={(item) => (
-                <List.Item>
-                    <MintingCard record={item} />
-                </List.Item>
-            )}
-            rowKey={"mrc20Id"}
-            pagination={{
-                onChange: (page) => {
-                    setLoading(true);
-                    setPage(page - 1);
-                },
-                position: "bottom",
-                align: "center",
-                pageSize: 10,
-                total: total,
-                current: page + 1,
-            }}
-        />}
+        /> : <div>
+            <Sorter sorters={[
+                { label: 'Holders', key: 'holders' },
+                { label: 'Minted', key: 'totalMinted' },
+                { label: 'Progress%', key: 'progress' },
+               
+            ]} sortKey={orderBy} sortType={sortType} setSortKey={setOrderBy} setSortType={setSortType} />
+
+            <List
+                loading={loading}
+                grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
+                dataSource={list}
+                renderItem={(item) => (
+                    <List.Item>
+                        <MintingCard record={item} />
+                    </List.Item>
+                )}
+                rowKey={"mrc20Id"}
+                pagination={{
+                    onChange: (page) => {
+                        setLoading(true);
+                        setPage(page - 1);
+                    },
+                    position: "bottom",
+                    align: "center",
+                    pageSize: 10,
+                    total: total,
+                    current: page + 1,
+                }}
+            /> </div>}
     </ConfigProvider>
 }

@@ -6,6 +6,7 @@ import NumberFormat from "../NumberFormat";
 import Item from "./Item";
 import { useCallback, useEffect, useState } from "react";
 import AllCard from "./AllCard";
+import Sorter from "../Sorter";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.MRC20Info>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -21,7 +22,7 @@ export default () => {
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({ orderBy: 'marketCap', sortType: -1 });
     const [orderBy, setOrderBy] = useState<string>('marketCap');
-    const [sortType, setSortType] = useState<number>(-1);
+    const [sortType, setSortType] = useState<1 | -1>(-1);
 
     useEffect(() => {
         let didCancel = false;
@@ -163,7 +164,7 @@ export default () => {
                 // setSortType(sorter.order === 'ascend' ? 1 : -1);
                 const { field, order } = sorter as Sorts;
                 if (order) {
-                    setOrderBy(( field === 'price' ? 'lastPrice' : field || '').toString());
+                    setOrderBy((field === 'price' ? 'lastPrice' : field || '').toString());
                     setSortType(order === 'ascend' ? 1 : -1);
                 } else {
                     setOrderBy('marketCap');
@@ -178,27 +179,34 @@ export default () => {
                     },
                 }
             }}
-        /> : <List
-            loading={loading}
-            grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
-            dataSource={list}
-            renderItem={(item) => (
-                <List.Item>
-                    <AllCard record={item} />
-                </List.Item>
-            )}
-            rowKey={"mrc20Id"}
-            pagination={{
-                onChange: (page) => {
-                    setLoading(true);
-                    setPage(page - 1);
-                },
-                position: "bottom",
-                align: "center",
-                pageSize: 10,
-                total: total,
-                current: page + 1,
-            }}
-        />}
+        /> : <div>
+            <Sorter sorters={[
+                { label: 'Price', key: 'lastPrice' },
+                { label: 'Change 24H', key: 'change24h' },
+                { label: 'Market Cap', key: 'marketCap' },
+                { label: 'Total Supply', key: 'totalSupply' },
+                { label: 'Holders', key: 'holders' },
+            ]} sortKey={orderBy} sortType={sortType} setSortKey={setOrderBy} setSortType={setSortType} /> <List
+                loading={loading}
+                grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
+                dataSource={list}
+                renderItem={(item) => (
+                    <List.Item>
+                        <AllCard record={item} />
+                    </List.Item>
+                )}
+                rowKey={"mrc20Id"}
+                pagination={{
+                    onChange: (page) => {
+                        setLoading(true);
+                        setPage(page - 1);
+                    },
+                    position: "bottom",
+                    align: "center",
+                    pageSize: 10,
+                    total: total,
+                    current: page + 1,
+                }}
+            /></div>}
     </ConfigProvider>
 }
