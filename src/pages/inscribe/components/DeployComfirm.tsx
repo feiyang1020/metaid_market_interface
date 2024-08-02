@@ -121,10 +121,10 @@ export default function DeployComfirm({ show, onClose, onConfirm, submiting, dep
         }
         <Divider style={{ margin: '2px 0' }} />
         <Collapse ghost items={items} style={{ width: '100%' }} />
-        <DescItem dark label="Miner Out Value" value={<NumberFormat value={fees.minerOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+        {/* <DescItem dark label="Miner Out Value" value={<NumberFormat value={fees.minerOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} /> */}
         <DescItem dark label="Service Fee" value={<NumberFormat value={fees.serviceFee} isBig decimal={8} suffix=' BTC' minDig={8} />} />
         <Divider style={{ margin: '2px 0' }} />
-        <DescItem label="You Will Spend" value={<NumberFormat value={Number(fees.totalFee) + Number(fees.commintGas)} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+        <DescItem label="You Will Spend" value={<NumberFormat value={Number(fees.totalFee) + Number(fees.commintGas)-fees.minerOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
         <DescItem label="Available Balance" value={<NumberFormat value={userBal} suffix=' BTC' minDig={8} />} />
         <Button block size='large' type="primary" style={{ marginTop: 28 }} onClick={onConfirm} loading={submiting}>Confirm</Button>
     </Popup>

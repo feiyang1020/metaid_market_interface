@@ -69,10 +69,10 @@ export default ({ show, onClose, fields = {}, order, submiting, handleSubmit }: 
 
             {/* <DescItem dark label="Gas" value={<NumberFormat value={Number(fields.gasFee) + Number(order.minerGas)} isBig decimal={8} suffix=' BTC' minDig={8} />} /> */}
             <Collapse ghost items={items} style={{ width: '100%' }} />
-            <DescItem dark label="Miner Out Value" value={<NumberFormat value={order.minerOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+            {/* <DescItem dark label="Miner Out Value" value={<NumberFormat value={order.minerOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} /> */}
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} suffix=' BTC' minDig={8} />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem label="You Will Spend" value={<NumberFormat value={Number(order.totalFee) + Number(fields.gasFee)} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+            <DescItem label="You Will Spend" value={<NumberFormat value={Number(order.totalFee) + Number(fields.gasFee)-order.minerOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem label="Available Balance" value={<NumberFormat value={userBal} suffix=' BTC' minDig={8} />} />
             <Row justify="center" gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>

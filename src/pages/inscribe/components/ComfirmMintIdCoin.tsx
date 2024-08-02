@@ -34,14 +34,14 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
                 <DescItem dark label="Reveal Mint Gas" value={<NumberFormat value={order.revealMintGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             </div>
         },
-        {
-            key: 2,
-            label: <DescItem dark style={{ padding: 0 }} label={<Space>Reveal Out Value </Space>} value={<NumberFormat value={ order.revealInscribeOutValue + order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />,
-            children: <div>
-                <DescItem dark label="Reveal Inscribe Out Value" value={<NumberFormat value={order.revealInscribeOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
-                <DescItem dark label="Reveal Mint Out Value" value={<NumberFormat value={order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
-            </div>
-        },
+        // {
+        //     key: 2,
+        //     label: <DescItem dark style={{ padding: 0 }} label={<Space>Reveal Out Value </Space>} value={<NumberFormat value={ order.revealInscribeOutValue + order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />,
+        //     children: <div>
+        //         <DescItem dark label="Reveal Inscribe Out Value" value={<NumberFormat value={order.revealInscribeOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+        //         <DescItem dark label="Reveal Mint Out Value" value={<NumberFormat value={order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+        //     </div>
+        // },
     ]
     return <Popup
         title={idCoin.isFollowing ? 'Mint' : 'Follow And Mint'}
@@ -81,7 +81,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem dark label="Liquidity Required" value={<NumberFormat value={idCoin.liquidityPerMint} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem label="You Will Spend" value={<NumberFormat value={order.totalFee + order._gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+            <DescItem label="You Will Spend" value={<NumberFormat value={order.totalFee + order._gasFee-order.revealInscribeOutValue - order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem label="Available Balance" value={<NumberFormat value={userBal} minDig={8} suffix=' BTC' />} />
             <Row gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>
