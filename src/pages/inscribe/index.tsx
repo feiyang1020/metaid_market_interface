@@ -55,9 +55,10 @@ export default () => {
   const { sm } = useBreakpoint();
   const [tab, setTab] = useState<"File" | "Buzz" | "PINs" | "MRC-20">("MRC-20");
   const [submiting, setSubmiting] = useState(false);
-  const { btcConnector, connected, connect, feeRate, network, disConnect,btcAddress } =
+  const { btcConnector, connected, connect, feeRate, network, disConnect, btcAddress } =
     useModel("wallet");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [MetafileURI, setMetafileURI] = useState<string>("");
   const [buzz, setBuzz] = useState<string>("");
   const [payload, setPayload] = useState<string>("");
   const [path, setPath] = useState<string>("/protocols");
@@ -103,7 +104,7 @@ export default () => {
     return true;
   };
   const submit = async () => {
-    if (!feeRate || fileList.length === 0 || !btcConnector||!btcAddress) return;
+    if (!feeRate || fileList.length === 0 || !btcConnector || !btcAddress) return;
     try {
       setSubmiting(true);
       const pass = await checkWallet();
@@ -145,10 +146,12 @@ export default () => {
       });
       if (ret.status) throw new Error(ret.status);
       console.log(ret, "ret");
-      if(ret.commitTxId){
-        await addUtxoSafe(btcAddress,[{txId:ret.commitTxId,vout:2}])
+      if (ret.commitTxId) {
+        await addUtxoSafe(btcAddress, [{ txId: ret.commitTxId, vout: 2 }])
       }
+
       const [revealTxId] = ret.revealTxIds
+      setMetafileURI(`metafile://${revealTxId}i0`)
       if (revealTxId) {
         setSuccessProp({
           show: true,
@@ -211,7 +214,7 @@ export default () => {
   };
 
   const submitBuzz = async () => {
-    if (!buzz || !feeRate || !btcConnector||!btcAddress) return;
+    if (!buzz || !feeRate || !btcConnector || !btcAddress) return;
     setSubmiting(true);
     try {
       const pass = await checkWallet();
@@ -230,8 +233,8 @@ export default () => {
 
       });
       if (ret.status) throw new Error(ret.status);
-      if(ret.commitTxId){
-        await addUtxoSafe(btcAddress,[{txId:ret.commitTxId,vout:2}])
+      if (ret.commitTxId) {
+        await addUtxoSafe(btcAddress, [{ txId: ret.commitTxId, vout: 2 }])
       }
       const [revealTxId] = ret.revealTxIds
       if (revealTxId) {
@@ -288,7 +291,7 @@ export default () => {
   };
 
   const inscribe = async () => {
-    if (!btcConnector || !path || !payload || !checkPath||!btcAddress) return;
+    if (!btcConnector || !path || !payload || !checkPath || !btcAddress) return;
 
     try {
       setSubmiting(true);
@@ -312,8 +315,8 @@ export default () => {
       }
       );
       if (ret.status) throw new Error(ret.status);
-      if(ret.commitTxId){
-        await addUtxoSafe(btcAddress,[{txId:ret.commitTxId,vout:2}])
+      if (ret.commitTxId) {
+        await addUtxoSafe(btcAddress, [{ txId: ret.commitTxId, vout: 2 }])
       }
       const [revealTxId] = ret.revealTxIds
       if (revealTxId) {
@@ -381,11 +384,13 @@ export default () => {
       //   return false;
       // }
       console.log(file);
+      setMetafileURI('')
       const isLt300k = file.size / 1024 / 1024 < 0.3;
       if (!isLt300k) {
         message.error("file must smaller than 300k!");
         return false;
       }
+      
       setFileList([...fileList, file]);
       return false;
     },
@@ -423,7 +428,7 @@ export default () => {
             <Button
               key={item}
               type={tab === item ? "link" : "text"}
-              onClick={() => { nav('/inscribe/' + item,{replace:true}); setTab(item) }}
+              onClick={() => { nav('/inscribe/' + item, { replace: true }); setTab(item) }}
               size="large"
             >
               {item}
@@ -455,6 +460,16 @@ export default () => {
                       <p className="colorPrimary">Choose File</p>
                     </Dragger>
                   </div>
+                  {MetafileURI && <div className="MetafileItem">
+                    <div className="label">Metafile URI </div>
+                    <div className="value">
+                      <Tooltip title={MetafileURI}>
+                        <Typography.Text copyable={{ text: MetafileURI }}>{MetafileURI.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</Typography.Text>
+                      </Tooltip>
+                    </div>
+                  </div>}
+
+
                 </div>
               </Col>
             </Row>
@@ -486,7 +501,7 @@ export default () => {
                     onClick={submit}
                     disabled={!feeRate || fileList.length === 0}
                     className="submit"
-                    // disabled
+                  // disabled
 
                   >
                     Submit
@@ -531,7 +546,7 @@ export default () => {
                     type="primary"
                     onClick={submitBuzz}
                     disabled={!feeRate || !buzz}
-                    // disabled
+                  // disabled
                   >
                     Submit
                     {/* Under maintenance, please try again later. */}
