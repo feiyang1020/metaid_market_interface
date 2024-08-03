@@ -200,7 +200,7 @@ export async function buildTx<T>(
 
 
   console.log(
-    estimatedFee,
+    estimatedFee.toString(),
     total
       .minus(psbt.txOutputs.reduce((acc, cur) => acc + Number(cur.value), 0))
       .toString()
@@ -208,9 +208,7 @@ export async function buildTx<T>(
   );
   return {
     psbt,
-    fee: total
-      .minus(psbt.txOutputs.reduce((acc, cur) => acc + Number(cur.value), 0))
-      .toString(),
+    fee:  estimatedFee.toString(),
     txId: !extract ? "" : psbt.extractTransaction().getId(),
     rawTx: !extract ? psbt.toHex() : psbt.extractTransaction().toHex(),
     txInputs: selectedUTXOs.map((utxo) => ({

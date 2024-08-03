@@ -314,10 +314,8 @@ const _buildBuyMrc20TakePsbt = async (
     signPsbt,
     takePsbt,
   } = buyTicketParams;
-  const btcNetwork =
-    network === "mainnet" ? networks.bitcoin : networks.testnet;
   const psbt = Psbt.fromHex(takePsbt, {
-    network: btcNetwork,
+    network: getNetworks(network),
   });
   let toSignIndex = psbt.data.inputs.length;
   const toSignInputs = [];
@@ -371,8 +369,6 @@ export const buildBuyMrc20TakePsbt = async (
   initEccLib(ecc);
   const { fee, priceAmount } = order;
   const address = await window.metaidwallet.btc.getAddress();
-  const btcNetwork =
-    network === "mainnet" ? networks.bitcoin : networks.testnet;
   const utxos = (await getUtxos(address, network)).sort(
     (a, b) => b.satoshi - a.satoshi
   );
@@ -396,7 +392,8 @@ export const buildBuyMrc20TakePsbt = async (
     _buildBuyMrc20TakePsbt,
     manualCalcFee
   );
-  const totalSpent = Number(ret.fee) + Number(order.priceAmount) + Number(fee);
+  const totalSpent =
+    Number(ret.fee) + Number(order.priceAmount) + Number(fee);
   return {
     rawTx: ret.rawTx,
     psbt: ret.psbt,

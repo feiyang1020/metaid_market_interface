@@ -58,7 +58,7 @@ export default ({ mintMrc20Info }: Props) => {
                 },
                 {
                     key: 'totalSupply',
-                    label: <span>Total Supply <Tooltip title={<p>The total amount of tokens that have been created, minus any tokens that have been burned (taken out of circulation).<br />Total Supply = In-Chain Supply - Burned Tokens.</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
+                    label: <span>Total Supply <Tooltip title={<p>The total amount of this token will be minted.</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
                     children: <NumberFormat value={mintMrc20Info.totalSupply} />
                 },
                 // {

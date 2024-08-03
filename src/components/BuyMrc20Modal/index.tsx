@@ -113,9 +113,12 @@ export default ({ order, show, onClose }: Props) => {
   useEffect(() => {
     let didCancel = false;
     const calc = async () => {
-      if (!orderWithPsbt || !connected) return;
+      if (!orderWithPsbt || !connected || !userBalInfo) return;
       try {
         setCalcing(true);
+        if ((orderWithPsbt.priceAmount + orderWithPsbt.fee) > userBalInfo.total) {
+          throw new Error("Insufficient balance");
+        }
         const { order, totalSpent, fee, error } = await buildBuyMrc20TakePsbt(orderWithPsbt, network, Number(feeRate), false, false);
         console.log(order, totalSpent);
         if (didCancel) return;
@@ -135,7 +138,7 @@ export default ({ order, show, onClose }: Props) => {
     return () => {
       didCancel = true;
     };
-  }, [orderWithPsbt, network, connected, feeRate]);
+  }, [orderWithPsbt, network, connected, feeRate, userBalInfo]);
 
   const handleBuy = async () => {
     if (!feeRate || !orderWithPsbt || !addressType || !connected || !order || !btcAddress)
@@ -159,8 +162,6 @@ export default ({ order, show, onClose }: Props) => {
       if (ret.code !== 0) {
         throw new Error(ret.message);
       }
-      console.log(txOutputs, 'txOutputs')
-
       await addUtxoSafe(btcAddress, [{
         txId: ret.data.txId,
         vout: txOutputs.length - 1,
@@ -187,7 +188,7 @@ export default ({ order, show, onClose }: Props) => {
               <div className="item">
                 <div className="label">Transaction Price</div>
                 <div className="value">
-                  <img src={btcIcon}></img> {formatSat(totalSpent)} BTC
+                  <img src={btcIcon}></img> <NumberFormat value={totalSpent} isBig decimal={8} minDig={8} suffix=" BTC" />
                 </div>
               </div>
               <div className="item">
@@ -244,18 +245,18 @@ export default ({ order, show, onClose }: Props) => {
             <div className="fees">
               <div className="feeItem">
                 <div className="label">Price</div>
-                <div className="value"><NumberFormat value={order.priceAmount} isBig decimal={8} suffix=" BTC"  /></div>
+                <div className="value"><NumberFormat value={order.priceAmount} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
               </div>
               <div className="feeItem">
                 <div className="label">
                   Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
                 </div>
-                <div className="value">{formatSat(order.fee)} BTC</div>
+                <div className="value"><NumberFormat value={order.fee} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
               </div>
               <div className="feeItem">
                 <div className="label">Transaction Fee</div>
                 <div className="value">
-                  <Spin spinning={calcing}>{formatSat(fee || "0")} BTC</Spin>
+                  <Spin spinning={calcing}><NumberFormat value={fee} isBig decimal={8} minDig={8} suffix=" BTC" /></Spin>
                 </div>
               </div>
               <div className="feeItem">
@@ -272,7 +273,7 @@ export default ({ order, show, onClose }: Props) => {
                 <div className="value">
                   <img src={btcIcon} alt="" className="btc" />
                   <span>
-                    {totalSpent ? formatSat(totalSpent || 0) : "--"} BTC
+                    <NumberFormat value={totalSpent} isBig decimal={8} minDig={8} suffix=" BTC" />
                   </span>
                 </div>
               </div>
