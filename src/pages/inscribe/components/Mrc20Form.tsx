@@ -83,6 +83,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const [IdCoinInfo, setIdCoinInfo] = useState<API.IdCoin>();
     const [shovel, setShowel] = useState<API.MRC20Shovel[]>();
     const [list, setList] = useState<API.UserMrc20Asset[]>([]);
+    const [refetch, setRefetch] = useState<boolean>(false)
 
     // mint Idcoin 
     const [comfirmVisible, setComfirmVisible] = useState(false)
@@ -215,7 +216,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         return () => {
             didCancel = true
         }
-    }, [mintTokenID, btcAddress, network, authParams])
+    }, [mintTokenID, btcAddress, network, authParams,refetch])
 
 
     const deploy = async () => {
@@ -554,12 +555,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     const ret = await mintMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
                     if (ret.code !== 0) throw new Error(ret.message);
                     await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
+                    setRefetch(!refetch)
                     setSuccessProp({
                         show: true,
                         onClose: () => {
                             setSuccessProp(DefaultSuccessProps);
-                            form.resetFields();
-                            form.setFieldValue('type', 'mint')
+                            // form.resetFields();
+                            // form.setFieldValue('type', 'mint')
                         },
                         onDown: () => {
                             setSuccessProp(DefaultSuccessProps);
