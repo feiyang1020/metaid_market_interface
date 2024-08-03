@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useMatch, history } from "umi";
 import "./index.less";
-import { broadcastBTCTx, broadcastTx, deployCommit, deployMRC20Pre, getIdCoinInfo, getIdCoinMintOrder, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
+import { broadcastBTCTx, broadcastTx, checkPinUtxoInfo, deployCommit, deployMRC20Pre, getIdCoinInfo, getIdCoinMintOrder, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { buildDeployMRC20Psbt, commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
 
@@ -183,7 +183,15 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 if (btcAddress && data && data.pinCheck && data.pinCheck.count) {
                     const { data: ret, code } = await getMrc20AddressShovel(network, { tickId: data.mrc20Id, address: btcAddress, cursor: 0, size: 100 });
                     if (code === 0 && ret && ret.list) {
-                        _shovels = ret.list
+                        const checks = await checkPinUtxoInfo(network, { outPoints: ret.list.map(item => item.output) })
+                        if (checks.code === 0 && checks.data) {
+                            _shovels = ret.list.filter((item, index) => {
+                                return checks.data[item.output].spendStatus !== 'spend'
+                            })
+                        } else {
+                            _shovels = ret.list
+                        }
+
                     }
                 }
             }

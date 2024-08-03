@@ -311,6 +311,23 @@ export async function getMrc20AddressShovel(
   );
 }
 
+export async function checkPinUtxoInfo(
+  network: API.Network,
+  params: {
+    outPoints: string[];
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<Record<string, { spendStatus: "" | "spend" }>>>(
+    `${getHost(network)}/api/v1/common/utxo/check/info`,
+    {
+      method: "POST",
+      data: params,
+      ...(options || {}),
+    }
+  );
+}
+
 export async function getMrc20AddressUtxo(
   network: API.Network,
   params: {
