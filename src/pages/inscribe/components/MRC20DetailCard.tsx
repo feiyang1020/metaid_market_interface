@@ -50,7 +50,7 @@ export default ({ mintMrc20Info }: Props) => {
                 {
                     key: 'mc',
                     label: <span>Market Cap <Tooltip title={<p>Market Capitalization = Current Price x Circulating Supply <br></br> The total market value of the cryptocurrency's circulating supply.</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
-                    children: <NumberFormat value={mintMrc20Info.amtPerMint} isBig decimal={8} suffix=' BTC' />
+                    children: <NumberFormat value={mintMrc20Info.marketCap} isBig decimal={8} suffix=' BTC' />
                 },
                 {
                     key: 'totalSupply',
@@ -65,7 +65,13 @@ export default ({ mintMrc20Info }: Props) => {
                 {
                     key: 'PremineCount',
                     label: 'Premine Count',
-                    children: <>{mintMrc20Info.premineCount}</>
+                    children: <>{Number(mintMrc20Info.premineCount) === 0 ? 'Fair Launch' : <div style={{textAlign:'right'}}>
+                        <div style={{ fontWeight: 'bold', color: "rgb(255, 82, 82)" }}>
+                            <NumberFormat value={mintMrc20Info.premineCount} />
+                            
+                        </div>
+                        <div style={{fontSize:12}}> <NumberFormat value={Number(mintMrc20Info.premineCount) * Number(mintMrc20Info.amtPerMint)} suffix={` ${mintMrc20Info.tick} have been preminted`}/></div>
+                    </div>}</>
                 },
                 {
                     key: 'Path',
