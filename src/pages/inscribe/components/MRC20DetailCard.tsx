@@ -42,12 +42,12 @@ export default ({ mintMrc20Info }: Props) => {
                 {
                     key: 'mintCount',
                     label: 'Mint Limit',
-                    children: <>{mintMrc20Info.mintCount}</>
+                    children: <> <NumberFormat value={mintMrc20Info.mintCount} /></>
                 },
                 {
                     key: 'amtPerMint',
                     label: 'Amount Per Mint',
-                    children: <>{mintMrc20Info.amtPerMint}</>
+                    children: <> <NumberFormat value={mintMrc20Info.amtPerMint} /></>
                 },
                 {
                     key: 'mc',
