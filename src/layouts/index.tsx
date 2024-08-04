@@ -55,6 +55,9 @@ const _themes = {
     },
     "Card": {
       "colorBgContainer": "rgba(25, 27, 24, 0.84)"
+    },
+    "Alert": {
+      "colorErrorBorder": "rgb(255,82,82)"
     }
   },
 };
