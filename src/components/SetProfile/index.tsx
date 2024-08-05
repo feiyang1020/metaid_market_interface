@@ -65,6 +65,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                 }
             })
             console.log(ret, 'ret in')
+            init();
             if (ret.nameRes && ret.nameRes.status) {
                 throw new Error(ret.nameRes.status)
             }
@@ -72,7 +73,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                 throw new Error(ret.nameRes.status)
             }
             message.success('Success')
-            await init();
+             
             
             onClose();
         } catch (err: any) {
