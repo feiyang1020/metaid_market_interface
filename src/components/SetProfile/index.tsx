@@ -64,16 +64,16 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                     service: getCreatePinFeeByNet(network),
                 }
             })
-            await init();
+            console.log(ret, 'ret in')
             if (ret.nameRes && ret.nameRes.status) {
                 throw new Error(ret.nameRes.status)
             }
             if (ret.avatarRes && ret.avatarRes.status) {
                 throw new Error(ret.nameRes.status)
             }
-
-            await init();
             message.success('Success')
+            await init();
+            
             onClose();
         } catch (err: any) {
             message.error(typeof err === 'string' ? err : err.message)
