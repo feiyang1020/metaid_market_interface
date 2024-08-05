@@ -86,7 +86,7 @@ export default ({ mrc20Id, showMy=false }: Props) => {
                                 >
                                     <div className="textContent">
                                         <div className="amont">
-                                            <MRC20Icon size={32} metadata={item.metaData} tick={item.tick} />  {item.amount} {item.tick}
+                                            <MRC20Icon size={32} metadata={item.metaData} tick={item.tick} />  {item.amountStr} {item.tick}
                                         </div>
                                         <div className="units">
 

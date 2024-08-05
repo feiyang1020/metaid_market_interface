@@ -22,6 +22,12 @@
     overflow-y: scroll;
     padding-bottom: 100px;
   }
+  .ant-input-number-affix-wrapper .ant-input-number-suffix{
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   .title {
     cursor: pointer;
     padding: 0 71px;
@@ -89,8 +95,11 @@
       .info {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 8px;
         font-size: 18px;
+        text-align: center;
       }
       .textCont {
         word-break: break-all;

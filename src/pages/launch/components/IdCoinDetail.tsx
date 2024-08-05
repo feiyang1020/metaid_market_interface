@@ -7,7 +7,7 @@ import './details.less'
 import { formatSat } from "@/utils/utlis"
 import IdCoinMessage from "@/components/IdCoinMessage";
 import { history } from 'umi'
-import { RightOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, RightOutlined } from "@ant-design/icons";
 import IDCoinAllMessage from "@/components/IdCoinMessage/IDCoinAllMessage";
 type Props = {
     idCoid: API.IdCoin | undefined
@@ -97,11 +97,24 @@ export default ({ idCoid }: Props) => {
         </Col>
         <Col span={24} >
 
-            <div style={{ padding: '20px 23px',  background: 'rgba(25, 27, 24, 0.84)', borderRadius: 8 }}>
+            <div style={{ padding: '20px 23px', background: 'rgba(25, 27, 24, 0.84)', borderRadius: 8 }}>
                 <div style={{ fontSize: '16px', color: '#fff' }}>Message</div>
-                <div style={{ fontSize: '16px', lineHeight: 1.2,marginTop:16 }}><IDCoinAllMessage info={idCoid.metaData} /></div>
+                <div style={{ fontSize: '16px', lineHeight: 1.2, marginTop: 16 }}><IDCoinAllMessage info={idCoid.metaData} /></div>
             </div>
 
         </Col>
+        <Col span={24} >
+            <Button
+                block
+                className="submit"
+                size="large"
+                type="primary"
+                onClick={() => { history.push(`/idCoin/${idCoid.tick}`) }}
+                style={{ height: 48 }}
+                icon={<ArrowRightOutlined style={{  transform: 'rotate(-0.125turn)' }}/>}
+                iconPosition='end'
+            >
+                View Details Page  
+            </Button></Col>
     </Row >
 }

@@ -398,6 +398,9 @@ export async function sellMRC20Order(
     tickId: string;
     address: string;
     psbtRaw: string;
+    askType?: 0 | 1;
+    coinAmountStr?: string;
+    utxoOutValue?: number;
   },
   options?: { [key: string]: any }
 ) {

@@ -302,6 +302,14 @@ declare namespace API {
     mrc20Id: string;
     tick: string;
     tokenName: string;
+    avlBalance?: string;
+    mrc20s?:{
+      amount: string;
+      decimals: string;
+      mrc20Id: string;
+      tick: string;
+      txPoint: string;
+    }[]
   };
   type Mrc20Order = {
     orderId: string;

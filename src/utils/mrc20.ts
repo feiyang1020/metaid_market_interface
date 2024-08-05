@@ -127,7 +127,7 @@ export const commitMintMRC20PSBT = async (
   network: API.Network
 ) => {
   initEccLib(ecc);
-  const { totalFee, revealInputIndex } = order;
+  const { revealFee, revealInputIndex } = order;
   const utxos = (await getUtxos(address, network)).sort(
     (a, b) => b.satoshi - a.satoshi
   );
@@ -138,7 +138,7 @@ export const commitMintMRC20PSBT = async (
   const script = addressLib.toOutputScript(address, btcNetwork);
   const commitTx = await buildTx<CommitPsbtParams>(
     utxos,
-    new Decimal(totalFee),
+    new Decimal(revealFee),
     feeRate,
     {
       addressType,

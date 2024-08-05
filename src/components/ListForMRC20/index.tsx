@@ -1,67 +1,80 @@
 import { useModel } from "umi"
 import usePageList from "@/hooks/usePageList"
-import { getMrc20AddressUtxo, getUserMrc20List, sellMRC20Order } from "@/services/api"
+import { getMrc20AddressUtxo, getUserMrc20List, sellMRC20Order, transferMrc20Commit, transfertMrc20Pre } from "@/services/api"
 import { useEffect, memo, useState, useCallback, useMemo } from "react"
 import { Button, Card, ConfigProvider, InputNumber, List, message } from "antd"
 import { CheckOutlined } from "@ant-design/icons"
 import { formatSat } from "@/utils/utlis"
-import { listMrc20Order } from "@/utils/mrc20"
+import { listMrc20Order, transferMRC20PSBT } from "@/utils/mrc20"
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "../SuccessModal"
 import MRC20Icon from "../MRC20Icon"
 import NumberFormat from "../NumberFormat"
 import Decimal from "decimal.js"
+import { getPkScriprt } from "@/utils/orders"
+import { addUtxoSafe } from "@/utils/psbtBuild"
 
 const tags: Record<string, string> = {
     "MRC-20": "",
-    "ID-Coins": "id-coins"
+    "ID-Coins": "id-coins",
+
 
 }
 
-const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
-    const { btcAddress, connect, connected, network, authParams } =
+const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: string }) => {
+    const { btcAddress, connect, connected, network, authParams, feeRate } =
         useModel("wallet");
-    const [list, setList] = useState<API.MRC20Info[]>([]);
+    const [list, setList] = useState<API.UserMrc20Asset[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
-
-
     const [checkList, setCheckList] = useState<string[]>([]);
     const [sellPrices, setSellPrices] = useState<Record<string, number>>({});
+    const [sellAmounts, setSellAmounts] = useState<Record<string, number>>({});
     const [submiting, setSubmiting] = useState<boolean>(false);
     const fetchList = useCallback(async () => {
         if (!btcAddress) return;
         setLoading(true);
-        const { data } = await getUserMrc20List(network, { address: btcAddress, cursor: 0, size: 50 });
-        const _list = []
-        if (data && data.list && data.list.length > 0) {
-            for (let i = 0; i < data.list.length; i++) {
-                const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: data.list[i].mrc20Id, cursor: 0, size: 100 }, {
+        const { code, data } = await getUserMrc20List(network, { address: btcAddress, cursor: 0, size: 50 });
+        let _list: API.UserMrc20Asset[] = data && data.list || []
+        if(tick){
+            _list=_list.filter((item)=>item.tick===tick)
+        }
+        if (_list.length > 0) {
+            for (let i = 0; i < _list.length; i++) {
+                const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: _list[i].mrc20Id, cursor: 0, size: 100 }, {
                     headers: {
                         ...authParams,
                     },
                 });
                 if (code !== 0) { continue }
+                const mrc20s: {
+                    amount: string;
+                    decimals: string;
+                    mrc20Id: string;
+                    tick: string;
+                    txPoint: string;
+                }[] = []
 
-                utxoList.list.forEach((item) => {
+                const avlBal = utxoList.list.reduce((a, item) => {
                     if (item.orderId === '' && tags[tag] === item.tag) {
-                        item.mrc20s.forEach((mrc20) => {
-
-                            _list.push({
-                                ...item,
-                                ...mrc20,
-                            })
-                        });
+                        const utxoAmount = item.mrc20s.reduce((a, b) => {
+                            mrc20s.push(b)
+                            return a + Number(b.amount)
+                        }, 0);
+                        return a + utxoAmount
                     }
-
-                })
+                    return a
+                }, 0)
+                _list[i].avlBalance = avlBal.toFixed(Number(_list[i].decimals))
+                _list[i].mrc20s = mrc20s
             }
         }
-        setList(_list);
+        console.log(_list, '_list')
+        setList(_list.filter((item) => Number(item.avlBalance) > 0));
         setLoading(false)
 
 
-    }, [btcAddress, network, tag])
+    }, [btcAddress, network, tag,tick])
     useEffect(() => {
         fetchList()
     }, [fetchList])
@@ -81,6 +94,15 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
         });
     };
 
+    const onAmountInputChange = (txPoint: string, amount: number) => {
+        setSellAmounts((prev) => {
+            return {
+                ...prev,
+                [txPoint]: amount,
+            };
+        });
+    };
+
 
     const totalStas = useMemo(() => {
         const total = checkList.reduce((a, b) => {
@@ -89,46 +111,140 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
         return total;
     }, [checkList, sellPrices]);
 
-    const listItem = async (txPoint: string, mrc20Id: string, price: number) => {
+    const listItem = async (mrc20Id: string, price: number, amount: number) => {
         if (!btcAddress) return
-        const utxo: API.UTXO = {
-            txId: txPoint.split(':')[0],
-            satoshi: 546,
-            satoshis: 546,
-            vout: Number(txPoint.split(':')[1]),
-            outputIndex: Number(txPoint.split(':')[1]),
-            confirmed: true
+        const mrc20 = list.find((item) => item.mrc20Id === mrc20Id);
+        if (!mrc20 || !mrc20.mrc20s) return;
+        const findMrc20 = mrc20.mrc20s.find((item) => Number(item.amount) === amount);
+        if (findMrc20) {
+            const utxo: API.UTXO = {
+                txId: findMrc20.txPoint.split(':')[0],
+                satoshi: 546,
+                satoshis: 546,
+                vout: Number(findMrc20.txPoint.split(':')[1]),
+                outputIndex: Number(findMrc20.txPoint.split(':')[1]),
+                confirmed: true
+            }
+            const psbtRaw = await listMrc20Order(utxo, Number(new Decimal(price).times(1e8).toFixed(0)), network, btcAddress);
+            const { code, message } = await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
+                headers: {
+                    ...authParams,
+                },
+            })
+            if (code !== 0) {
+                throw new Error(message)
+            }
+            return
+        };
+        // transferMRC20
+        const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(mrc20Id), cursor: 0, size: 100 }, {
+            headers: {
+                ...authParams,
+            },
+        });
+        if (utxoList.list.length === 0) throw new Error('No UTXO');
+        const selectedUtxos = [];
+        let totalAmount = 0;
+        for (const utxo of utxoList.list) {
+            if (utxo.orderId !== '') continue;
+            for (const tick of utxo.mrc20s) {
+                if (Number(tick.amount) > 0) {
+                    totalAmount += Number(tick.amount)
+                    selectedUtxos.push({
+                        utxoIndex: utxo.outputIndex,
+                        utxoTxId: utxo.txId,
+                        utxoOutValue: utxo.satoshi,
+                        tickerId: mrc20Id,
+                        amount: tick.amount,
+                        address: utxo.address,
+                        pkScript: utxo.scriptPk
+                    })
+                }
+                if (totalAmount > amount) {
+                    break
+                }
+            }
+            if (totalAmount > amount) {
+                break
+            }
         }
-        const psbtRaw = await listMrc20Order(utxo, Number(new Decimal(price).times(1e8).toFixed(0)), network, btcAddress);
-        console.log('psbtRaw', psbtRaw)
-        const { code, message } = await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
+        if (totalAmount < amount) {
+            throw new Error('No available UTXOs. Please wait for existing transactions to be confirmed. ')
+        }
+
+        const params: API.TransferMRC20PreReq = {
+            networkFeeRate: feeRate,
+            tickerId: mrc20Id,
+            changeAddress: btcAddress,
+            changeOutValue: 546,
+            transfers: selectedUtxos,
+            mrc20Outs: [{ amount: String(amount), address: btcAddress, outValue: 546, pkScript: getPkScriprt(btcAddress, network).toString('hex') }]
+        }
+
+        const { code, message, data } = await transfertMrc20Pre(network, params, {
             headers: {
                 ...authParams,
             },
         })
-        if (code !== 0) {
-            throw new Error(message)
+        if (code !== 0) throw new Error(message);
+
+        const { rawTx, revealPrePsbtRaw } = await transferMRC20PSBT(data, feeRate, btcAddress, network);
+        console.log(revealPrePsbtRaw, 'revealPrePsbtRaw', rawTx);
+        const ret = await transferMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } });
+        if (ret.code !== 0) throw new Error(ret.message);
+        await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
+        const utxo: API.UTXO = {
+            txId: ret.data.revealTxId,
+            satoshi: 546,
+            satoshis: 546,
+            vout: 1,
+            outputIndex: 1,
+            confirmed: false
         }
+        const psbtRaw = await listMrc20Order(utxo, Number(new Decimal(price).times(1e8).toFixed(0)), network, btcAddress);
+        const listRes = await sellMRC20Order(network, {
+            assetType: 'mrc20',
+            tickId: mrc20Id,
+            address: btcAddress,
+            psbtRaw,
+            askType: 1,
+            coinAmountStr: amount.toString(),
+            utxoOutValue: 546,
+        }, {
+            headers: {
+                ...authParams,
+            },
+        })
+        if (listRes.code !== 0) throw new Error(listRes.message)
+
+
+
+
     }
 
     const handleSale = async () => {
         if (checkList.length === 0) return;
         for (let i = 0; i < checkList.length; i++) {
             if (!sellPrices[checkList[i]]) {
-                const order = list.find((item) => item.txPoint === checkList[i]);
-                message.error(`${order!.amount} ${order!.tick} No price set yet`);
+                const order = list.find((item) => item.mrc20Id === checkList[i]);
+                message.error(` ${order!.tick} No price set yet`);
+                return;
+            }
+            if (!sellAmounts[checkList[i]]) {
+                const order = list.find((item) => item.mrc20Id === checkList[i]);
+                message.error(` ${order!.tick} No list amount set yet`);
                 return;
             }
         }
         setSubmiting(true)
         for (let i = 0; i < checkList.length; i++) {
-            const order = list.find((item) => item.txPoint === checkList[i]);
+            const order = list.find((item) => item.mrc20Id === checkList[i]);
             if (!order) continue
             try {
-                await listItem(order.txPoint, order.mrc20Id, sellPrices[checkList[i]]);
+                await listItem(order.mrc20Id, sellPrices[checkList[i]], sellAmounts[checkList[i]]);
             } catch (err: any) {
                 console.log(err);
-                message.error(`${order!.amount} ${order!.tick}: ${err.message}`);
+                message.error(` ${order!.tick}: ${err.message}`);
                 await fetchList();
                 setSubmiting(false)
                 return;
@@ -154,13 +270,13 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
             loading={loading}
             grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 6 }}
             dataSource={list}
-            rowKey={"txPoint"}
+            rowKey={"mrc20Id"}
             renderItem={(item) => (
                 <List.Item>
                     <Card
                         styles={{ body: { padding: 0 } }}
                         className={
-                            checkList.includes(item.txPoint)
+                            checkList.includes(item.mrc20Id)
                                 ? "sellCard checked"
                                 : "sellCard"
                         }
@@ -169,13 +285,13 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
                             <div
                                 className="contetn"
                                 onClick={() => {
-                                    handleCheck(item.txPoint);
+                                    handleCheck(item.mrc20Id);
                                 }}
                             >
 
 
                                 <div className="checkBox">
-                                    {checkList.includes(item.txPoint) ? (
+                                    {checkList.includes(item.mrc20Id) ? (
                                         <div className="checked">
                                             <CheckOutlined />
                                         </div>
@@ -183,25 +299,44 @@ const ListForMRC20 = ({ tag = 'MRC-20' }: { tag?: string }) => {
                                         <div className="unchecked"></div>
                                     )}
                                 </div>
-                                <div className="info"><MRC20Icon size={32} tick={item.tick} metadata={item.metaData} /> {item.amount} {item.tick}</div>
+                                <div className="info">
+                                    <MRC20Icon size={32} tick={item.tick} metadata={item.metaData} />
+                                    <NumberFormat value={item.avlBalance} precision={item.decimals} suffix={` ${item.tick}`} />
+                                </div>
                             </div>
-
-
+                            <div className="inputWrap">
+                                <InputNumber
+                                    onChange={(value) => onAmountInputChange(item.mrc20Id, value)}
+                                    controls={false}
+                                    className="input"
+                                    value={sellAmounts[item.mrc20Id]}
+                                    suffix={item.tick}
+                                    precision={Number(item.decimals)}
+                                    // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
+                                    max={item.avlBalance}
+                                    onFocus={() => {
+                                        handleCheck(item.mrc20Id);
+                                    }}
+                                />
+                            </div>
 
                             <div className="inputWrap">
                                 <InputNumber
-                                    onChange={(value) => onInputChange(item.txPoint, value)}
+                                    onChange={(value) => onInputChange(item.mrc20Id, value)}
                                     controls={false}
                                     className="input"
-                                    value={sellPrices[item.txPoint]}
+                                    value={sellPrices[item.mrc20Id]}
                                     suffix="BTC"
                                     // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
                                     min={0.00002}
                                     onFocus={() => {
-                                        handleCheck(item.txPoint);
+                                        handleCheck(item.mrc20Id);
                                     }}
                                 />
                             </div>
+
+
+
                             {/* <div className="btcAmount">
                                 {formatSat(sellPrices[item.txPoint] || 0)} BTC
                             </div> */}

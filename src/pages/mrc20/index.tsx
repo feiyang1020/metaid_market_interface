@@ -36,7 +36,7 @@ const items: TabsProps['items'] = [
 export default () => {
     const screens = useBreakpoint();
     const match = useMatch('/mrc20/:mrc20Id');
-    const { network, btcAddress,authParams } = useModel('wallet')
+    const { network, btcAddress, authParams } = useModel('wallet')
     const [mrc20Info, setMrc20Info] = useState<API.MRC20TickInfo>();
     const [showListBtn, setShowListBtn] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
@@ -150,12 +150,11 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={mrc20Info.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{cursor:'pointer'}} onClick={()=>{history.push('/holders/'+mrc20Info.tick)}}>Holders <RightOutlined style={{fontSize:10}}/></Space>} value={mrc20Info.holders} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + mrc20Info.tick) }}>Holders <RightOutlined style={{ fontSize: 10 }} /></Space>} value={mrc20Info.holders} />
                     </div>
                 </div>
                 <Space>
-
-                    <ConfigProvider
+                    {showListBtn && <ConfigProvider
                         theme={{
                             components: {
                                 Button: {
@@ -166,10 +165,11 @@ export default () => {
                         }}
                     >
                         <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/mrc20/' + mrc20Info.tick) }}>List For Sale </Button>
-                    </ConfigProvider>
+                    </ConfigProvider>}
 
 
-                    
+
+
 
                     {
                         mrc20Info.mintable && <div className='mintBtn'>

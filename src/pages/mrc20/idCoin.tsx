@@ -17,6 +17,7 @@ import orders from '@/assets/image.svg';
 import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from '@/config';
 import copy from 'copy-to-clipboard';
 import { addUtxoSafe } from '@/utils/psbtBuild';
+import ConfirmRedeem from '@/components/ConfirmRedeem';
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -42,6 +43,8 @@ export default () => {
     const { network, btcAddress, authParams, btcConnector, connected, connect, feeRate } = useModel('wallet')
     const [idCoin, setIdCoin] = useState<API.IdCoin>();
     const [showListBtn, setShowListBtn] = useState<boolean>(false)
+    const [bal, setBal] = useState<number>(0);
+    const [showRedeem, setShowRedeem] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
     const fetchData = useCallback(async () => {
         if (!match || !match.params.tick) return;
@@ -100,7 +103,18 @@ export default () => {
                 },
             });
             let _showListBtn = false;
+            let _bal = 0
             if (code === 0) {
+
+                _bal = utxoList.list.reduce((a, item) => {
+                    if (item.orderId === '') {
+                        const utxoAmount = item.mrc20s.reduce((a, b) => {
+                            return a + Number(b.amount)
+                        }, 0);
+                        return a + utxoAmount
+                    }
+                    return a
+                }, 0)
                 const find = utxoList.list.find((item) => {
                     return item.orderId === '' && item.mrc20s.length > 0
                 })
@@ -109,6 +123,7 @@ export default () => {
                 }
             }
             setShowListBtn(_showListBtn)
+            setBal(_bal)
         } catch (err) {
 
         }
@@ -217,19 +232,36 @@ export default () => {
                     </Card>
                 </Row>
                 <Space>
-
-                    <ConfigProvider
-                        theme={{
-                            components: {
-                                Button: {
-                                    "defaultBorderColor": "rgb(212, 246, 107)",
-                                    "defaultColor": "rgb(212, 246, 107)"
+                    {
+                        showListBtn && <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        "defaultBorderColor": "rgb(212, 246, 107)",
+                                        "defaultColor": "rgb(212, 246, 107)"
+                                    },
                                 },
-                            },
-                        }}
-                    >
-                        <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
-                    </ConfigProvider>
+                            }}
+                        >
+                            <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
+                        </ConfigProvider>
+                    }
+
+                    {
+                        showListBtn && <ConfigProvider
+                            theme={{
+                                components: {
+                                    Button: {
+                                        "defaultBorderColor": "rgb(212, 246, 107)",
+                                        "defaultColor": "rgb(212, 246, 107)"
+                                    },
+                                },
+                            }}
+                        >
+                            <Button loading={loading} type='primary' disabled={!showListBtn} block onClick={() => { setShowRedeem(true) }}>Redeem for BTC </Button>
+                        </ConfigProvider>
+                    }
+
 
 
                     {/* <Button type='primary'  disabled={idCoin.isFollowing} onClick={(e) => { e.stopPropagation(); handleFollow() }} > {idCoin.isFollowing ? 'Following' : 'Follow'}</Button> */}
@@ -296,6 +328,16 @@ export default () => {
                 },
             ]} />}
         </ConfigProvider>
+        {idCoin && showListBtn && <ConfirmRedeem show={showRedeem} idCoin={idCoin} onClose={() => {
+            setShowRedeem(false)
+            fetchUserUtxo()
+        }} amount={bal} goOrders={() => {
+            window.open(getOrdersTradeUrlByNet(network, idCoin.tick, btcAddress), openWindowTarget())
+        }}
+            btcPrice={0}
+            handelRedeem={fetchUserUtxo}
+        />}
+
 
     </div>
 }
