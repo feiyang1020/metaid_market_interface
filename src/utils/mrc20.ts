@@ -85,6 +85,7 @@ const _commitMint = async (
       addressType,
       publicKey,
       script,
+      network
     });
     psbt.addInput(psbtInput);
   }
@@ -325,6 +326,7 @@ const _buildBuyMrc20TakePsbt = async (
       addressType,
       publicKey,
       script,
+      network
     });
     psbtInput.sighashType = SIGHASH_ALL;
     psbt.addInput(psbtInput);
