@@ -253,15 +253,22 @@ export async function createPsbtInput({
     payInput["witnessUtxo"] = { value: utxo.satoshi, script };
   }
   if (["P2PKH"].includes(addressType)) {
-    const mempoolReturn = mempoolJS({
-      hostname: "mempool.space",
-      network: network === "mainnet" ? "main" : "testnet",
-    });
-    const rawTx = await mempoolReturn.bitcoin.transactions.getTxHex({
-      txid: utxo.txId,
-    });
-    const tx = Transaction.fromHex(rawTx);
-    payInput["nonWitnessUtxo"] = tx.toBuffer();
+    if (utxo.rawTx) {
+      const tx = Transaction.fromHex(utxo.rawTx)
+      payInput['nonWitnessUtxo'] = tx.toBuffer()
+      
+    } else {
+      const mempoolReturn = mempoolJS({
+        hostname: 'mempool.space',
+        network: network === 'testnet' ? 'testnet' : 'main',
+      })
+      const rawTx = await mempoolReturn.bitcoin.transactions.getTxHex({
+        txid: utxo.txId,
+      })
+      const tx = Transaction.fromHex(rawTx)
+      payInput['nonWitnessUtxo'] = tx.toBuffer()
+    }
+    
   }
   if (["P2SH"].includes(addressType)) {
     console.log("input.tapInternalKey");
