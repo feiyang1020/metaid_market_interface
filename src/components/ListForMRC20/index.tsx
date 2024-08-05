@@ -39,7 +39,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
         const { code, data } = await getUserMrc20List(network, { address: btcAddress, cursor: 0, size: 50 });
         let _list: API.UserMrc20Asset[] = data && data.list || []
         if (tick) {
-            _list = _list.filter((item) => item.tick === tick)
+            _list = _list.filter((item) => item.tick.toUpperCase() === tick.toUpperCase())
         }
         if (_list.length > 0) {
             for (let i = 0; i < _list.length; i++) {
@@ -67,6 +67,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                     }
                     return a
                 }, 0)
+
                 _list[i].avlBalance = avlBal.toFixed(Number(_list[i].decimals))
                 _list[i].mrc20s = mrc20s
             }

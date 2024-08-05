@@ -1,5 +1,5 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
-import { getIdCoinInfo, getMrc20AddressUtxo, getMrc20Info } from '@/services/api';
+import { getIdCoinInfo, getMrc20AddressUtxo, getMrc20Info, redeemPreview } from '@/services/api';
 import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip, Space, message, Popover } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useMatch, useModel, history, Link } from 'umi';
@@ -105,10 +105,11 @@ export default () => {
             let _showListBtn = false;
             let _bal = 0
             if (code === 0) {
-
+                const UTXOs:string[] = []
                 _bal = utxoList.list.reduce((a, item) => {
                     if (item.orderId === '') {
                         const utxoAmount = item.mrc20s.reduce((a, b) => {
+                            UTXOs.push(b.txPoint.replace(':','_'))
                             return a + Number(b.amount)
                         }, 0);
                         return a + utxoAmount
@@ -121,6 +122,11 @@ export default () => {
                 if (find) {
                     _showListBtn = true
                 }
+                const preview = await redeemPreview(network, { sellerAddress: btcAddress, tickId: idCoin.mrc20Id, networkFeeRate:feeRate,assetUtxoIds:UTXOs}, {
+                    headers: {
+                        ...authParams,
+                    },
+                });
             }
             setShowListBtn(_showListBtn)
             setBal(_bal)

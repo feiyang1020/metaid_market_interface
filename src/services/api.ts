@@ -878,3 +878,23 @@ export async function refundIdCoinCommit(
     ...(options || {}),
   });
 }
+
+export async function redeemPreview(
+  network: API.Network,
+  params: {
+    assetUtxoIds: string[];
+    networkFeeRate: number;
+    sellerAddress: string;
+    tickId: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<any>>(
+    `${getHost(network)}/api/v1/id-coins/redeem/preview`,
+    {
+      method: "POST",
+      data: params,
+      ...(options || {}),
+    }
+  );
+}
