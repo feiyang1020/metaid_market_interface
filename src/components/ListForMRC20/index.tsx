@@ -12,6 +12,8 @@ import NumberFormat from "../NumberFormat"
 import Decimal from "decimal.js"
 import { getPkScriprt } from "@/utils/orders"
 import { addUtxoSafe } from "@/utils/psbtBuild"
+import Item from "@/components/Mrc20List/Item";
+import './index.less'
 
 const tags: Record<string, string> = {
     "MRC-20": "",
@@ -36,8 +38,8 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
         setLoading(true);
         const { code, data } = await getUserMrc20List(network, { address: btcAddress, cursor: 0, size: 50 });
         let _list: API.UserMrc20Asset[] = data && data.list || []
-        if(tick){
-            _list=_list.filter((item)=>item.tick===tick)
+        if (tick) {
+            _list = _list.filter((item) => item.tick === tick)
         }
         if (_list.length > 0) {
             for (let i = 0; i < _list.length; i++) {
@@ -74,7 +76,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
         setLoading(false)
 
 
-    }, [btcAddress, network, tag,tick])
+    }, [btcAddress, network, tag, tick])
     useEffect(() => {
         fetchList()
     }, [fetchList])
@@ -266,9 +268,9 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
 
     return <>
         <List
-            className="listWrap"
+            className="listWrap listMrc20"
             loading={loading}
-            grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 4, xxl: 6 }}
+            grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }}
             dataSource={list}
             rowKey={"mrc20Id"}
             renderItem={(item) => (
@@ -299,40 +301,53 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                         <div className="unchecked"></div>
                                     )}
                                 </div>
-                                <div className="info">
-                                    <MRC20Icon size={32} tick={item.tick} metadata={item.metaData} />
+                                <div className="tick">
+                                    <Item info={{ tick: item.tick, mrc20Id: item.mrc20Id, metaData: '' }} />
+                                </div>
+                                <div className="tickAmount">
+
                                     <NumberFormat value={item.avlBalance} precision={item.decimals} suffix={` ${item.tick}`} />
                                 </div>
                             </div>
-                            <div className="inputWrap">
-                                <InputNumber
-                                    onChange={(value) => onAmountInputChange(item.mrc20Id, value)}
-                                    controls={false}
-                                    className="input"
-                                    value={sellAmounts[item.mrc20Id]}
-                                    suffix={item.tick}
-                                    precision={Number(item.decimals)}
-                                    // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
-                                    max={item.avlBalance}
-                                    onFocus={() => {
-                                        handleCheck(item.mrc20Id);
-                                    }}
-                                />
-                            </div>
+                            <div className="inputGroup">
+                                <div className="inputWrap">
+                                    <div className="label">
+                                        Quantity
+                                    </div>
+                                    <InputNumber
+                                        onChange={(value) => onAmountInputChange(item.mrc20Id, value)}
+                                        controls={false}
+                                        className="input"
+                                        value={sellAmounts[item.mrc20Id]}
+                                        // suffix={item.tick}
+                                        precision={Number(item.decimals)}
+                                        placeholder="Quantity"
+                                        // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
+                                        max={item.avlBalance}
+                                        onFocus={() => {
+                                            handleCheck(item.mrc20Id);
+                                        }}
+                                    />
+                                </div>
 
-                            <div className="inputWrap">
-                                <InputNumber
-                                    onChange={(value) => onInputChange(item.mrc20Id, value)}
-                                    controls={false}
-                                    className="input"
-                                    value={sellPrices[item.mrc20Id]}
-                                    suffix="BTC"
-                                    // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
-                                    min={0.00002}
-                                    onFocus={() => {
-                                        handleCheck(item.mrc20Id);
-                                    }}
-                                />
+                                <div className="inputWrap">
+                                    <div className="label">
+                                        Price
+                                    </div>
+                                    <InputNumber
+                                        onChange={(value) => onInputChange(item.mrc20Id, value)}
+                                        controls={false}
+                                        className="input"
+                                        value={sellPrices[item.mrc20Id]}
+                                        suffix="BTC"
+                                        placeholder="Price"
+                                        // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
+                                        min={0.00002}
+                                        onFocus={() => {
+                                            handleCheck(item.mrc20Id);
+                                        }}
+                                    />
+                                </div>
                             </div>
 
 
