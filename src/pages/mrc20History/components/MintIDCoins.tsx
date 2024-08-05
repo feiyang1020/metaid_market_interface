@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
-import { Button, Space, Table, TableProps, Tooltip, message } from "antd";
+import { Button, Space, Table, TableProps, Tooltip, message,Grid } from "antd";
 import { history, useModel } from "umi";
 import dayjs from "dayjs";
 import { formatSat } from "@/utils/utlis";
@@ -14,6 +14,7 @@ import PopLvl from "@/components/PopLvl";
 import { buildRefundIdCoinPsbt } from "@/utils/idcoin";
 import { addUtxoSafe } from "@/utils/psbtBuild";
 import IdCoinItem from "@/components/Mrc20List/IdCoinItem";
+const { useBreakpoint } = Grid;
 export default () => {
     const { btcAddress, network, authParams, feeRate } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);
@@ -24,6 +25,7 @@ export default () => {
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
     const [size, setSize] = useState<number>(10);
+    const screens = useBreakpoint();
 
     const fetchOrders = useCallback(async () => {
         if (!btcAddress) return;
@@ -203,7 +205,11 @@ export default () => {
         },
 
 
-    ];;
+    ];
+    const getMinSort = () => {
+        const TypeIndex = columns.findIndex(item => item.title === 'Type');
+        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.title !== 'Type')]
+    }
     return (
         <>
 
@@ -212,7 +218,7 @@ export default () => {
                     scroll={{ x: 1200 }}
                     rowKey={"txId"}
                     loading={loading}
-                    columns={columns}
+                    columns={screens.md ? columns : getMinSort()}
                     dataSource={list}
 
                     bordered

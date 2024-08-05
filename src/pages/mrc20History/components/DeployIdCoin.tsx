@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
-import { Button, Space, Table, TableProps, Tooltip, message } from "antd";
+import { Button, Space, Table, TableProps, Tooltip, Grid } from "antd";
 import { history, useModel,Link } from "umi";
 import dayjs from "dayjs";
 import { formatSat } from "@/utils/utlis";
@@ -10,10 +10,11 @@ import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
 import IdCoinItem from "@/components/Mrc20List/IdCoinItem";
+const { useBreakpoint } = Grid;
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);
-
+    const screens = useBreakpoint();
     const [submiting, setSubmiting] = useState<boolean>(false);
     const [list, setList] = useState<API.Mrc20InscribeOrder[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -147,6 +148,10 @@ export default () => {
 
 
     ];
+    const getMinSort = () => {
+        const TypeIndex = columns.findIndex(item => item.title === 'Type');
+        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.title !== 'Type')]
+    }
     return (
         <>
 
@@ -155,7 +160,7 @@ export default () => {
                     scroll={{ x: 1000 }}
                     rowKey={"txId"}
                     loading={loading}
-                    columns={columns}
+                    columns={screens.md ? columns : getMinSort()}
                     dataSource={list}
 
                     bordered

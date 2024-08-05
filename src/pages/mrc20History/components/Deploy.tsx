@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
-import { Button, Space, Table, TableProps, Tooltip, message } from "antd";
-import { history, useModel,Link } from "umi";
+import { Button, Space, Table, TableProps, Tooltip, message, Grid } from "antd";
+import { history, useModel, Link } from "umi";
 import dayjs from "dayjs";
 import { formatSat } from "@/utils/utlis";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -9,9 +9,11 @@ import { authTest, cancelMRC20Order, cancelOrder, getMrc20InscribeOrders, getMrc
 import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
+const { useBreakpoint } = Grid;
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);
+    const screens = useBreakpoint();
 
     const [submiting, setSubmiting] = useState<boolean>(false);
     const [list, setList] = useState<API.Mrc20InscribeOrder[]>([]);
@@ -37,7 +39,7 @@ export default () => {
             setTotal(data.total);
         }
         setLoading(false);
-    }, [network, btcAddress,page,size])
+    }, [network, btcAddress, page, size])
     useEffect(() => { fetchOrders() }, [fetchOrders]);
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
@@ -94,7 +96,7 @@ export default () => {
             dataIndex: 'holders',
             align: 'center',
             render: (item, record) => {
-                return <Link onClick={e=>e.stopPropagation()} style={{textDecoration:'underline',color:'#fff'}} to={`/holders/${record.tick}`}>{item}</Link>
+                return <Link onClick={e => e.stopPropagation()} style={{ textDecoration: 'underline', color: '#fff' }} to={`/holders/${record.tick}`}>{item}</Link>
             }
 
         },
@@ -102,7 +104,7 @@ export default () => {
             title: 'Type',
             dataIndex: 'deployState',
             render: (item) => {
-                return <>{item===1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item===0?'Pending':'Failure'}</span>}</>
+                return <>{item === 1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item === 0 ? 'Pending' : 'Failure'}</span>}</>
             }
         },
         {
@@ -134,6 +136,11 @@ export default () => {
 
 
     ];
+
+    const getMinSort = () => {
+        const TypeIndex = columns.findIndex(item => item.title === 'Type');
+        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.title !== 'Type')]
+    }
     return (
         <>
 
@@ -142,7 +149,7 @@ export default () => {
                     scroll={{ x: 1000 }}
                     rowKey={"txId"}
                     loading={loading}
-                    columns={columns}
+                    columns={screens.md ? columns : getMinSort()}
                     dataSource={list}
 
                     bordered
