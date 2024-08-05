@@ -151,7 +151,7 @@ export default () => {
         {
             title: 'Time',
             dataIndex: 'deployTime',
-            // sorter: true,
+            sorter: true,
             align: 'center',
             width: 200,
             render: (price) => {
@@ -251,6 +251,7 @@ export default () => {
             <Sorter sorters={[
                 { label: 'Holders', key: 'holders' },
                 { label: 'Minted', key: 'totalMinted' },
+                { label: 'Time', key: 'deployTime' },
                 { label: 'Progress%', key: 'progress' },
                
             ]} sortKey={orderBy} sortType={sortType} setSortKey={setOrderBy} setSortType={setSortType} />
