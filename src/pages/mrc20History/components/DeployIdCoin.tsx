@@ -9,6 +9,7 @@ import { authTest, cancelMRC20Order, cancelOrder, getIdCoinInscribeOrders, getMr
 import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
+import IdCoinItem from "@/components/Mrc20List/IdCoinItem";
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);
@@ -49,7 +50,7 @@ export default () => {
             title: 'Ticker',
             dataIndex: 'tick',
             width: 220,
-            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }} />
+            render: (_, record) => <IdCoinItem info={{ tick: record.tick, tickId: record.tickId, avatar: record.deployerUserInfo&&record.deployerUserInfo.avatar }} />
         },
 
         // {

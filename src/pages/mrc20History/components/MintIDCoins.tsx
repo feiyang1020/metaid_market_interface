@@ -13,6 +13,7 @@ import MetaIdAvatar from "@/components/MetaIdAvatar";
 import PopLvl from "@/components/PopLvl";
 import { buildRefundIdCoinPsbt } from "@/utils/idcoin";
 import { addUtxoSafe } from "@/utils/psbtBuild";
+import IdCoinItem from "@/components/Mrc20List/IdCoinItem";
 export default () => {
     const { btcAddress, network, authParams, feeRate } = useModel("wallet");
     const [show, setShow] = useState<boolean>(false);
@@ -85,7 +86,7 @@ export default () => {
             title: 'Ticker',
             dataIndex: 'tick',
             width: 220,
-            render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }} />
+            render: (_, record) => <IdCoinItem info={{ tick: record.tick, tickId: record.tickId, avatar: record.deployerUserInfo&&record.deployerUserInfo.avatar }} />
         },
 
         // {

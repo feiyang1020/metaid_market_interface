@@ -105,11 +105,11 @@ export default () => {
             let _showListBtn = false;
             let _bal = 0
             if (code === 0) {
-                const UTXOs:string[] = []
+                const UTXOs: string[] = []
                 _bal = utxoList.list.reduce((a, item) => {
                     if (item.orderId === '') {
                         const utxoAmount = item.mrc20s.reduce((a, b) => {
-                            UTXOs.push(b.txPoint.replace(':','_'))
+                            UTXOs.push(b.txPoint.replace(':', '_'))
                             return a + Number(b.amount)
                         }, 0);
                         return a + utxoAmount
@@ -122,11 +122,22 @@ export default () => {
                 if (find) {
                     _showListBtn = true
                 }
-                const preview = await redeemPreview(network, { sellerAddress: btcAddress, tickId: idCoin.mrc20Id, networkFeeRate:feeRate,assetUtxoIds:UTXOs}, {
+                const preview = await redeemPreview(network, { sellerAddress: btcAddress, tickId: idCoin.mrc20Id, networkFeeRate: feeRate, assetUtxoIds: UTXOs }, {
                     headers: {
                         ...authParams,
                     },
                 });
+                let maxAmount = 0
+                if (preview.data.assetCoinList) {
+                    let _values: number[] = []
+                    preview.data.assetCoinList.forEach(item => {
+                        _values = [..._values, ...item.split('-').map(num => Number(num))]
+                    })
+                    maxAmount = Math.max(..._values)
+                }
+                console.log(maxAmount, 'maxAmount')
+
+
             }
             setShowListBtn(_showListBtn)
             setBal(_bal)

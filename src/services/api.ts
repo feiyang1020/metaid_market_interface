@@ -889,7 +889,7 @@ export async function redeemPreview(
   },
   options?: { [key: string]: any }
 ) {
-  return request<API.Ret<any>>(
+  return request<API.Ret<{assetCoinList:string[]}>>(
     `${getHost(network)}/api/v1/id-coins/redeem/preview`,
     {
       method: "POST",
