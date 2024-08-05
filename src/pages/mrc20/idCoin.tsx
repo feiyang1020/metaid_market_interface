@@ -45,6 +45,8 @@ export default () => {
     const [showListBtn, setShowListBtn] = useState<boolean>(false)
     const [bal, setBal] = useState<number>(0);
     const [showRedeem, setShowRedeem] = useState<boolean>(false)
+    const [redeemAmount, setRedeemAmount] = useState<number>(0);
+    const [assetUtxoIds, setAssetUtxoIds] = useState<string[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const fetchData = useCallback(async () => {
         if (!match || !match.params.tick) return;
@@ -104,8 +106,10 @@ export default () => {
             });
             let _showListBtn = false;
             let _bal = 0
+            let maxAmount = 0
+            const UTXOs: string[] = []
             if (code === 0) {
-                const UTXOs: string[] = []
+
                 _bal = utxoList.list.reduce((a, item) => {
                     if (item.orderId === '') {
                         const utxoAmount = item.mrc20s.reduce((a, b) => {
@@ -127,7 +131,6 @@ export default () => {
                         ...authParams,
                     },
                 });
-                let maxAmount = 0
                 if (preview.data.assetCoinList) {
                     let _values: number[] = []
                     preview.data.assetCoinList.forEach(item => {
@@ -135,12 +138,14 @@ export default () => {
                     })
                     maxAmount = Math.max(..._values)
                 }
-                console.log(maxAmount, 'maxAmount')
+
 
 
             }
             setShowListBtn(_showListBtn)
             setBal(_bal)
+            setRedeemAmount(maxAmount)
+            setAssetUtxoIds(UTXOs)
         } catch (err) {
 
         }
@@ -345,12 +350,13 @@ export default () => {
                 },
             ]} />}
         </ConfigProvider>
-        {idCoin && showListBtn && <ConfirmRedeem show={showRedeem} idCoin={idCoin} onClose={() => {
+        {idCoin && showListBtn && assetUtxoIds.length > 0 && <ConfirmRedeem show={showRedeem} idCoin={idCoin} onClose={() => {
             setShowRedeem(false)
             fetchUserUtxo()
-        }} amount={bal} goOrders={() => {
+        }} amount={redeemAmount} goOrders={() => {
             window.open(getOrdersTradeUrlByNet(network, idCoin.tick, btcAddress), openWindowTarget())
         }}
+            assetUtxoIds={assetUtxoIds}
             btcPrice={0}
             handelRedeem={fetchUserUtxo}
         />}

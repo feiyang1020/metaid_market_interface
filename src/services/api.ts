@@ -889,7 +889,7 @@ export async function redeemPreview(
   },
   options?: { [key: string]: any }
 ) {
-  return request<API.Ret<{assetCoinList:string[]}>>(
+  return request<API.Ret<{ assetCoinList: string[] }>>(
     `${getHost(network)}/api/v1/id-coins/redeem/preview`,
     {
       method: "POST",
@@ -897,4 +897,51 @@ export async function redeemPreview(
       ...(options || {}),
     }
   );
+}
+
+export async function redeemIdCoinPre(
+  network: API.Network,
+  params: {
+    assetUtxoIds: string[];
+    networkFeeRate: number;
+    sellerAddress: string;
+    tickId: string;
+    sellCoinAmount: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.Ret<API.RedeemIdCoinPreRes>>(
+    `${getHost(network)}/api/v1/id-coins/redeem/pre`,
+    {
+      method: "POST",
+      data: params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function redeemIdCoinCommit(
+  network: API.Network,
+  params: {
+    commitTxOutIndex: number;
+    commitTxRaw: string;
+    orderId: string;
+    revealPrePsbtRaw: string;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      tickId: string;
+      orderId: string;
+      revealTxId: string;
+      refundAmount: 0;
+      commitTxId: string;
+      txId: string;
+    }>
+  >(`${getHost(network)}/api/v1/id-coins/redeem/commit`, {
+    method: "POST",
+    data: params,
+    ...(options || {}),
+  });
 }

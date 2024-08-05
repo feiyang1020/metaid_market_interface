@@ -393,3 +393,32 @@ export const addUtxoSafe = async (
 export const getNetworks = (network: API.Network) => {
   return network === "mainnet" ? networks.bitcoin : networks.testnet;
 };
+
+export async function updateInputKey({
+  publicKey,
+  addressType,
+  network,
+}: {
+  publicKey: Buffer
+  addressType: string
+  network: API.Network
+}) {
+  const payInput: any = {}
+  if (['P2TR'].includes(addressType)) {
+    const tapInternalKey = toXOnly(publicKey)
+    payInput['tapInternalKey'] = tapInternalKey
+  }
+  if (['P2SH'].includes(addressType)) {
+    console.log('input.tapInternalKey')
+    const { redeem } = payments.p2sh({
+      redeem: payments.p2wpkh({
+        pubkey: publicKey,
+        network: getNetworks(network),
+      }),
+      network: getNetworks(network),
+    })
+    if (!redeem) throw new Error('redeemScript')
+    payInput.redeemScript = redeem.output
+  }
+  return payInput
+}

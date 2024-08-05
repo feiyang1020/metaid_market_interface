@@ -511,4 +511,16 @@ declare namespace API {
     refundAddress: string;
     psbtRaw: string;
   };
+
+  export type RedeemIdCoinPreRes = {
+    minerFee: number;
+    orderId: string;
+    priceAmount: number;
+    psbtRaw: string;
+    receiveAddress: string;
+    revealInputIndex: number;
+    serviceFee: number;
+    totalAmount: number;
+    totalFee: number;
+  };
 }
