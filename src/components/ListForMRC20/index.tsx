@@ -163,11 +163,11 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                         pkScript: utxo.scriptPk
                     })
                 }
-                if (totalAmount > amount) {
+                if (totalAmount >= amount) {
                     break
                 }
             }
-            if (totalAmount > amount) {
+            if (totalAmount >= amount) {
                 break
             }
         }
@@ -303,6 +303,9 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                     )}
                                 </div>
                                 <div className="tick">
+                                    {
+
+                                    }
                                     <Item info={{ tick: item.tick, mrc20Id: item.mrc20Id, metaData: '' }} />
                                 </div>
                                 <div className="tickAmount">
