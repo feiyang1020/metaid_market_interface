@@ -183,7 +183,7 @@ export default () => {
         {
             idCoin && <div className='IdCoinInfo'>
 
-                <Card bordered={false} styles={{ body: { display: 'flex', gap: 16, flexWrap: 'wrap', padding: 0 } }} style={{ background: 'rgba(0,0,0,0)' }}>
+                <Card className='idCoinH' bordered={false} styles={{ body: { display: 'flex', gap: 16, flexWrap: 'wrap', padding: 0 } }} style={{ background: 'rgba(0,0,0,0)' }}>
                     <div style={{ cursor: 'pointer' }} onClick={() => { window.open(getMetaIdUrlByNet(network) + idCoin.deployerMetaId) }}>
                         <MetaIdAvatar avatar={idCoin.deployerUserInfo.avatar} size={100} />
                     </div>
@@ -219,7 +219,7 @@ export default () => {
                         </div>
                     </div>
                 </Card>
-                <Row gutter={[20, 20]} style={{ width: 474 }}>
+                <Row gutter={[20, 20]} style={{ width: 474 }} className='stats'>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(idCoin.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
@@ -227,31 +227,33 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoin.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap',overflow:'hidden' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny  suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + idCoin.tick) }}>Holders <RightOutlined style={{ fontSize: 10 }} /></Space>} value={idCoin.holders} />
                     </Col>
                 </Row>
-                <Row >
-                    <Card bordered={false} styles={{ body: { padding: '24px 16px' } }} style={{ background: 'rgba(27, 27, 27, 0.5)', width: 328, borderRadius: 16 }}>
-                        <div className="ordersWrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <div className='orders'>
-                                <img src={orders} alt="" /> <Tooltip title='You can trade ID-coin on the third-party DEX Orders.exchange, which we have partnered with. Orders.exchange and this marketplace are two separate and independent applications.'><QuestionCircleOutlined /></Tooltip>
-                            </div>
-                            <a href={getOrdersTradeUrlByNet(network, idCoin.tick, btcAddress)} style={{ borderBottom: '1px solid #D4F66B' }} target={openWindowTarget()}>Trade</a>
-                        </div>
-
-                        <div className='tradeInfo'>
-                            <div className="item">
-                                <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} tiny />
-                            </div>
-                            <div className="item">
-                                <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} tiny />
+                <Row gutter={[20, 20]}>
+                    <Col span={24} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Card bordered={false} styles={{ body: { padding: '24px 16px' } }} style={{ background: 'rgba(27, 27, 27, 0.5)', minWidth: 328, borderRadius: 16 }}>
+                            <div className="ordersWrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div className='orders'>
+                                    <img src={orders} alt="" /> <Tooltip title='You can trade ID-coin on the third-party DEX Orders.exchange, which we have partnered with. Orders.exchange and this marketplace are two separate and independent applications.'><QuestionCircleOutlined /></Tooltip>
+                                </div>
+                                <a href={getOrdersTradeUrlByNet(network, idCoin.tick, btcAddress)} style={{ borderBottom: '1px solid #D4F66B' }} target={openWindowTarget()}>Trade</a>
                             </div>
 
-                        </div>
-                    </Card>
+                            <div className='tradeInfo'>
+                                <div className="item">
+                                    <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} tiny />
+                                </div>
+                                <div className="item">
+                                    <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} tiny />
+                                </div>
+
+                            </div>
+                        </Card>
+                    </Col>
                 </Row>
                 <Space>
                     {

@@ -98,8 +98,19 @@
 @media screen and (max-width: 767px) {
   .IdCoinPage {
     padding: 20px;
+
     .IdCoinInfo {
       gap: 10px;
+      flex-direction: column;
+      .idCoinH{
+        .ant-card-body{
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      .stats{
+        width: calc(100vw - 40px)!important;
+      }
       .left {
         gap: 10px;
         .tick {
