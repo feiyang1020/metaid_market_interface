@@ -23,6 +23,7 @@ import IdCoinCard from "./IdCoinCard";
 import ComfirmMintIdCoin from "./ComfirmMintIdCoin";
 import idCoin from "@/pages/mrc20/idCoin";
 import Decimal from "decimal.js";
+import ComfirmTransfer, { TransferComfrimParams } from "./ComfirmTransfer";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -90,10 +91,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const [mintIdCoinOrder, setMintIdCoinOrder] = useState<API.MintIdCoinPreRes & { _gasFee: number }>();
     const [addressMintState, setAddressMintState] = useState<number>(0)
 
+    // transfer mrc20
+    const [transferVisible, setTransferVisible] = useState(false);
+    const [transfeComfirmParams, setTransfeComfirmParams] = useState<TransferComfrimParams>();
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
     const [deployComfirmProps, setDeployComfirmProps] = useState<DeployComfirmProps>(defaultDeployComfirmProps)
     const [submiting, setSubmiting] = useState(false);
+    const [comfirming, setComfirming] = useState(false);
     const { authParams, connected, connect, feeRate, network, disConnect, btcConnector, btcAddress } =
         useModel("wallet");
     const checkWallet = async () => {
@@ -216,7 +221,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         return () => {
             didCancel = true
         }
-    }, [mintTokenID, btcAddress, network, authParams,refetch])
+    }, [mintTokenID, btcAddress, network, authParams, refetch])
 
 
     const deploy = async () => {
@@ -423,11 +428,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         await form.validateFields();
         const { type } = form.getFieldsValue();
         try {
-
-
             if (type === 'deploy') {
                 const { deployTicker, deployTokenName, deployCreator = '', deployBeginHeight = '', deployEndHeight = '', deployPayTo = '', deployPayAmount = '', deployIcon, deployMaxMintCount, deployAmountPerMint, deployDecimals = '8', deployPremineCount = '', deployPath = '', deployDifficultyLevel = '', deployCount = '' } = form.getFieldsValue();
-
                 const payload: any = {
                     tick: deployTicker,
                     tokenName: deployTokenName,
@@ -498,6 +500,10 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     setMintIdCoinOrder({ ...data, _gasFee: Number(fee) })
                     setComfirmVisible(true)
 
+                } else if (
+                    type === 'transfer'
+                ) {
+                    await beforeTransfer();
                 } else {
                     await submit()
                 }
@@ -506,6 +512,108 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         } catch (err) {
             message.error(err.message)
         }
+    }
+    const beforeTransfer = async () => {
+        await form.validateFields();
+        try {
+            setComfirming(true)
+
+            const { transferTickerId, amount, recipient } = form.getFieldsValue();
+            if (!btcAddress) throw new Error('Please connect wallet')
+            const _tick = list.find(item => item.mrc20Id === transferTickerId)
+            if (!_tick) throw new Error('Token not found')
+            const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(transferTickerId), cursor: 0, size: 100 }, {
+                headers: {
+                    ...authParams,
+                },
+            });
+            if (utxoList.list.length === 0) throw new Error('No UTXO');
+            const selectedUtxos = [];
+            let totalAmount = 0;
+            for (const utxo of utxoList.list) {
+                for (const tick of utxo.mrc20s) {
+                    if (Number(tick.amount) > 0) {
+                        totalAmount += Number(tick.amount)
+                        selectedUtxos.push({
+                            utxoIndex: utxo.outputIndex,
+                            utxoTxId: utxo.txId,
+                            utxoOutValue: utxo.satoshi,
+                            tickerId: transferTickerId,
+                            amount: tick.amount,
+                            address: utxo.address,
+                            pkScript: utxo.scriptPk
+                        })
+                    }
+                    if (totalAmount > amount) {
+                        break
+                    }
+                }
+                if (totalAmount > amount) {
+                    break
+                }
+            }
+            if (totalAmount < amount) {
+                throw new Error('No available UTXOs. Please wait for existing transactions to be confirmed. ')
+            }
+
+            const params: API.TransferMRC20PreReq = {
+                networkFeeRate: feeRate,
+                tickerId: transferTickerId,
+                changeAddress: btcAddress,
+                changeOutValue: 546,
+                transfers: selectedUtxos,
+                mrc20Outs: [{ amount: String(amount), address: recipient, outValue: 546, pkScript: getPkScriprt(recipient, network).toString('hex') }]
+            }
+            const { code, message, data } = await transfertMrc20Pre(network, params, {
+                headers: {
+                    ...authParams,
+                },
+            })
+            if (code !== 0) throw new Error(message);
+            const bulidRet = await transferMRC20PSBT(data, feeRate, btcAddress, network, false, false);
+            console.log(bulidRet, 'revealPrePsbtRaw');
+            const transferOrder: TransferComfrimParams = {
+                order: data,
+                networkFeeRate: feeRate,
+                commitGas: bulidRet.commitFee,
+                recipient,
+                amount,
+                tick: _tick
+            }
+            setTransfeComfirmParams(transferOrder)
+            setTransferVisible(true)
+
+        } catch (err: any) {
+            message.error(err.message)
+        }
+        setComfirming(false)
+
+    }
+    const transferMrc20 = async () => {
+        try {
+            setSubmiting(true)
+            if (!btcAddress) throw new Error('Please connect wallet')
+            if (!transfeComfirmParams) throw new Error('No data')
+            const { order, networkFeeRate, commitGas, recipient } = transfeComfirmParams;
+            const { rawTx, revealPrePsbtRaw } = await transferMRC20PSBT(order, networkFeeRate, btcAddress, network);
+            console.log(revealPrePsbtRaw, 'revealPrePsbtRaw', rawTx);
+            const ret = await transferMrc20Commit(network, { orderId: order.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } });
+            if (ret.code !== 0) throw new Error(ret.message);
+            await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
+            await fetchList()
+            setTransfeComfirmParams(undefined)
+            setTransferVisible(false)
+            success('Transfer', ret.data)
+        } catch (e: any) {
+            if (e.message === 'Insufficient funds to reach the target amount') {
+                message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
+
+            } else {
+                message.error(e.message)
+            }
+
+        }
+        setSubmiting(false)
     }
 
     const submit = async () => {
@@ -1187,7 +1295,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     <Button
                         block
                         size="large"
-                        loading={submiting}
+                        loading={submiting || comfirming}
                         type="primary"
                         onClick={beforeSubmit}
 
@@ -1202,6 +1310,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         <DeployComfirm {...deployComfirmProps} submiting={submiting} />
         <SuccessModal {...successProp}></SuccessModal>
         <ComfirmMintIdCoin show={comfirmVisible} onClose={() => { setComfirmVisible(false) }} idCoin={IdCoinInfo} order={mintIdCoinOrder} submiting={submiting} handleSubmit={submit} />
+
+        <ComfirmTransfer show={transferVisible} onClose={() => { setTransferVisible(false); setTransfeComfirmParams(undefined); setComfirming(false) }} params={transfeComfirmParams} submiting={submiting} handleSubmit={transferMrc20} />
     </div>
 
 } 

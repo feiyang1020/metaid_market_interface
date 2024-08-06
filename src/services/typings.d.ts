@@ -160,11 +160,13 @@ declare namespace API {
     orderId: string;
     revealAddress: string;
     revealFee: number;
+    revealGas: number;
     revealInputIndex: number;
     revealPrePsbtRaw: string;
     serviceAddress: string;
     serviceFee: number;
     totalFee: number;
+    revealOutValue: number;
   };
 
   type MintMRC20PreRes = {

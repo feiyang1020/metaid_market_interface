@@ -8,6 +8,7 @@ import {
 } from "bitcoinjs-lib";
 import {
   buildTx,
+  calcFee,
   createPsbtInput,
   fillInternalKey,
   getNetworks,
@@ -63,7 +64,7 @@ const _commitMint = async (
   selectedUTXOs: API.UTXO[],
   change: Decimal,
   needChange: boolean,
-  buildPsbt?: boolean = true
+  buildPsbt: boolean = true
 ) => {
   const {
     address,
@@ -85,7 +86,7 @@ const _commitMint = async (
       addressType,
       publicKey,
       script,
-      network
+      network,
     });
     psbt.addInput(psbtInput);
   }
@@ -125,7 +126,9 @@ export const commitMintMRC20PSBT = async (
   order: API.MintMRC20PreRes,
   feeRate: number,
   address: string,
-  network: API.Network
+  network: API.Network,
+  extract: boolean = true,
+  signPsbt: boolean = true
 ) => {
   initEccLib(ecc);
   const { revealFee, revealInputIndex } = order;
@@ -151,7 +154,8 @@ export const commitMintMRC20PSBT = async (
     },
     address,
     _commitMint,
-    true
+    extract,
+    signPsbt
   );
   const { rawTx, txId, psbt: commitPsbt } = commitTx;
   const psbt = Psbt.fromHex(order.revealPrePsbtRaw, {
@@ -178,6 +182,15 @@ export const commitMintMRC20PSBT = async (
       sighashTypes: [SIGHASH_ALL],
     });
   }
+  const estimatedFee = calcFee(psbt, feeRate, addressType === "P2TR");
+  if (!signPsbt) {
+    return {
+      rawTx,
+      revealPrePsbtRaw: psbt.toHex(),
+      revealFee: estimatedFee.toString(),
+      commitFee: commitTx.fee,
+    };
+  }
   const revealPrePsbtRaw = await window.metaidwallet.btc.signPsbt({
     psbtHex: psbt.toHex(),
     options: {
@@ -189,16 +202,30 @@ export const commitMintMRC20PSBT = async (
   if (typeof revealPrePsbtRaw === "object") {
     throw new Error("canceled");
   }
-  return { rawTx, revealPrePsbtRaw };
+  return {
+    rawTx,
+    revealPrePsbtRaw,
+    revealFee: estimatedFee,
+    commitFee: commitTx.fee,
+  };
 };
 
 export const transferMRC20PSBT = async (
   order: API.TransferMRC20PreRes,
   feeRate: number,
   address: string,
-  network: API.Network
+  network: API.Network,
+  extract: boolean = true,
+  signPsbt: boolean = true
 ) => {
-  return commitMintMRC20PSBT(order, feeRate, address, network);
+  return commitMintMRC20PSBT(
+    order,
+    feeRate,
+    address,
+    network,
+    extract,
+    signPsbt
+  );
 };
 
 export const listMrc20Order = async (
@@ -326,7 +353,7 @@ const _buildBuyMrc20TakePsbt = async (
       addressType,
       publicKey,
       script,
-      network
+      network,
     });
     psbtInput.sighashType = SIGHASH_ALL;
     psbt.addInput(psbtInput);
@@ -394,8 +421,7 @@ export const buildBuyMrc20TakePsbt = async (
     _buildBuyMrc20TakePsbt,
     manualCalcFee
   );
-  const totalSpent =
-    Number(ret.fee) + Number(order.priceAmount) + Number(fee);
+  const totalSpent = Number(ret.fee) + Number(order.priceAmount) + Number(fee);
   return {
     rawTx: ret.rawTx,
     psbt: ret.psbt,
