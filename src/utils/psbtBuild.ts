@@ -164,12 +164,12 @@ export async function buildTx<T>(
     true,
     false
   );
-   
+
   // let estimatedFee = manualCalcFee
   //   ? calcFee(psbt, feeRate)
   //   : calculateEstimatedFee(psbt, feeRate);
   const addressType = determineAddressInfo(address).toUpperCase();
-  let estimatedFee = calcFee(psbt, feeRate,addressType==='P2TR');
+  let estimatedFee = calcFee(psbt, feeRate, addressType === "P2TR");
   console.log(estimatedFee.toFixed(0), "estimatedFee");
   while (total.lt(amount.add(estimatedFee))) {
     if (selectedUTXOs.length === utxos.length) {
@@ -184,7 +184,7 @@ export async function buildTx<T>(
       true,
       false
     );
-    estimatedFee = calcFee(psbt, feeRate,addressType==='P2TR');
+    estimatedFee = calcFee(psbt, feeRate, addressType === "P2TR");
     // estimatedFee = manualCalcFee
     //   ? calcFee(psbt, feeRate)
     //   : calculateEstimatedFee(psbt, feeRate);
@@ -198,17 +198,16 @@ export async function buildTx<T>(
     signPsbt
   );
 
-
   console.log(
     estimatedFee.toString(),
     total
       .minus(psbt.txOutputs.reduce((acc, cur) => acc + Number(cur.value), 0))
-      .toString()
-      ,'estimatedFee'
+      .toString(),
+    "estimatedFee"
   );
   return {
     psbt,
-    fee:  estimatedFee.toString(),
+    fee: estimatedFee.toString(),
     txId: !extract ? "" : psbt.extractTransaction().getId(),
     rawTx: !extract ? psbt.toHex() : psbt.extractTransaction().toHex(),
     txInputs: selectedUTXOs.map((utxo) => ({
@@ -234,7 +233,7 @@ export async function createPsbtInput({
   publicKey: Buffer;
   script: Buffer;
   addressType: string;
-  network?: API.Network;
+  network: API.Network;
 }) {
   const payInput: any = {
     hash: utxo.txId,
@@ -254,30 +253,28 @@ export async function createPsbtInput({
   }
   if (["P2PKH"].includes(addressType)) {
     if (utxo.rawTx) {
-      const tx = Transaction.fromHex(utxo.rawTx)
-      payInput['nonWitnessUtxo'] = tx.toBuffer()
-      
+      const tx = Transaction.fromHex(utxo.rawTx);
+      payInput["nonWitnessUtxo"] = tx.toBuffer();
     } else {
       const mempoolReturn = mempoolJS({
-        hostname: 'mempool.space',
-        network: network === 'testnet' ? 'testnet' : 'main',
-      })
+        hostname: "mempool.space",
+        network: network === "testnet" ? "testnet" : "main",
+      });
       const rawTx = await mempoolReturn.bitcoin.transactions.getTxHex({
         txid: utxo.txId,
-      })
-      const tx = Transaction.fromHex(rawTx)
-      payInput['nonWitnessUtxo'] = tx.toBuffer()
+      });
+      const tx = Transaction.fromHex(rawTx);
+      payInput["nonWitnessUtxo"] = tx.toBuffer();
     }
-    
   }
   if (["P2SH"].includes(addressType)) {
     console.log("input.tapInternalKey");
     const { redeem } = payments.p2sh({
       redeem: payments.p2wpkh({
         pubkey: publicKey,
-        network: networks.testnet,
+        network: getNetworks(network),
       }),
-      network: networks.testnet,
+      network: getNetworks(network),
     });
     if (!redeem) throw new Error("redeemScript");
     payInput.redeemScript = redeem.output;
@@ -290,10 +287,12 @@ export async function fillInternalKey({
   publicKey,
   addressType,
   txId,
+  network,
 }: {
   publicKey: Buffer;
   addressType: string;
   txId?: string;
+  network: API.Network;
 }) {
   const payInput: any = {};
   if (["P2TR"].includes(addressType)) {
@@ -319,9 +318,9 @@ export async function fillInternalKey({
     const { redeem } = payments.p2sh({
       redeem: payments.p2wpkh({
         pubkey: publicKey,
-        network: networks.testnet,
+        network: getNetworks(network),
       }),
-      network: networks.testnet,
+      network: getNetworks(network),
     });
     if (!redeem) throw new Error("redeemScript");
     payInput.redeemScript = redeem.output;
@@ -399,26 +398,26 @@ export async function updateInputKey({
   addressType,
   network,
 }: {
-  publicKey: Buffer
-  addressType: string
-  network: API.Network
+  publicKey: Buffer;
+  addressType: string;
+  network: API.Network;
 }) {
-  const payInput: any = {}
-  if (['P2TR'].includes(addressType)) {
-    const tapInternalKey = toXOnly(publicKey)
-    payInput['tapInternalKey'] = tapInternalKey
+  const payInput: any = {};
+  if (["P2TR"].includes(addressType)) {
+    const tapInternalKey = toXOnly(publicKey);
+    payInput["tapInternalKey"] = tapInternalKey;
   }
-  if (['P2SH'].includes(addressType)) {
-    console.log('input.tapInternalKey')
+  if (["P2SH"].includes(addressType)) {
+    console.log("input.tapInternalKey");
     const { redeem } = payments.p2sh({
       redeem: payments.p2wpkh({
         pubkey: publicKey,
         network: getNetworks(network),
       }),
       network: getNetworks(network),
-    })
-    if (!redeem) throw new Error('redeemScript')
-    payInput.redeemScript = redeem.output
+    });
+    if (!redeem) throw new Error("redeemScript");
+    payInput.redeemScript = redeem.output;
   }
-  return payInput
+  return payInput;
 }

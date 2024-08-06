@@ -174,6 +174,7 @@ export const commitMintMRC20PSBT = async (
       await fillInternalKey({
         publicKey: Buffer.from(publicKey, "hex"),
         addressType,
+        network
       })
     );
     toSignInputs.push({
@@ -403,7 +404,7 @@ export const buildBuyMrc20TakePsbt = async (
   );
   const addressType = determineAddressInfo(address).toUpperCase();
   const publicKey = await window.metaidwallet.btc.getPublicKey();
-  const script = addressLib.toOutputScript(address, networks.testnet);
+  const script = addressLib.toOutputScript(address, getNetworks(network));
   const ret = await buildTx<BuyMrc20Params>(
     utxos,
     new Decimal(fee + priceAmount),
