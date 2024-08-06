@@ -1,7 +1,7 @@
 import Order from "@/components/Order";
 import { sellOrder } from "@/services/api";
 import { buildAskLimit } from "@/utils/orders";
-import { Button, Card, ConfigProvider, InputNumber, List, Space, message } from "antd";
+import { Button, Card, ConfigProvider, InputNumber, List, Space, Grid } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useModel } from "umi";
 import "./index.less";
@@ -21,9 +21,11 @@ import JSONView from "@/components/JSONView";
 import ListForMRC20 from "@/components/ListForMRC20";
 import NumberFormat from "@/components/NumberFormat";
 import ListForPin from "./components/ListForPin";
+const { useBreakpoint } = Grid;
 const items = ["PIN", 'MRC-20', 'ID-Coins'];
 export default () => {
   const [tab, setTab] = useState<"PIN" | "MRC-20" | 'ID-Coins'>("PIN");
+  const screens = useBreakpoint();
   return (
     <div className="salePage animation-slide-bottom">
       <div
@@ -42,7 +44,7 @@ export default () => {
                 key={item}
                 type={tab === item ? "link" : "text"}
                 onClick={() => setTab(item)}
-                size="large"
+                size={screens.md ? "large" : "small"}
               >
                 {item}
               </Button>
