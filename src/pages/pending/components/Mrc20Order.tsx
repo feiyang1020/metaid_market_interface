@@ -87,7 +87,8 @@ export default () => {
       render: (text, record) => (
         <Button
           type="primary"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setCurOrder(record);
             setShow(true);
           }}
