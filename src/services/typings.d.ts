@@ -307,6 +307,9 @@ declare namespace API {
     tick: string;
     tokenName: string;
     avlBalance?: string;
+    listedBalance?: string;
+    unconfirmedBalance?: string;
+    tag?: string;
     mrc20s?: {
       amount: string;
       decimals: string;

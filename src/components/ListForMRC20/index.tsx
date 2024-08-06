@@ -2,7 +2,7 @@ import { useModel } from "umi"
 import usePageList from "@/hooks/usePageList"
 import { getMrc20AddressUtxo, getUserMrc20List, sellMRC20Order, transferMrc20Commit, transfertMrc20Pre } from "@/services/api"
 import { useEffect, memo, useState, useCallback, useMemo } from "react"
-import { Button, Card, ConfigProvider, InputNumber, List, message } from "antd"
+import { Button, Card, ConfigProvider, Descriptions, InputNumber, List, message } from "antd"
 import { CheckOutlined } from "@ant-design/icons"
 import { formatSat } from "@/utils/utlis"
 import { listMrc20Order, transferMRC20PSBT } from "@/utils/mrc20"
@@ -56,9 +56,10 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                     tick: string;
                     txPoint: string;
                 }[] = []
-
+                if (utxoList.list.length === 0) continue
+                _list[i].tag = utxoList.list[0].tag
                 const avlBal = utxoList.list.reduce((a, item) => {
-                    if (item.orderId === '' && tags[tag] === item.tag) {
+                    if (item.orderId === '' && tags[tag] === item.tag && item.blockHeight !== -1) {
                         const utxoAmount = item.mrc20s.reduce((a, b) => {
                             mrc20s.push(b)
                             return a + Number(b.amount)
@@ -67,13 +68,32 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                     }
                     return a
                 }, 0)
+                const unconfirmedBal = utxoList.list.reduce((a, item) => {
+                    if (item.orderId === '' && tags[tag] === item.tag && item.blockHeight === -1) {
+                        const utxoAmount = item.mrc20s.reduce((a, b) => {
+                            return a + Number(b.amount)
+                        }, 0);
+                        return a + utxoAmount
+                    }
+                    return a
+                }, 0)
+                const listedBal = utxoList.list.reduce((a, item) => {
+                    if (item.orderId !== '' && tags[tag] === item.tag) {
+                        const utxoAmount = item.mrc20s.reduce((a, b) => {
+                            return a + Number(b.amount)
+                        }, 0);
+                        return a + utxoAmount
+                    }
+                    return a
+                }, 0)
 
                 _list[i].avlBalance = avlBal.toFixed(Number(_list[i].decimals))
+                _list[i].unconfirmedBalance = unconfirmedBal.toFixed(Number(_list[i].decimals))
+                _list[i].listedBalance = listedBal.toFixed(Number(_list[i].decimals))
                 _list[i].mrc20s = mrc20s
             }
         }
-        console.log(_list, '_list')
-        setList(_list.filter((item) => Number(item.avlBalance) > 0));
+        setList(_list.filter((item) => item.tag === tags[tag]));
         setLoading(false)
 
 
@@ -288,7 +308,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                             <div
                                 className="contetn"
                                 onClick={() => {
-                                    handleCheck(item.mrc20Id);
+                                    Number(item.avlBalance) > 0 && handleCheck(item.mrc20Id);
                                 }}
                             >
 
@@ -303,14 +323,33 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                     )}
                                 </div>
                                 <div className="tick">
-                                    {
 
-                                    }
                                     <Item info={{ tick: item.tick, mrc20Id: item.mrc20Id, metaData: '' }} />
                                 </div>
-                                <div className="tickAmount">
+                                <div className="tickAmount" >
 
-                                    <NumberFormat value={item.avlBalance} precision={item.decimals} suffix={` ${item.tick}`} />
+                                    <Descriptions labelStyle={{ color: '#FFFFFF', display: 'flex', alignItems: 'center' }}
+                                        contentStyle={{ flexGrow: 1, justifyContent: 'flex-end', color: 'rgba(255, 255, 255, 0.5)', whiteSpace: 'nowrap' }}
+                                        column={1} items={
+                                            [
+                                                {
+                                                    key: '1',
+                                                    label: 'Available',
+                                                    children: <NumberFormat value={item.avlBalance} precision={item.decimals} suffix={` ${item.tick}`} />
+                                                },
+                                                {
+                                                    key: '2',
+                                                    label: 'Listed',
+                                                    children: <NumberFormat value={item.listedBalance} precision={item.decimals} suffix={` ${item.tick}`} />
+                                                },
+                                                {
+                                                    key: '3',
+                                                    label: 'Unconfirmed',
+                                                    children: <NumberFormat value={item.unconfirmedBalance} precision={item.decimals} suffix={` ${item.tick}`} />
+                                                },
+                                            ]
+                                        } />
+
                                 </div>
                             </div>
                             <div className="inputGroup">
@@ -326,6 +365,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                         // suffix={item.tick}
                                         precision={Number(item.decimals)}
                                         placeholder="Quantity"
+                                        disabled={Number(item.avlBalance) === 0}
                                         // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
                                         max={item.avlBalance}
                                         onFocus={() => {
@@ -345,6 +385,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                         value={sellPrices[item.mrc20Id]}
                                         suffix="BTC"
                                         placeholder="Price"
+                                        disabled={Number(item.avlBalance) === 0}
                                         // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
                                         min={0.00002}
                                         onFocus={() => {
