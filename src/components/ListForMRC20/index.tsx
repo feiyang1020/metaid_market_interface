@@ -282,6 +282,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
             children: <div className="saleSuccess"></div>,
         });
         setSellPrices({});
+        setSellAmounts({});
         setCheckList([]);
         setSubmiting(false)
         await fetchList();
