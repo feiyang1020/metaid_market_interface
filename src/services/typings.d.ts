@@ -173,11 +173,13 @@ declare namespace API {
     orderId: string;
     revealAddress: string;
     revealFee: number;
+    revealGas: number;
     revealInputIndex: number;
     revealPrePsbtRaw: string;
     serviceAddress: string;
     serviceFee: number;
     totalFee: number;
+    revealOutValue: number;
   };
   type MRC20TickInfo = {
     amtPerMint: string;
@@ -305,13 +307,13 @@ declare namespace API {
     tick: string;
     tokenName: string;
     avlBalance?: string;
-    mrc20s?:{
+    mrc20s?: {
       amount: string;
       decimals: string;
       mrc20Id: string;
       tick: string;
       txPoint: string;
-    }[]
+    }[];
   };
   type Mrc20Order = {
     orderId: string;
@@ -415,7 +417,7 @@ declare namespace API {
     payload: string;
   };
 
-   type DeployIdCoinPreRes = {
+  type DeployIdCoinPreRes = {
     orderId: string;
     totalFee: number;
     minerFee: number;
@@ -424,15 +426,13 @@ declare namespace API {
   };
 
   type DeployMRC20PreRes = {
-    extra:string;
+    extra: string;
     orderId: string;
     totalFee: number;
     minerFee: number;
     revealAddress: string;
     serviceFee: number;
   };
-
-
 
   type MintIdCoinPreRes = {
     orderId: string;

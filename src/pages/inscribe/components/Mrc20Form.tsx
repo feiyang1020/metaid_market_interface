@@ -24,6 +24,7 @@ import ComfirmMintIdCoin from "./ComfirmMintIdCoin";
 import idCoin from "@/pages/mrc20/idCoin";
 import Decimal from "decimal.js";
 import ComfirmTransfer, { TransferComfrimParams } from "./ComfirmTransfer";
+import ComfirmMintMrc20, { MintMrc20ComfrimParams } from "./ComfirmMintMrc20";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -94,6 +95,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     // transfer mrc20
     const [transferVisible, setTransferVisible] = useState(false);
     const [transfeComfirmParams, setTransfeComfirmParams] = useState<TransferComfrimParams>();
+    // mint mrc20
+    const [mintVisible, setMintVisible] = useState(false);
+    const [mintComfirmParams, setMintComfirmParams] = useState<MintMrc20ComfrimParams>();
     const [successProp, setSuccessProp] =
         useState<SuccessProps>(DefaultSuccessProps);
     const [deployComfirmProps, setDeployComfirmProps] = useState<DeployComfirmProps>(defaultDeployComfirmProps)
@@ -475,30 +479,35 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     fees: { ...order, commintGas: Number(fee) }
                 })
             } else {
-                if (type === 'mint' && IdCoinInfo && addressMintState === 0) {
-                    if (!connected || !btcAddress || !btcConnector) return;
-                    const pass = await checkWallet();
-                    if (!pass) throw new Error("Account change");
-                    if (!IdCoinInfo) return;
+                if (type === 'mint') {
+                    if (IdCoinInfo && addressMintState === 0) {
+                        if (!connected || !btcAddress || !btcConnector) return;
+                        const pass = await checkWallet();
+                        if (!pass) throw new Error("Account change");
+                        if (!IdCoinInfo) return;
 
-                    const prePayload = {
-                        networkFeeRate: feeRate,
-                        tickId: IdCoinInfo.mrc20Id,
-                        outAddress: btcAddress,
-                        outValue: 546,
+                        const prePayload = {
+                            networkFeeRate: feeRate,
+                            tickId: IdCoinInfo.mrc20Id,
+                            outAddress: btcAddress,
+                            outValue: 546,
+                        }
+                        const { code, message, data } = await mintIdCoinPre(network, prePayload, { headers: { ...authParams } })
+                        if (code !== 0) throw new Error(message);
+                        const { fee } = await buildMintIdCointPsbt(
+                            data,
+                            feeRate,
+                            btcAddress,
+                            network,
+                            false,
+                            false
+                        )
+                        setMintIdCoinOrder({ ...data, _gasFee: Number(fee) })
+                        setComfirmVisible(true)
+                    } else {
+                        await beforeMintMrc20()
                     }
-                    const { code, message, data } = await mintIdCoinPre(network, prePayload, { headers: { ...authParams } })
-                    if (code !== 0) throw new Error(message);
-                    const { fee } = await buildMintIdCointPsbt(
-                        data,
-                        feeRate,
-                        btcAddress,
-                        network,
-                        false,
-                        false
-                    )
-                    setMintIdCoinOrder({ ...data, _gasFee: Number(fee) })
-                    setComfirmVisible(true)
+
 
                 } else if (
                     type === 'transfer'
@@ -616,6 +625,121 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         setSubmiting(false)
     }
 
+    const beforeMintMrc20 = async () => {
+        await form.validateFields();
+        try {
+            setComfirming(true);
+            const { type, pins = [] } = form.getFieldsValue();
+            if (!mintMrc20Info) throw new Error('Token not found');
+            if (!btcAddress) throw new Error('Please connect wallet')
+
+            if (Number(mintMrc20Info.pinCheck.count) && pins.length < Number(mintMrc20Info.pinCheck.count)) {
+                throw new Error(`Select  ${mintMrc20Info.pinCheck.count} PINs`)
+            }
+            const mintPins = pins.map((pinId: string) => {
+                const pin = shovel?.find(item => item.id === pinId);
+                if (!pin) return;
+                return {
+                    pinId: pin.id,
+                    pinUtxoTxId: pin.location.split(":")[0],
+                    pinUtxoIndex: Number(pin.location.split(":")[1]),
+                    pinUtxoOutValue: pin.outputValue,
+                    address: btcAddress,
+                    pkScript: getPkScriprt(btcAddress, network).toString('hex'),
+                }
+            })
+
+            const { code, message, data, } = await mintMrc20Pre(network, {
+                mintPins: mintPins, networkFeeRate: feeRate, outAddress: btcAddress, outValue: 546, tickerId: mintMrc20Info.mrc20Id,
+            }, {
+                headers: {
+                    ...authParams,
+                },
+            });
+            if (code !== 0) throw new Error(message);
+
+            const buildRet = await commitMintMRC20PSBT(data, feeRate, btcAddress, network, false, false);
+            const mintMrc20Params: MintMrc20ComfrimParams = {
+                order: data,
+                commitGas: buildRet.commitFee,
+                mrc20: mintMrc20Info,
+            }
+            setMintComfirmParams(mintMrc20Params)
+            setMintVisible(true)
+
+        } catch (e: any) {
+            console.error(e);
+            if (e.message === 'Insufficient funds to reach the target amount') {
+                message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
+
+            } else {
+                message.error(e.message)
+            }
+        }
+        setComfirming(false)
+    }
+
+    const mintMrc20 = async () => {
+        try {
+            setSubmiting(true)
+            if (!btcAddress) throw new Error('Please connect wallet')
+            if (!mintComfirmParams) throw new Error('No data')
+            const { order, commitGas, mrc20 } = mintComfirmParams;
+            const { rawTx, revealPrePsbtRaw } = await commitMintMRC20PSBT(order, feeRate, btcAddress, network);
+            const ret = await mintMrc20Commit(network, { orderId: order.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } })
+            if (ret.code !== 0) throw new Error(ret.message);
+            await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
+            setRefetch(!refetch)
+            setSuccessProp({
+                show: true,
+                onClose: () => {
+                    setSuccessProp(DefaultSuccessProps);
+                    // form.resetFields();
+                    // form.setFieldValue('type', 'mint')
+                },
+                onDown: () => {
+                    setSuccessProp(DefaultSuccessProps);
+                    form.resetFields();
+                    history.push('/mrc20History?tab=Mint')
+
+                },
+                title: "Mint",
+                tip: "Successful",
+                okText: 'OK',
+                txs: [
+                    {
+                        label: 'Reveal TxId',
+                        txid: ret.data.revealTxId
+                    },
+                    {
+                        label: 'Commit TxId',
+                        txid: ret.data.commitTxId
+                    }
+                ],
+                children: (
+                    <div className="inscribeSuccess">
+                        <div className="tips">
+                            <InfoCircleOutlined />
+                            <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
+                        </div>
+                    </div>
+                ),
+            });
+            setComfirmVisible(false)
+            setMintComfirmParams(undefined)
+
+        } catch (e: any) {
+            if (e.message === 'Insufficient funds to reach the target amount') {
+                message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
+
+            } else {
+                message.error(e.message)
+            }
+
+        }
+        setSubmiting(false)
+    }
+
     const submit = async () => {
         if (!connected || !btcAddress) return;
         await form.validateFields();
@@ -636,7 +760,6 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     if (Number(mintMrc20Info.pinCheck.count) && pins.length < Number(mintMrc20Info.pinCheck.count)) {
                         throw new Error(`Select  ${mintMrc20Info.pinCheck.count} PINs`)
                     }
-                    console.log(pins, 'pins')
                     const mintPins = pins.map((pinId: string) => {
                         const pin = shovel?.find(item => item.id === pinId);
                         if (!pin) return;
@@ -1312,6 +1435,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
         <ComfirmMintIdCoin show={comfirmVisible} onClose={() => { setComfirmVisible(false) }} idCoin={IdCoinInfo} order={mintIdCoinOrder} submiting={submiting} handleSubmit={submit} />
 
         <ComfirmTransfer show={transferVisible} onClose={() => { setTransferVisible(false); setTransfeComfirmParams(undefined); setComfirming(false) }} params={transfeComfirmParams} submiting={submiting} handleSubmit={transferMrc20} />
+        <ComfirmMintMrc20 show={mintVisible} onClose={() => { setMintVisible(false); setMintComfirmParams(undefined); setComfirming(false) }} params={mintComfirmParams} submiting={submiting} handleSubmit={mintMrc20} />
     </div>
 
 } 
