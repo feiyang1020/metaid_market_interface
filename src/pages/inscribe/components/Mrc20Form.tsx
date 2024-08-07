@@ -540,6 +540,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             const selectedUtxos = [];
             let totalAmount = 0;
             for (const utxo of utxoList.list) {
+                if (utxo.blockHeight === -1) continue;
                 for (const tick of utxo.mrc20s) {
                     if (Number(tick.amount) > 0) {
                         totalAmount += Number(tick.amount)
