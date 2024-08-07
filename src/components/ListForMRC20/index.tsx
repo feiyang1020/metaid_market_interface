@@ -251,11 +251,11 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
             const order = list.find((item) => item.mrc20Id === checkList[i]);
             if (!sellPrices[checkList[i]]) {
 
-                message.error(` ${order!.tick} No price set yet`);
+                message.error(` The listing price for  ${order!.tick} has not been set.`);
                 return;
             }
             if (!sellAmounts[checkList[i]] || Number(sellAmounts[checkList[i]]) === 0) {
-                message.error(` ${order!.tick} No list amount set yet`);
+                message.error(` The listing quantity for  ${order!.tick} has not been set.`);
                 return;
             }
         }
