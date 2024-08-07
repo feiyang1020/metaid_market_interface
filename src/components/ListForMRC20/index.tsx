@@ -248,13 +248,13 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
     const handleSale = async () => {
         if (checkList.length === 0) return;
         for (let i = 0; i < checkList.length; i++) {
+            const order = list.find((item) => item.mrc20Id === checkList[i]);
             if (!sellPrices[checkList[i]]) {
-                const order = list.find((item) => item.mrc20Id === checkList[i]);
+
                 message.error(` ${order!.tick} No price set yet`);
                 return;
             }
-            if (!sellAmounts[checkList[i]]) {
-                const order = list.find((item) => item.mrc20Id === checkList[i]);
+            if (!sellAmounts[checkList[i]] || Number(sellAmounts[checkList[i]]) === 0) {
                 message.error(` ${order!.tick} No list amount set yet`);
                 return;
             }
