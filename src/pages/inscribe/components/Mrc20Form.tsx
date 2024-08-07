@@ -1309,7 +1309,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                         </Select>
                                     </Form.Item>
-                                    <Form.Item label="Amount" name="amount" rules={[{ required: true }]}>
+                                    <Form.Item label="Amount" name="amount" rules={[{ required: true }, { min: new Decimal(1).div(Math.pow(10, transferPrecision)).toNumber(), type: 'number', }]}>
                                         <InputNumber
                                             size="large"
                                             style={{ width: '100%' }}

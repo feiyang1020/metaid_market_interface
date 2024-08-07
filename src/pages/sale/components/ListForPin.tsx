@@ -270,6 +270,7 @@ export default () => {
                                 value={sellPrices[item.assetId]}
                                 suffix="BTC"
                                 disabled={item.pinStatus !== 0}
+                                min={0}
                                 onFocus={() => {
                                     !checkList.includes(item.assetId) && handleCheck(item.assetId);
                                 }}

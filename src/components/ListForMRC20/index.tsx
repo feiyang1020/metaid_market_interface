@@ -369,6 +369,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                         disabled={Number(item.avlBalance) === 0}
                                         // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
                                         max={item.avlBalance}
+                                        min={0}
                                         onFocus={() => {
                                             !checkList.includes(item.mrc20Id) && handleCheck(item.mrc20Id);
                                         }}
@@ -390,7 +391,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                         // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
                                         min={0.00002}
                                         onFocus={() => {
-                                            !checkList.includes(item.mrc20Id) &&handleCheck(item.mrc20Id);
+                                            !checkList.includes(item.mrc20Id) && handleCheck(item.mrc20Id);
                                         }}
                                     />
                                 </div>
