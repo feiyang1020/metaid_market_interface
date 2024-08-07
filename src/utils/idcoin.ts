@@ -185,7 +185,7 @@ export const buildMintIdCointPsbt = async (
   signPsbt: boolean = true
 ) => {
   initEccLib(ecc);
-  console.log(feeRate,'feeRate in buildMintIdCointPsbt');
+  // console.log(feeRate,'feeRate in buildMintIdCointPsbt');
   const { revealInscribeFee,revealMintFee} = order;
   const utxos = await getUtxos(address, network);
   console.log(utxos, "utxos in buildMintIdCointPsbt");
