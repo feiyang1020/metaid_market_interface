@@ -64,7 +64,7 @@ export default ({ show, onClose, params, submiting, handleSubmit }: Props) => {
             <Collapse ghost items={items} style={{ width: '100%' }} />
             <DescItem dark label="Service Fee" value={<NumberFormat value={params.order.serviceFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem label="You Will Spend" value={<NumberFormat value={params.order.totalFee + Number(params.commitGas) - Number(params.order.revealOutValue)} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+            <DescItem label="You Will Spend" value={<NumberFormat value={params.order.totalFee + Number(params.commitGas) } isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem label="Available Balance" value={<NumberFormat value={userBal} minDig={8} suffix=' BTC' />} />
             <Row gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>
