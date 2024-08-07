@@ -101,7 +101,7 @@ export default () => {
         }
     };
 
-   
+
 
     const totalStas = useMemo(() => {
         const total = checkList.reduce((a, b) => {
@@ -201,7 +201,7 @@ export default () => {
                                 item.pinStatus === 0 && handleCheck(item.assetId);
                             }}
                         >
-                            <PinContent asset={item}/>
+                            <PinContent asset={item} />
                             <div className="assetNumber">
                                 <ConfigProvider
                                     theme={{
@@ -271,7 +271,7 @@ export default () => {
                                 suffix="BTC"
                                 disabled={item.pinStatus !== 0}
                                 onFocus={() => {
-                                    handleCheck(item.assetId);
+                                    !checkList.includes(item.assetId) && handleCheck(item.assetId);
                                 }}
                             />
                         </div>
