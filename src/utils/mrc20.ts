@@ -174,7 +174,7 @@ export const commitMintMRC20PSBT = async (
       await fillInternalKey({
         publicKey: Buffer.from(publicKey, "hex"),
         addressType,
-        network
+        network,
       })
     );
     toSignInputs.push({
@@ -397,7 +397,7 @@ export const buildBuyMrc20TakePsbt = async (
   signPsbt: boolean = false
 ) => {
   initEccLib(ecc);
-  const { fee, priceAmount } = order;
+  const { fee, priceAmount, outValue } = order;
   const address = await window.metaidwallet.btc.getAddress();
   const utxos = (await getUtxos(address, network)).sort(
     (a, b) => b.satoshi - a.satoshi
@@ -422,7 +422,11 @@ export const buildBuyMrc20TakePsbt = async (
     _buildBuyMrc20TakePsbt,
     manualCalcFee
   );
-  const totalSpent = Number(ret.fee) + Number(order.priceAmount) + Number(fee);
+  const totalSpent =
+    Number(ret.fee) +
+    Number(order.priceAmount) +
+    Number(fee) -
+    Number(outValue);
   return {
     rawTx: ret.rawTx,
     psbt: ret.psbt,
