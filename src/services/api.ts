@@ -692,6 +692,7 @@ export async function getIdCoinList(
     searchTick?: string;
     orderBy?: string;
     sortType?: number;
+    completed?: boolean;
   },
   options?: { [key: string]: any }
 ) {

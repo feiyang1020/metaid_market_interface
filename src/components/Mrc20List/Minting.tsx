@@ -26,8 +26,8 @@ export default () => {
     // const [page, setPage] = useState<number>(0);
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({});
-    const [orderBy, setOrderBy] = useState<string>('holders');
-    const [sortType, setSortType] = useState<1 | -1>(-1);
+    const [orderBy, setOrderBy] = useState<string>('deployTime');
+    const [sortType, setSortType] = useState<1 | -1>(1);
     // const fetchData = useCallback(async () => {
     //     setLoading(true);
     //     const { code, message, data } = await getMrc20List(network, {
@@ -234,8 +234,8 @@ export default () => {
                     setOrderBy((field === 'price' ? 'lastPrice' : field || '').toString());
                     setSortType(order === 'ascend' ? 1 : -1);
                 } else {
-                    setOrderBy('holders');
-                    setSortType(-1);
+                    setOrderBy('deployTime');
+                    setSortType(1);
                 }
 
             }}

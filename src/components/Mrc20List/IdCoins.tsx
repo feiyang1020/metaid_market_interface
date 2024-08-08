@@ -12,6 +12,7 @@ import IdCoinCard from "./IdCoinCard";
 import Sorter from "../Sorter";
 import { openWindowTarget } from "@/utils/utlis";
 import { addUtxoSafe } from "@/utils/psbtBuild";
+import dayjs from "dayjs";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.IdCoin>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -29,7 +30,7 @@ export default () => {
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({ orderBy: 'timestamp', sortType: -1 });
     const [orderBy, setOrderBy] = useState<string>('timestamp');
-    const [sortType, setSortType] = useState<1 | -1>(-1);
+    const [sortType, setSortType] = useState<1 | -1>(1);
 
     useEffect(() => {
         let didCancel = false;
@@ -38,6 +39,7 @@ export default () => {
             const { code, message: msg, data } = await getIdCoinList(network, {
                 cursor: page * size,
                 size,
+                completed: false,
                 followerAddress: btcAddress || '',
                 searchTick: searchWord,
                 orderBy,
@@ -298,6 +300,16 @@ export default () => {
                 }} type='primary'>Trade</Button>
             }
         },
+        // {
+        //     title: 'Time',
+        //     dataIndex: 'deployTime',
+        //     sorter: true,
+        //     align: 'center',
+        //     width: 200,
+        //     render: (price) => {
+        //         return dayjs(price * 1000).format('MM/DD/YYYY,HH:mm')
+        //     }
+        // },
 
     ]
 
@@ -342,8 +354,8 @@ export default () => {
                     setOrderBy((field || '').toString());
                     setSortType(order === 'ascend' ? 1 : -1);
                 } else {
-                    setOrderBy('holders');
-                    setSortType(-1);
+                    setOrderBy('timestamp');
+                    setSortType(1);
                 }
             }}
             onRow={(record) => {

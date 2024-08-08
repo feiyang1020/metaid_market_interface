@@ -16,13 +16,13 @@ const items: TabsProps['items'] = [
     },
     {
         key: '1',
-        label: 'All',
-        children: <AllList />,
+        label: 'All Minting',
+        children: <Minting />,
     },
     {
         key: '2',
-        label: 'Minting',
-        children: <Minting />,
+        label: 'All Minted',
+        children: <AllList />,
     },
 
 ];
