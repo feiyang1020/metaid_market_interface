@@ -7,6 +7,7 @@ import Item from "./Item";
 import { useCallback, useEffect, useState } from "react";
 import AllCard from "./AllCard";
 import Sorter from "../Sorter";
+import dayjs from "dayjs";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.MRC20Info>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -21,8 +22,8 @@ export default () => {
     // const [page, setPage] = useState<number>(0);
     const [size, setSize] = useState<number>(10);
     const [params, setParams] = useState<Record<string, any>>({ orderBy: 'marketCap', sortType: -1 });
-    const [orderBy, setOrderBy] = useState<string>('marketCap');
-    const [sortType, setSortType] = useState<1 | -1>(-1);
+    const [orderBy, setOrderBy] = useState<string>('deployTime');
+    const [sortType, setSortType] = useState<1 | -1>(1);
 
     useEffect(() => {
         let didCancel = false;
@@ -125,6 +126,16 @@ export default () => {
             align: 'center',
             sorter: true,
         },
+        // {
+        //     title: 'Time',
+        //     dataIndex: 'deployTime',
+        //     sorter: true,
+        //     align: 'center',
+        //     width: 200,
+        //     render: (price) => {
+        //         return dayjs(price * 1000).format('MM/DD/YYYY,HH:mm')
+        //     }
+        // },
     ]
 
     return <ConfigProvider

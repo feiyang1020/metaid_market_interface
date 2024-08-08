@@ -10,7 +10,7 @@ import Mrc20List from "@/components/Mrc20List";
 import FilterForm from "@/components/FilterForm";
 
 const { useBreakpoint } = Grid;
-const items = ["PIN", 'MRC-20'];
+const items = [ 'MRC-20',"PIN"];
 
 
 export default () => {
