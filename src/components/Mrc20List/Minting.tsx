@@ -144,12 +144,12 @@ export default () => {
             width: 200,
             align: 'center',
             render: (_, record) => {
-
+                const rate = Number(record.premineCount) / Number(record.mintCount) * 100
                 return <div className="premine">
                     {
-                        Number(record.premineCount) > 0
-                            ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100} floor suffix='%' precision={10} />
-                            : 'Fair Launch'
+                        Number(record.premineCount) === 0 ? 'Fair Launch' :
+                            rate < 1 ? '<1%' : <NumberFormat value={rate} floor suffix='%' precision={4} />
+
                     }
                 </div>
             }
@@ -249,7 +249,7 @@ export default () => {
                 return {
                     style: { cursor: 'pointer' },
                     onClick: () => {
-                        history.push(`/${record.tag==='id-coins'?'idCoin':'mrc20'}/${record.tick}`)
+                        history.push(`/${record.tag === 'id-coins' ? 'idCoin' : 'mrc20'}/${record.tick}`)
                     },
                 }
             }}
