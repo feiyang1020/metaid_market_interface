@@ -615,12 +615,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             setTransferVisible(false)
             success('Transfer', ret.data)
         } catch (e: any) {
-            if (e.message === 'Insufficient funds to reach the target amount') {
-                message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
-
-            } else {
-                message.error(e.message)
-            }
+             message.error(e.message)
 
         }
         setSubmiting(false)
@@ -670,12 +665,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         } catch (e: any) {
             console.error(e);
-            if (e.message === 'Insufficient funds to reach the target amount') {
-                message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
-
-            } else {
-                message.error(e.message)
-            }
+            message.error(e.message)
         }
         setComfirming(false)
     }
@@ -888,12 +878,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             }
         } catch (e: any) {
             console.error(e);
-            if (e.message === 'Insufficient funds to reach the target amount') {
-                message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
-
-            } else {
-                message.error(e.message)
-            }
+            message.error(e.message)
 
 
         }
