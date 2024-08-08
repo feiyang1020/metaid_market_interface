@@ -112,7 +112,7 @@ export default () => {
             dataIndex: 'totalMinted',
             sorter: true,
             width: 160,
-            align: 'center',
+            align: 'right',
             render: (totalMinted) => {
                 return <NumberFormat value={totalMinted} />
             }
@@ -122,7 +122,7 @@ export default () => {
             dataIndex: 'holders',
             sorter: true,
             width: 160,
-            align: 'center',
+            align: 'right',
             render: (price) => {
                 return <NumberFormat value={price} />
             }
