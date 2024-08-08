@@ -89,7 +89,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
     // mint Idcoin 
     const [comfirmVisible, setComfirmVisible] = useState(false)
-    const [mintIdCoinOrder, setMintIdCoinOrder] = useState<API.MintIdCoinPreRes & { _gasFee: number }>();
+    const [mintIdCoinOrder, setMintIdCoinOrder] = useState<API.MintIdCoinPreRes & { _gasFee: number, errMsg?: string }>();
     const [addressMintState, setAddressMintState] = useState<number>(0)
 
     // transfer mrc20
@@ -494,15 +494,24 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         }
                         const { code, message, data } = await mintIdCoinPre(network, prePayload, { headers: { ...authParams } })
                         if (code !== 0) throw new Error(message);
-                        const { fee } = await buildMintIdCointPsbt(
-                            data,
-                            feeRate,
-                            btcAddress,
-                            network,
-                            false,
-                            false
-                        )
-                        setMintIdCoinOrder({ ...data, _gasFee: Number(fee) })
+                        let fee = "0";
+                        let errMsg = ''
+                        try {
+
+
+                            const { fee: _fee } = await buildMintIdCointPsbt(
+                                data,
+                                feeRate,
+                                btcAddress,
+                                network,
+                                false,
+                                false
+                            )
+                            fee = _fee
+                        } catch (e: any) {
+                            errMsg = e.message
+                        }
+                        setMintIdCoinOrder({ ...data, _gasFee: Number(fee), errMsg })
                         setComfirmVisible(true)
                     } else {
                         await beforeMintMrc20()
@@ -615,7 +624,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
             setTransferVisible(false)
             success('Transfer', ret.data)
         } catch (e: any) {
-             message.error(e.message)
+            message.error(e.message)
 
         }
         setSubmiting(false)
@@ -1056,7 +1065,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
-                                                        suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' ? '-test':''}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
+                                                        suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' ? '-test' : ''}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
                                                         placeholder="metafile://Your-Icon-Pinid"
                                                     />
                                                 </Form.Item>
@@ -1189,7 +1198,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <InputNumber
                                                         size="large"
                                                         style={{ width: '100%' }}
-                                                       
+
 
                                                     />
                                                 </Form.Item>
