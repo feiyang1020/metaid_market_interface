@@ -23,7 +23,8 @@ import SuccessModal, {
 } from "../SuccessModal";
 import { number } from "bitcoinjs-lib/src/script";
 import JSONView from "../JSONView";
-import { curNetwork } from "@/config";
+import { addUtxoSafe } from "@/utils/psbtBuild";
+import NumberFormat from "../NumberFormat";
 type Props = {
   order: API.Order | undefined;
   show: boolean;
@@ -31,16 +32,16 @@ type Props = {
 };
 export default ({ order, show, onClose }: Props) => {
   const {
-    feeRates,
+    feeRate,
     userBal,
     network,
     btcAddress,
     addressType,
     authParams,
     connected,
-  } = useModel("wallet");
+  } = useModel("wallet")
+  const { updateOrders } = useModel('orders')
   const [submiting, setSubmiting] = useState<boolean>(false);
-  const [customRate, setCustomRate] = useState<string | number>();
   const [orderWithPsbt, setOrderWithPsbt] = useState<API.Order>();
   const [calcing, setCalcing] = useState<boolean>(false);
   const [totalSpent, setTotalSpent] = useState<number>();
@@ -51,7 +52,6 @@ export default ({ order, show, onClose }: Props) => {
     confirmed: number;
     unconfirmed: number;
   }>();
-  const [feeRateTab, setFeeRateTab] = useState<string>("Avg");
   const [successProp, setSuccessProp] =
     useState<SuccessProps>(DefaultSuccessProps);
 
@@ -73,7 +73,6 @@ export default ({ order, show, onClose }: Props) => {
   }, [show]);
   const [buyPsbt, setBuyPsbt] = useState<Psbt>();
   const fetchTakePsbt = useCallback(async () => {
-    console.log(order, connected, authParams, "authParams");
     if (!order || !connected || !authParams) {
       setOrderWithPsbt(undefined);
       return;
@@ -106,25 +105,7 @@ export default ({ order, show, onClose }: Props) => {
   useEffect(() => {
     fetchTakePsbt();
   }, [fetchTakePsbt]);
-  // useEffect(() => {
-  //   const find = feeRates.find((item) => item.label === "Avg");
-  //   if (find) {
-  //     setFeeRate((prev) => {
-  //       if (!prev) return find.value;
-  //       return prev;
-  //     });
-  //   }
-  // }, [feeRates]);
 
-  const feeRate = useMemo(() => {
-    if (feeRateTab !== "custom") {
-      const find = feeRates.find((item) => item.label === feeRateTab);
-      if (find) return find.value;
-      return 0;
-    } else {
-      return customRate || 0;
-    }
-  }, [feeRateTab, customRate, feeRates]);
 
   useEffect(() => {
     let didCancel = false;
@@ -147,7 +128,7 @@ export default ({ order, show, onClose }: Props) => {
         if (didCancel) return;
         setCalcing(false);
         setTotalSpent(totalSpent);
-        if (error) setErrInfo(error || undefined);
+        setErrInfo(error || undefined);
         setBuyPsbt(order);
         setFee(fee);
       } catch (err: any) {
@@ -164,14 +145,10 @@ export default ({ order, show, onClose }: Props) => {
   }, [orderWithPsbt, network, connected, feeRate]);
 
   const handleBuy = async () => {
-    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order)
+    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order || !btcAddress)
       return;
     setSubmiting(true);
     try {
-      const { network: _net } = await window.metaidwallet.getNetwork();
-      if (_net !== curNetwork || _net !== network) {
-        throw new Error("network error");
-      }
       const {
         order: orderPsbt,
         totalSpent,
@@ -227,6 +204,8 @@ export default ({ order, show, onClose }: Props) => {
       if (ret.code !== 0) {
         throw new Error(ret.message);
       }
+      await addUtxoSafe(btcAddress, [{ txId: ret.data.txId, vout: orderPsbt.data.outputs.length - 1 }])
+      updateOrders()
       onClose();
       setSuccessProp({
         show: true,
@@ -260,11 +239,11 @@ export default ({ order, show, onClose }: Props) => {
               <div className="item">
                 <div className="label">Transaction Price</div>
                 <div className="value">
-                  <img src={btcIcon}></img> {formatSat(totalSpent)}
+                  <img src={btcIcon}></img> {formatSat(totalSpent)} BTC
                 </div>
               </div>
               <div className="item">
-                <div className="label">Tarde Hash</div>
+                <div className="label">TxId </div>
                 <div className="value">
                   <Tooltip title={ret.data.txId}>
                     <a
@@ -322,71 +301,42 @@ export default ({ order, show, onClose }: Props) => {
               </div>
               <div className="dess">
                 <div className="renu">#{order.assetNumber}</div>
-                <div className="number">{order.info.path}</div>
+                <div className="number">{order.info.path} </div>
               </div>
             </div>
             <div className="fees">
               <div className="feeItem">
                 <div className="label">Price</div>
-                <div className="value">{order.sellPriceAmount} sats</div>
+                <div className="value"><NumberFormat value={order.sellPriceAmount} isBig decimal={8} minDig={8} suffix=' BTC'/>  </div>
               </div>
               <div className="feeItem">
                 <div className="label">
-                  Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
+                  Taker Fee{orderWithPsbt&&orderWithPsbt.fee > 0 && `(${orderWithPsbt.feeRateStr}%)`}
                 </div>
-                <div className="value">{formatSat(order.fee)}BTC</div>
+                <div className="value"><NumberFormat value={orderWithPsbt && orderWithPsbt.fee} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
               </div>
               <div className="feeItem">
                 <div className="label">Transaction Fee</div>
                 <div className="value">
-                  <Spin spinning={calcing}>{formatSat(fee || "0")}BTC</Spin>
+                  <Spin spinning={calcing}><NumberFormat value={fee} isBig decimal={8} minDig={8} suffix=" BTC" /></Spin>
                 </div>
               </div>
-            </div>
-            <div className="netFee">
-              <div className="netFeeTitle">Network Fee</div>
-              <div className="netFeeOpts">
-                {feeRates.map((item) => (
-                  <div
-                    onClick={() => setFeeRateTab(item.label)}
-                    className={`feeRateItem ${
-                      item.label === feeRateTab ? "active" : ""
-                    }`}
-                    key={item.label}
-                  >
-                    <div className="label">{item.label}</div>
-                    <div className="value">{item.value} sat/vB</div>
-                    <div className="time">{item.time}</div>
-                  </div>
-                ))}
-                <div
-                  className={`feeRateItem ${
-                    feeRateTab === "custom" ? "active" : ""
-                  }`}
-                  onClick={() => {
-                    setFeeRateTab("custom");
-                  }}
-                >
-                  <div className="label">Custom rates</div>
-                  <div className="value">
-                    <InputNumber
-                      value={customRate}
-                      onChange={setCustomRate}
-                      style={{ textAlign: "center" }}
-                      controls={false}
-                    />
-                  </div>
-                  <div className="time">sat/vB</div>
+              <div className="feeItem">
+                <div className="label">
+                  Network Fee
                 </div>
+                <div className="value">{feeRate} sat/vB</div>
               </div>
             </div>
+
+
             <Spin spinning={calcing}>
               <div className="payInfo">
                 <div className="label">You Pay</div>
                 <div className="value">
                   <img src={btcIcon} alt="" className="btc" />
                   <span>
-                    {totalSpent ? formatSat(totalSpent || 0) : "--"}BTC
+                    {totalSpent ? formatSat(totalSpent || 0) : "--"} BTC
                   </span>
                 </div>
               </div>
@@ -400,10 +350,10 @@ export default ({ order, show, onClose }: Props) => {
               )}
 
               <div className="avail">
-                <div className="label">Available balance</div>
+                <div className="label">Available Balance</div>
 
                 <div className="value">
-                  {userBalInfo && formatSat(userBalInfo.confirmed)} BTC
+                  {userBalInfo && formatSat(userBalInfo.total)} BTC
                 </div>
               </div>
             </Spin>

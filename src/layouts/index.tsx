@@ -1,9 +1,10 @@
 import { Link, Outlet, history, useLocation, useModel } from "umi";
 import "./index.less";
 import logo from "@/assets/logo.svg";
-import defaultAvatar from "@/assets/avatar@2x.png";
+import defaultAvatar from "@/assets/avatar.svg";
 import Nav from "./components/Nav";
 import {
+  Alert,
   Avatar,
   Button,
   ConfigProvider,
@@ -16,8 +17,13 @@ import {
 import {
   ArrowRightOutlined,
   DownOutlined,
+  EditOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import SetProfile from "@/components/SetProfile";
+import NumberFormat from "@/components/NumberFormat";
+import SetFeeRate from "@/components/SetFeeRate";
 
 const _themes = {
   token: {
@@ -40,6 +46,19 @@ const _themes = {
       headerSplitColor: "rgba(255, 251, 251, 0.08)",
       headerColor: "rgba(255, 255, 255, 0.6)",
     },
+    "Input": {
+
+      "colorSplit": "rgba(253, 253, 253, 0)"
+    },
+    "Progress": {
+      "colorSuccess": "#d4f66b"
+    },
+    "Card": {
+      "colorBgContainer": "rgba(25, 27, 24, 0.84)"
+    },
+    "Alert": {
+      "colorErrorBorder": "rgb(255,82,82)"
+    }
   },
 };
 
@@ -53,15 +72,29 @@ export default function Layout() {
     userBal,
     avatar,
     disConnect,
+    feeRate,
+    feeRateType,
+    setFeeRateModelVisible,
+    network
   } = useModel("wallet");
+  const { pathname } = useLocation();
+  const [editViseble, setEditVisible] = useState<boolean>(false)
+  useEffect(() => {
+    if (pathname) {  // 可以排除不需要置顶的页面
+      if (document?.documentElement || document?.body) {
+        document.documentElement.scrollTop = document.body.scrollTop = 0;  // 切换路由时手动置顶
+      }
+    }
+  }, [pathname]);
   return (
     <ConfigProvider
       theme={{
         algorithm: theme.darkAlgorithm,
         ..._themes,
       }}
-    >
+    >{network === 'testnet' && <Alert type="error" message="This is a test network. Coins have no value." banner showIcon={false} style={{ textAlign: 'center' }} />}
       <div className="page">
+
         <div className="header">
           <div className="pageLeft">
             <img
@@ -74,6 +107,7 @@ export default function Layout() {
             <div className="navWrap">
               <Nav />
             </div>
+
           </div>
           <div className="navWrap">
             {connected ? (
@@ -85,8 +119,16 @@ export default function Layout() {
                   }}
                   className="listforsale"
                 >
-                  List for sale
+                  List For Sale
                 </Button>
+                <div className="feerate" style={{ display: "flex", alignItems: 'center', gap: 4, fontSize: 14, cursor: 'pointer' }} onClick={() => {
+                  setFeeRateModelVisible(true)
+                }}>
+                  <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4F66B' }}></div>
+                  <div>
+                    Gas <span className="colorPrimary"><NumberFormat prefix={` ${feeRateType} `} value={feeRate} /> </span>
+                  </div>
+                </div>
                 <Dropdown
                   arrow
                   dropdownRender={() => (
@@ -96,7 +138,7 @@ export default function Layout() {
                           src={
                             <img src={avatar || defaultAvatar} alt="avatar" />
                           }
-                          style={{ width: 46, height: 46 }}
+                          style={{ minWidth: 46, minHeight: 46 }}
                         ></Avatar>
                         <div className="nameWrap">
                           <div className="name">
@@ -106,23 +148,27 @@ export default function Layout() {
                                   /(\w{4})\w+(\w{3})/,
                                   "$1...$2"
                                 ))}
+
                           </div>
                           {metaid && (
                             <div className="metaId">
                               MetaID:
-                              {metaid.replace(/(\w{4})\w+(\w{3})/, "$1...$2")}
+                              {metaid.replace(/(\w{6})\w+(\w{3})/, "$1...")}
                             </div>
                           )}
                         </div>
+                        <Button size="small" icon={<EditOutlined />} type="link" onClick={() => setEditVisible(true)}>
+
+                        </Button>
                       </div>
                       <div className="links">
-                      <div
+                        <div
                           className="item forsale"
                           onClick={() => {
                             history.push("/sale");
                           }}
                         >
-                          <div className="path">List for sale</div>
+                          <div className="path">List For Sale</div>
                           <RightOutlined />
                         </div>
                         <div
@@ -140,7 +186,16 @@ export default function Layout() {
                             history.push("/pending");
                           }}
                         >
-                          <div className="path">Pending Order</div>
+                          <div className="path">My Listing</div>
+                          <RightOutlined />
+                        </div>
+                        <div
+                          className="item"
+                          onClick={() => {
+                            history.push("/mrc20History");
+                          }}
+                        >
+                          <div className="path">My MRC-20</div>
                           <RightOutlined />
                         </div>
                       </div>
@@ -152,8 +207,11 @@ export default function Layout() {
                   placement="bottomRight"
                 >
                   <div className="userInfo">
-                    <div className="bal">{userBal} BTC</div>
+
+                    <Divider type='vertical' style={{ margin: 0 }} />
+                    <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
                     <Avatar
+                      style={{ minWidth: 30, minHeight: 30 }}
                       src={<img src={avatar || defaultAvatar} alt="avatar" />}
                     ></Avatar>
                     <DownOutlined />
@@ -172,8 +230,16 @@ export default function Layout() {
           <Outlet />
         </div>
 
-        <div className="footer">MetaID.market@2024 All Rights Reserved</div>
+        <div className="footer">
+          <span>MetaID.market@2024 All Rights Reserved</span>
+          <span>
+            <Link style={{ textDecoration: 'underline', color: '#fff' }} to="/about/fees" >About Fees</Link>
+          </span>
+        </div>
+        <SetProfile show={false} editVisible={editViseble} onClose={() => { setEditVisible(false) }} />
+        <SetFeeRate />
       </div>
+
     </ConfigProvider>
   );
 }

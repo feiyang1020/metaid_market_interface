@@ -13,6 +13,7 @@ import * as ecc from "@bitcoin-js/tiny-secp256k1-asmjs";
 import { Output } from "bitcoinjs-lib/src/transaction";
 import Decimal from "decimal.js";
 import { determineAddressInfo } from "./utlis";
+import { getUtxos } from "./psbtBuild";
 
 export type SimpleUtxo = {
   txId: string;
@@ -69,6 +70,7 @@ function inputBytes(input: PsbtInput) {
   if (isTaprootInput(input)) {
     return TX_INPUT_BASE + TX_INPUT_TAPROOT;
   }
+  if (input.redeemScript) return TX_INPUT_BASE + input.redeemScript.length;
   if (input.nonWitnessUtxo) return TX_INPUT_BASE + TX_INPUT_PUBKEYHASH;
   if (input.witnessUtxo) return TX_INPUT_BASE + TX_INPUT_SEGWIT;
 
@@ -94,12 +96,12 @@ function outputBytes(output: PsbtTxOutput) {
     (output.script
       ? output.script.length
       : output.address?.startsWith("bc1") || output.address?.startsWith("tb1")
-      ? output.address?.length === 42 // TODO: looks like something wrong here
-        ? TX_OUTPUT_SEGWIT
-        : TX_OUTPUT_SEGWIT_SCRIPTHASH
-      : output.address?.startsWith("3") || output.address?.startsWith("2")
-      ? TX_OUTPUT_SCRIPTHASH
-      : TX_OUTPUT_PUBKEYHASH)
+        ? output.address?.length === 42 // TODO: looks like something wrong here
+          ? TX_OUTPUT_SEGWIT
+          : TX_OUTPUT_SEGWIT_SCRIPTHASH
+        : output.address?.startsWith("3") || output.address?.startsWith("2")
+          ? TX_OUTPUT_SCRIPTHASH
+          : TX_OUTPUT_PUBKEYHASH)
   );
 }
 
@@ -257,8 +259,7 @@ export async function exclusiveChange({
 
   // Add payment input
   const address = await window.metaidwallet.btc.getAddress();
-  const filtered = await window.metaidwallet.btc.getUtxos();
-  console.log(filtered, "filtered");
+  const filtered = await getUtxos(address, network);
   const pubKey = await window.metaidwallet.btc.getPublicKey();
   const paymentUtxos = filtered
     .sort((a, b) => {
@@ -541,7 +542,7 @@ export async function buildAskLimit({
     } catch (e: any) {}
   }
   const pubKey = await window.metaidwallet.btc.getPublicKey();
-  const psbtInput = {
+  const psbtInput: any = {
     hash: ordinalUtxo.txId,
     index: ordinalUtxo.outputIndex,
     witnessUtxo: ordinalPreTx.outs[ordinalUtxo.outputIndex],
@@ -654,7 +655,7 @@ export async function buildBuyTake({
   const buy = Psbt.fromHex(takePsbtRaw, {
     network: btcNetwork,
   });
-  console.log("🚀 ~ file: order-builder.ts:293 ~ askPsbt:", buy);
+  
 
   // 2. add service fee
   // 🚓🚓 UPDATE: Since now the transaction structure is controlled by backend, we dont' have to add service fees outputs on our own
@@ -677,3 +678,14 @@ export async function buildBuyTake({
     error,
   };
 }
+
+export const getPkScriprt = (address: string, network: API.Network) => {
+  initEccLib(ecc);
+  const btcNetwork =
+    network === "mainnet" ? networks.bitcoin : networks.testnet;
+  const paymentPrevOutputScript = libAddress.toOutputScript(
+    address,
+    btcNetwork
+  );
+  return paymentPrevOutputScript;
+};

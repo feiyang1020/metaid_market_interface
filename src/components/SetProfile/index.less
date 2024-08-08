@@ -1,0 +1,100 @@
+.setProfileWrap {
+  margin-top: 20px;
+  text-align: center;
+  .currentAvatar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    .tag {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 35px;
+      height: 14px;
+      border-radius: 3.17px;
+      opacity: 1;
+
+      background: linear-gradient(90deg, #ffaf5e 0%, #f6840d 100%);
+      font-size: 7.14px;
+      font-weight: bold;
+      color: #000000;
+    }
+  }
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+  }
+  .subTitle {
+    margin-top: 24px;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: left;
+  }
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+  }
+  .FeeRateWrap {
+    //   background-color: rgba(255, 255, 255, 0.08);
+    //   padding: 31px 44px;
+    border-radius: 8px;
+    .feeRateItem {
+      cursor: pointer;
+      border: 1.19px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 124px;
+      text-align: center;
+      color: #fff;
+      &.active {
+        border: 1.19px solid #d4f66b;
+        color: #d4f66b;
+        .Feetime {
+          color: #d4f66b;
+        }
+      }
+      .Feelabel {
+        font-size: 14px;
+        margin-bottom: 9px;
+      }
+      .Feevalue {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 9px;
+      }
+      .Feetime {
+        color: #909399;
+        font-size: 14px;
+      }
+    }
+    .custom {
+      margin-top: 16px;
+      border-radius: 9.54px;
+      border: 1.19px solid rgba(255, 255, 255, 0.2);
+      padding: 22px 18px;
+      cursor: pointer;
+      .customInput {
+        input {
+          padding: 0;
+          text-align: left;
+          border-radius: 0;
+        }
+      }
+      &.active {
+        border: 1.19px solid #d4f66b;
+        color: #d4f66b;
+        .customInput {
+          input {
+            text-align: left;
+            color: #d4f66b;
+          }
+        }
+      }
+    }
+  }
+}

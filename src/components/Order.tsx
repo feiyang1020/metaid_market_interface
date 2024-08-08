@@ -6,10 +6,12 @@ import {
   Divider,
   Menu,
   MenuProps,
+  Skeleton,
+  Tooltip,
   Typography,
 } from "antd";
 import { HomeOutlined, EditOutlined, UserOutlined } from "@ant-design/icons";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./order.less";
 import level from "@/assets/level.svg";
 import btc from "@/assets/logo_btc@2x.png";
@@ -17,27 +19,31 @@ import { useModel, history } from "umi";
 import { formatSat } from "@/utils/utlis";
 import MetaIdAvatar from "./MetaIdAvatar";
 import JSONView from "./JSONView";
+import { getContent } from "@/services/api";
 
 type Props = {
   item: API.Order;
   handleBuy: (order: API.Order) => void;
 };
-const { Text } = Typography;
-const EllipsisMiddle: React.FC<{ suffixCount: number; children: string }> = ({
-  suffixCount,
-  children,
-}) => {
-  const start = children.slice(0, children.length - suffixCount);
-  const suffix = children.slice(-suffixCount).trim();
-  return (
-    <Text style={{ maxWidth: "100%" }} ellipsis={{ suffix }}>
-      {start}
-    </Text>
-  );
-};
 
-export default ({ item, handleBuy }: Props) => {
+
+export default ({ item: data, handleBuy }: Props) => {
   const { connected, connect } = useModel("wallet");
+  const [item, setItem] = useState<API.Order>(data)
+  const [loading, setLoading] = useState<boolean>(true);
+  const fetchPinContent = useCallback(async () => {
+    const _item = data
+    if (data && data.info.contentTypeDetect.indexOf("text") > -1 && data.textContent === undefined) {
+      const cont = await getContent(data.content);
+      _item.textContent = cont;
+    }
+    setItem(_item)
+    setLoading(false)
+  }, [data])
+
+  useEffect(() => {
+    fetchPinContent()
+  }, [fetchPinContent])
 
   const name = useMemo(() => {
     if (item.seller && item.seller.name) return item.seller.name;
@@ -59,8 +65,11 @@ export default ({ item, handleBuy }: Props) => {
                 : "none",
           }}
         >
+          {
+            loading && !item.textContent && <Skeleton active />
+          }
           {item.textContent && (
-            <JSONView textContent={item.textContent}/>
+            <JSONView textContent={item.textContent} />
           )}
         </div>
         <div className="assetNumber">
@@ -98,7 +107,7 @@ export default ({ item, handleBuy }: Props) => {
                 size={20}
                 style={{ minWidth: 20 }}
               />
-              <div className="name">{name}</div>
+              <div className="name"><Tooltip title={(item.seller && item.seller.name) || item.sellerAddress}>{name}</Tooltip></div>
             </div>
           </div>
           <Divider type="vertical" />

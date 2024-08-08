@@ -1,0 +1,102 @@
+.deployHistoryPage {
+  padding: 36px 67px;
+  .title {
+    cursor: pointer;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.5);
+    
+    .subTitle {
+      color: #ffffff;
+    }
+  }
+  .tabs {
+    margin-bottom: 11px;
+    max-width: calc(100% - 40px);
+    overflow-x: scroll;
+  }
+  .contetn {
+    position: relative;
+    z-index: 1;
+    width: 88px;
+    height: 85px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #0c0e09;
+    border: 0.5px solid rgba(255, 255, 255, 0.21);
+    .imageCont {
+      display: block;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+    }
+    .textCont {
+      word-break: break-all;
+      padding: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .mrc20-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 220px;
+    .tick {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      .tickName {
+        font-size: 16px;
+        font-weight: bold;
+        color: #ffffff;
+        max-width: 150px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .token {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+  }
+  .detail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 11px;
+    .avatars {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 9px;
+    }
+    .metaid {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+  .userPin{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .deployHistoryPage {
+    padding: 20px;
+  }
+}

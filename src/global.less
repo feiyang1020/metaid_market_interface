@@ -1,9 +1,9 @@
-@primary: #6e66fa;
+@primary: #d4f66b;
 
 @red: #f23a3a;
 
 :root {
-  --primary: #6e66fa;
+  --primary: #d4f66b;
   --dark-2: #2c2c2c;
   --red: #f23a3a;
 }
@@ -14,12 +14,24 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: "HarmonyOS Sans" , -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family:
+    "HarmonyOS Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
   font-weight: 500;
   color: #fff;
   background-color: #000000;
+  -webkit-tap-highlight-color: transparent;
 }
 input {
   padding-left: 0;
@@ -127,6 +139,39 @@ p {
     margin-right: 12px;
   }
 }
-.ant-btn-primary{
+.ant-btn-primary {
   font-weight: 500;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-transition-delay: 111111s;
+  -webkit-transition:
+    color 11111s ease-out,
+    background-color 111111s ease-out;
+}
+
+.spanRotate {
+  transform: rotate(180deg);
+  transition: transform 0.3s;
+}
+
+.spanReset {
+  transform: rotate(0deg);
+  transition: transform 0.3s;
+}
+.sharePop {
+  
+  .shareDivider{
+    margin: 0;
+  }
+  .item {
+    display: flex;
+    align-content: center;
+    cursor: pointer;
+    gap:10px;
+    line-height: 40px;
+  }
 }

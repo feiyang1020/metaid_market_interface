@@ -43,7 +43,10 @@ declare interface Window {
       eventName: string,
       handler: { mvcAddress: string; btcAddress: string } | any
     ) => void;
-    getNetwork: () => Promise<{ network: "mainnet" | "testnet" }>;
+    getNetwork: () => Promise<{
+      network: "mainnet" | "testnet";
+      status: string;
+    }>;
     connect: () => Promise<{
       address?: string;
       pubKey?: string;
@@ -67,10 +70,11 @@ declare interface Window {
       }: {
         psbtHex: string;
         options?: any;
-      }) => Promise<string|{status:string}>;
+      }) => Promise<string | { status: string }>;
       pushPsbt: (psbt: string) => Promise<string>;
       signPsbts: (psbtHexs: string[], options?: any[]) => Promise<string[]>;
-      getUtxos: () => Promise<API.UTXO[]>;
+      getUtxos: (params?: any) => Promise<API.UTXO[]>;
+      deployMRC20: (paams: any) => Promise<any>;
     };
     token: {
       getBalance: () => Promise<any>;
@@ -80,5 +84,5 @@ declare interface Window {
       broadcast: boolean;
     }) => Promise<TransferResponse>;
   };
-  METAID_MARKET_NETWORK:API.Network
+  METAID_MARKET_NETWORK: API.Network;
 }

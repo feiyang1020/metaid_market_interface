@@ -2,14 +2,31 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: calc(100vh - 138px);
-  max-height: calc(100vh - 138px);
+  min-height: calc(100vh - 120px);
+  max-height: calc(100vh - 120px);
   box-sizing: border-box;
+  .saleContent {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: calc(100vh - 192px);
+    max-height: calc(100vh - 192px);
+  }
+  .tabs {
+    margin: 0 71px 10px 71px;
+  }
   .listWrap {
     padding: 0 71px;
     flex-grow: 1;
     overflow-y: scroll;
     padding-bottom: 100px;
+  }
+  .ant-input-number-affix-wrapper .ant-input-number-suffix {
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .title {
     cursor: pointer;
@@ -25,7 +42,7 @@
   }
   .sellCard {
     padding: 0;
-    .levelInfo{
+    .levelInfo {
       display: flex;
       align-items: center;
       gap: 5px;
@@ -40,11 +57,11 @@
         font-size: 10.59px;
         min-width: 20px;
         justify-content: center;
-        font-style:oblique;
-      span {
-        font-weight: bold;
-        color: rgba(255, 255, 255, 0.4);
-      }
+        font-style: oblique;
+        span {
+          font-weight: bold;
+          color: rgba(255, 255, 255, 0.4);
+        }
       }
     }
     .cardWrap {
@@ -74,6 +91,15 @@
         min-width: 100%;
         min-height: 100%;
         object-fit: cover;
+      }
+      .info {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        font-size: 18px;
+        text-align: center;
       }
       .textCont {
         word-break: break-all;
@@ -135,7 +161,7 @@
         color: #ff8f1f;
         font-size: 14px;
         font-weight: 500;
-        gap:8px;
+        gap: 8px;
       }
       .number {
         font-size: 15px;
@@ -156,6 +182,10 @@
         letter-spacing: 0px;
         font-variation-settings: "opsz" auto;
         color: rgba(255, 255, 255, 0.4);
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
     .inputWrap {
@@ -210,8 +240,25 @@
 
 @media screen and (max-width: 767px) {
   .salePage {
+    min-height: calc(100vh - 100px);
+    max-height: calc(100vh - 100px);
+    box-sizing: border-box;
+    .saleContent {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: calc(100vh - 151px);
+      max-height: calc(100vh - 151px);
+    }
     .listWrap {
       padding: 20px;
+    }
+    .tabs {
+      padding: 0px 20px 10px;
+    }
+    .tabs {
+      margin: 0;
     }
 
     .title {
@@ -219,7 +266,7 @@
       margin: 0;
     }
     .totalPrice {
-      padding: 0 20px;
+      padding: 10px 20px;
       font-size: 14px;
       .aciotns {
         .prices {

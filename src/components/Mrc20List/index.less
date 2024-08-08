@@ -1,0 +1,251 @@
+.mrc20ListWrap {
+  box-sizing: border-box;
+  max-width: 100vw;
+  //   padding: 0 200px;
+  .ant-table-thead .ant-table-cell {
+    border-bottom: 1px solid rgba(255, 255, 255, 0) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0) !important;
+  }
+  .mrc20-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+    .tick {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      .tickName {
+        font-size: 16px;
+        font-weight: bold;
+        color: #ffffff;
+      }
+      .token {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+  }
+  .idCoinDeploy {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+    .nameWrap {
+      display: flex;
+      align-items: center;
+    }
+    .name {
+      max-width: 100px;
+      font-size: 14px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .metaid {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+  .progressAndMint {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    // justify-content: space-betwe
+    width: 160px;
+    justify-content: flex-end;
+    .progress {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+      .ant-progress-line {
+        min-width: 88px !important;
+        width: 100%;
+        line-height: 10px;
+      }
+    }
+  }
+  .premine {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    background: #232719;
+    border-radius: 4px;
+    color: #d4f66b;
+    font-size: 16px;
+    text-align: center;
+    padding: 4px 8px;
+    white-space: nowrap;
+  }
+  .condition {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    .lvlCount {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+  }
+  .progress {
+    font-size: 14px;
+    .ant-progress-bg {
+      height: 4px !important;
+    }
+  }
+  .deployer {
+    .deployerInfo {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      .deployerName {
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    .MetaId {
+      margin-top: 8px;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+  .IdCoinCard {
+    .ant-divider-horizontal {
+      margin: 12px 0;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      .topLeft {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        .nameWrap {
+          display: flex;
+          align-items: center;
+          .name {
+            font-size: 12px;
+            font-weight: bold;
+          }
+        }
+        .metaid {
+          margin-top: 3px;
+          font-size: 10px;
+          font-weight: normal;
+          color: rgba(255, 255, 255, 0.5);
+        }
+        .mrc20-item {
+          min-width: 0 !important;
+          .tick {
+            .tickName {
+              font-size: 12px;
+            }
+            .token {
+              font-size: 10px;
+            }
+          }
+        }
+      }
+      .topRight {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        .progress {
+          width: 90%;
+          font-size: 12px;
+        }
+      }
+    }
+    .bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .bottomLeft {
+        width: 45%;
+        margin-right: 10px;
+      }
+      .bottomRight {
+        width: 45%;
+      }
+      .item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        &.item {
+          margin-top: 16px;
+        }
+        gap: 4px;
+        .label {
+          font-size: 12px;
+          font-weight: normal;
+          color: rgba(255, 255, 255, 0.5);
+        }
+        .value {
+          font-size: 12px;
+          color: #ffffff;
+          &.tick {
+            font-size: 12px;
+            font-weight: bold;
+            color: #f68819;
+          }
+          .condition {
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+          }
+          .deployerInfo {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            .deployerName {
+              font-size: 12px;
+              max-width: 100px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 767px) {
+  .mrc20ListWrap {
+    padding: 0 0px;
+    .ant-tabs-top > .ant-tabs-nav::before {
+      display: none;
+    }
+    .ant-tabs-nav-operations{
+      display: none;
+    }
+    &.ant-tabs > .ant-tabs-nav {
+      &::before {
+        display: none;
+      }
+      // flex-wrap: wrap;
+      .ant-tabs-nav-wrap {
+        // width: 100%;
+        transform: none;
+        .ant-tabs-nav-list {
+          transform: none !important;
+        }
+      }
+      .ant-tabs-extra-content {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      flex-direction: column;
+    }
+  }
+}

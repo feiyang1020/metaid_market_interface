@@ -7,11 +7,13 @@ export default () => {
   const size = 12;
   const { network } = useModel("wallet");
   const [sortKey, setSortKey] = useState<string>("timestamp");
+  const [filterKey, setFilterKey] = useState<Record<string,string>>({});
   const [sortType, setSortType] = useState<number>(-1);
   const [cursor, setCursor] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [orders, setOrders] = useState<API.Asset[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [tab, setTab] = useState<"PIN" | "MRC-20">("MRC-20");
   const fetchOrders = useCallback(
     async (retry: boolean = true) => {
       if (network) {
@@ -23,6 +25,7 @@ export default () => {
             sortType,
             cursor: cursor * size,
             size,
+            ...filterKey
           });
           const list: API.Asset[] = ret.data.list.map((item) => {
             return {
@@ -30,15 +33,15 @@ export default () => {
               info: JSON.parse(item.detail),
             };
           });
-          for (let i = 0; i < list.length; i++) {
-            if (
-              list[i].info &&
-              list[i].info.contentTypeDetect.indexOf("text") > -1
-            ) {
-              const cont = await getContent(list[i].content);
-              list[i].textContent = cont;
-            }
-          }
+          // for (let i = 0; i < list.length; i++) {
+          //   if (
+          //     list[i].info &&
+          //     list[i].info.contentTypeDetect.indexOf("text") > -1
+          //   ) {
+          //     const cont = await getContent(list[i].content);
+          //     list[i].textContent = cont;
+          //   }
+          // }
           setOrders(list);
           setTotal(ret.data.total);
           setLoading(false);
@@ -50,7 +53,7 @@ export default () => {
         }
       }
     },
-    [network, sortKey, sortType, cursor]
+    [network, sortKey, sortType, cursor,filterKey]
   );
   const updateOrders: any = useIntervalAsync(fetchOrders, 90000);
   return {
@@ -65,5 +68,9 @@ export default () => {
     setSortKey,
     loading,
     setLoading,
+    tab,
+    setTab,
+    filterKey,
+    setFilterKey  
   };
 };

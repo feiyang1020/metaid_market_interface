@@ -63,7 +63,10 @@ declare namespace API {
     message: string;
     code: number;
   }
-
+  type Tx = {
+    address: string;
+    value: number;
+  };
   type UTXO = {
     txId: string;
     vout: number;
@@ -93,7 +96,7 @@ declare namespace API {
     detail: "string";
     fee: 0;
     feeRate: 0;
-    orderId: "string";
+    orderId: string;
     orderState: 1;
     outValue: 0;
     preview: "string";
@@ -113,5 +116,417 @@ declare namespace API {
       pinPath: string;
     };
     textContent: string;
+  };
+
+  type MintMRC20PreReq = {
+    mintPins: {
+      address: string;
+      pinId: string;
+      pinUtxoOutValue: number;
+      pinUtxoIndex: number;
+      pinUtxoTxId: string;
+      pkScript: string;
+    }[];
+    networkFeeRate: number;
+    outAddress: string;
+    outValue: number;
+    tickerId: string;
+  };
+
+  type TransferMRC20PreReq = {
+    changeAddress: string;
+    changeOutValue: number;
+    mrc20Outs: {
+      address: string;
+      amount: string;
+      outValue: number;
+      pkScript: string;
+    }[];
+    networkFeeRate: number;
+    tickerId: string;
+    transfers: {
+      address: string;
+      amount: string;
+      pkScript: string;
+      tickerId: string;
+      utxoIndex: number;
+      utxoOutValue: number;
+      utxoTxId: string;
+    }[];
+  };
+
+  type TransferMRC20PreRes = {
+    extra: string;
+    orderId: string;
+    revealAddress: string;
+    revealFee: number;
+    revealGas: number;
+    revealInputIndex: number;
+    revealPrePsbtRaw: string;
+    serviceAddress: string;
+    serviceFee: number;
+    totalFee: number;
+    revealOutValue: number;
+  };
+
+  type MintMRC20PreRes = {
+    orderId: string;
+    revealAddress: string;
+    revealFee: number;
+    revealGas: number;
+    revealInputIndex: number;
+    revealPrePsbtRaw: string;
+    serviceAddress: string;
+    serviceFee: number;
+    totalFee: number;
+    revealOutValue: number;
+  };
+  type MRC20TickInfo = {
+    amtPerMint: string;
+    blockHeight: string;
+    decimals: string;
+    metaData: string;
+    mintCount: string;
+    mrc20Id: string;
+    pinNumber: number;
+    pinCheck: {
+      count: string;
+      lvl: string;
+    };
+    tick: string;
+    tokenName: string;
+    totalMinted: number;
+    type: string;
+    mintable: boolean;
+  };
+  type MRC20Shovel = {
+    address: string;
+    chainName: string;
+    content: string;
+    contentBody: string;
+    contentLength: number;
+    contentSummary: string;
+    contentType: string;
+    contentTypeDetect: string;
+    creator: string;
+    dataValue: number;
+    encryption: string;
+    genesisFee: number;
+    genesisHeight: number;
+    genesisTransaction: string;
+    id: string;
+    initialOwner: string;
+    isTransfered: boolean;
+    location: string;
+    metaid: string;
+    mrc20MintPin: string;
+    mrc20Minted: boolean;
+    number: number;
+    offset: number;
+    operation: string;
+    originalId: string;
+    originalPath: string;
+    output: string;
+    outputValue: number;
+    parentPath: string;
+    path: string;
+    pop: string;
+    popLv: number;
+    preview: string;
+    status: number;
+    timestamp: number;
+    txInIndex: number;
+    txIndex: number;
+    version: string;
+  };
+
+  type Mrc20AddressUtxo = {
+    address: string;
+    blockHeight: number;
+    chain: string;
+    mrc20s: {
+      amount: string;
+      decimals: string;
+      mrc20Id: string;
+      tick: string;
+      txPoint: string;
+    }[];
+    outputIndex: number;
+    satoshi: number;
+    satoshis: number;
+    scriptPk: string;
+    timestamp: number;
+    txId: string;
+    vout: number;
+    tag: string;
+    orderId: string;
+  };
+
+  type MRC20Info = {
+    premineCount: string;
+    mintCount: string;
+    amtPerMint: string;
+    blockHeight: string;
+    change24h: string;
+    decimals: string;
+    deployTime: number;
+    deployerAddress: string;
+    deployerMetaId: string;
+    deployerUserInfo: {
+      avatar: string;
+      name: string;
+    };
+    holders: number;
+    marketCap: string;
+    metaData: string;
+    mintCount: string;
+    mintable: boolean;
+    mrc20Id: string;
+    pinNumber: number;
+    price: string;
+    priceUsd: string;
+    pinCheck: {
+      count: string;
+      lvl: string;
+      path: string;
+    };
+    remaining: string;
+    supply: string;
+    tick: string;
+    tokenName: string;
+    totalMinted: number;
+    totalSupply: string;
+    txCount: number;
+    type: string;
+    tag: "id-coins" | "";
+  };
+
+  type UserMrc20Asset = {
+    balance: string;
+    decimals: string;
+    mrc20Id: string;
+    tick: string;
+    tokenName: string;
+    avlBalance?: string;
+    listedBalance?: string;
+    unconfirmedBalance?: string;
+    tag?: string;
+    mrc20s?: {
+      amount: string;
+      decimals: string;
+      mrc20Id: string;
+      tick: string;
+      txPoint: string;
+    }[];
+  };
+  type Mrc20Order = {
+    orderId: string;
+    utxoId: string;
+    outValue: number;
+    assetType: string;
+    orderState: number;
+    sellerAddress: string;
+    seller: {
+      name: string;
+      avatar: string;
+    };
+    buyerAddress: string;
+    buyer: null;
+    tickId: string;
+    tick: string;
+    tokenName: string;
+    decimals: number;
+    chain: string;
+    amount: number;
+    amountStr: string;
+    tokenPriceRate: number;
+    tokenPriceRateStr: string;
+    priceAmount: number;
+    priceDecimal: number;
+    priceCoin: string;
+    fee: number;
+    feeRate: number;
+    takePsbt: string;
+    blockHeight: number;
+    confirmationState: number;
+    dealTime: number;
+    txId: string;
+  };
+
+  type BuyOrderPsbtRes = {
+    orderId: string;
+    utxoId: string;
+    outValue: number;
+    assetType: string;
+    orderState: number;
+    sellerAddress: string;
+    seller: null;
+    buyerAddress: string;
+    buyer: null;
+    tickId: string;
+    tick: string;
+    tokenName: string;
+    decimals: number;
+    chain: string;
+    amount: number;
+    amountStr: string;
+    tokenPriceRate: number;
+    tokenPriceRateStr: string;
+    priceAmount: number;
+    priceDecimal: number;
+    priceCoin: string;
+    fee: number;
+    feeRate: number;
+    takePsbt: string;
+    blockHeight: number;
+    confirmationState: number;
+    dealTime: number;
+    txId: string;
+  };
+  type Mrc20InscribeOrder = {
+    amtPerMint: string;
+    blockHeight: number;
+    confirmationState: number;
+    decimals: string;
+    mintCount: string;
+    opOrderType: string;
+    orderId: string;
+    premineCount: string;
+    pinCheck: Record<string, string>;
+    startBlockHeight: string;
+    tick: string;
+    tickId: string;
+    tickName: string;
+    timestamp: number;
+    totalMinted: string;
+    txId: string;
+    usedPins: string[];
+  };
+  type DeployIdCoinPreReq = {
+    networkFeeRate: number;
+    tick: string;
+    tokenName: string;
+    description: string;
+    issuerMetaId: string;
+    issuerAddress: string;
+    issuerSign: string; //issuerSign: 对tick签名
+    message: string;
+    followersNum: number;
+    amountPerMint: number;
+    liquidityPerMint: number;
+  };
+  type DeployMRC20PreReq = {
+    address: string;
+    networkFeeRate: number;
+    payload: string;
+  };
+
+  type DeployIdCoinPreRes = {
+    orderId: string;
+    totalFee: number;
+    minerFee: number;
+    receiveAddress: string;
+    serviceFee: number;
+  };
+
+  type DeployMRC20PreRes = {
+    extra: string;
+    orderId: string;
+    totalFee: number;
+    minerFee: number;
+    revealAddress: string;
+    serviceFee: number;
+  };
+
+  type MintIdCoinPreRes = {
+    orderId: string;
+    totalFee: number;
+    revealInscribeFee: number;
+    revealMintFee: number;
+    revealInscribeAddress: string;
+    revealMintAddress: string;
+    serviceFee: number;
+    serviceAddress: string;
+  };
+
+  type IdCoin = {
+    tick: string;
+    tokenName: string;
+    decimals: "8";
+    amtPerMint: "21000000";
+    followersLimit: "1000";
+    mintCount: "1000";
+    liquidityPerMint: 1200;
+    premineCount: string;
+    totalMinted: "0";
+    blockHeight: string;
+    metaData: string;
+    type: "b4b2e279f0322924076204b325369dbe207121d3b342446b81c216490ded6ae0i0";
+    qual: {
+      count: "1";
+      creator: string;
+      lvl: string;
+      path: string;
+    };
+    pinCheck: {
+      count: "1";
+      creator: string;
+      lvl: string;
+      path: string;
+    };
+    payCheck: {
+      payAmount: "1200";
+      payTo: string;
+    };
+    mrc20Id: "b4b2e279f0322924076204b325369dbe207121d3b342446b81c216490ded6ae0i0";
+    pinNumber: 1238;
+    holders: 0;
+    deployerMetaId: string;
+    deployerAddress: string;
+    deployerUserInfo: {
+      name: string;
+      avatar: string;
+    };
+    deployTime: number;
+    price: "0.00";
+    priceUsd: string;
+    pool: 0;
+    totalSupply: "21000000000";
+    supply: string;
+    mintable: true;
+    remaining: "21000000000";
+    isFollowing?: boolean;
+  };
+  type Holder = {
+    tickId: string;
+    tick: string;
+    tokenName: string;
+    metaId: string;
+    address: string;
+    userInfo: {
+      name: string;
+      avatar: string;
+    };
+    balance: string;
+    proportion: string;
+  };
+
+  type RefundIdCoinPreRes = {
+    orderId: string;
+    refundAmount: number;
+    refundAddress: string;
+    psbtRaw: string;
+  };
+
+  export type RedeemIdCoinPreRes = {
+    minerFee: number;
+    orderId: string;
+    priceAmount: number;
+    psbtRaw: string;
+    receiveAddress: string;
+    revealInputIndex: number;
+    serviceFee: number;
+    totalAmount: number;
+    totalFee: number;
   };
 }

@@ -28,48 +28,57 @@ export default () => {
   const [addressType, setAddressType] = useState<string>();
   const [metaid, setMetaid] = useState<string>();
   const [btcAddress, setBTCAddress] = useState<string>();
-  const [btcConnector, setBtcConnector] = useState<IMetaletWalletForBtc>();
+  const [btcConnector, setBtcConnector] = useState<IBtcConnector>();
   const [network, setNetwork] = useState<Network>(curNetwork);
   const [connected, setConnected] = useState<boolean>(false);
   const [userBal, setUserBal] = useState<string>("0");
   const [avatar, setAvatar] = useState<string>("");
   const [userName, setUserName] = useState<string>();
   const [authParams, setAuthParams] = useState<AuthParams>();
+  const [initializing, setInitializing] = useState<boolean>(true);
 
   const [feeRates, setFeeRates] = useState<
     {
       label: string;
       value: number;
       time: string;
+      icon: string;
+      activeIcon: string;
     }[]
   >([]);
+  const [feeRate, setFeeRate] = useState<number>(0);
+  const [feeRateType, setFeeRateType] = useState<string>("");
+  const [feeRateModalVisible, setFeeRateModelVisible] =
+    useState<boolean>(false);
 
   const connect = async () => {
     if (!checkExtension()) return;
     let { network: _net, status } = await window.metaidwallet.getNetwork();
+    let _wallet: IMetaletWalletForBtc | undefined = undefined;
     if (status === "not-connected") {
-      await MetaletWalletForBtc.create();
-      const { network: _net, status } = await window.metaidwallet.getNetwork();
+      _wallet = await MetaletWalletForBtc.create();
+      _net = (await window.metaidwallet.getNetwork()).network;
     }
-    console.log(_net, "_net");
     if (_net !== curNetwork) {
-      await window.metaidwallet.switchNetwork(
+      const ret = await window.metaidwallet.switchNetwork(
         curNetwork === "testnet" ? "testnet" : "livenet"
       );
+      if (ret.status === "canceled") return;
+      const { network } = await window.metaidwallet.getNetwork();
+      if (network !== curNetwork) {
+        return;
+      }
     }
-    const { network } = await window.metaidwallet.getNetwork();
-    if (network !== curNetwork) {
-      return;
+    if (_wallet === undefined) {
+      _wallet = await MetaletWalletForBtc.create();
     }
-    const _wallet = await MetaletWalletForBtc.create();
-    console.log(_wallet);
     if (!_wallet.address) return;
-    setNetwork(network);
+    
     const publicKey = await window.metaidwallet.btc.getPublicKey();
-    const publicKeySign = await window.metaidwallet.btc.signMessage(
-      "metaid.market"
-    );
+    const publicKeySign =
+      await window.metaidwallet.btc.signMessage("metaid.market");
     if (publicKeySign.status) return;
+    setNetwork(curNetwork);
     setAuthParams({ "X-Public-Key": publicKey, "X-Signature": publicKeySign });
     sessionStorage.setItem(
       "authParams",
@@ -78,15 +87,16 @@ export default () => {
         "X-Signature": publicKeySign,
       })
     );
-    const _btcConnector: IMetaletWalletForBtc = await btcConnect({
+    const _btcConnector: IBtcConnector = await btcConnect({
       wallet: _wallet,
       network,
     });
     const _walletParams = {
       address: _wallet.address,
-      pub: _wallet.pub,
+      pub: publicKey,
     };
     sessionStorage.setItem("walletParams", JSON.stringify(_walletParams));
+    setInitializing(true);
     setBtcConnector(_btcConnector);
     setConnected(true);
     setBTCAddress(_btcConnector.wallet.address);
@@ -102,6 +112,7 @@ export default () => {
     );
     setMetaid(_btcConnector.user.metaid);
     setUserName(_btcConnector.user.name);
+    setInitializing(false);
   };
 
   const disConnect = async () => {
@@ -122,6 +133,19 @@ export default () => {
     if (network) {
       const ret = await getFeeRate(network);
       setFeeRates(ret);
+
+      setFeeRate((prev) => {
+        if (prev === 0) {
+          return ret[1].value;
+        }
+        return prev;
+      });
+      setFeeRateType((prev) => {
+        if (prev === "") {
+          return ret[1].label;
+        }
+        return prev;
+      });
     }
   }, [network]);
 
@@ -130,6 +154,7 @@ export default () => {
       const _network = (await window.metaidwallet.getNetwork()).network;
       if (_network !== curNetwork) {
         disConnect();
+        setInitializing(false);
         return;
       }
       setNetwork(_network);
@@ -143,11 +168,13 @@ export default () => {
         }
         if (!_authParams) {
           disConnect();
+          setInitializing(false);
           return;
         }
         const _walletParams = JSON.parse(walletParams);
         if (_authParams && _authParams["X-Public-Key"] !== _walletParams.pub) {
           disConnect();
+          setInitializing(false);
           return;
         }
         const _wallet = MetaletWalletForBtc.restore({
@@ -158,10 +185,12 @@ export default () => {
         const pubKey = await window.metaidwallet.btc.getPublicKey();
         if (btcAddress !== _walletParams.address) {
           disConnect();
+          setInitializing(false);
           return;
         }
         if (pubKey !== _walletParams.pub) {
           disConnect();
+          setInitializing(false);
           return;
         }
         setAuthParams((prev) => {
@@ -173,7 +202,7 @@ export default () => {
           }
           return _authParams;
         });
-        const _btcConnector: IMetaletWalletForBtc = await btcConnect({
+        const _btcConnector: IBtcConnector = await btcConnect({
           wallet: _wallet,
           network: _network,
         });
@@ -185,8 +214,12 @@ export default () => {
         setAddressType(
           determineAddressInfo(_btcConnector.wallet.address).toUpperCase()
         );
-        const bal = await _btcConnector.wallet.getBalance();
-        setUserBal(formatSat(bal.total));
+        try {
+          const bal = await _btcConnector.wallet.getBalance();
+          setUserBal(formatSat(bal.total));
+        } catch (err) {
+          console.log(err, "getBalance");
+        }
         setAvatar(
           _btcConnector.user.avatar
             ? `${getHostByNet(network)}${_btcConnector.user.avatar}`
@@ -194,8 +227,10 @@ export default () => {
         );
         setMetaid(_btcConnector.user.metaid);
         setUserName(_btcConnector.user.name);
+        setInitializing(false);
       }
     }
+    setInitializing(false);
   }, [walletName]);
   useEffect(() => {
     //
@@ -246,5 +281,13 @@ export default () => {
     authParams,
     updateWalletInfo,
     updateFeeRate,
+    init,
+    initializing,
+    setFeeRate,
+    feeRate,
+    feeRateType,
+    setFeeRateType,
+    setFeeRateModelVisible,
+    feeRateModalVisible,
   };
 };

@@ -1,5 +1,5 @@
 import { Avatar } from "antd";
-import defaultAvatar from "@/assets/avatar@2x.png";
+import defaultAvatar from "@/assets/avatar.svg";
 import { getHostByNet } from "@/config";
 import { useModel } from "umi";
 import React from "react";
@@ -16,10 +16,11 @@ export default ({ avatar, style, size }: Props) => {
       size={size}
       src={
         <img
-          src={avatar ? getHostByNet(network) + avatar : defaultAvatar}
+          src={avatar ? avatar.indexOf('http') > -1 ? avatar : getHostByNet(network) + avatar : defaultAvatar
+          }
           alt="avatar"
         />
       }
-    ></Avatar>
+    ></Avatar >
   );
 };

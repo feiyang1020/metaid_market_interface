@@ -1,0 +1,209 @@
+.mrc20Form {
+  .customRadio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(25, 27, 24, 0.84);
+    backdrop-filter: blur(1000px);
+    padding: 31px 30px 38px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    width: 100%;
+    gap: 24px;
+    .customRadioItem {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      box-sizing: border-box;
+      border-radius: 8px;
+      padding: 21px 0px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      min-width: 80px;
+      padding: 20px;
+      margin-right: 0;
+      &::after {
+        display: none;
+      }
+
+      &:hover {
+        border: 1px solid #c0f079;
+      }
+      &.ant-radio-wrapper-checked {
+        border: 1px solid #c0f079;
+        background-color: #c0f079;
+        color: black;
+      }
+      &.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+        border-color: #000;
+        background-color: #000;
+      }
+      &.ant-radio-wrapper .ant-radio-inner::after {
+        // display: none;
+        transform: scale(0.75);
+        background-image: url(../../../assets/line.svg);
+        background-size: 100% 100%;
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-position: top center;
+        margin-block-start: -10px;
+      }
+      &.ant-radio-wrapper .ant-radio-checked::after {
+        border: 1px solid #000;
+      }
+    }
+  }
+  .customCheckbox {
+    background: rgba(25, 27, 24, 0.84);
+    backdrop-filter: blur(1000px);
+    // border-radius: 8px;
+    height: 52px;
+    padding: 0 16px;
+    // margin-bottom: 16px;
+    .value {
+      display: flex;
+      // gap: 4px;
+      align-items: center;
+    }
+    &:hover {
+      // .ant-checkbox .ant-checkbox-inner{
+      //   border-color: #000;
+      // }
+      // .ant-checkbox-checked .ant-checkbox-inner{
+      //   background-color: #000!important;
+      //   border-color: #000;
+
+      // }
+    }
+    .ant-checkbox .ant-checkbox-inner {
+      border-radius: 50%;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner {
+      // background-color: #000;
+      // border-color: #000;
+      // &:hover{
+      //   background-color: #000;
+      //   border-color: #000;
+      // }
+    }
+    .ant-checkbox .ant-checkbox-inner:after {
+      border-color: #000;
+    }
+  }
+  .ant-checkbox-wrapper:after {
+    display: none !important;
+  }
+  .ant-collapse-ghost
+    > .ant-collapse-item
+    > .ant-collapse-content
+    > .ant-collapse-content-box {
+    padding: 0;
+  }
+  .collapsePanel {
+    &::before {
+      content: "Show";
+    }
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #c0f079;
+    .collapseIcon {
+      transform: rotate(0deg);
+      transition: transform 0.3s;
+    }
+  }
+  .ant-collapse-item-active {
+    .ant-collapse-header-text {
+      .collapsePanel {
+        &::before {
+          content: "Hide";
+        }
+        display: flex;
+        .collapseIcon {
+          transform: rotate(-180deg);
+          transition: transform 0.3s;
+        }
+      }
+    }
+  }
+  .noPins {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: #ff5252;
+    gap: 8px;
+    cursor: pointer;
+    border: 1px solid #ff5252;
+    border-radius: 8px;
+    padding: 32px;
+  }
+  .mrc20CardInfo {
+    .tokenInfo {
+      margin-bottom: 20px;
+      .tickName {
+        margin-top: 10px;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .tokenId {
+        margin-top: 7px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+    .deployer {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      .deployerInfo {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        .deployerName {
+          max-width: 150px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      .MetaId {
+        margin-top: 8px;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+  }
+  .idCoinDeploy {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+    margin-bottom: 36px;
+    .rightIndfo{
+      text-align: left;
+    }
+    .name {
+      max-width: 250px;
+      font-size: 14px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .metaid {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+}
+.deployComfirm{
+  .ant-collapse>.ant-collapse-item >.ant-collapse-header{
+    padding: 10px 0;
+  }
+}
