@@ -80,8 +80,16 @@
   }
   .footer {
     font-size: 14px;
-    line-height: 56px;
+    height: 56px;
     color: #8a8a8a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100vw;
+    padding: 0 71px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    flex-wrap: wrap;
   }
 }
 .walletInfo {
@@ -137,37 +145,34 @@
     cursor: pointer;
   }
 }
-.DropdownMenu{
+.DropdownMenu {
   display: none;
 }
-@media screen and (max-width: 967px){
-  .page{
+@media screen and (max-width: 967px) {
+  .page {
     .listforsale {
       display: none;
     }
   }
 }
-@media screen and (max-width: 867px){
-  
-  .page{
+@media screen and (max-width: 867px) {
+  .page {
     .header {
       .navs {
-     
         gap: 10px;
         .nav {
           font-size: 14px;
         }
-  
+
         img {
           display: none;
         }
       }
     }
-    
   }
 }
 @media screen and (max-width: 767px) {
-  .DropdownMenu{
+  .DropdownMenu {
     display: block;
   }
   .page {

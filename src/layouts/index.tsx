@@ -148,7 +148,7 @@ export default function Layout() {
                                   /(\w{4})\w+(\w{3})/,
                                   "$1...$2"
                                 ))}
-                                
+
                           </div>
                           {metaid && (
                             <div className="metaId">
@@ -211,8 +211,8 @@ export default function Layout() {
                     <Divider type='vertical' style={{ margin: 0 }} />
                     <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
                     <Avatar
-                    style={{ minWidth: 30, minHeight: 30 }}
-                      src={<img src={avatar || defaultAvatar} alt="avatar"  />}
+                      style={{ minWidth: 30, minHeight: 30 }}
+                      src={<img src={avatar || defaultAvatar} alt="avatar" />}
                     ></Avatar>
                     <DownOutlined />
                   </div>
@@ -230,7 +230,12 @@ export default function Layout() {
           <Outlet />
         </div>
 
-        <div className="footer">MetaID.market@2024 All Rights Reserved</div>
+        <div className="footer">
+          <span>MetaID.market@2024 All Rights Reserved</span>
+          <span>
+            <Link style={{ textDecoration: 'underline', color: '#fff' }} to="/about/fees" >About Fees</Link>
+          </span>
+        </div>
         <SetProfile show={false} editVisible={editViseble} onClose={() => { setEditVisible(false) }} />
         <SetFeeRate />
       </div>
