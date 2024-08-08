@@ -186,7 +186,7 @@ export default () => {
                 return {
                     style: { cursor: 'pointer' },
                     onClick: () => {
-                        history.push(`/mrc20/${record.tick}`)
+                        history.push(`/${record.tag==='id-coins'?'idCoin':'mrc20'}/${record.tick}`)
                     },
                 }
             }}

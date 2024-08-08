@@ -298,6 +298,7 @@ declare namespace API {
     totalSupply: string;
     txCount: number;
     type: string;
+    tag: "id-coins" | "";
   };
 
   type UserMrc20Asset = {

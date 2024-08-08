@@ -14,7 +14,7 @@ export const getHostByNet = (network: API.Network) => {
 const TESTNET_ORDERS_TRADE_URL =
   "https://testnet.orders.exchange/orderbook/idcoin/btc-";
 const MAINNET_ORDERS_TRADE_URL =
-  "https://orders.exchange/orderbook/idcoin/btc-";
+  "https://app.orders.exchange/orderbook/idcoin/btc-";
 
 const TESTNET_METAID_URL = "https://metaid-testnet.vercel.app/metaid-detail/";
 const MAINNET_METAID_URL = "https://metaid.io/metaid-detail/";

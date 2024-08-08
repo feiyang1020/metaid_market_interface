@@ -1,11 +1,15 @@
 import { Avatar, Typography } from "antd"
 import MRC20Icon from "../MRC20Icon"
+import MetaIdAvatar from "../MetaIdAvatar"
 
 export default ({ info }: { info: API.MRC20Info }) => {
     return <div className="mrc20-item">
-        <MRC20Icon tick={info.tick} metadata={info.metaData} />
+        {
+            info.tag === 'id-coins' ? <MetaIdAvatar size={40} avatar={info.deployerUserInfo.avatar} /> : <MRC20Icon tick={info.tick} metadata={info.metaData} />
+        }
+
         <div className="tick">
-            <div className="tickName">
+            <div className="tickName" style={{color:info.tag === 'id-coins'?'#F68819':'#fff'}}>
                 {info.tick}
             </div>
 

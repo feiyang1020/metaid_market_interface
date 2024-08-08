@@ -13,9 +13,10 @@ type Props = {
 export default ({ record, }: Props) => {
 
     const percent = Number(record.supply / record.totalSupply) * 100 || 0;
+    const rate = Number(record.premineCount) / Number(record.mintCount) * 100
 
     return <Card className="IdCoinCard" bordered={false} style={{ background: '#101110', borderRadius: 16 }} styles={{ body: { padding: '12px 18px' } }} onClick={() => {
-        history.push(`/mrc20/${record.tick}`)
+        history.push(`/${record.tag==='id-coins'?'idCoin':'mrc20'}/${record.tick}`)
     }} >
         <div className="top">
             <div className="topLeft">
@@ -29,7 +30,11 @@ export default ({ record, }: Props) => {
                     </Progress>
                 </div>
                 <Space>
-                    <Button size='small' style={{ fontSize: 12 }} type='link'>{Number(record.premineCount) > 0 ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100} suffix='%' precision={4} /> : 'Fair Launch'}</Button>
+                    <Button size='small' style={{ fontSize: 12 }} type='link'> {
+                        Number(record.premineCount) === 0 ? 'Fair Launch' :
+                            rate < 1 ? '<1%' : <NumberFormat value={rate} floor suffix='%' precision={4} />
+
+                    }</Button>
                     <Button size='small' style={{ fontSize: 12 }} disabled={!record.mintable} onClick={(e) => { e.stopPropagation(); history.push('/inscribe/MRC-20/' + record.tick) }} type='primary'>Mint</Button>
                 </Space>
             </div>

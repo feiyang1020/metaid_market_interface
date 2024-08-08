@@ -14,7 +14,7 @@ export default ({ record, }: Props) => {
 
 
     return <Card className="IdCoinCard" bordered={false} style={{ background: '#101110', borderRadius: 16 }} styles={{ body: { padding: '12px 18px' } }} onClick={() => {
-        history.push(`/mrc20/${record.tick}`)
+        history.push(`/${record.tag==='id-coins'?'idCoin':'mrc20'}/${record.tick}`)
     }} >
         <div className="top">
             <div className="topLeft">
