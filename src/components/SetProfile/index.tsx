@@ -61,7 +61,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                 options: {
                     feeRate: Number(feeRate),
                     network: network,
-                    service: getCreatePinFeeByNet(network),
+                    // service: getCreatePinFeeByNet(network),
                 }
             })
             console.log(ret, 'ret in')
