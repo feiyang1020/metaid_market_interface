@@ -1071,7 +1071,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
-                                                        suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
+                                                        suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' ? '-test':''}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
                                                         placeholder="metafile://Your-Icon-Pinid"
                                                     />
                                                 </Form.Item>
