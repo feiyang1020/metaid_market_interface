@@ -14,10 +14,10 @@ export default ({ size = 40, tick, metadata = '' }: Props) => {
             try {
                 const data = JSON.parse(metadata);
                 if (data.icon) {
-                    return data.icon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)
+                    return data.icon.replace('metafile://', `https://man${network === 'testnet' ? '-test' : ''}.metaid.io/content/`)
                 }
                 if (data.cover) {
-                    return data.cover.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)
+                    return data.cover.replace('metafile://', `https://man${network === 'testnet' ? '-test' : ''}.metaid.io/content/`)
                 }
 
             } catch (err) {
