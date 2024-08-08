@@ -5,11 +5,11 @@ import MetaIdAvatar from "../MetaIdAvatar"
 export default ({ info }: { info: API.MRC20Info }) => {
     return <div className="mrc20-item">
         {
-            info.tag === 'id-coins' ? <MetaIdAvatar size={40} avatar={info.deployerUserInfo.avatar} /> : <MRC20Icon tick={info.tick} metadata={info.metaData} />
+            info.tag === 'id-coins' ? <MetaIdAvatar size={40} avatar={info.deployerUserInfo && info.deployerUserInfo.avatar} /> : <MRC20Icon tick={info.tick} metadata={info.metaData} />
         }
 
         <div className="tick">
-            <div className="tickName" style={{color:info.tag === 'id-coins'?'#F68819':'#fff'}}>
+            <div className="tickName" style={{ color: info.tag === 'id-coins' ? '#F68819' : '#fff' }}>
                 {info.tick}
             </div>
 

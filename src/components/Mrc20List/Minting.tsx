@@ -98,7 +98,7 @@ export default () => {
             render: (deployerUserInfo, record) => {
                 return <div className="deployer">
                     <div className="deployerInfo">
-                        <MetaIdAvatar size={20} avatar={record.deployerUserInfo.avatar} /><div className="deployerName">{record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</div>
+                        <MetaIdAvatar size={20} avatar={record.deployerUserInfo&&record.deployerUserInfo.avatar} /><div className="deployerName">{record.deployerUserInfo&&record.deployerUserInfo.name || record.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</div>
                     </div>
                     <div className="MetaId">
                         MetaID:{record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}
@@ -134,7 +134,7 @@ export default () => {
             render: (_, record) => {
                 if (!record.pinCheck) return <div className="condition">--</div>
                 return <div className="condition"><div>
-                    {record.pinCheck.path && <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 45 ? record.pinCheck.path.replace(/(.{35}).+(.{11})/, "$1...$2") : record.pinCheck.path}</Tooltip>}</div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> x {record.pinCheck.count || '0'}</span></div></div>
+                    {record.pinCheck.path && <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path.length > 10 ? record.pinCheck.path.replace(/(.{5}).+(.{5})/, "$1...$2") : record.pinCheck.path}</Tooltip>}</div> <div className="lvlCount"><PopLvl lvl={record.pinCheck.lvl} />  <span className="colorPrimary"> x {record.pinCheck.count || '0'}</span></div></div>
             }
         },
         {
@@ -204,12 +204,12 @@ export default () => {
                 "Table": {
                     "borderColor": "rgba(240, 240, 240, 0)",
                     "rowHoverBg": "rgba(110, 208, 63, 0.13)",
-                    "fontSize": 16
+                    "fontSize": 14
                 }
             },
         }}> {screens.md ? <Table
             style={{ margin: screens.lg ? '0 20px ' : '0 0px' }}
-            columns={columns}
+            columns={screens.xl ? columns : columns.filter((item) => item.title !== 'Time')}
             rowKey={(record) => record.mrc20Id}
             dataSource={list}
             // size='small'
@@ -222,7 +222,7 @@ export default () => {
                     setPage(page - 1);
                 },
             }}
-            size={screens.xl ? 'middle' : 'small'}
+            size='small'
             scroll={{ x: 1000 }}
             loading={loading}
             // onChange={({ current, ...params }, _, sorter) => {
