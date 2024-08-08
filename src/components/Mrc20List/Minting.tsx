@@ -86,7 +86,7 @@ export default () => {
             title: 'Token',
             dataIndex: 'tick',
             // fixed: 'left',
-            width: 220,
+            // width: 200,
             render: (_, record) => {
                 return <Item info={record} />
             }
@@ -94,7 +94,7 @@ export default () => {
         {
             title: 'Deployer',
             dataIndex: 'deployerUserInfo',
-            width: 160,
+            // width: 160,
             render: (deployerUserInfo, record) => {
                 return <div className="deployer">
                     <div className="deployerInfo">
@@ -223,7 +223,7 @@ export default () => {
                 },
             }}
             size='small'
-            scroll={{ x: 1000 }}
+            scroll={{ x: 800 }}
             loading={loading}
             // onChange={({ current, ...params }, _, sorter) => {
             //     if (!current) current = 1;
