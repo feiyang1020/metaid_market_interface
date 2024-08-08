@@ -1194,11 +1194,17 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     />
                                                 </Form.Item>
                                                 <Form.Item label="Pay Amount" name="deployPayAmount"
-                                                    rules={[]}
+                                                    rules={[{
+                                                        min: 1e-8,
+                                                        type: 'number',
+                                                    }
+
+                                                    ]}
                                                 >
                                                     <InputNumber
                                                         size="large"
                                                         style={{ width: '100%' }}
+                                                       
 
                                                     />
                                                 </Form.Item>
