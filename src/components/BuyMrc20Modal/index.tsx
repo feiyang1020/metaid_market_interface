@@ -249,9 +249,9 @@ export default ({ order, show, onClose }: Props) => {
               </div>
               <div className="feeItem">
                 <div className="label">
-                  Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
+                  Taker Fee{orderWithPsbt && orderWithPsbt.fee > 0 && `(${orderWithPsbt.feeRateStr}%)`}
                 </div>
-                <div className="value"><NumberFormat value={order.fee} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
+                <div className="value"><NumberFormat value={orderWithPsbt && orderWithPsbt.fee} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
               </div>
               <div className="feeItem">
                 <div className="label">Transaction Fee</div>

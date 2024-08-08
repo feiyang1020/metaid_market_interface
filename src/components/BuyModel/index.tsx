@@ -306,18 +306,18 @@ export default ({ order, show, onClose }: Props) => {
             <div className="fees">
               <div className="feeItem">
                 <div className="label">Price</div>
-                <div className="value"><NumberFormat value={order.sellPriceAmount} isBig decimal={8} suffix=' BTC'/>  </div>
+                <div className="value"><NumberFormat value={order.sellPriceAmount} isBig decimal={8} minDig={8} suffix=' BTC'/>  </div>
               </div>
               <div className="feeItem">
                 <div className="label">
-                  Taker Fee{order.feeRate > 0 && `(${order.feeRate}%)`}
+                  Taker Fee{orderWithPsbt&&orderWithPsbt.fee > 0 && `(${orderWithPsbt.feeRateStr}%)`}
                 </div>
-                <div className="value">{formatSat(order.fee)} BTC</div>
+                <div className="value"><NumberFormat value={orderWithPsbt && orderWithPsbt.fee} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
               </div>
               <div className="feeItem">
                 <div className="label">Transaction Fee</div>
                 <div className="value">
-                  <Spin spinning={calcing}>{formatSat(fee || "0")} BTC</Spin>
+                  <Spin spinning={calcing}><NumberFormat value={fee} isBig decimal={8} minDig={8} suffix=" BTC" /></Spin>
                 </div>
               </div>
               <div className="feeItem">
