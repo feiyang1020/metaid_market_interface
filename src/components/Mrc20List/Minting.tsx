@@ -130,6 +130,7 @@ export default () => {
         {
             title: 'Condition',
             dataIndex: 'pinCheck',
+            align:'center',
             width: 170,
             render: (_, record) => {
                 if (!record.pinCheck) return <div className="condition">--</div>
