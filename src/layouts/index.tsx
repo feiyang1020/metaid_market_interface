@@ -142,7 +142,7 @@ export default function Layout() {
                 <Dropdown
                   arrow
                   dropdownRender={() => (
-                    <div className="walletInfo" onClick={handleMenuClick}>
+                    <div className="walletInfo" onClick={(e) => { e.stopPropagation(); handleMenuClick(e) }}>
                       <div className="userInfo">
                         <Avatar
                           src={
