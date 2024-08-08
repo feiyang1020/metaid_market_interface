@@ -145,7 +145,13 @@ export default () => {
             align: 'center',
             render: (_, record) => {
 
-                return <div className="premine">{Number(record.premineCount) > 0 ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100} floor suffix='%' precision={4} /> : 'Fair Launch'}</div>
+                return <div className="premine">
+                    {
+                        Number(record.premineCount) > 0
+                            ? <NumberFormat value={Number(record.premineCount) / Number(record.mintCount) * 100} floor suffix='%' precision={10} />
+                            : 'Fair Launch'
+                    }
+                </div>
             }
         },
         {
@@ -243,7 +249,7 @@ export default () => {
                 return {
                     style: { cursor: 'pointer' },
                     onClick: () => {
-                        history.push(`/mrc20/${record.tick}`)
+                        history.push(`/${record.tag==='id-coins'?'idCoin':'mrc20'}/${record.tick}`)
                     },
                 }
             }}
@@ -253,7 +259,7 @@ export default () => {
                 { label: 'Minted', key: 'totalMinted' },
                 { label: 'Time', key: 'deployTime' },
                 { label: 'Progress%', key: 'progress' },
-               
+
             ]} sortKey={orderBy} sortType={sortType} setSortKey={setOrderBy} setSortType={setSortType} />
 
             <List
