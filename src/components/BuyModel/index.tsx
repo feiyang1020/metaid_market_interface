@@ -166,6 +166,7 @@ export default ({ order, show, onClose }: Props) => {
       });
       if (error) throw new Error(error);
       const address = await window.metaidwallet.btc.getAddress();
+
       const inputsCount = orderPsbt.data.inputs.length;
       const toSignInputs = [];
       for (let i = BUY_PAY_INPUT_INDEX; i < inputsCount; i++) {

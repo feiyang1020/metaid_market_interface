@@ -94,12 +94,12 @@ const _commitMint = async (
     address: revealAddress,
     value: revealFee,
   });
-  if (serviceFee > 0 && serviceAddress) {
-    psbt.addOutput({
-      address: serviceAddress,
-      value: serviceFee,
-    });
-  }
+  // if (serviceFee > 0 && serviceAddress) {
+  //   psbt.addOutput({
+  //     address: serviceAddress,
+  //     value: serviceFee,
+  //   });
+  // }
   if (needChange || change.gt(DUST_SIZE)) {
     psbt.addOutput({
       address: address,
@@ -492,12 +492,12 @@ const _buildDeployMRC20Psbt = async (
     address: revealAddress,
     value: minerFee,
   });
-  if (serviceFee > 0) {
-    psbt.addOutput({
-      address: revealAddress,
-      value: serviceFee,
-    });
-  }
+  // if (serviceFee > 0) {
+  //   psbt.addOutput({
+  //     address: revealAddress,
+  //     value: serviceFee,
+  //   });
+  // }
   if (needChange || change.gt(DUST_SIZE)) {
     psbt.addOutput({
       address: address,

@@ -1071,7 +1071,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
-                                                        suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' && '-test'}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
+                                                        suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' ? '-test':''}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
                                                         placeholder="metafile://Your-Icon-Pinid"
                                                     />
                                                 </Form.Item>
@@ -1377,7 +1377,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         }]
                                                     }></Collapse>
                                                 </Col></Row> : <Row gutter={[0, 0]}>
-                                                <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/?tab=PIN') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
+                                                <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/market/PIN') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
                                                     No eligible PIN. Go get one.
                                                 </div></div></Col></Row>
                                         }

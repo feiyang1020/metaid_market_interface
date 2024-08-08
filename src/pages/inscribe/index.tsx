@@ -232,6 +232,7 @@ export default () => {
         },
 
       });
+      console.log(ret);
       if (ret.status) throw new Error(ret.status);
       if (ret.commitTxId) {
         await addUtxoSafe(btcAddress, [{ txId: ret.commitTxId, vout: 2 }])

@@ -10,6 +10,7 @@ import {
   ConfigProvider,
   Divider,
   Dropdown,
+  DropdownProps,
   Space,
   message,
   theme,
@@ -79,6 +80,15 @@ export default function Layout() {
   } = useModel("wallet");
   const { pathname } = useLocation();
   const [editViseble, setEditVisible] = useState<boolean>(false)
+  const [open, setOpen] = useState(false);
+  const handleOpenChange: DropdownProps['onOpenChange'] = (nextOpen, info) => {
+    if (info.source === 'trigger' || nextOpen) {
+      setOpen(nextOpen);
+    }
+  };
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    setOpen(!open);
+  };
   useEffect(() => {
     if (pathname) {  // 可以排除不需要置顶的页面
       if (document?.documentElement || document?.body) {
@@ -132,7 +142,7 @@ export default function Layout() {
                 <Dropdown
                   arrow
                   dropdownRender={() => (
-                    <div className="walletInfo">
+                    <div className="walletInfo" onClick={(e) => { e.stopPropagation(); handleMenuClick(e) }}>
                       <div className="userInfo">
                         <Avatar
                           src={
@@ -205,8 +215,10 @@ export default function Layout() {
                     </div>
                   )}
                   placement="bottomRight"
+                  open={open}
+                  onOpenChange={handleOpenChange}
                 >
-                  <div className="userInfo">
+                  <div className="userInfo" onClick={handleMenuClick}>
 
                     <Divider type='vertical' style={{ margin: 0 }} />
                     <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
