@@ -447,6 +447,10 @@ declare namespace API {
     revealMintAddress: string;
     serviceFee: number;
     serviceAddress: string;
+    revealInscribeOutValue: number;
+    revealMintOutValue: number;
+    revealInscribeGas: number;
+    revealMintGas: number;
   };
 
   type IdCoin = {

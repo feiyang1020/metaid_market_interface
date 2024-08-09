@@ -5,6 +5,7 @@ import './comfirmMintIdCoin.less'
 import { Alert, Button, Col, Collapse, Divider, Row, Space, Tooltip } from "antd";
 import NumberFormat from "@/components/NumberFormat";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { useMemo } from "react";
 type Props = {
     show: boolean
     onClose: () => void;
@@ -13,9 +14,10 @@ type Props = {
     submiting?: boolean
     handleSubmit: () => Promise<void>
 }
-const DescItem = ({ label, value, dark, style = {} }: { label: React.ReactNode, dark?: boolean, value: React.ReactNode, style?: React.CSSProperties }) => {
+const DescItem = ({ label, value, dark, style = {}, error }: { label: React.ReactNode, dark?: boolean, error?: boolean, value: React.ReactNode, style?: React.CSSProperties }) => {
+    console.log('DescItem', error)
     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '10px 0', ...style }}>
-        <div style={{ fontSize: '16px', color: dark ? 'rgba(255, 255, 255, 0.5)' : '#fff' }}>{label}</div>
+        <div style={{ fontSize: '16px', color: error ? 'rgb(255,82,82)' : dark ? 'rgba(255, 255, 255, 0.5)' : '#fff', }}>{label}</div>
         <div style={{ fontSize: '16px' }}>{value}</div>
     </div>
 }
@@ -23,13 +25,25 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
     const { userBal, avatar, userName, metaid } =
         useModel("wallet");
 
+    const errTip = useMemo(() => {
+        if (!order) return ''
+        if ((order.totalFee - order.revealInscribeOutValue - order.revealMintOutValue) >= Number(userBal) * 1e8) {
+            console.log('Insufficient Balance', (order.totalFee - order.revealInscribeOutValue - order.revealMintOutValue), userBal)
+            return 'Insufficient Balance'
+        }
+        console.log('order.errMsg', order.errMsg)
+        if (order.errMsg) {
+            return order.errMsg === 'Insufficient Balance' ? "You don't have enough balance to build the Commit transaction." : 'Failed to mint'
+        }
+    }, [order, userBal])
+
     if (!order || !idCoin) return <></>
     const items = [
         {
             key: 1,
-            label: <DescItem dark style={{ padding: 0 }} label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<NumberFormat value={order._gasFee + order.revealInscribeGas + order.revealMintGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />,
+            label: <DescItem dark style={{ padding: 0 }} label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={order._gasFee === 0 ? '--' : <NumberFormat value={order._gasFee + order.revealInscribeGas + order.revealMintGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />,
             children: <div>
-                <DescItem dark label="Commit Gas" value={<NumberFormat value={order._gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+                <DescItem dark error={order._gasFee === 0} label="Commit Gas" value={<>{order._gasFee === 0 ? '--' : <NumberFormat value={order._gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />}</>} />
                 <DescItem dark label="Reveal Inscribe Gas" value={<NumberFormat value={order.revealInscribeGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
                 <DescItem dark label="Reveal Mint Gas" value={<NumberFormat value={order.revealMintGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             </div>
@@ -69,7 +83,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem label="Pool" value={<NumberFormat value={idCoin.pool} decimal={8} isBig suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
 
-            <Collapse ghost items={items} style={{ width: '100%' }} />
+            <Collapse ghost items={items} style={{ width: '100%' }} defaultActiveKey={order._gasFee === 0 ? 1 : ''} />
             {/* <DescItem label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<></>} />
             <DescItem dark label="Commit Gas" value={<NumberFormat value={order._gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem dark label="Reveal Inscribe Gas" value={<NumberFormat value={order.revealInscribeGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
@@ -81,17 +95,17 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem dark label="Liquidity Required" value={<NumberFormat value={idCoin.liquidityPerMint} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem label="You Will Spend" value={<NumberFormat value={order.totalFee + order._gasFee - order.revealInscribeOutValue - order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+            <DescItem label="You Will Spend" value={errTip ? '--' : <NumberFormat value={order.totalFee + order._gasFee - order.revealInscribeOutValue - order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem label="Available Balance" value={<NumberFormat value={userBal} minDig={8} suffix=' BTC' />} />
-            {order.errMsg && (
-               
-                    <Alert
-                        message={order.errMsg}
-                        type="error"
-                        showIcon
-                        style={{ width: '100%' }}
-                    />
-               
+            {errTip && (
+
+                <Alert
+                    message={errTip}
+                    type="error"
+                    showIcon
+                    style={{ width: '100%' }}
+                />
+
             )}
             <Row gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>

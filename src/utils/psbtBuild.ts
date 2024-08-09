@@ -41,7 +41,7 @@ function selectUTXOs(utxos: API.UTXO[], targetAmount: Decimal) {
 
   if (totalAmount.lt(targetAmount)) {
     throw new Error(
-      "Insufficient Balance "
+      "Insufficient Balance"
     );
   }
 
@@ -173,7 +173,7 @@ export async function buildTx<T>(
   console.log(estimatedFee.toFixed(0), "estimatedFee");
   while (total.lt(amount.add(estimatedFee))) {
     if (selectedUTXOs.length === utxos.length) {
-      throw new Error("Insufficient funds");
+      throw new Error("Insufficient Balance");
     }
     selectedUTXOs = selectUTXOs(utxos, amount.add(estimatedFee));
     total = getTotalSatoshi(selectedUTXOs);
