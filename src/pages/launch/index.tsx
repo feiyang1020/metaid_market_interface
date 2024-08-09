@@ -141,7 +141,7 @@ export default () => {
                 ],
                 children: (
                     <div className="inscribeSuccess">
-                        
+
                         <div className="tips">
                             <InfoCircleOutlined />
                             <span>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</span>
@@ -357,8 +357,8 @@ export default () => {
                                     <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' BTC' /></div>
                                 </Col>
                                 <Col md={24} xs={24} >
-                                    <Form.Item label="Message" name='description' className='formItem' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} >
-                                        <Input.TextArea style={{ textAlign: 'start' }} placeholder="Leave your message to your followers." />
+                                    <Form.Item label="Message" name='description' className='formItem' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} rules={[{ max: 500, type: 'string' }]} >
+                                        <Input.TextArea  style={{ textAlign: 'start' }} placeholder="Leave your message to your followers." />
                                     </Form.Item>
                                 </Col>
                                 {/* <Col md={24} xs={24} >

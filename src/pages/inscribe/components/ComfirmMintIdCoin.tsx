@@ -2,14 +2,14 @@ import MetaIdAvatar from "@/components/MetaIdAvatar";
 import Popup from "@/components/ResponPopup"
 import { useModel, useSearchParams, history } from "umi";
 import './comfirmMintIdCoin.less'
-import { Button, Col, Collapse, Divider, Row, Space, Tooltip } from "antd";
+import { Alert, Button, Col, Collapse, Divider, Row, Space, Tooltip } from "antd";
 import NumberFormat from "@/components/NumberFormat";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 type Props = {
     show: boolean
     onClose: () => void;
     idCoin: API.IdCoin | undefined
-    order: API.MintIdCoinPreRes & { _gasFee: number } | undefined
+    order: API.MintIdCoinPreRes & { _gasFee: number, errMsg?: string } | undefined
     submiting?: boolean
     handleSubmit: () => Promise<void>
 }
@@ -69,7 +69,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem label="Pool" value={<NumberFormat value={idCoin.pool} decimal={8} isBig suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
 
-            <Collapse ghost items={items} style={{ width: '100%' }}  />
+            <Collapse ghost items={items} style={{ width: '100%' }} />
             {/* <DescItem label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={<></>} />
             <DescItem dark label="Commit Gas" value={<NumberFormat value={order._gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem dark label="Reveal Inscribe Gas" value={<NumberFormat value={order.revealInscribeGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
@@ -81,14 +81,24 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             <DescItem dark label="Service Fee" value={<NumberFormat value={order.serviceFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem dark label="Liquidity Required" value={<NumberFormat value={idCoin.liquidityPerMint} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem label="You Will Spend" value={<NumberFormat value={order.totalFee + order._gasFee-order.revealInscribeOutValue - order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+            <DescItem label="You Will Spend" value={<NumberFormat value={order.totalFee + order._gasFee - order.revealInscribeOutValue - order.revealMintOutValue} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <DescItem label="Available Balance" value={<NumberFormat value={userBal} minDig={8} suffix=' BTC' />} />
+            {order.errMsg && (
+               
+                    <Alert
+                        message={order.errMsg}
+                        type="error"
+                        showIcon
+                        style={{ width: '100%' }}
+                    />
+               
+            )}
             <Row gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>
                     <Button size='large' type="link" block onClick={onClose}>Cancel</Button>
                 </Col>
                 <Col span={12}>
-                    <Button size='large' type='primary' loading={submiting} block onClick={handleSubmit}>Confirm</Button>
+                    <Button size='large' type='primary' disabled={!!order.errMsg} loading={submiting} block onClick={handleSubmit}>Confirm</Button>
                 </Col>
             </Row>
         </div>
