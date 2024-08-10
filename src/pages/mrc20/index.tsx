@@ -215,7 +215,7 @@ export default () => {
                 {
                     key: '1',
                     label: 'Listed',
-                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} />,
+                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} metaData={mrc20Info.metaData||''} />,
                 },
                 {
                     key: '2',
@@ -230,7 +230,7 @@ export default () => {
                 {
                     key: '4',
                     label: 'My Listed',
-                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} showMy />,
+                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} showMy metaData={mrc20Info.metaData||''} />,
                 },
             ]} />}
         </ConfigProvider>

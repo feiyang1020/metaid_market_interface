@@ -11,11 +11,13 @@ import BuyMrc20Modal from "@/components/BuyMrc20Modal";
 import NumberFormat from "@/components/NumberFormat";
 import MRC20Icon from "@/components/MRC20Icon";
 import CancelListing from "@/components/CancelListing";
+import Sorter from "@/components/Sorter";
 type Props = {
     mrc20Id: string,
+    metaData: string,
     showMy?: boolean
 }
-export default ({ mrc20Id, showMy=false }: Props) => {
+export default ({ mrc20Id, metaData, showMy = false }: Props) => {
     const { network, connected, connect, btcAddress, authParams } = useModel('wallet')
     const [list, setList] = useState<API.Mrc20Order[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -26,10 +28,12 @@ export default ({ mrc20Id, showMy=false }: Props) => {
     const [cancelSubmiting, setCancelSubmiting] = useState<boolean>(false);
     const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
     const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
+    const [orderBy, setOrderBy] = useState<string>('priceAmount');
+    const [sortType, setSortType] = useState<1 | -1>(1);
     const fetchOrders = useCallback(async () => {
-        if (!mrc20Id||(showMy&&!btcAddress)) return;
+        if (!mrc20Id || (showMy && !btcAddress)) return;
         setLoading(true);
-        const params: any = { assetType: 'mrc20', orderState: 1, sortKey: 'priceAmount', sortType: 1, tickId: mrc20Id, cursor: page * size, size };
+        const params: any = { assetType: 'mrc20', orderState: 1, sortKey: orderBy, sortType: sortType, tickId: mrc20Id, cursor: page * size, size };
         if (showMy && btcAddress) {
             params.address = btcAddress
         }
@@ -42,7 +46,7 @@ export default ({ mrc20Id, showMy=false }: Props) => {
             setTotal(0)
         }
         setLoading(false);
-    }, [mrc20Id, network, page, size,btcAddress,showMy])
+    }, [mrc20Id, network, page, size, btcAddress, showMy,orderBy,sortType])
 
     const handleCancel = async () => {
         if (!curOrder || !btcAddress) return;
@@ -71,6 +75,10 @@ export default ({ mrc20Id, showMy=false }: Props) => {
     useEffect(() => { fetchOrders() }, [fetchOrders]);
     return <div>
         <div className="list">
+            <Sorter sorters={[
+                { label: 'Price', key: 'priceAmount' },
+                { label: 'Time', key: 'timestamp' },
+            ]} sortKey={orderBy} sortType={sortType} setSortKey={setOrderBy} setSortType={setSortType} className="ListedSort" />
             <List
                 loading={loading}
                 grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6 }}
@@ -86,12 +94,12 @@ export default ({ mrc20Id, showMy=false }: Props) => {
                                 >
                                     <div className="textContent">
                                         <div className="amont">
-                                            <MRC20Icon size={32} metadata={item.metaData} tick={item.tick} />  {item.amountStr} {item.tick}
+                                            <MRC20Icon size={32} metadata={metaData} tick={item.tick} />  {item.amountStr} {item.tick}
                                         </div>
                                         <div className="units">
 
                                             <span className="colorPrimary">
-                                                <NumberFormat value={item.tokenPriceRate} isBig  decimal={8} tiny/>
+                                                <NumberFormat value={item.tokenPriceRate} isBig decimal={8} tiny />
                                             </span> BTC/{item.tick}
                                         </div>
 
@@ -143,10 +151,10 @@ export default ({ mrc20Id, showMy=false }: Props) => {
                                             block
                                             onClick={() => {
                                                 if (btcAddress === item.sellerAddress) {
-                                                    setCurOrder(item);
+                                                    setCurOrder({ ...item, metaData: metaData });
                                                     setCancelModalVisible(true);
                                                 } else {
-                                                    setCurOrder(item);
+                                                    setCurOrder({ ...item, metaData: metaData });
                                                     setBuyModalVisible(true);
                                                 }
 

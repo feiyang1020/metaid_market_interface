@@ -351,6 +351,7 @@ declare namespace API {
     confirmationState: number;
     dealTime: number;
     txId: string;
+    metaData?:string;
   };
 
   type BuyOrderPsbtRes = {

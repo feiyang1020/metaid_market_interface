@@ -11,7 +11,7 @@ import Activeity from './components/Activeity';
 import MyActiveity from './components/MyActiveity';
 import MetaIdAvatar from '@/components/MetaIdAvatar';
 import MRC20Icon from '@/components/MRC20Icon';
-import { formatSat, openWindowTarget } from '@/utils/utlis';
+import { formatSat, openWindowTarget, switchAvatarToMetaDataIcon } from '@/utils/utlis';
 import btcIcon from "@/assets/logo_btc@2x.png";
 import orders from '@/assets/image.svg';
 import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from '@/config';
@@ -227,7 +227,7 @@ export default () => {
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoin.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap',overflow:'hidden' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny  suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap', overflow: 'hidden' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + idCoin.tick) }}>Holders <RightOutlined style={{ fontSize: 10 }} /></Space>} value={idCoin.holders} />
@@ -333,7 +333,7 @@ export default () => {
                 {
                     key: '1',
                     label: 'Listed',
-                    children: <Listed mrc20Id={idCoin.mrc20Id || ''} />,
+                    children: <Listed mrc20Id={idCoin.mrc20Id || ''} metaData={idCoin ? switchAvatarToMetaDataIcon(idCoin.deployerUserInfo.avatar) : ''} />,
                 },
                 {
                     key: '2',
@@ -348,7 +348,7 @@ export default () => {
                 {
                     key: '4',
                     label: 'My Listed',
-                    children: <Listed mrc20Id={idCoin.mrc20Id || ''} showMy />,
+                    children: <Listed mrc20Id={idCoin.mrc20Id || ''} showMy  metaData={idCoin ? switchAvatarToMetaDataIcon(idCoin.deployerUserInfo.avatar) : ''}/>,
                 },
             ]} />}
         </ConfigProvider>

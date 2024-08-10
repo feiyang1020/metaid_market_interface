@@ -10,9 +10,10 @@ type Props = {
     sortType?: 1 | -1,
     setSortKey: (key: string) => void,
     setSortType: (type: 1 | -1) => void,
+    className?: string
 }
 
-export default ({ sorters, sortKey, sortType, setSortKey, setSortType }: Props) => {
+export default ({ sorters, sortKey, sortType, setSortKey, setSortType, className = '' }: Props) => {
     const handleSort = (key: string) => {
         if (sortKey === key) {
             setSortType(sortType === 1 ? -1 : 1);
@@ -21,7 +22,7 @@ export default ({ sorters, sortKey, sortType, setSortKey, setSortType }: Props) 
             setSortType(-1);
         }
     };
-    return <div className="sortWrap">
+    return <div className={`sortWrap ${className}`} >
         {sorters.map((sorter, index) => {
             return <div
                 className="sortItem"
