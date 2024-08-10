@@ -28,7 +28,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
     const [cancelSubmiting, setCancelSubmiting] = useState<boolean>(false);
     const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
     const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
-    const [orderBy, setOrderBy] = useState<string>('priceAmount');
+    const [orderBy, setOrderBy] = useState<string>('tokenPriceRate');
     const [sortType, setSortType] = useState<1 | -1>(1);
     const fetchOrders = useCallback(async () => {
         if (!mrc20Id || (showMy && !btcAddress)) return;
@@ -76,7 +76,8 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
     return <div>
         <div className="list">
             <Sorter sorters={[
-                { label: 'Price', key: 'priceAmount' },
+                { label: 'Unit Price', key: 'tokenPriceRate' },
+                { label: 'Total Price', key: 'priceAmount' },
                 { label: 'Time', key: 'timestamp' },
             ]} sortKey={orderBy} sortType={sortType} setSortKey={setOrderBy} setSortType={setSortType} className="ListedSort" />
             <List
