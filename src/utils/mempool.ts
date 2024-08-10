@@ -9,15 +9,10 @@ import activefast from "@/assets/icons/rocket (1).svg";
 import { fetchFeeRecommend } from "@/services/api";
 
 export const getFeeRate = async (network: API.Network) => {
-  const {
-    bitcoin: { fees },
-  } = mempoolJS({
-    hostname: "mempool.space",
-    network: network === "mainnet" ? "main" : "testnet",
-  });
   try {
-    const feesRecommended = await fees.getFeesRecommended();
-    let { fastestFee, halfHourFee, hourFee, minimumFee } = feesRecommended;
+    const { code, data } = await fetchFeeRecommend(network);
+    if (code !== 0) throw new Error("fetch fee rate error");
+    const { fastestFee, halfHourFee, hourFee, minimumFee } = data;
     return [
       {
         label: "Fast",
@@ -43,10 +38,15 @@ export const getFeeRate = async (network: API.Network) => {
     ];
   } catch (e) {
     try {
-      const { code, data } = await fetchFeeRecommend(network);
-      if (code !== 0) throw new Error("fetch fee rate error");
-      const { fastestFee, halfHourFee, hourFee, minimumFee } = data;
-      console.log(fastestFee, halfHourFee, hourFee, minimumFee);
+      const {
+        bitcoin: { fees },
+      } = mempoolJS({
+        hostname: "mempool.space",
+        network: network === "mainnet" ? "main" : "testnet",
+      });
+      const feesRecommended = await fees.getFeesRecommended();
+      let { fastestFee, halfHourFee, hourFee, minimumFee } = feesRecommended;
+
       return [
         {
           label: "Fast",
@@ -77,21 +77,21 @@ export const getFeeRate = async (network: API.Network) => {
 };
 
 export const getMinFeeRate = async (network: API.Network) => {
-  const {
-    bitcoin: { fees },
-  } = mempoolJS({
-    hostname: "mempool.space",
-    network: network === "mainnet" ? "main" : "testnet",
-  });
   try {
-    const feesRecommended = await fees.getFeesRecommended();
-    let { minimumFee } = feesRecommended;
+    const { code, data } = await fetchFeeRecommend(network);
+    if (code !== 0) throw new Error("fetch fee rate error");
+    const { minimumFee } = data;
     return minimumFee;
   } catch (e) {
     try {
-      const { code, data } = await fetchFeeRecommend(network);
-      if (code !== 0) throw new Error("fetch fee rate error");
-      const { minimumFee } = data;
+      const {
+        bitcoin: { fees },
+      } = mempoolJS({
+        hostname: "mempool.space",
+        network: network === "mainnet" ? "main" : "testnet",
+      });
+      const feesRecommended = await fees.getFeesRecommended();
+      let { minimumFee } = feesRecommended;
       return minimumFee;
     } catch (e) {
       return 1;
