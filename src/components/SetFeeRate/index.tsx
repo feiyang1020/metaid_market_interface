@@ -2,18 +2,34 @@ import { useModel } from "umi";
 import Popup from "../ResponPopup";
 import NumberFormat from "../NumberFormat";
 import { Col, Divider, InputNumber, Row } from "antd";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./index.less";
 import { CheckOutlined } from "@ant-design/icons";
 import cus from '@/assets/icons/gauge-low.svg'
 import Actcus from '@/assets/icons/gauge-low (1).svg'
+import { getMinFeeRate } from "@/utils/mempool";
 export default () => {
-    const { feeRate, feeRateType, feeRates, setFeeRate, setFeeRateModelVisible, setFeeRateType, feeRateModalVisible } = useModel("wallet");
+    const { feeRate, feeRateType, feeRates, setFeeRate, setFeeRateModelVisible, setFeeRateType, feeRateModalVisible, network } = useModel("wallet");
+    const [minFeeRate, setMinFeeRate] = useState<number>(1);
+
 
     const [customRate, setCustomRate] = useState<string | number>(1);
+    const _getMinFeeRate = useCallback(async () => {
+        const _minFeeRate = await getMinFeeRate(network);
+        setMinFeeRate(_minFeeRate);
+        setCustomRate(prev => {
+            if (Number(prev) < _minFeeRate) {
+                return _minFeeRate
+            }
+            return prev
+        })
+    }, [network])
+    useEffect(() => {
+        _getMinFeeRate()
+    }, [_getMinFeeRate])
     useEffect(() => {
         if (feeRateType === "Custom") {
-            setFeeRate(Number(customRate)||1);
+            setFeeRate(Number(customRate) || 1);
         }
     }, [feeRateType, customRate])
     return <Popup
@@ -76,13 +92,13 @@ export default () => {
                                     <InputNumber
                                         value={customRate}
                                         onChange={setCustomRate}
-                                        min={1}
-                                        style={{width:'74px' ,background:'#28310C'}}
+                                        min={minFeeRate}
+                                        style={{ width: '74px', background: '#28310C' }}
                                         className="customInput"
                                         variant="borderless"
                                         controls={false}
                                         precision={0}
-                                        
+
                                     />
                                     {" "}sat/vB
                                 </div>
