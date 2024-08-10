@@ -29,7 +29,7 @@ export default ({ mrc20Id, showMy=false }: Props) => {
     const fetchOrders = useCallback(async () => {
         if (!mrc20Id||(showMy&&!btcAddress)) return;
         setLoading(true);
-        const params: any = { assetType: 'mrc20', orderState: 1, sortKey: 'priceAmount', sortType: -1, tickId: mrc20Id, cursor: page * size, size };
+        const params: any = { assetType: 'mrc20', orderState: 1, sortKey: 'priceAmount', sortType: 1, tickId: mrc20Id, cursor: page * size, size };
         if (showMy && btcAddress) {
             params.address = btcAddress
         }
