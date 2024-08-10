@@ -46,24 +46,27 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                 const [image] = await image2Attach([newAvatar]);
                 userData.avatar = Buffer.from(image.data, "hex").toString("base64")
             }
-            // if (userName) {
-            //     const ret = await btcConnector.updateUserInfo({
-            //         userData,
-            //         options: {
-            //             feeRate: Number(feeRate),
-            //             network: network,
-            //             service: getCreatePinFeeByNet(network),
-            //         }
-            //     })
-            // }
-            const ret = await btcConnector.createUserInfo({
-                userData,
-                options: {
-                    feeRate: Number(feeRate),
-                    network: network,
-                    // service: getCreatePinFeeByNet(network),
-                }
-            })
+            let ret: any
+            if (userName) {
+                ret = await btcConnector.updateUserInfo({
+                    userData,
+                    options: {
+                        feeRate: Number(feeRate),
+                        network: network,
+                        // service: getCreatePinFeeByNet(network),
+                    }
+                })
+            } else {
+                ret = await btcConnector.createUserInfo({
+                    userData,
+                    options: {
+                        feeRate: Number(feeRate),
+                        network: network,
+                        // service: getCreatePinFeeByNet(network),
+                    }
+                })
+            }
+
             console.log(ret, 'ret in')
             init();
             if (ret.nameRes && ret.nameRes.status) {
@@ -73,8 +76,8 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                 throw new Error(ret.nameRes.status)
             }
             message.success('Success')
-             
-            
+
+
             onClose();
         } catch (err: any) {
             message.error(typeof err === 'string' ? err : err.message)
@@ -127,7 +130,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
 
 
 
-                    <Form.Item label={avatar ? "New Avatar" : 'Avatar'}  name="avatar" >
+                    <Form.Item label={avatar ? "New Avatar" : 'Avatar'} name="avatar" >
                         <UploadAvatar />
                     </Form.Item>
                     {/* <Form.Item label="FeeRate" required name="feeRate">
