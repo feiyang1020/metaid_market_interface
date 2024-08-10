@@ -114,6 +114,7 @@ declare namespace API {
       contentTypeDetect: string;
       popLv: number;
       pinPath: string;
+      genesisHeight:number
     };
     textContent: string;
   };
