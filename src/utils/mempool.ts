@@ -54,17 +54,17 @@ export const getFeeRate = async (network: API.Network) => {
     return [
       {
         label: "Fast",
-        value: 0,
+        value: 1,
         time: "15 minutes",
       },
       {
         label: "Avg",
-        value: 0,
+        value: 1,
         time: "30 minutes",
       },
       {
         label: "Slow",
-        value: 0,
+        value: 1,
         time: "about 1 hour",
       },
     ];
