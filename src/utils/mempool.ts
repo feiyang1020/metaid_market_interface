@@ -17,7 +17,6 @@ export const getFeeRate = async (network: API.Network) => {
   try {
     const feesRecommended = await fees.getFeesRecommended();
     let { fastestFee, halfHourFee, hourFee, minimumFee } = feesRecommended;
-
     return [
       {
         label: "Fast",
@@ -43,27 +42,7 @@ export const getFeeRate = async (network: API.Network) => {
     ];
   } catch (e) {
     return [
-      {
-        label: "Fast",
-        value: 0,
-        time: "15 minutes",
-        icon: fast,
-        activeIcon: activefast,
-      },
-      {
-        label: "Avg",
-        value: 0,
-        time: "30 minutes",
-        icon: Avg,
-        activeIcon: activeAvg,
-      },
-      {
-        label: "Slow",
-        value: 0,
-        time: "about 1 hour",
-        icon: Slow,
-        activeIcon: activeSlow,
-      },
+      
     ];
   }
 };
