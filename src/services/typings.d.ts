@@ -318,6 +318,7 @@ declare namespace API {
       tick: string;
       txPoint: string;
     }[];
+    tickInfo?: MRC20TickInfo;
   };
   type Mrc20Order = {
     orderId: string;
@@ -351,7 +352,7 @@ declare namespace API {
     confirmationState: number;
     dealTime: number;
     txId: string;
-    metaData?:string;
+    metaData?: string;
   };
 
   type BuyOrderPsbtRes = {
