@@ -89,6 +89,16 @@ export default ({ mintMrc20Info }: Props) => {
                     key: 'Count',
                     label: 'Count',
                     children: <>{mintMrc20Info.pinCheck.count || '--'}</>
+                },
+                {
+                    key: 'beginHeight',
+                    label: 'Begin Height',
+                    children: <>{mintMrc20Info.beginHeight || '--'}</>
+                },
+                {
+                    key: 'endHeight',
+                    label: 'End Height',
+                    children: <>{mintMrc20Info.endHeight || '--'}</>
                 }
             ]}></Descriptions>
         {
