@@ -73,7 +73,7 @@ export default () => {
                         path: '/follow',
                         body: idCoin.deployerMetaId,
                         contentType: 'text/plain;utf-8',
-                        flag: network === "mainnet" ? "metaid" : "testid",
+                        flag: "metaid",
                     },
                 ],
                 options: {

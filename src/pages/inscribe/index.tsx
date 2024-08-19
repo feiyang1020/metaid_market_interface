@@ -122,7 +122,7 @@ export default () => {
             body: Buffer.from(image.data, "hex").toString("base64"),
             contentType: image.fileType,
             encoding: "base64",
-            flag: network === "mainnet" ? "metaid" : "testid",
+            flag: "metaid",
           });
         }
       } else {
@@ -131,7 +131,7 @@ export default () => {
           body: Buffer.from(result.data, "hex").toString("base64"),
           contentType: result.fileType,
           encoding: "base64",
-          flag: network === "mainnet" ? "metaid" : "testid",
+          flag: "metaid",
         });
       }
 
@@ -223,7 +223,7 @@ export default () => {
       const ret = await buzzEntity!.create({
         dataArray: [{
           body: JSON.stringify({ content: buzz }), contentType: "text/plain",
-          flag: network === "mainnet" ? "metaid" : "testid",
+          flag: "metaid",
         }],
         options: {
           noBroadcast: "no",
@@ -303,7 +303,7 @@ export default () => {
         body: payload,
         path: path,
         contentType: contentType,
-        flag: network === "mainnet" ? "metaid" : "testid",
+        flag: "metaid",
       };
 
       const ret = await btcConnector.inscribe({
