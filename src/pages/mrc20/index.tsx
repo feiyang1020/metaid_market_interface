@@ -149,7 +149,7 @@ export default () => {
                     <div className="desc">
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={mrc20Info.floorPrice} isBig decimal={8} tiny suffix=' BTC' />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={mrc20Info.floorPrice} isBig decimal={8} tiny suffix=' BTC' precision={12} />} />
                         <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + mrc20Info.tick) }}>Holders <RightOutlined style={{ fontSize: 10 }} /></Space>} value={mrc20Info.holders} />
                     </div>
                 </div>
@@ -215,7 +215,7 @@ export default () => {
                 {
                     key: '1',
                     label: 'Listed',
-                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} />,
+                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} metaData={mrc20Info.metaData||''} />,
                 },
                 {
                     key: '2',
@@ -230,7 +230,7 @@ export default () => {
                 {
                     key: '4',
                     label: 'My Listed',
-                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} showMy />,
+                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} showMy metaData={mrc20Info.metaData||''} />,
                 },
             ]} />}
         </ConfigProvider>

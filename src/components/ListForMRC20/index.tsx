@@ -1,6 +1,6 @@
 import { useModel } from "umi"
 import usePageList from "@/hooks/usePageList"
-import { getMrc20AddressUtxo, getUserMrc20List, sellMRC20Order, transferMrc20Commit, transfertMrc20Pre } from "@/services/api"
+import { getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, sellMRC20Order, transferMrc20Commit, transfertMrc20Pre } from "@/services/api"
 import { useEffect, memo, useState, useCallback, useMemo } from "react"
 import { Button, Card, ConfigProvider, Descriptions, InputNumber, List, message } from "antd"
 import { CheckOutlined } from "@ant-design/icons"
@@ -43,6 +43,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
         }
         if (_list.length > 0) {
             for (let i = 0; i < _list.length; i++) {
+                const _tickInfo = await getMrc20Info(network, { tickId: _list[i].mrc20Id });
                 const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: _list[i].mrc20Id, cursor: 0, size: 100 }, {
                     headers: {
                         ...authParams,
@@ -91,6 +92,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                 _list[i].unconfirmedBalance = unconfirmedBal.toFixed(Number(_list[i].decimals))
                 _list[i].listedBalance = listedBal.toFixed(Number(_list[i].decimals))
                 _list[i].mrc20s = mrc20s
+                _list[i].tickInfo = _tickInfo && _tickInfo.data
             }
         }
         setList(_list.filter((item) => item.tag === tags[tag]));
@@ -325,7 +327,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                 </div>
                                 <div className="tick">
 
-                                    <Item info={{ tick: item.tick, mrc20Id: item.mrc20Id, metaData: '' }} />
+                                    <Item info={{ tick: item.tick, mrc20Id: item.mrc20Id, metaData: '', tag: tags[tag], ...item.tickInfo }} />
                                 </div>
                                 <div className="tickAmount" >
 

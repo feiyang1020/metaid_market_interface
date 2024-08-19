@@ -36,11 +36,11 @@ export default () => {
                 label: 'Mint ID-Coins',
                 children: <div><NumberFormat value={1999} isBig decimal={8} suffix=' BTC' /></div>
             },
-            {
-                key: '3',
-                label: 'Mint ID-Coins',
-                children: <div><NumberFormat value={1999} isBig decimal={8} suffix=' BTC' /></div>
-            },
+            // {
+            //     key: '3',
+            //     label: 'Mint ID-Coins',
+            //     children: <div><NumberFormat value={1999} isBig decimal={8} suffix=' BTC' /></div>
+            // },
             {
                 key: '4',
                 label: 'Follow And Mint ID-Coins',

@@ -73,7 +73,7 @@ export default () => {
       _wallet = await MetaletWalletForBtc.create();
     }
     if (!_wallet.address) return;
-    
+
     const publicKey = await window.metaidwallet.btc.getPublicKey();
     const publicKeySign =
       await window.metaidwallet.btc.signMessage("metaid.market");
@@ -136,18 +136,29 @@ export default () => {
 
       setFeeRate((prev) => {
         if (prev === 0) {
+          if (ret.length === 0) {
+            return Number(localStorage.getItem("mk_lastFeeRate")) || 1;
+          }
           return ret[1].value;
         }
         return prev;
       });
       setFeeRateType((prev) => {
         if (prev === "") {
+          if (ret.length === 0) {
+            return "Custom";
+          }
           return ret[1].label;
         }
         return prev;
       });
     }
   }, [network]);
+
+  const _setFeeRate = (_feeRate: number) => {
+    localStorage.setItem("mk_lastFeeRate", _feeRate.toString());
+    setFeeRate(_feeRate);
+  };
 
   const init = useCallback(async () => {
     if (walletName === "metalet" && window.metaidwallet) {
@@ -283,7 +294,7 @@ export default () => {
     updateFeeRate,
     init,
     initializing,
-    setFeeRate,
+    setFeeRate: _setFeeRate,
     feeRate,
     feeRateType,
     setFeeRateType,

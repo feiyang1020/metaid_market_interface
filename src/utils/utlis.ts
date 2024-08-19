@@ -170,3 +170,11 @@ export const openWindowTarget = () => {
   }
   return "_self";
 };
+
+export const switchAvatarToMetaDataIcon = (avatar: string) => {
+  if (avatar) {
+    let pinId = avatar.replace("/content/", "");
+    return JSON.stringify({ icon: "metafile://" + pinId });
+  }
+  return "";
+};

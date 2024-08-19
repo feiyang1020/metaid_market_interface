@@ -198,7 +198,7 @@ export default () => {
                         <div
                             className="contetn"
                             onClick={() => {
-                                item.pinStatus === 0 && handleCheck(item.assetId);
+                                item.pinStatus === 0 && item.info.genesisHeight !== 0 && handleCheck(item.assetId);
                             }}
                         >
                             <PinContent asset={item} />
@@ -250,7 +250,7 @@ export default () => {
                                         <span>--</span>
                                     )}
                                 </div>
-                                {item.pinStatus === -9 && (
+                                {(item.pinStatus === -9 || item.info.genesisHeight === 0) && (
                                     <div className="pinStatus">
                                         Pending{" "}
                                         <LoadingOutlined
@@ -269,7 +269,7 @@ export default () => {
                                 className="input"
                                 value={sellPrices[item.assetId]}
                                 suffix="BTC"
-                                disabled={item.pinStatus !== 0}
+                                disabled={item.pinStatus !== 0 || item.info.genesisHeight === 0}
                                 min={0}
                                 onFocus={() => {
                                     !checkList.includes(item.assetId) && handleCheck(item.assetId);

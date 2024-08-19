@@ -946,3 +946,21 @@ export async function redeemIdCoinCommit(
     ...(options || {}),
   });
 }
+
+export async function fetchFeeRecommend(
+  network: API.Network,
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      economyFee: 0;
+      fastestFee: 0;
+      halfHourFee: 0;
+      hourFee: 0;
+      minimumFee: 0;
+    }>
+  >(`${getHost(network)}/api/v1/common/fee/recommended`, {
+    method: "GET",
+    ...(options || {}),
+  });
+}

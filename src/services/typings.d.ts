@@ -114,6 +114,7 @@ declare namespace API {
       contentTypeDetect: string;
       popLv: number;
       pinPath: string;
+      genesisHeight:number
     };
     textContent: string;
   };
@@ -318,6 +319,7 @@ declare namespace API {
       tick: string;
       txPoint: string;
     }[];
+    tickInfo?: MRC20TickInfo;
   };
   type Mrc20Order = {
     orderId: string;
@@ -351,6 +353,7 @@ declare namespace API {
     confirmationState: number;
     dealTime: number;
     txId: string;
+    metaData?: string;
   };
 
   type BuyOrderPsbtRes = {
@@ -447,6 +450,10 @@ declare namespace API {
     revealMintAddress: string;
     serviceFee: number;
     serviceAddress: string;
+    revealInscribeOutValue: number;
+    revealMintOutValue: number;
+    revealInscribeGas: number;
+    revealMintGas: number;
   };
 
   type IdCoin = {
