@@ -974,6 +974,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 if (!value || value.length < 2) {
                                                     return Promise.resolve();
                                                 }
+                                                if (value.toUpperCase() === 'WUKONG') {
+                                                    return Promise.reject(new Error('This tick already exists.'));
+                                                }
                                                 const { data } = await getMrc20Info(network, { tick: value.toUpperCase() });
                                                 if (data && data.mrc20Id) {
                                                     return Promise.reject(new Error('This tick already exists.'));
