@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import SetProfile from "@/components/SetProfile";
 import NumberFormat from "@/components/NumberFormat";
 import SetFeeRate from "@/components/SetFeeRate";
+import { StyleProvider } from '@ant-design/cssinjs';
 
 const _themes = {
   token: {
@@ -97,161 +98,163 @@ export default function Layout() {
     }
   }, [pathname]);
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.darkAlgorithm,
-        ..._themes,
-      }}
-    >{network === 'testnet' && <Alert type="error" message="This is a test network. Coins have no value." banner showIcon={false} style={{ textAlign: 'center' }} />}
-      <div className="page">
+    <StyleProvider hashPriority="high">
+      <ConfigProvider
+        theme={{
+          algorithm: theme.darkAlgorithm,
+          ..._themes,
+        }}
+      >{network === 'testnet' && <Alert type="error" message="This is a test network. Coins have no value." banner showIcon={false} style={{ textAlign: 'center' }} />}
+        <div className="page">
 
-        <div className="header">
-          <div className="pageLeft">
-            <img
-              src={logo}
-              alt=""
-              className="logo"
-              onClick={() => history.push("/")}
-            />
-            <Divider type="vertical"></Divider>
-            <div className="navWrap">
-              <Nav />
+          <div className="header">
+            <div className="pageLeft">
+              <img
+                src={logo}
+                alt=""
+                className="logo"
+                onClick={() => history.push("/")}
+              />
+              <Divider type="vertical"></Divider>
+              <div className="navWrap">
+                <Nav />
+              </div>
+
             </div>
-
-          </div>
-          <div className="navWrap">
-            {connected ? (
-              <Space>
-                <Button
-                  type="link"
-                  onClick={() => {
-                    history.push("/sale");
-                  }}
-                  className="listforsale"
-                >
-                  List For Sale
-                </Button>
-                <div className="feerate" style={{ display: "flex", alignItems: 'center', gap: 4, fontSize: 14, cursor: 'pointer' }} onClick={() => {
-                  setFeeRateModelVisible(true)
-                }}>
-                  <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4F66B' }}></div>
-                  <div>
-                    Gas <span className="colorPrimary"><NumberFormat prefix={` ${feeRateType} `} value={feeRate} /> </span>
-                  </div>
-                </div>
-                <Dropdown
-                  arrow
-                  dropdownRender={() => (
-                    <div className="walletInfo" onClick={(e) => { e.stopPropagation(); handleMenuClick(e) }}>
-                      <div className="userInfo">
-                        <Avatar
-                          src={
-                            <img src={avatar || defaultAvatar} alt="avatar" />
-                          }
-                          style={{ minWidth: 46, minHeight: 46 }}
-                        ></Avatar>
-                        <div className="nameWrap">
-                          <div className="name">
-                            {userName ||
-                              (btcAddress &&
-                                btcAddress.replace(
-                                  /(\w{4})\w+(\w{3})/,
-                                  "$1...$2"
-                                ))}
-
-                          </div>
-                          {metaid && (
-                            <div className="metaId">
-                              MetaID:
-                              {metaid.replace(/(\w{6})\w+(\w{3})/, "$1...")}
-                            </div>
-                          )}
-                        </div>
-                        <Button size="small" icon={<EditOutlined />} type="link" onClick={() => setEditVisible(true)}>
-
-                        </Button>
-                      </div>
-                      <div className="links">
-                        <div
-                          className="item forsale"
-                          onClick={() => {
-                            history.push("/sale");
-                          }}
-                        >
-                          <div className="path">List For Sale</div>
-                          <RightOutlined />
-                        </div>
-                        <div
-                          className="item"
-                          onClick={() => {
-                            history.push("/history");
-                          }}
-                        >
-                          <div className="path">Transaction History</div>
-                          <RightOutlined />
-                        </div>
-                        <div
-                          className="item"
-                          onClick={() => {
-                            history.push("/pending");
-                          }}
-                        >
-                          <div className="path">My Listing</div>
-                          <RightOutlined />
-                        </div>
-                        <div
-                          className="item"
-                          onClick={() => {
-                            history.push("/mrc20History");
-                          }}
-                        >
-                          <div className="path">My MRC-20</div>
-                          <RightOutlined />
-                        </div>
-                      </div>
-                      <div className="disConnect" onClick={disConnect}>
-                        Disconnect
-                      </div>
+            <div className="navWrap">
+              {connected ? (
+                <Space>
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      history.push("/sale");
+                    }}
+                    className="listforsale"
+                  >
+                    List For Sale
+                  </Button>
+                  <div className="feerate" style={{ display: "flex", alignItems: 'center', gap: 4, fontSize: 14, cursor: 'pointer' }} onClick={() => {
+                    setFeeRateModelVisible(true)
+                  }}>
+                    <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4F66B' }}></div>
+                    <div>
+                      Gas <span className="colorPrimary"><NumberFormat prefix={` ${feeRateType} `} value={feeRate} /> </span>
                     </div>
-                  )}
-                  placement="bottomRight"
-                  open={open}
-                  onOpenChange={handleOpenChange}
-                >
-                  <div className="userInfo" onClick={handleMenuClick}>
-
-                    <Divider type='vertical' style={{ margin: 0 }} />
-                    <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
-                    <Avatar
-                      style={{ minWidth: 30, minHeight: 30 }}
-                      src={<img src={avatar || defaultAvatar} alt="avatar" />}
-                    ></Avatar>
-                    <DownOutlined />
                   </div>
-                </Dropdown>
-              </Space>
-            ) : (
-              <Button type="primary" onClick={connect}>
-                Connect
-              </Button>
-            )}
+                  <Dropdown
+                    arrow
+                    dropdownRender={() => (
+                      <div className="walletInfo" onClick={(e) => { e.stopPropagation(); handleMenuClick(e) }}>
+                        <div className="userInfo">
+                          <Avatar
+                            src={
+                              <img src={avatar || defaultAvatar} alt="avatar" />
+                            }
+                            style={{ minWidth: 46, minHeight: 46 }}
+                          ></Avatar>
+                          <div className="nameWrap">
+                            <div className="name">
+                              {userName ||
+                                (btcAddress &&
+                                  btcAddress.replace(
+                                    /(\w{4})\w+(\w{3})/,
+                                    "$1...$2"
+                                  ))}
+
+                            </div>
+                            {metaid && (
+                              <div className="metaId">
+                                MetaID:
+                                {metaid.replace(/(\w{6})\w+(\w{3})/, "$1...")}
+                              </div>
+                            )}
+                          </div>
+                          <Button size="small" icon={<EditOutlined />} type="link" onClick={() => setEditVisible(true)}>
+
+                          </Button>
+                        </div>
+                        <div className="links">
+                          <div
+                            className="item forsale"
+                            onClick={() => {
+                              history.push("/sale");
+                            }}
+                          >
+                            <div className="path">List For Sale</div>
+                            <RightOutlined />
+                          </div>
+                          <div
+                            className="item"
+                            onClick={() => {
+                              history.push("/history");
+                            }}
+                          >
+                            <div className="path">Transaction History</div>
+                            <RightOutlined />
+                          </div>
+                          <div
+                            className="item"
+                            onClick={() => {
+                              history.push("/pending");
+                            }}
+                          >
+                            <div className="path">My Listing</div>
+                            <RightOutlined />
+                          </div>
+                          <div
+                            className="item"
+                            onClick={() => {
+                              history.push("/mrc20History");
+                            }}
+                          >
+                            <div className="path">My MRC-20</div>
+                            <RightOutlined />
+                          </div>
+                        </div>
+                        <div className="disConnect" onClick={disConnect}>
+                          Disconnect
+                        </div>
+                      </div>
+                    )}
+                    placement="bottomRight"
+                    open={open}
+                    onOpenChange={handleOpenChange}
+                  >
+                    <div className="userInfo" onClick={handleMenuClick}>
+
+                      <Divider type='vertical' style={{ margin: 0 }} />
+                      <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
+                      <Avatar
+                        style={{ minWidth: 30, minHeight: 30 }}
+                        src={<img src={avatar || defaultAvatar} alt="avatar" />}
+                      ></Avatar>
+                      <DownOutlined />
+                    </div>
+                  </Dropdown>
+                </Space>
+              ) : (
+                <Button type="primary" onClick={connect}>
+                  Connect
+                </Button>
+              )}
+            </div>
           </div>
+
+          <div className="content">
+            <Outlet />
+          </div>
+
+          <div className="footer">
+            <span>MetaID.market@2024 All Rights Reserved</span>
+            <span>
+              <Link style={{ textDecoration: 'underline', color: '#fff' }} to="/about/fees" >About Fees</Link>
+            </span>
+          </div>
+          <SetProfile show={false} editVisible={editViseble} onClose={() => { setEditVisible(false) }} />
+          <SetFeeRate />
         </div>
 
-        <div className="content">
-          <Outlet />
-        </div>
-
-        <div className="footer">
-          <span>MetaID.market@2024 All Rights Reserved</span>
-          <span>
-            <Link style={{ textDecoration: 'underline', color: '#fff' }} to="/about/fees" >About Fees</Link>
-          </span>
-        </div>
-        <SetProfile show={false} editVisible={editViseble} onClose={() => { setEditVisible(false) }} />
-        <SetFeeRate />
-      </div>
-
-    </ConfigProvider>
+      </ConfigProvider>
+    </StyleProvider>
   );
 }

@@ -9,6 +9,7 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "^1.21.1",
     "@ant-design/icons": "^5.3.7",
     "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
     "@mempool/mempool.js": "^2.3.0",
