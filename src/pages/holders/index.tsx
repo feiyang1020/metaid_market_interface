@@ -106,8 +106,9 @@ export default () => {
           dataSource={list}
           pagination={{
             position: ['bottomCenter'],
-            onChange: (page) => {
+            onChange: (page,pageSize) => {
               setCursor(page - 1);
+              setSize(pageSize || 10);
             },
 
             pageSize: size,
