@@ -340,8 +340,9 @@ export default () => {
                 pageSize: size,
                 current: page + 1,
                 total,
-                onChange: (page) => {
+                onChange: (page, pageSize) => {
                     setPage(page - 1);
+                    setSize(pageSize || 10);
                 },
             }}
             scroll={{ x: 800 }}
@@ -384,8 +385,9 @@ export default () => {
                 )}
                 rowKey={"mrc20Id"}
                 pagination={{
-                    onChange: (page) => {
+                    onChange: (page,pageSize) => {
                         setPage(page - 1);
+                        setSize(pageSize || 10);
                     },
                     position: "bottom",
                     align: "center",
