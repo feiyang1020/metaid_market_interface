@@ -180,13 +180,14 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
                 )}
                 rowKey={"orderId"}
                 pagination={{
-                    onChange: (page) => {
+                    onChange: (page,pageSize) => {
                         setLoading(true);
                         setPage(page - 1);
+                        setSize(pageSize || 12);
                     },
                     position: "bottom",
                     align: "center",
-                    pageSize: 12,
+                    pageSize: size,
                     total: total,
                     current: page + 1,
                 }}

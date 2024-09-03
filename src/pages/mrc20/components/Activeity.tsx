@@ -149,10 +149,11 @@ export default ({ mrc20Id, showMy = false }: Props) => {
         pageSize: size,
         current: page + 1,
         total,
-        onChange: (page) => {
+        onChange: (page,pageSize) => {
 
           setLoading(true);
           setPage(page - 1);
+          setSize(pageSize || 10);
         },
       }}
       scroll={{ x: 1000 }}
