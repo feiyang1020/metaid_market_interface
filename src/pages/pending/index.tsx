@@ -14,7 +14,7 @@ const items = ["PIN", 'MRC-20'];
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
 
-  const size = 10;
+  const [size, setSize] = useState<number>(10);
   const [sortKey, setSortKey] = useState<string>("timestamp");
   const [sortType, setSortType] = useState<number>(-1);
   const [cursor, setCursor] = useState<number>(0);
@@ -64,7 +64,7 @@ export default () => {
         }
       }
     },
-    [network, sortKey, sortType, cursor, btcAddress]
+    [network, sortKey, sortType, cursor, btcAddress,size]
   );
   const updateOrders: any = useIntervalAsync(fetchOrders, 90000);
   const [show, setShow] = useState<boolean>(false);
@@ -215,10 +215,11 @@ export default () => {
               pageSize: size,
               current: cursor + 1,
               total,
-              onChange: (page) => {
+              onChange: (page,pageSize) => {
 
                 setLoading(true);
                 setCursor(page - 1);
+                setSize(pageSize || 10);
               },
             }}
           />

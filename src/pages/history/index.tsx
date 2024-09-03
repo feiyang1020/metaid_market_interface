@@ -11,7 +11,7 @@ import { getContent, getOrders } from "@/services/api";
 const items = ["Activity", "Buy", "Sell"];
 export default () => {
   const { btcAddress, network } = useModel("wallet");
-  const size = 10;
+  const [size, setSize] = useState<number>(10);
   const [sortKey, setSortKey] = useState<string>("timestamp");
   const [sortType, setSortType] = useState<number>(-1);
   const [cursor, setCursor] = useState<number>(0);
@@ -63,7 +63,7 @@ export default () => {
         }
       }
     },
-    [network, sortKey, sortType, cursor, btcAddress]
+    [network, sortKey, sortType, cursor, btcAddress, size]
   );
   const updateOrders: any = useIntervalAsync(fetchOrders, 90000);
   const [tab, setTab] = useState<string>("");
@@ -207,10 +207,12 @@ export default () => {
           dataSource={list}
           pagination={{
             position: ['bottomCenter'],
-            onChange: (page) => {
+            onChange: (page, pageSize) => {
               setTab("");
               setLoading(true);
               setCursor(page - 1);
+              setSize(pageSize || 10);
+
             },
 
             pageSize: size,

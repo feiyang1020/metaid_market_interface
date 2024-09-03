@@ -275,9 +275,10 @@ export default () => {
                 )}
                 rowKey={"mrc20Id"}
                 pagination={{
-                    onChange: (page) => {
+                    onChange: (page,pageSize) => {
                         setLoading(true);
                         setPage(page - 1);
+                        setSize(pageSize || 10);
                     },
                     position: "bottom",
                     align: "center",
