@@ -4,10 +4,10 @@ import { useCallback, useState } from "react";
 import { useModel } from "umi";
 
 export default () => {
-  const size = 12;
+  const [size, setSize] = useState<number>(12);
   const { network } = useModel("wallet");
   const [sortKey, setSortKey] = useState<string>("timestamp");
-  const [filterKey, setFilterKey] = useState<Record<string,string>>({});
+  const [filterKey, setFilterKey] = useState<Record<string, string>>({});
   const [sortType, setSortType] = useState<number>(-1);
   const [cursor, setCursor] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
@@ -25,7 +25,7 @@ export default () => {
             sortType,
             cursor: cursor * size,
             size,
-            ...filterKey
+            ...filterKey,
           });
           const list: API.Asset[] = ret.data.list.map((item) => {
             return {
@@ -53,7 +53,7 @@ export default () => {
         }
       }
     },
-    [network, sortKey, sortType, cursor,filterKey]
+    [network, sortKey, sortType, cursor, filterKey,size]
   );
   const updateOrders: any = useIntervalAsync(fetchOrders, 90000);
   return {
@@ -71,6 +71,8 @@ export default () => {
     tab,
     setTab,
     filterKey,
-    setFilterKey  
+    setFilterKey,
+    size,
+    setSize,
   };
 };

@@ -164,8 +164,9 @@ export default () => {
                 pageSize: size,
                 current: page + 1,
                 total,
-                onChange: (page) => {
+                onChange: (page, pageSize) => {
                     setPage(page - 1);
+                    setSize(pageSize || 10);
                 },
             }}
             scroll={{ x: 800 }}
@@ -186,7 +187,7 @@ export default () => {
                 return {
                     style: { cursor: 'pointer' },
                     onClick: () => {
-                        history.push(`/${record.tag==='id-coins'?'idCoin':'mrc20'}/${record.tick}`)
+                        history.push(`/${record.tag === 'id-coins' ? 'idCoin' : 'mrc20'}/${record.tick}`)
                     },
                 }
             }}
@@ -208,9 +209,10 @@ export default () => {
                 )}
                 rowKey={"mrc20Id"}
                 pagination={{
-                    onChange: (page) => {
+                    onChange: (page, pageSize) => {
                         setLoading(true);
                         setPage(page - 1);
+                        setSize(pageSize || 10);
                     },
                     position: "bottom",
                     align: "center",

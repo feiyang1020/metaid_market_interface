@@ -39,7 +39,7 @@ export default ({ record, }: Props) => {
             </div>
             <div className="bottomRight">
                 <div className="item">
-                    <div className="label"> Total Spupyly</div>
+                    <div className="label"> Total Supply</div>
                     <div className="value"><NumberFormat value={record.totalSupply} /></div>
                 </div>
                 <div className="item">

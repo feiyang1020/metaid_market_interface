@@ -28,7 +28,9 @@ export default () => {
     setCursor,
     tab,
     setTab,
-    filterKey
+    filterKey,
+    size,
+    setSize,
   } = useModel("orders");
   const match = useMatch('/market/:tab');
   const match2 = useMatch('/market/:tab/:mrc20Tab');
@@ -151,13 +153,14 @@ export default () => {
             )}
             rowKey={"orderId"}
             pagination={{
-              onChange: (page) => {
+              onChange: (page,pageSize) => {
                 setLoading(true);
                 setCursor(page - 1);
+                setSize(pageSize || 10);
               },
               position: "bottom",
               align: "center",
-              pageSize: 12,
+              pageSize:size ,
               total: total,
               current: cursor + 1,
             }}

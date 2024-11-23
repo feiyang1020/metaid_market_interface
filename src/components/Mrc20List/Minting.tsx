@@ -219,8 +219,9 @@ export default () => {
                 pageSize: size,
                 current: page + 1,
                 total,
-                onChange: (page) => {
+                onChange: (page, pageSize) => {
                     setPage(page - 1);
+                    setSize(pageSize || 10);
                 },
             }}
             size='small'
@@ -274,9 +275,10 @@ export default () => {
                 )}
                 rowKey={"mrc20Id"}
                 pagination={{
-                    onChange: (page) => {
+                    onChange: (page,pageSize) => {
                         setLoading(true);
                         setPage(page - 1);
+                        setSize(pageSize || 10);
                     },
                     position: "bottom",
                     align: "center",

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ant-design/cssinjs':
+        specifier: ^1.21.1
+        version: 1.21.1(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       '@ant-design/icons':
         specifier: ^5.3.7
         version: 5.3.7(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
@@ -87,8 +90,8 @@ packages:
   '@ant-design/colors@7.0.2':
     resolution: {integrity: sha512-7KJkhTiPiLHSu+LmMJnehfJ6242OCxSlR3xHVBecYxnMW8MS/878NXct1GqYARyL59fyeFdKRxXTfvR9SnDgJg==, tarball: https://registry.npmjs.org/@ant-design/colors/-/colors-7.0.2.tgz}
 
-  '@ant-design/cssinjs@1.21.0':
-    resolution: {integrity: sha512-gIilraPl+9EoKdYxnupxjHB/Q6IHNRjEXszKbDxZdsgv4sAZ9pjkCq8yanDWNvyfjp4leir2OVAJm0vxwKK8YA==, tarball: https://registry.npmjs.org/@ant-design/cssinjs/-/cssinjs-1.21.0.tgz}
+  '@ant-design/cssinjs@1.21.1':
+    resolution: {integrity: sha512-tyWnlK+XH7Bumd0byfbCiZNK43HEubMoCcu9VxwsAwiHdHTgWa+tMN0/yvxa+e8EzuFP1WdUNNPclRpVtD33lg==, tarball: https://registry.npmjs.org/@ant-design/cssinjs/-/cssinjs-1.21.1.tgz}
     peerDependencies:
       react: '>=16.0.0'
       react-dom: '>=16.0.0'
@@ -5389,6 +5392,9 @@ packages:
   stylis@4.3.2:
     resolution: {integrity: sha512-bhtUjWd/z6ltJiQwg0dUfxEJ+W+jdqQd8TbWLWyeIJHlnsqmGLRFFd8e5mA0AZi/zx90smXRlN66YMTcaSFifg==, tarball: https://registry.npmjs.org/stylis/-/stylis-4.3.2.tgz}
 
+  stylis@4.3.4:
+    resolution: {integrity: sha512-osIBl6BGUmSfDkyH2mB7EFvCJntXDrLhKjHTRj/rK6xLH0yuPrHULDRQzKokSOD4VoorhtKpfcfW1GAntu8now==, tarball: https://registry.npmjs.org/stylis/-/stylis-4.3.4.tgz}
+
   superjson@1.13.3:
     resolution: {integrity: sha512-mJiVjfd2vokfDxsQPOwJ/PtanO87LhpYY88ubI5dUB1Ab58Txbyje3+jpm+/83R/fevaq/107NNhtYBLuoTrFg==, tarball: https://registry.npmjs.org/superjson/-/superjson-1.13.3.tgz}
     engines: {node: '>=10'}
@@ -5950,7 +5956,7 @@ snapshots:
     dependencies:
       '@ctrl/tinycolor': 3.6.1
 
-  '@ant-design/cssinjs@1.21.0(react-dom@18.1.0(react@18.1.0))(react@18.1.0)':
+  '@ant-design/cssinjs@1.21.1(react-dom@18.1.0(react@18.1.0))(react@18.1.0)':
     dependencies:
       '@babel/runtime': 7.24.7
       '@emotion/hash': 0.8.0
@@ -5960,7 +5966,7 @@ snapshots:
       rc-util: 5.43.0(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       react: 18.1.0
       react-dom: 18.1.0(react@18.1.0)
-      stylis: 4.3.2
+      stylis: 4.3.4
 
   '@ant-design/icons-svg@4.4.2': {}
 
@@ -6118,7 +6124,7 @@ snapshots:
 
   '@ant-design/pro-provider@2.14.7(antd@5.18.3(moment@2.30.1)(react-dom@18.1.0(react@18.1.0))(react@18.1.0))(react-dom@18.1.0(react@18.1.0))(react@18.1.0)':
     dependencies:
-      '@ant-design/cssinjs': 1.21.0(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
+      '@ant-design/cssinjs': 1.21.1(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       '@babel/runtime': 7.24.7
       '@ctrl/tinycolor': 3.6.1
       antd: 5.18.3(moment@2.30.1)(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
@@ -7696,7 +7702,7 @@ snapshots:
     dependencies:
       '@ahooksjs/use-request': 2.8.15(react@18.1.0)
       '@ant-design/antd-theme-variable': 1.0.0
-      '@ant-design/cssinjs': 1.21.0(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
+      '@ant-design/cssinjs': 1.21.1(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       '@ant-design/icons': 4.8.3(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       '@ant-design/moment-webpack-plugin': 0.0.3
       '@ant-design/pro-components': 2.7.10(antd@5.18.3(moment@2.30.1)(react-dom@18.1.0(react@18.1.0))(react@18.1.0))(rc-field-form@2.2.1(react-dom@18.1.0(react@18.1.0))(react@18.1.0))(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
@@ -8030,7 +8036,7 @@ snapshots:
   antd@5.18.3(moment@2.30.1)(react-dom@18.1.0(react@18.1.0))(react@18.1.0):
     dependencies:
       '@ant-design/colors': 7.0.2
-      '@ant-design/cssinjs': 1.21.0(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
+      '@ant-design/cssinjs': 1.21.1(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       '@ant-design/icons': 5.3.7(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       '@ant-design/react-slick': 1.1.2(react@18.1.0)
       '@babel/runtime': 7.24.7
@@ -12450,6 +12456,8 @@ snapshots:
       - supports-color
 
   stylis@4.3.2: {}
+
+  stylis@4.3.4: {}
 
   superjson@1.13.3:
     dependencies:
