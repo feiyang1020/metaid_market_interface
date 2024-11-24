@@ -21,8 +21,8 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       '@metaid/metaid':
-        specifier: 1.4.0
-        version: 1.4.0(encoding@0.1.13)
+        specifier: 1.5.9
+        version: 1.5.9(encoding@0.1.13)
       antd:
         specifier: ^5.17.3
         version: 5.18.3(moment@2.30.1)(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
@@ -964,8 +964,8 @@ packages:
     resolution: {integrity: sha512-a/5oSDGcXmoFOfSkUnSZzgFmf1XD7ZrOY9wVU769atYcDtifUg9+QHr9qa41XNIdopI+wbcUx4/M7mYd97oOOg==, tarball: https://registry.npmjs.org/@metaid/metaid-cli/-/metaid-cli-0.0.2.tgz}
     hasBin: true
 
-  '@metaid/metaid@1.4.0':
-    resolution: {integrity: sha512-XXoiCB9GaoaCDeashi09djADwK0SbNJ+h+fYjdcwwse3eIoaKYk5UBmGTcOJJ1KN9ZKO+Tw0lHGm8gpuTQfDSw==, tarball: https://registry.npmjs.org/@metaid/metaid/-/metaid-1.4.0.tgz}
+  '@metaid/metaid@1.5.9':
+    resolution: {integrity: sha512-W09/zAfMwQbnq+wSOZIt3tV6HeL9mRLkqybyL8XsRtX2LZyJmYvSSsHsXPs8wyygLaFOS1wTt6vYJQGfv7Zu/Q==, tarball: https://registry.npmjs.org/@metaid/metaid/-/metaid-1.5.9.tgz}
 
   '@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1':
     resolution: {integrity: sha512-54/JRvkLIzzDWshCWfuhadfrfZVPiElY8Fcgmg1HroEly/EDSszzhBAsarCux+D/kOslTRquNzuyGSmUSTTHGg==, tarball: https://registry.npmjs.org/@nicolo-ribaudo/eslint-scope-5-internals/-/eslint-scope-5-internals-5.1.1-v1.tgz}
@@ -2717,6 +2717,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==, tarball: https://registry.npmjs.org/eslint/-/eslint-8.57.0.tgz}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   esniff@2.0.1:
@@ -6950,7 +6951,7 @@ snapshots:
     dependencies:
       inquirer: 9.2.23
 
-  '@metaid/metaid@1.4.0(encoding@0.1.13)':
+  '@metaid/metaid@1.5.9(encoding@0.1.13)':
     dependencies:
       '@bitcoin-js/tiny-secp256k1-asmjs': 2.2.3
       '@metaid/metaid-cli': 0.0.2
@@ -9077,7 +9078,7 @@ snapshots:
 
   elliptic@6.5.4:
     dependencies:
-      bn.js: 4.11.9
+      bn.js: 4.12.0
       brorand: 1.1.0
       hash.js: 1.1.7
       hmac-drbg: 1.0.1
