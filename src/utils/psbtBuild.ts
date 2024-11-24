@@ -329,45 +329,46 @@ export async function fillInternalKey({
 }
 
 export const getUtxos = async (address: string, network: API.Network) => {
-  // const mempoolReturn = mempoolJS({
-  //   hostname: "mempool.space",
-  //   network: network === "mainnet" ? "main" : "testnet",
-  // });
-  // const rawUtxoList = await mempoolReturn.bitcoin.addresses.getAddressTxsUtxo({
-  //   address,
-  // });
-  // const utxos: API.UTXO[] = [];
-  // for (const utxoElement of rawUtxoList) {
-  //   if (utxoElement.value > 1000) {
-  //     utxos.push({
-  //       txId: utxoElement.txid,
-  //       vout: utxoElement.vout,
-  //       satoshi: utxoElement.value,
-  //       confirmed: utxoElement.status.confirmed,
-  //       inscriptions: null,
-  //       outputIndex: utxoElement.vout,
-  //       satoshis: utxoElement.value,
-  //     });
-  //   }
-  // }
-  //
-  const addressType = determineAddressInfo(address).toUpperCase();
-  const utxos = await window.metaidwallet.btc.getUtxos({
-    needRawTx: ["P2PKH"].includes(addressType),
-    useUnconfirmed: true,
+  const mempoolReturn = mempoolJS({
+    hostname: "mempool.space",
+    network: network === "mainnet" ? "main" : "testnet",
   });
-  console.log(utxos, "utxos");
-  for (let i = 0; i < utxos.length; i++) {
-    const { txId, vout } = utxos[i];
-    if (!utxos[i].confirmed) {
-      const ret = await window.metaidwallet.btc.addSafeUtxo({
-        address,
-        unspentOutput: `${txId}:${vout}`,
+  const rawUtxoList = await mempoolReturn.bitcoin.addresses.getAddressTxsUtxo({
+    address,
+  });
+  const utxos: API.UTXO[] = [];
+  for (const utxoElement of rawUtxoList) {
+    if (utxoElement.value > 1000) {
+      utxos.push({
+        txId: utxoElement.txid,
+        vout: utxoElement.vout,
+        satoshi: utxoElement.value,
+        confirmed: utxoElement.status.confirmed,
+        inscriptions: null,
+        outputIndex: utxoElement.vout,
+        satoshis: utxoElement.value,
       });
-      console.log(ret, "addSafeUtxo");
     }
   }
   return utxos;
+  
+  // const addressType = determineAddressInfo(address).toUpperCase();
+  // const utxos = await window.metaidwallet.btc.getUtxos({
+  //   needRawTx: ["P2PKH"].includes(addressType),
+  //   useUnconfirmed: true,
+  // });
+  // console.log(utxos, "utxos");
+  // for (let i = 0; i < utxos.length; i++) {
+  //   const { txId, vout } = utxos[i];
+  //   if (!utxos[i].confirmed) {
+  //     const ret = await window.metaidwallet.btc.addSafeUtxo({
+  //       address,
+  //       unspentOutput: `${txId}:${vout}`,
+  //     });
+  //     console.log(ret, "addSafeUtxo");
+  //   }
+  // }
+  // return utxos;
 };
 
 export const addUtxoSafe = async (
