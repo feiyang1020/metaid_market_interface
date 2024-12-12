@@ -1,5 +1,6 @@
 import { request } from "umi";
 import mempoolJS from "@mempool/mempool.js";
+import { getHostByNet } from "@/config";
 const getHost = (network: API.Network) => {
   if (network === "mainnet") return "https://api.metaid.market/api-market";
   if (network === "testnet")
@@ -961,6 +962,38 @@ export async function fetchFeeRecommend(
     }>
   >(`${getHost(network)}/api/v1/common/fee/recommended`, {
     method: "GET",
+    ...(options || {}),
+  });
+}
+
+export async function getBTCPrice(
+  network: API.Network,
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      USD: number;
+    }>
+  >(`https://api.metaid.market/api-market/api/v1/common/coin/price`, {
+    method: "GET",
+    ...(options || {}),
+  });
+}
+
+export async function getMetaNameInfo(
+  params: {
+    name: string;
+  },
+  network: API.Network,
+  options?: { [key: string]: any }
+) {
+  return request<
+    API.Ret<{
+      info: API.MetaNameInfo;
+    }>
+  >(`${getHostByNet(network)}/api/metaname/info`, {
+    method: "GET",
+    params,
     ...(options || {}),
   });
 }

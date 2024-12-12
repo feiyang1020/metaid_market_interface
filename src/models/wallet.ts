@@ -9,6 +9,7 @@ import { determineAddressInfo, formatSat } from "@/utils/utlis";
 import { getFeeRate } from "@/utils/mempool";
 import { curNetwork, getHostByNet } from "@/config";
 import useIntervalAsync from "@/hooks/useIntervalAsync";
+import { getBTCPrice } from "@/services/api";
 
 export type Network = "mainnet" | "testnet";
 type WalletName = "metalet";
@@ -47,6 +48,7 @@ export default () => {
     }[]
   >([]);
   const [feeRate, setFeeRate] = useState<number>(0);
+  const [btcPrice, setBtcPrice] = useState<number>(0);
   const [feeRateType, setFeeRateType] = useState<string>("");
   const [feeRateModalVisible, setFeeRateModelVisible] =
     useState<boolean>(false);
@@ -152,6 +154,16 @@ export default () => {
         }
         return prev;
       });
+    }
+  }, [network]);
+
+  const fetchBTCPrice = useCallback(async () => {
+    const res = await getBTCPrice(network);
+    const price = res.data.USD;
+    if (!price) {
+      setBtcPrice(0);
+    } else {
+      setBtcPrice(price);
     }
   }, [network]);
 
@@ -275,6 +287,7 @@ export default () => {
 
   const updateWalletInfo = useIntervalAsync(init, 60000);
   const updateFeeRate = useIntervalAsync(fetchFeeRate, 60000);
+  const updateBTCPrice = useIntervalAsync(fetchBTCPrice, 60000);
 
   return {
     btcAddress,
@@ -300,5 +313,6 @@ export default () => {
     setFeeRateType,
     setFeeRateModelVisible,
     feeRateModalVisible,
+    btcPrice,
   };
 };

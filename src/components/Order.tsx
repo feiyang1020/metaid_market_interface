@@ -20,6 +20,7 @@ import { formatSat } from "@/utils/utlis";
 import MetaIdAvatar from "./MetaIdAvatar";
 import JSONView from "./JSONView";
 import { getContent } from "@/services/api";
+import USDPrice from "./USDPrice";
 
 type Props = {
   item: API.Order;
@@ -132,6 +133,7 @@ export default ({ item: data, handleBuy }: Props) => {
         <div className="price ">
           <img src={btc} className="btcLogo" alt="" />{" "}
           <span>{formatSat(item.sellPriceAmount)} BTC</span>
+          <USDPrice value={item.sellPriceAmount} decimals={8} />
         </div>
 
         <div className="btn animation-slide-bottom">

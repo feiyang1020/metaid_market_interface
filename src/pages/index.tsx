@@ -8,9 +8,10 @@ import { useEffect, useState } from "react";
 import BuyModel from "@/components/BuyModel";
 import Mrc20List from "@/components/Mrc20List";
 import FilterForm from "@/components/FilterForm";
+import MetaName from "@/components/MetaName";
 
 const { useBreakpoint } = Grid;
-const items = [ 'MRC-20',"PIN"];
+const items = ['MRC-20', "PIN", 'MetaName'];
 
 
 export default () => {
@@ -51,7 +52,7 @@ export default () => {
   const _tab = match?.params.tab || match2?.params.tab;
   useEffect(() => {
     if (_tab && items.includes(_tab)) {
-      setTab(_tab as "PIN" | "MRC-20");
+      setTab(_tab as "PIN" | "MRC-20" | "MetaName");
     }
   }, [_tab]);
 
@@ -153,14 +154,14 @@ export default () => {
             )}
             rowKey={"orderId"}
             pagination={{
-              onChange: (page,pageSize) => {
+              onChange: (page, pageSize) => {
                 setLoading(true);
                 setCursor(page - 1);
                 setSize(pageSize || 10);
               },
               position: "bottom",
               align: "center",
-              pageSize:size ,
+              pageSize: size,
               total: total,
               current: cursor + 1,
             }}
@@ -168,6 +169,7 @@ export default () => {
         </div>
       </>}
       {tab === "MRC-20" && <Mrc20List />}
+      {tab === "MetaName" && <MetaName />}
 
       <BuyModel
         order={curOrder}

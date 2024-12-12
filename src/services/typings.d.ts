@@ -536,4 +536,16 @@ declare namespace API {
     totalAmount: number;
     totalFee: number;
   };
+  type MetaNameInfo = {
+    space: "metaid";
+    name: string;
+    fullName: string;
+    metadata: string;
+    rev: string;
+    relay: string;
+    pinId: string;
+    opAddress: string;
+    opMetaId: string;
+    mongoId: string;
+  };
 }
