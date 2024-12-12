@@ -3,7 +3,7 @@ import "./index.less"
 import _location from "@/assets/location.svg"
 import { CloseCircleOutlined, RightOutlined, SearchOutlined } from "@ant-design/icons"
 import { useModel } from "umi"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createMetaName } from "@/utils/metaName"
 import { getMetaNameInfo } from "@/services/api"
 
@@ -19,25 +19,33 @@ export default () => {
     const [searched, setSearched] = useState<string>('');
     const [historyItems, setHistoryItems] = useState<string[]>([]);
     const { network, btcConnector, feeRate, connected, connect } = useModel("wallet");
+    useEffect(()=>{
+        const _historyItems = JSON.parse(localStorage.getItem('metaNameHistory') || '[]');
+        setHistoryItems(_historyItems);
+    },[])
 
-    const handelSearch = async () => {
-        if (!name) return
-        const Reg=/^[a-zA-Z0-9]{1,64}$/;
-        if(!Reg.test(name)){
+    const handelSearch = async (_name?:string) => {
+        console.log('handelSearch')
+        const Name = _name || name;
+        if (!Name) return
+        const Reg = /^[a-zA-Z0-9]{1,64}$/;
+        if (!Reg.test(Name)) {
             message.error('Name should be 1-64 characters long and only contain letters and numbers');
             return
         }
         setLoading(true);
 
         try {
-            const ret = await getMetaNameInfo({ name }, network);
+            const ret = await getMetaNameInfo({ name:Name }, network);
             if (ret.data && ret.data.info) {
                 setInfo(ret.data.info);
             } else {
                 setInfo(undefined);
             }
-            setSearched(name)
-            setHistoryItems([name, ...historyItems.filter(item => item !== name).slice(0, 4)]);
+            setSearched(Name)
+            const _historyItems = [Name, ...historyItems.filter(item => item !== Name).slice(0, 4)];
+            localStorage.setItem('metaNameHistory', JSON.stringify(_historyItems));
+            setHistoryItems(_historyItems);
         } catch (err) {
             console.log(err)
         }
@@ -75,7 +83,7 @@ export default () => {
             <Input size="large" className="input" variant='borderless' allowClear placeholder="Search for your MetaName" value={name} onChange={(e) => {
                 setName(e.target.value)
             }} />
-            <Button loading={loading} onClick={handelSearch} className="button" type='primary' shape='circle' icon={<SearchOutlined className="search" />}></Button>
+            <Button loading={loading} onClick={()=>handelSearch()} className="button" type='primary' shape='circle' icon={<SearchOutlined className="search" />}></Button>
         </div>
         <div className="searchHistorys">
             <Space>
@@ -83,7 +91,8 @@ export default () => {
                 {historyItems.map((item, index) => {
                     return <Button key={item} color="default" variant="filled" onClick={() => {
                         setName(item);
-                        handelSearch();
+                        handelSearch(item);
+                        
                     }}>{item}</Button>
                 })}
             </Space>
@@ -110,7 +119,7 @@ export default () => {
                 {
                     !info && <div style={{ width: '100%' }}>
                         {
-                            ['metaid', 'ord', 'sats', 'btc'].map((item, index) => (
+                            ['metaid'].map((item, index) => (
                                 <div
                                     className="resultItem"
                                     style={{ borderColor: '#000', borderRadius: 8, background: colorBgElevated }}
