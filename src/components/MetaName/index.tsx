@@ -80,7 +80,7 @@ export default () => {
         <Typography.Text className="subTitle" type='secondary' >MetaName  Service simplifies your on-chain life</Typography.Text>
 
         <div className="inputWrap">
-            <Input size="large" className="input" variant='borderless' allowClear placeholder="Search for your MetaName" value={name} onChange={(e) => {
+            <Input size="large" className="input" variant='borderless' allowClear placeholder="Search for your MetaName" onPressEnter={()=>handelSearch()} value={name} onChange={(e) => {
                 setName(e.target.value)
             }} />
             <Button loading={loading} onClick={()=>handelSearch()} className="button" type='primary' shape='circle' icon={<SearchOutlined className="search" />}></Button>
