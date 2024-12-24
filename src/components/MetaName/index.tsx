@@ -28,11 +28,11 @@ export default () => {
         console.log('handelSearch')
         const Name = _name || name;
         if (!Name) return
-        const Reg = /^[a-zA-Z0-9]{1,64}$/;
-        if (!Reg.test(Name)) {
-            message.error('Name should be 1-64 characters long and only contain letters and numbers');
-            return
-        }
+        // const Reg = /^[a-zA-Z0-9]\.[a-zA-Z0-9]$/;
+        // if (!Reg.test(Name)) {
+        //     message.error('Name should be 1-64 characters long and only contain letters and numbers');
+        //     return
+        // }
         setLoading(true);
 
         try {
@@ -74,7 +74,7 @@ export default () => {
     }
     return <div className="metaNamePage">
         <Space>
-            <img className="icon" src={_location}></img>
+           
             <Typography.Title className="title" level={1}>Own Your Identity</Typography.Title>
         </Space>
         <Typography.Text className="subTitle" type='secondary' >MetaName  Service simplifies your on-chain life</Typography.Text>
@@ -83,13 +83,13 @@ export default () => {
             <Input size="large" className="input" variant='borderless' allowClear placeholder="Search for your MetaName" onPressEnter={()=>handelSearch()} value={name} onChange={(e) => {
                 setName(e.target.value)
             }} />
-            <Button loading={loading} onClick={()=>handelSearch()} className="button" type='primary' shape='circle' icon={<SearchOutlined className="search" />}></Button>
+            <Button loading={loading} onClick={()=>handelSearch()} size='large' className="button" type='primary' shape='circle' icon={<SearchOutlined className="search" />}></Button>
         </div>
         <div className="searchHistorys">
             <Space>
-                <Typography.Text className="subTitle" type='secondary' >Recent searches</Typography.Text>
+                <Typography.Text  type='secondary' >Recent searches</Typography.Text>
                 {historyItems.map((item, index) => {
-                    return <Button key={item} color="default" variant="filled" onClick={() => {
+                    return <Button key={item} color="default" size='small' variant="filled" onClick={() => {
                         setName(item);
                         handelSearch(item);
                         
