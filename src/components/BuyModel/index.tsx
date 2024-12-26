@@ -25,6 +25,7 @@ import { number } from "bitcoinjs-lib/src/script";
 import JSONView from "../JSONView";
 import { addUtxoSafe } from "@/utils/psbtBuild";
 import NumberFormat from "../NumberFormat";
+import Trans from "../Trans";
 type Props = {
   order: API.Order | undefined;
   show: boolean;
@@ -176,7 +177,6 @@ export default ({ order, show, onClose }: Props) => {
           sighashTypes: [SIGHASH_ALL],
         });
       }
-      console.log({ toSignInputs });
       const signed = await window.metaidwallet.btc.signPsbt({
         psbtHex: orderPsbt.toHex(),
         options: {
@@ -211,8 +211,8 @@ export default ({ order, show, onClose }: Props) => {
         show: true,
         onClose: () => setSuccessProp(DefaultSuccessProps),
         onDown: () => setSuccessProp(DefaultSuccessProps),
-        title: "Buy",
-        tip: "Payment Successful",
+        title: <Trans>Buy</Trans>,
+        tip: <Trans>Payment Successful</Trans>,
         children: (
           <div className="buySuccess">
             <div className="orderInfo">
@@ -237,7 +237,7 @@ export default ({ order, show, onClose }: Props) => {
             </div>
             <div className="res">
               <div className="item">
-                <div className="label">Transaction Price</div>
+                <div className="label"><Trans>Transaction Price</Trans> </div>
                 <div className="value">
                   <img src={btcIcon}></img> {formatSat(totalSpent)} BTC
                 </div>
@@ -275,7 +275,7 @@ export default ({ order, show, onClose }: Props) => {
     <>
       {order && (
         <Popup
-          title="Buy Now"
+          title={<Trans>Buy Now</Trans>}
           modalWidth={600}
           show={show}
           onClose={onClose}
@@ -306,24 +306,24 @@ export default ({ order, show, onClose }: Props) => {
             </div>
             <div className="fees">
               <div className="feeItem">
-                <div className="label">Price</div>
+                <div className="label"><Trans>Price</Trans></div>
                 <div className="value"><NumberFormat value={order.sellPriceAmount} isBig decimal={8} minDig={8} suffix=' BTC'/>  </div>
               </div>
               <div className="feeItem">
                 <div className="label">
-                  Taker Fee{orderWithPsbt&&orderWithPsbt.fee > 0 && `(${orderWithPsbt.feeRateStr}%)`}
+                <Trans>Taker Fee</Trans>{orderWithPsbt&&orderWithPsbt.fee > 0 && `(${orderWithPsbt.feeRateStr}%)`}
                 </div>
                 <div className="value"><NumberFormat value={orderWithPsbt && orderWithPsbt.fee} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
               </div>
               <div className="feeItem">
-                <div className="label">Transaction Fee</div>
+                <div className="label"><Trans>Transaction Fee</Trans></div>
                 <div className="value">
                   <Spin spinning={calcing}><NumberFormat value={fee} isBig decimal={8} minDig={8} suffix=" BTC" /></Spin>
                 </div>
               </div>
               <div className="feeItem">
                 <div className="label">
-                  Network Fee
+                <Trans>Network Fee</Trans>
                 </div>
                 <div className="value">{feeRate} sat/vB</div>
               </div>
@@ -332,7 +332,7 @@ export default ({ order, show, onClose }: Props) => {
 
             <Spin spinning={calcing}>
               <div className="payInfo">
-                <div className="label">You Pay</div>
+                <div className="label"><Trans>You Pay</Trans></div>
                 <div className="value">
                   <img src={btcIcon} alt="" className="btc" />
                   <span>
@@ -342,7 +342,7 @@ export default ({ order, show, onClose }: Props) => {
               </div>
               {errInfo && (
                 <Alert
-                  message={errInfo}
+                  message={<Trans>{errInfo}</Trans>}
                   type="error"
                   showIcon
                   style={{ marginTop: 10 }}
@@ -350,7 +350,7 @@ export default ({ order, show, onClose }: Props) => {
               )}
 
               <div className="avail">
-                <div className="label">Available Balance</div>
+                <div className="label"><Trans>Available Balance</Trans></div>
 
                 <div className="value">
                   {userBalInfo && formatSat(userBalInfo.total)} BTC
@@ -367,7 +367,7 @@ export default ({ order, show, onClose }: Props) => {
                 loading={submiting}
                 disabled={Boolean(errInfo) || calcing}
               >
-                Confirm
+                <Trans>Confirm</Trans>
               </Button>
               <Button
                 style={{ height: 48 }}
@@ -375,7 +375,7 @@ export default ({ order, show, onClose }: Props) => {
                 type="link"
                 onClick={onClose}
               >
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
             </div>
           </div>

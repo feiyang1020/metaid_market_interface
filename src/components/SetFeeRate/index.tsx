@@ -8,6 +8,7 @@ import { CheckOutlined } from "@ant-design/icons";
 import cus from '@/assets/icons/gauge-low.svg'
 import Actcus from '@/assets/icons/gauge-low (1).svg'
 import { getMinFeeRate } from "@/utils/mempool";
+import Trans from "../Trans";
 export default () => {
     const { feeRate, feeRateType, feeRates, setFeeRate, setFeeRateModelVisible, setFeeRateType, feeRateModalVisible, network } = useModel("wallet");
     const [minFeeRate, setMinFeeRate] = useState<number>(1);
@@ -35,7 +36,7 @@ export default () => {
     return <Popup
         show={feeRateModalVisible}
         onClose={() => setFeeRateModelVisible(false)}
-        title='Gas'
+        title={<Trans>Gas</Trans>}
         closable={true}
     >
         <div className="feeModal">
@@ -45,12 +46,13 @@ export default () => {
                 </div>
 
                 <div>
-                    Current Gas Fee
+                   <Trans>Current Gas Fee</Trans> 
                 </div>
             </div>
             <Divider></Divider>
             <div className="label">
-                Choose Gas Plan
+                <Trans>Choose Gas Plan</Trans>
+                
             </div>
 
             <div className="FeeRateWrap">
@@ -66,7 +68,7 @@ export default () => {
                                     }`}
                             >
                                 <div>
-                                    <div className="Feelabel"><img src={item.label === feeRateType ? item.activeIcon : item.icon}></img> {item.label}</div>
+                                    <div className="Feelabel"><img src={item.label === feeRateType ? item.activeIcon : item.icon}></img> <Trans>{item.label}</Trans></div>
                                     <div className="Feevalue">{item.value} sat/vB</div>
                                 </div>
 
@@ -87,7 +89,7 @@ export default () => {
                                 }`}
                         >
                             <div>
-                                <div className="Feelabel"><img src={'Custom' === feeRateType ? Actcus : cus}></img> Custom</div>
+                                <div className="Feelabel"><img src={'Custom' === feeRateType ? Actcus : cus}></img> <Trans>Custom</Trans></div>
                                 <div className="Feevalue">
                                     <InputNumber
                                         value={customRate}

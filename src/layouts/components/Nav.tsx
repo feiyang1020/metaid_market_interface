@@ -7,6 +7,7 @@ import home2 from "@/assets/home2.svg";
 import inscribe1 from "@/assets/Inscribe1.svg";
 import inscribe2 from "@/assets/Inscribe2.svg";
 import launch from "@/assets/launch.svg";
+import Trans from "@/components/Trans";
 type MenuItem = Required<MenuProps>["items"][number];
 
 const items = [
@@ -36,13 +37,6 @@ export default () => {
   const onClick = (key: string) => {
     history.push(key);
   };
-  const text = useMemo(() => {
-    const find = items.find(item => item.key === path)
-    if (find) {
-      return find.label
-    }
-    return 'Market'
-  }, [path, items])
   return (<>
     <Space className="navs">
       {items.map((item) => (
@@ -56,7 +50,7 @@ export default () => {
             src={path === item.key ? item.activeIvon : item.icon}
             alt=""
           />{" "}
-          <span className="text">{item.label}</span>
+          <span className="text"><Trans>{item.label}</Trans></span>
         </div>
       ))}
     </Space>

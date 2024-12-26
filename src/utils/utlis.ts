@@ -2,6 +2,7 @@ import Compressor from "compressorjs";
 import CryptoJs from "crypto-js";
 import encHex from "crypto-js/enc-hex";
 import BigNumber from "bignumber.js";
+import { getIntl, getLocale } from "umi";
 export enum IsEncrypt {
   Yes = 1,
   No = 0,
@@ -177,4 +178,12 @@ export const switchAvatarToMetaDataIcon = (avatar: string) => {
     return JSON.stringify({ icon: "metafile://" + pinId });
   }
   return "";
+};
+
+export const formatMessage = (children:string) => {
+  const intl = getIntl(getLocale());
+  return intl.formatMessage({
+    id: children,
+    defaultMessage: children,
+  });
 };

@@ -11,6 +11,8 @@ import { formatSat } from "@/utils/utlis";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import dayjs from "dayjs";
 import JSONView from "@/components/JSONView";
+import Trans from "@/components/Trans";
+import USDPrice from "@/components/USDPrice";
 export default () => {
   const { network, connect, connected, btcAddress, addressType } =
     useModel("wallet");
@@ -73,7 +75,7 @@ export default () => {
                 style={{
                   backgroundImage:
                     order.info &&
-                    order.info.contentTypeDetect.indexOf("image") > -1
+                      order.info.contentTypeDetect.indexOf("image") > -1
                       ? `url(${order.content})`
                       : "none",
                 }}
@@ -101,10 +103,11 @@ export default () => {
                 </div>
               </div>
               <div className="priceWrap">
-                <div className="label">Price</div>
+                <div className="label"><Trans>Price</Trans>  </div>
                 <div className="values">
                   <img src={btc} alt="" />
                   {formatSat(order.sellPriceAmount)}
+                  <USDPrice value={order.sellPriceAmount} decimals={8} />
                 </div>
               </div>
               {connected ? (
@@ -114,7 +117,7 @@ export default () => {
                   onClick={handelBuy}
                   disabled={order.orderState !== 1}
                 >
-                  Buy
+                  <Trans>Buy</Trans>
                 </Button>
               ) : (
                 <Button
@@ -122,12 +125,12 @@ export default () => {
                   type="primary"
                   onClick={connect}
                 >
-                  Connect Wallet
+                  <Trans>Connect Wallet</Trans>
                 </Button>
               )}
               {order.textContent && (
                 <div className="pinDetail">
-                  <div className="title">Content</div>
+                  <div className="title"><Trans>Content</Trans></div>
                   <Typography.Paragraph
                     ellipsis={{
                       rows: 3,
@@ -144,13 +147,13 @@ export default () => {
               )}
 
               <div className="pinDetail">
-                <div className="title">PIN Details</div>
+                <div className="title"><Trans>PIN Details</Trans></div>
                 <div className="detailInfo">
                   <Row className="row" gutter={[16, 16]}>
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Operation</div>
+                      <div className="label"><Trans>Operation</Trans></div>
                       <div className="value">
                         {order.info.operation || "--"}
                       </div>
@@ -158,7 +161,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Address</div>
+                      <div className="label"><Trans>Address</Trans></div>
                       <div className="value">
                         {order.info.createAddress || "--"}
                       </div>
@@ -166,18 +169,18 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">ID</div>
+                      <div className="label"><Trans>ID</Trans></div>
                       <div className="value">{order.info.pinId || "--"}</div>
                     </Col>
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">PoP</div>
+                      <div className="label"><Trans>PoP</Trans></div>
                       <div className="value">
                         {order.info.popSummary || "--"}{" "}
                         <div className="level">
                           {order.assetLevel !== "--" &&
-                          order.assetPop !== "--" ? (
+                            order.assetPop !== "--" ? (
                             <>
                               <img src={level} alt="" />
                               {order.assetLevel}
@@ -203,13 +206,13 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Path</div>
+                      <div className="label"><Trans>Path</Trans></div>
                       <div className="value">{order.info.path || "--"}</div>
                     </Col>
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Original-Path</div>
+                      <div className="label"><Trans>Original-Path</Trans></div>
                       <div className="value">
                         {order.info.originalPath || "--"}
                       </div>
@@ -217,13 +220,13 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Version</div>
+                      <div className="label"><Trans>Version</Trans></div>
                       <div className="value">{order.info.version || "--"}</div>
                     </Col>
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Encryption</div>
+                      <div className="label"><Trans>Encryption</Trans></div>
                       <div className="value">
                         {order.info.encryption || "--"}
                       </div>
@@ -231,7 +234,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Output-Value</div>
+                      <div className="label"><Trans>Output-Value</Trans></div>
                       <div className="value">
                         {order.info.outputValue || "--"}
                       </div>
@@ -239,7 +242,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Content-Length</div>
+                      <div className="label"><Trans>Content-Length</Trans></div>
                       <div className="value">
                         {order.info.contentLength || "--"}
                       </div>
@@ -247,7 +250,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Preview</div>
+                      <div className="label"><Trans>Preview</Trans></div>
                       <div className="value">
                         <a href={order.preview} target="_blank">
                           {order.preview || "--"}
@@ -257,7 +260,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Content</div>
+                      <div className="label"><Trans>Content</Trans></div>
                       <div className="value">
                         {" "}
                         <a href={order.content} target="_blank">
@@ -268,7 +271,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Content-Type</div>
+                      <div className="label"><Trans>Content-Type</Trans></div>
                       <div className="value">
                         {order.info.contentTypeDetect || "--"}
                       </div>
@@ -276,7 +279,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Time(UTC)</div>
+                      <div className="label"><Trans>Time(UTC)</Trans></div>
                       <div className="value">
                         {dayjs(order.info.timestamp * 1000).format(
                           "YYYY/MM/DD,HH:mm"
@@ -286,7 +289,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Genesis-Height</div>
+                      <div className="label"><Trans>Genesis-Height</Trans></div>
                       <div className="value">
                         {order.info.genesisHeight || "--"}
                       </div>
@@ -294,7 +297,7 @@ export default () => {
                     <Col
                       {...{ xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }}
                     >
-                      <div className="label">Genesis-Transaction:</div>
+                      <div className="label"><Trans>Genesis-Transaction</Trans></div>
                       <div className="value">
                         {order.info.genesisTransaction || "--"}
                       </div>

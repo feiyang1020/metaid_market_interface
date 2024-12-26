@@ -1,5 +1,6 @@
 import { Button, Col, Form, Input, Row, Space } from "antd";
 import { useModel } from "umi";
+import Trans from "../Trans";
 
 const formItemLayout = {
   labelCol: {
@@ -21,7 +22,7 @@ export default () => {
     form={form}
 
   >
-    <Form.Item label="Path" name="filter-path"
+    <Form.Item label={<Trans>Path</Trans>} name="filter-path"
 
     >
       <Input
@@ -29,7 +30,7 @@ export default () => {
         style={{ width: '100%' }}
       />
     </Form.Item>
-    <Form.Item label="Level" name="filter-level"
+    <Form.Item label={<Trans>Level</Trans>} name="filter-level"
 
     >
       <Input
@@ -38,7 +39,7 @@ export default () => {
       />
     </Form.Item>
 
-    <Form.Item label={<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}> <span>Uncast</span><span>(TokenID)</span>
+    <Form.Item label={<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}> <span><Trans>Uncast</Trans></span><span>(<Trans>TokenID</Trans>)</span>
     </div>} name="filter-uncastTickId"
 
     >
@@ -60,7 +61,7 @@ export default () => {
           size="large"
           block
         >
-          Clear
+          <Trans>Clear</Trans>
         </Button>
       </Col>
 
@@ -69,7 +70,7 @@ export default () => {
           setLoading(true);
           setFilterKey(form.getFieldsValue());
         }}>
-          Confirmed
+          <Trans>Confirmed</Trans>
         </Button>
       </Col>
 

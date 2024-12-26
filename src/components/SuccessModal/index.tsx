@@ -7,8 +7,8 @@ export type SuccessProps = {
   show: boolean;
   onClose: () => void;
   onDown: () => void;
-  tip: string;
-  title?: string;
+  tip: string | React.ReactNode;
+  title?: string | React.ReactNode;
   children: React.ReactNode;
   okText?: string;
   txs?: {

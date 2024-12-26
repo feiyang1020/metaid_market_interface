@@ -9,6 +9,7 @@ import BuyModel from "@/components/BuyModel";
 import Mrc20List from "@/components/Mrc20List";
 import FilterForm from "@/components/FilterForm";
 import MetaName from "@/components/MetaName";
+import Trans from "@/components/Trans";
 
 const { useBreakpoint } = Grid;
 const items = ['MRC-20', "PIN", 'MetaName'];
@@ -73,7 +74,8 @@ export default () => {
               }}
               size="large"
             >
-              {item}
+              <Trans>{item}</Trans>
+              
             </Button>
           ))}
         </Space>
@@ -82,13 +84,13 @@ export default () => {
 
 
         <div className="actions">
-          <div className="left">All Personal Information Nodes</div>
+          <div className="left"><Trans>All Personal Information Nodes</Trans></div>
           <div className="right">
             <div
               className="sortItem"
               onClick={() => handleSort("sellPriceAmount")}
             >
-              Price{" "}
+              <Trans>Price</Trans>{" "}
               <SortArrow
                 status={
                   sortKey === "sellPriceAmount"
@@ -100,7 +102,7 @@ export default () => {
               ></SortArrow>
             </div>
             <div className="sortItem" onClick={() => handleSort("timestamp")}>
-              Market Time{" "}
+              <Trans>Market Time</Trans>{" "}
               <SortArrow
                 status={
                   sortKey === "timestamp"
@@ -112,7 +114,7 @@ export default () => {
               ></SortArrow>
             </div>
             <div className="sortItem" onClick={() => handleSort("assetlevel")}>
-              Level{" "}
+             <Trans>Level</Trans> {" "}
               <SortArrow
                 status={
                   sortKey === "assetlevel"

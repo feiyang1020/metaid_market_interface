@@ -7,10 +7,11 @@ import UploadAvatar from "./UploadAvatar";
 import { useModel } from "umi";
 import SeleceFeeRateItem from "@/pages/inscribe/components/SeleceFeeRateItem";
 import { getCreatePinFeeByNet } from "@/config";
-import { image2Attach } from "@/utils/utlis";
+import { formatMessage, image2Attach } from "@/utils/utlis";
 import Meta from "antd/es/card/Meta";
 import MetaIdAvatar from "../MetaIdAvatar";
 import CustomizeRequiredMark from "../CustomReqMark";
+import Trans from "../Trans";
 
 type SetProfileProps = {
     show?: boolean;
@@ -66,8 +67,6 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                     }
                 })
             }
-
-            console.log(ret, 'ret in')
             init();
             if (ret.nameRes && ret.nameRes.status) {
                 throw new Error(ret.nameRes.status)
@@ -93,7 +92,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
     return <>
 
         <Popup
-            title="MetaID Profile"
+            title={<Trans>MetaID Profile</Trans>}
             modalWidth={452}
             show={editVisible}
             onClose={() => {
@@ -116,21 +115,21 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                 >
                     <Form.Item
                         name="name"
-                        label="Name"
+                        label={<Trans>Name</Trans>}
 
-                        rules={[{ required: true, message: 'Please input your name!', whitespace: true }]}
+                        rules={[{ required: true, message: formatMessage('Please input your name!'), whitespace: true }]}
                     >
                         <Input size='large' />
                     </Form.Item>
                     {
-                        avatar && <Form.Item label={<div className="currentAvatar">Current <div className="tag">AVATAR </div></div>}  >
+                        avatar && <Form.Item label={<div className="currentAvatar"><Trans>Current</Trans> <div className="tag">AVATAR </div></div>}  >
                             <MetaIdAvatar size={100} avatar={avatar} />
                         </Form.Item>
                     }
 
 
 
-                    <Form.Item label={avatar ? "New Avatar" : 'Avatar'} name="avatar" >
+                    <Form.Item label={<Trans>{avatar ? "New Avatar" : 'Avatar'}</Trans>} name="avatar" >
                         <UploadAvatar />
                     </Form.Item>
                     {/* <Form.Item label="FeeRate" required name="feeRate">
@@ -152,7 +151,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                         loading={submiting}
                         block
                     >
-                        OK
+                        <Trans>OK</Trans>
                     </Button>
                 </div>
             </div>

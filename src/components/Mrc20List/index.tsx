@@ -7,21 +7,23 @@ import IdCoins from "./IdCoins";
 import { useModel, useNavigate, useMatch } from "umi";
 import { useEffect, useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
+import { formatMessage } from "@/utils/utlis";
+import Trans from "../Trans";
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
         key: '0',
-        label: 'ID Coins',
+        label: <Trans>ID Coins</Trans>,
         children: <IdCoins />,
     },
     {
         key: '1',
-        label: 'All Minting',
+        label: <Trans>All Minting</Trans>,
         children: <Minting />,
     },
     {
         key: '2',
-        label: 'All Minted',
+        label: <Trans>All Minted</Trans>,
         children: <AllList />,
     },
 
@@ -67,7 +69,7 @@ export default () => {
                 <Input
                     variant="filled"
                     style={{ borderRadius: 20 }}
-                    placeholder="Search..."
+                    placeholder={formatMessage("Search...")}
                     value={searchWord}
                     onChange={(e) => {
                         setIdCoinPage(0)

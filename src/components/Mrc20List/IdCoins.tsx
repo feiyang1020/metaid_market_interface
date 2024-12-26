@@ -13,6 +13,7 @@ import Sorter from "../Sorter";
 import { openWindowTarget } from "@/utils/utlis";
 import { addUtxoSafe } from "@/utils/psbtBuild";
 import dayjs from "dayjs";
+import Trans from "../Trans";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.IdCoin>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -92,13 +93,14 @@ export default () => {
     };
     const showTradeNotice = (record: API.IdCoin) => {
         modal.warning({
-            title: 'Trade  Notification',
+            title: <Trans>Trade  Notification</Trans>,
             content: <div>
                 <p style={{ marginBottom: 40 }}>
-                    When you choose to redirect to our partnered third-party trading platform through this link, please proactively assess the trading risks and be prepared to assume these risks yourself. We cannot guarantee the absolute safety of the transaction.
+                    <Trans>When you choose to redirect to our partnered third-party trading platform through this link, please proactively assess the trading risks and be prepared to assume these risks yourself. We cannot guarantee the absolute safety of the transaction.</Trans>
+
                 </p>
 
-                <Checkbox onChange={onChange}>I am aware of the above risks</Checkbox>
+                <Checkbox onChange={onChange}><Trans>I am aware of the above risks</Trans></Checkbox>
             </div>,
             onOk() {
                 // message.info('coming soon...')
@@ -112,7 +114,7 @@ export default () => {
             await connect();
             return
         }
-        if (!btcConnector||!btcAddress) return
+        if (!btcConnector || !btcAddress) return
         try {
             const followRes = await btcConnector.inscribe({
                 inscribeDataArray: [
@@ -132,14 +134,14 @@ export default () => {
             });
             if (followRes.status) throw new Error(followRes.status)
             if (followRes && followRes.revealTxIds && followRes.revealTxIds[0]) {
-                message.success('Follow successfully! Please wait for the transaction to be confirmed!')
+                message.success(<Trans>Follow successfully! Please wait for the transaction to be confirmed!</Trans>)
                 setList(list.map(item => {
                     if (item.deployerMetaId === record.deployerMetaId) {
                         item.isFollowing = true
                     }
                     return item
                 }))
-                await addUtxoSafe(btcAddress,[{txId:followRes.commitTxId,vout:1}])
+                await addUtxoSafe(btcAddress, [{ txId: followRes.commitTxId, vout: 1 }])
             } else {
                 throw new Error('Follow failed')
             }
@@ -153,7 +155,7 @@ export default () => {
     // }, [fetchData]);
     const columns: TableColumnsType<API.IdCoin> = [
         {
-            title: 'Name',
+            title: <Trans>Name</Trans>,
             key: 'name',
             dataIndex: 'deployerUserInfo',
             render: (_, record) => {
@@ -169,7 +171,7 @@ export default () => {
                             </a>
                         </div>
                         <div className="metaid">MetaID :<Tooltip title={record.deployerMetaId}>{record.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Tooltip> </div>
-                        <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> {record.isFollowing ? 'Following' : 'Follow'}</Button>
+                        <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={record.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow(record) }} type='link'> <Trans>{record.isFollowing ? 'Following' : 'Follow'}</Trans></Button>
 
                     </div>
                 </div>
@@ -178,7 +180,7 @@ export default () => {
             width: 200
         },
         {
-            title: 'Ticker',
+            title:<Trans>Ticker</Trans>,
             dataIndex: 'tick',
             key: 'tick',
             width: 110,
@@ -190,7 +192,7 @@ export default () => {
             }
         },
         {
-            title: 'Followers Limit',
+            title: <Trans>Followers Limit</Trans>,
             dataIndex: 'followersLimit',
             key: 'followersLimit',
             align: 'center',
@@ -200,7 +202,7 @@ export default () => {
             }
         },
         {
-            title: 'Supply',
+            title: <Trans>Supply</Trans>,
             dataIndex: 'totalSupply',
             key: 'totalSupply',
             sorter: true,
@@ -211,7 +213,7 @@ export default () => {
             }
         },
         {
-            title: 'Liquidity Per Mint',
+            title: <Trans>Liquidity Per Mint</Trans>,
             dataIndex: 'liquidityPerMint',
             key: 'liquidityPerMint',
             // sorter: true,
@@ -223,7 +225,7 @@ export default () => {
         },
 
         {
-            title: 'Pool',
+            title: <Trans>Pool</Trans>,
             dataIndex: 'pool',
             key: 'pool',
             sorter: true,
@@ -234,7 +236,7 @@ export default () => {
             }
         },
         {
-            title: 'Message',
+            title: <Trans>Message</Trans>,
             dataIndex: 'metaData',
             key: 'metaData',
             align: 'center',
@@ -252,7 +254,7 @@ export default () => {
             width: 120
         },
         {
-            title: 'Progress%',
+            title: <Trans>Progress%</Trans>,
             dataIndex: 'progress',
             key: 'progress',
             width: 200,
@@ -273,7 +275,7 @@ export default () => {
                             e.stopPropagation();
                             showMintNotice(record)
 
-                        }} type='primary'>Mint</Button>
+                        }} type='primary'><Trans>Mint</Trans></Button>
                     }
 
 
@@ -281,7 +283,7 @@ export default () => {
             }
         },
         {
-            title: 'Trade',
+            title: <Trans>Trade</Trans>,
             dataIndex: 'Trade',
             // fixed: 'right',
             key: 'Trade',
@@ -297,7 +299,7 @@ export default () => {
                         showTradeNotice(record)
                     }
 
-                }} type='primary'>Trade</Button>
+                }} type='primary'><Trans>Trade</Trans></Button>
             }
         },
         // {
@@ -385,7 +387,7 @@ export default () => {
                 )}
                 rowKey={"mrc20Id"}
                 pagination={{
-                    onChange: (page,pageSize) => {
+                    onChange: (page, pageSize) => {
                         setPage(page - 1);
                         setSize(pageSize || 10);
                     },

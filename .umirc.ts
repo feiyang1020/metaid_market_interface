@@ -31,7 +31,7 @@ export default defineConfig({
   model: {},
   request: {},
   locale: {
-    default: "en-US",
+    default: "zh-CN",
     baseSeparator: "-",
     antd: true,
     baseNavigator: false,

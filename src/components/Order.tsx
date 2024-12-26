@@ -21,6 +21,7 @@ import MetaIdAvatar from "./MetaIdAvatar";
 import JSONView from "./JSONView";
 import { getContent } from "@/services/api";
 import USDPrice from "./USDPrice";
+import Trans from "./Trans";
 
 type Props = {
   item: API.Order;
@@ -101,7 +102,7 @@ export default ({ item: data, handleBuy }: Props) => {
         </div>
         <div className="user">
           <div className="holderWrap">
-            <div className="label">Holder</div>
+            <div className="label"><Trans>Holder</Trans></div>
             <div className="holder">
               <MetaIdAvatar
                 avatar={item.seller.avatar}
@@ -113,7 +114,7 @@ export default ({ item: data, handleBuy }: Props) => {
           </div>
           <Divider type="vertical" />
           <div className="holderWrap">
-            <div className="label">Pop</div>
+            <div className="label"><Trans>Pop</Trans></div>
             <div className="holder pop">
               <div className="name">{item.assetPop}</div>
               <div className="level">
@@ -146,7 +147,7 @@ export default ({ item: data, handleBuy }: Props) => {
                 handleBuy(item);
               }}
             >
-              Buy
+              <Trans>Buy</Trans>
             </Button>
           ) : (
             <Button
@@ -155,7 +156,8 @@ export default ({ item: data, handleBuy }: Props) => {
               block
               onClick={connect}
             >
-              Connect Wallet
+              <Trans>Connect Wallet</Trans>
+              
             </Button>
           )}
         </div>

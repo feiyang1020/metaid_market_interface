@@ -26,6 +26,8 @@ import SetProfile from "@/components/SetProfile";
 import NumberFormat from "@/components/NumberFormat";
 import SetFeeRate from "@/components/SetFeeRate";
 import { StyleProvider } from '@ant-design/cssinjs';
+import Trans from "@/components/Trans";
+import SelectLang from "./components/SelectLang";
 
 const _themes = {
   token: {
@@ -104,7 +106,7 @@ export default function Layout() {
           algorithm: theme.darkAlgorithm,
           ..._themes,
         }}
-      >{network === 'testnet' && <Alert type="error" message="This is a test network. Coins have no value." banner showIcon={false} style={{ textAlign: 'center' }} />}
+      >{network === 'testnet' && <Alert type="error" message={<Trans>This is a test network. Coins have no value.</Trans>} banner showIcon={false} style={{ textAlign: 'center' }} />}
         <div className="page">
 
           <div className="header">
@@ -131,14 +133,14 @@ export default function Layout() {
                     }}
                     className="listforsale"
                   >
-                    List For Sale
+                    <Trans>List For Sale</Trans>
                   </Button>
                   <div className="feerate" style={{ display: "flex", alignItems: 'center', gap: 4, fontSize: 14, cursor: 'pointer' }} onClick={() => {
                     setFeeRateModelVisible(true)
                   }}>
                     <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4F66B' }}></div>
                     <div>
-                      Gas <span className="colorPrimary"><NumberFormat prefix={` ${feeRateType} `} value={feeRate} /> </span>
+                      Gas <span className="colorPrimary"><NumberFormat prefix={<Trans>{feeRateType}</Trans>} value={feeRate} /> </span>
                     </div>
                   </div>
                   <Dropdown
@@ -180,7 +182,7 @@ export default function Layout() {
                               history.push("/sale");
                             }}
                           >
-                            <div className="path">List For Sale</div>
+                            <div className="path"><Trans>List For Sale</Trans></div>
                             <RightOutlined />
                           </div>
                           <div
@@ -189,7 +191,7 @@ export default function Layout() {
                               history.push("/history");
                             }}
                           >
-                            <div className="path">Transaction History</div>
+                            <div className="path"><Trans>Transaction History</Trans></div>
                             <RightOutlined />
                           </div>
                           <div
@@ -198,7 +200,7 @@ export default function Layout() {
                               history.push("/pending");
                             }}
                           >
-                            <div className="path">My Listing</div>
+                            <div className="path"><Trans>My Listing</Trans> </div>
                             <RightOutlined />
                           </div>
                           <div
@@ -207,12 +209,12 @@ export default function Layout() {
                               history.push("/mrc20History");
                             }}
                           >
-                            <div className="path">My MRC-20</div>
+                            <div className="path"><Trans>My MRC-20</Trans></div>
                             <RightOutlined />
                           </div>
                         </div>
                         <div className="disConnect" onClick={disConnect}>
-                          Disconnect
+                          <Trans>Disconnect</Trans> 
                         </div>
                       </div>
                     )}
@@ -234,9 +236,10 @@ export default function Layout() {
                 </Space>
               ) : (
                 <Button type="primary" onClick={connect}>
-                  Connect
+                  <Trans>Connect</Trans>
                 </Button>
               )}
+              <SelectLang />
             </div>
           </div>
 
@@ -247,7 +250,8 @@ export default function Layout() {
           <div className="footer">
             <span>MetaID.market@2024 All Rights Reserved</span>
             <span>
-              <Link style={{ textDecoration: 'underline', color: '#fff' }} to="/about/fees" >About Fees</Link>
+              <Link style={{ textDecoration: 'underline', color: '#fff' }} to="/about/fees" >
+              <Trans>About Fees</Trans> </Link>
             </span>
           </div>
           <SetProfile show={false} editVisible={editViseble} onClose={() => { setEditVisible(false) }} />
