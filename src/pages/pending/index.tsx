@@ -105,7 +105,7 @@ export default () => {
   };
   const columns: TableProps<API.Order>["columns"] = [
     {
-      title: "PIN",
+      title: <Trans>PIN</Trans>,
       dataIndex: "assetNumber",
       key: "assetNumber",
       render: (text, record) => {
@@ -124,25 +124,25 @@ export default () => {
       },
     },
     {
-      title: "Path",
+      title: <Trans>Path</Trans>,
       dataIndex: "Path",
       key: "Path",
       ellipsis: true,
       render: (_, record) => record.info.path,
     },
     {
-      title: "POP",
+      title: <Trans>POP</Trans>,
       dataIndex: "assetPop",
       key: "assetPop",
     },
     {
-      title: "Price",
+      title:<Trans>Price</Trans> ,
       dataIndex: "sellPriceAmount",
       key: "sellPriceAmount",
       render: (text, record) => <>{formatSat(text)} BTC</>,
     },
     {
-      title: "From",
+      title: <Trans>From</Trans>,
       dataIndex: "sellerAddress",
       key: "sellerAddress",
       render: (text, record) => (
@@ -171,7 +171,7 @@ export default () => {
             setShow(true);
           }}
         >
-          Cancel listing{" "}
+          <Trans>Cancel listing</Trans>{" "}
         </Button>
       ),
     },
@@ -184,7 +184,7 @@ export default () => {
           history.back();
         }}
       >
-        <LeftOutlined /> My Listing
+        <LeftOutlined /> <Trans>My Listing</Trans>
       </div>
 
       <div className="tabs">
@@ -196,7 +196,7 @@ export default () => {
               onClick={() => setTab(item)}
               size="large"
             >
-              {item}
+              <Trans>{item}</Trans>
             </Button>
           ))}
         </Space>
@@ -241,11 +241,10 @@ export default () => {
       >
         <div className="cancelWrap">
           <div className="title">
-            Are your sure you want to cancel your listing？
+            <Trans>Are your sure you want to cancel your listing？</Trans>
           </div>
           <div className="subTitle">
-            This order may still be filled, if it was previously purchased but
-            not completed on the blockchain.
+            <Trans>This order may still be filled, if it was previously purchased but not completed on the blockchain.</Trans>
           </div>
           <div className="buttons">
             <Button
@@ -255,7 +254,7 @@ export default () => {
               }}
               block
             >
-              Close
+              <Trans>Close</Trans>
             </Button>
             <Button
               type="primary"
@@ -265,7 +264,7 @@ export default () => {
               loading={submiting}
               block
             >
-              Cancel listing
+              <Trans>Cancel listing</Trans>
             </Button>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { Alert, Button, Col, Collapse, Divider, Row, Space, Tooltip } from "antd
 import NumberFormat from "@/components/NumberFormat";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useMemo } from "react";
+import Trans from "@/components/Trans";
 type Props = {
     show: boolean
     onClose: () => void;
@@ -17,7 +18,7 @@ type Props = {
 const DescItem = ({ label, value, dark, style = {}, error }: { label: React.ReactNode, dark?: boolean, error?: boolean, value: React.ReactNode, style?: React.CSSProperties }) => {
     console.log('DescItem', error)
     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '10px 0', ...style }}>
-        <div style={{ fontSize: '16px', color: error ? 'rgb(255,82,82)' : dark ? 'rgba(255, 255, 255, 0.5)' : '#fff', }}>{label}</div>
+        <div style={{ fontSize: '16px', color: error ? 'rgb(255,82,82)' : dark ? 'rgba(255, 255, 255, 0.5)' : '#fff', }}><Trans>{label}</Trans></div>
         <div style={{ fontSize: '16px' }}>{value}</div>
     </div>
 }
@@ -31,7 +32,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             console.log('Insufficient Balance', (order.totalFee - order.revealInscribeOutValue - order.revealMintOutValue), userBal)
             return 'Insufficient Balance'
         }
-        console.log('order.errMsg', order.errMsg)
+       
         if (order.errMsg) {
             return order.errMsg === 'Insufficient Balance' ? "You don't have enough balance to build the Commit transaction." : 'Failed to mint'
         }
@@ -41,7 +42,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
     const items = [
         {
             key: 1,
-            label: <DescItem dark style={{ padding: 0 }} label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={order._gasFee === 0 ? '--' : <NumberFormat value={order._gasFee + order.revealInscribeGas + order.revealMintGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />,
+            label: <DescItem dark style={{ padding: 0 }} label={<Space> Gas <Tooltip title={<Trans>Gas = Commit Gas + Reveal Gas</Trans>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>} value={order._gasFee === 0 ? '--' : <NumberFormat value={order._gasFee + order.revealInscribeGas + order.revealMintGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />,
             children: <div>
                 <DescItem dark error={order._gasFee === 0} label="Commit Gas" value={<>{order._gasFee === 0 ? '--' : <NumberFormat value={order._gasFee} isBig decimal={8} minDig={8} suffix=' BTC' />}</>} />
                 <DescItem dark label="Reveal Inscribe Gas" value={<NumberFormat value={order.revealInscribeGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
@@ -58,7 +59,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
         // },
     ]
     return <Popup
-        title={idCoin.isFollowing ? 'Mint' : 'Follow And Mint'}
+        title={<Trans>{idCoin.isFollowing ? 'Mint' : 'Follow And Mint'}</Trans>}
         modalWidth={452}
         show={show}
         onClose={onClose}
@@ -100,7 +101,7 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             {errTip && (
 
                 <Alert
-                    message={errTip}
+                    message={<Trans>{errTip}</Trans>}
                     type="error"
                     showIcon
                     style={{ width: '100%' }}
@@ -109,10 +110,10 @@ export default ({ show, onClose, idCoin, order, submiting, handleSubmit }: Props
             )}
             <Row gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>
-                    <Button size='large' type="link" block onClick={onClose}>Cancel</Button>
+                    <Button size='large' type="link" block onClick={onClose}><Trans>Cancel</Trans></Button>
                 </Col>
                 <Col span={12}>
-                    <Button size='large' type='primary' disabled={!!order.errMsg} loading={submiting} block onClick={handleSubmit}>Confirm</Button>
+                    <Button size='large' type='primary' disabled={!!order.errMsg} loading={submiting} block onClick={handleSubmit}><Trans>Confirm</Trans></Button>
                 </Col>
             </Row>
         </div>

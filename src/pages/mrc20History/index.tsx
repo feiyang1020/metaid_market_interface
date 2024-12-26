@@ -9,6 +9,7 @@ import Transfer from "./components/Transfer";
 import { useSearchParams } from "umi";
 import DeployIdCoin from "./components/DeployIdCoin";
 import MintIDCoins from "./components/MintIDCoins";
+import Trans from "@/components/Trans";
 type Tab = "Deploy" | "Mint" | "ID-Coins Deploy" | 'ID-Coins Mint';
 const items = ["Deploy", 'Mint', 'ID-Coins Deploy', 'ID-Coins Mint'];
 export default () => {
@@ -29,7 +30,7 @@ export default () => {
                     history.back();
                 }}
             >
-                <LeftOutlined /> User /<span className="subTitle">My MRC-20</span>
+                <LeftOutlined /> <Trans>User</Trans> /<span className="subTitle"><Trans>My MRC-20</Trans></span>
             </div>
 
             <div className="tabs">
@@ -41,16 +42,16 @@ export default () => {
                             onClick={() => setTab(item)}
                             size="large"
                         >
-                            {item}
+                            <Trans>{item}</Trans>
                         </Button>
                     ))}
                 </Space>
             </div>
             <div>
                 {tab === 'Deploy' && <Deploy />}
-                {tab === 'Mint' && <Mint />}
-                {tab === 'ID-Coins Deploy' && <DeployIdCoin />}
-                {tab === 'ID-Coins Mint' && <MintIDCoins />}
+                 {tab === 'Mint' && <Mint />}
+                 {tab === 'ID-Coins Deploy' && <DeployIdCoin />}
+                 {tab === 'ID-Coins Mint' && <MintIDCoins />} 
 
             </div>
 

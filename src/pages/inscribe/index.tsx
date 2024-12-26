@@ -31,6 +31,7 @@ import Mrc20Form from "./components/Mrc20Form";
 import { InscribeData } from "node_modules/@metaid/metaid/dist/core/entity/btc";
 import { LeftOutlined, UploadOutlined } from "@ant-design/icons";
 import { addUtxoSafe } from "@/utils/psbtBuild";
+import Trans from "@/components/Trans";
 const items = ['MRC-20', "File", "Buzz", "PINs",];
 const { Dragger } = Upload;
 const { TextArea } = Input;
@@ -160,13 +161,13 @@ export default () => {
             setSuccessProp(DefaultSuccessProps);
             setFileList([]);
           },
-          title: "Inscribe",
-          tip: "Successful",
+          title: <Trans>Inscribe</Trans>,
+          tip: <Trans>Successful</Trans>,
           children: (
             <div className="inscribeSuccess">
               <div className="res">
                 <div className="item">
-                  <div className="label">Transaction Cost</div>
+                  <div className="label"><Trans>Transaction Cost</Trans></div>
                   <div className="value">
                     <img src={btcIcon}></img> {formatSat(ret.totalCost)}
                   </div>
@@ -246,13 +247,13 @@ export default () => {
             setSuccessProp(DefaultSuccessProps);
             setBuzz("");
           },
-          title: "Inscribe",
-          tip: "Successful",
+          title: <Trans>Inscribe</Trans>,
+          tip: <Trans>Successful</Trans>,
           children: (
             <div className="inscribeSuccess">
               <div className="res">
                 <div className="item">
-                  <div className="label">Transaction Cost</div>
+                  <div className="label"><Trans>Transaction Cost</Trans></div>
                   <div className="value">
                     <img src={btcIcon}></img> {formatSat(ret.totalCost)}
                   </div>
@@ -328,13 +329,13 @@ export default () => {
             setSuccessProp(DefaultSuccessProps);
             setPayload("");
           },
-          title: "Inscribe",
-          tip: "Successful",
+          title: <Trans>Inscribe</Trans>,
+          tip: <Trans>Successful</Trans>,
           children: (
             <div className="inscribeSuccess">
               <div className="res">
                 <div className="item">
-                  <div className="label">Transaction Cost</div>
+                  <div className="label"><Trans>Transaction Cost</Trans></div>
                   <div className="value">
                     <img src={btcIcon}></img> {formatSat(ret.totalCost)}
                   </div>
@@ -391,7 +392,7 @@ export default () => {
         message.error("file must smaller than 300k!");
         return false;
       }
-      
+
       setFileList([...fileList, file]);
       return false;
     },
@@ -421,8 +422,8 @@ export default () => {
         <LeftOutlined />
       </div>}
 
-      <div className="title">Inscribe PINs</div>
-      <div className="subTitle">Inscribe Your PINs To Bitcoin</div>
+      <div className="title"><Trans>Inscribe PINs</Trans></div>
+      <div className="subTitle"><Trans>Inscribe Your PINs To Bitcoin</Trans></div>
       <div className="tabs">
         <Space>
           {items.map((item) => (
@@ -432,7 +433,7 @@ export default () => {
               onClick={() => { nav('/inscribe/' + item, { replace: true }); setTab(item) }}
               size="large"
             >
-              {item}
+              <Trans>{item}</Trans>
             </Button>
           ))}
         </Space>
@@ -452,17 +453,17 @@ export default () => {
                   <div className="label"></div>
                   <div className="upload" >
                     <Dragger {...props} className="uploadInput" listType={fileList && fileList[0] && fileList[0].type?.includes('image') ? 'picture' : 'text'}>
-                      <p className="ant-upload-text">Upload File</p>
-                      <p className="ant-upload-hint">Any file type. Max 300kb</p>
+                      <p className="ant-upload-text"><Trans>Upload File</Trans></p>
+                      <p className="ant-upload-hint"><Trans>Any file type. Max 300kb</Trans></p>
                       <p className="colorPrimary">
                         <UploadOutlined style={{ fontSize: 24 }} />
 
                       </p>
-                      <p className="colorPrimary">Choose File</p>
+                      <p className="colorPrimary"><Trans>Choose File</Trans></p>
                     </Dragger>
                   </div>
                   {MetafileURI && <div className="MetafileItem">
-                    <div className="label">Metafile URI </div>
+                    <div className="label"><Trans>Metafile URI</Trans> </div>
                     <div className="value">
                       <Tooltip title={MetafileURI}>
                         <Typography.Text copyable={{ text: MetafileURI }}>{MetafileURI.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</Typography.Text>
@@ -491,7 +492,7 @@ export default () => {
                     type="primary"
                     onClick={connect}
                   >
-                    Connect Wallet
+                    <Trans>Connect Wallet</Trans>
                   </Button>
                 ) : (
                   <Button
@@ -505,7 +506,8 @@ export default () => {
                   // disabled
 
                   >
-                    Submit
+                    <Trans>Submit</Trans>
+
                     {/* Under maintenance, please try again later. */}
                   </Button>
                 )}
@@ -520,7 +522,7 @@ export default () => {
               variant="filled"
               style={{ maxWidth: "96vw", width: 632 }}
             >
-              <Form.Item label="Content" name="TextArea">
+              <Form.Item label={<Trans>Content</Trans>} name="TextArea">
                 <TextArea
                   placeholder=""
                   allowClear
@@ -537,7 +539,7 @@ export default () => {
               <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}>
                 {!connected ? (
                   <Button block size="large" type="primary" onClick={connect}>
-                    Connect Wallet
+                    <Trans>Connect Wallet</Trans>
                   </Button>
                 ) : (
                   <Button
@@ -549,16 +551,14 @@ export default () => {
                     disabled={!feeRate || !buzz}
                   // disabled
                   >
-                    Submit
+                    <Trans>Submit</Trans>
                     {/* Under maintenance, please try again later. */}
                   </Button>
                 )}
                 <div className="tips">
-                  You can view your buzz in{" "}
                   <a href="https://www.bitbuzz.io/" target={openWindowTarget()}>
-                    bitbuzz.io
-                  </a>{" "}
-                  affer inscription
+                    <Trans>You can view your buzz in bitbuzz.io affer inscription</Trans>
+                  </a>
                 </div>
               </Col>
             </Row>
@@ -578,10 +578,10 @@ export default () => {
                 Operation: "Create",
               }}
             >
-              <Form.Item label="Operation" name="Operation">
+              <Form.Item label={<Trans>Operation</Trans>} name="Operation">
                 <Input size="large" disabled />
               </Form.Item>
-              <Form.Item label="Path" name="path">
+              <Form.Item label={<Trans>Path</Trans>} name="path">
                 <Input
                   size="large"
                   status={checkPath ? "" : "error"}
@@ -592,7 +592,7 @@ export default () => {
                 />
               </Form.Item>
 
-              <Form.Item label="Content-type" name="contentType">
+              <Form.Item label={<Trans>Content-type</Trans>} name="contentType">
                 <Select
                   size="large"
                   style={{ textAlign: "left" }}
@@ -607,7 +607,7 @@ export default () => {
                 </Select>
               </Form.Item>
 
-              <Form.Item label="Payload" name="TextArea">
+              <Form.Item label={<Trans>Payload</Trans>} name="TextArea">
                 <Input.TextArea
                   size="large"
                   autoSize={false}
@@ -632,7 +632,7 @@ export default () => {
                     type="primary"
                     onClick={connect}
                   >
-                    Connect Wallet
+                    <Trans>Connect Wallet</Trans>
                   </Button>
                 ) : (
                   <Button
@@ -647,7 +647,7 @@ export default () => {
                     // disabled
                     className="submit"
                   >
-                    Submit
+                    <Trans>Submit</Trans>
                     {/* Under maintenance, please try again later. */}
                   </Button>
                 )}

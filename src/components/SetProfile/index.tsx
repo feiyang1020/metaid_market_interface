@@ -157,7 +157,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
             </div>
         </Popup>
         <Popup
-            title="Set Up"
+            title={<Trans>Set Up</Trans>}
             modalWidth={452}
             show={show}
             onClose={() => {
@@ -170,7 +170,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
             <div className="setProfileWrap">
 
                 <div className="subTitle">
-                    Your MetaID avatar and name have not been set up, affecting the use of the 'Launch Me' feature. Please go to settings to complete your profile.
+                    <Trans>Your MetaID avatar and name have not been set up, affecting the use of the 'Launch Me' feature. Please go to settings to complete your profile.</Trans>
                 </div>
                 <div className="buttons">
 
@@ -182,7 +182,7 @@ export default ({ show = false, onClose, editVisible = false, setEditVisible }: 
                         }}
                         block
                     >
-                        Go To Setting
+                        <Trans>Go To Setting</Trans>
                     </Button>
                 </div>
             </div>

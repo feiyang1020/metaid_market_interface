@@ -70,7 +70,7 @@ export default () => {
           setLoading(true);
           setFilterKey(form.getFieldsValue());
         }}>
-          <Trans>Confirmed</Trans>
+          <Trans>Confirm</Trans>
         </Button>
       </Col>
 

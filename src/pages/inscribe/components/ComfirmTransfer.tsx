@@ -4,6 +4,7 @@ import Popup from "@/components/ResponPopup";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Col, Collapse, Divider, Row, Space, Tooltip, Typography } from "antd";
 import './comfirmMintIdCoin.less'
+import Trans from "@/components/Trans";
 export type TransferComfrimParams = {
     order: API.TransferMRC20PreRes,
     networkFeeRate: number,
@@ -22,6 +23,12 @@ type Props = {
 
 const DescItem = ({ label, value, dark, style = {} }: { label: React.ReactNode, dark?: boolean, value: React.ReactNode, style?: React.CSSProperties }) => {
     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '10px 0', ...style }}>
+        <div style={{ fontSize: '16px', color: dark ? 'rgba(255, 255, 255, 0.5)' : '#fff' }}><Trans>{label}</Trans></div>
+        <div style={{ fontSize: '16px' }}>{value}</div>
+    </div>
+}
+const DescItem2 = ({ label, value, dark, style = {} }: { label: React.ReactNode, dark?: boolean, value: React.ReactNode, style?: React.CSSProperties }) => {
+    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '10px 0', ...style }}>
         <div style={{ fontSize: '16px', color: dark ? 'rgba(255, 255, 255, 0.5)' : '#fff' }}>{label}</div>
         <div style={{ fontSize: '16px' }}>{value}</div>
     </div>
@@ -33,10 +40,10 @@ export default ({ show, onClose, params, submiting, handleSubmit }: Props) => {
     const items = [
         {
             key: 1,
-            label: <DescItem
+            label: <DescItem2
                 dark
                 style={{ padding: 0 }}
-                label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>}
+                label={<Space> Gas <Tooltip title={<Trans>Gas = Commit Gas + Reveal Gas</Trans>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>}
                 value={<NumberFormat value={Number(params.commitGas) + Number(params.order.revealGas)} isBig decimal={8} minDig={8} suffix=' BTC' />}
             />,
             children: <div>
@@ -48,7 +55,7 @@ export default ({ show, onClose, params, submiting, handleSubmit }: Props) => {
     ]
 
     return <Popup
-        title="Confirm Transfer"
+        title={<Trans>Confirm Transfer</Trans>}
         modalWidth={452}
         show={show}
         onClose={onClose}
@@ -68,10 +75,10 @@ export default ({ show, onClose, params, submiting, handleSubmit }: Props) => {
             <DescItem label="Available Balance" value={<NumberFormat value={userBal} minDig={8} suffix=' BTC' />} />
             <Row gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>
-                    <Button size='large' type="link" block onClick={onClose}>Cancel</Button>
+                    <Button size='large' type="link" block onClick={onClose}><Trans>Cancel</Trans></Button>
                 </Col>
                 <Col span={12}>
-                    <Button size='large' type='primary' loading={submiting} block onClick={handleSubmit}>Confirm</Button>
+                    <Button size='large' type='primary' loading={submiting} block onClick={handleSubmit}><Trans>Confirm</Trans></Button>
                 </Col>
             </Row>
         </div>

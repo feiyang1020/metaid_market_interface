@@ -1,21 +1,15 @@
-import { ArrowLeftOutlined, LeftOutlined } from "@ant-design/icons";
-import { Button, Space, Table, TableProps, Tooltip, message, Grid } from "antd";
+
+import { Table, TableProps, Tooltip, message, Grid } from "antd";
 import { history, useModel, Link } from "umi";
 import dayjs from "dayjs";
-import { formatSat } from "@/utils/utlis";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Popup from "@/components/ResponPopup";
 import { authTest, cancelMRC20Order, cancelOrder, getMrc20InscribeOrders, getMrc20Orders } from "@/services/api";
-import JSONView from "@/components/JSONView";
-import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
+import Trans from "@/components/Trans";
 const { useBreakpoint } = Grid;
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
-    const [show, setShow] = useState<boolean>(false);
     const screens = useBreakpoint();
-
-    const [submiting, setSubmiting] = useState<boolean>(false);
     const [list, setList] = useState<API.Mrc20InscribeOrder[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [page, setPage] = useState<number>(0);
@@ -44,55 +38,55 @@ export default () => {
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
         {
-            title: 'Ticker',
+            title: <Trans>Ticker</Trans>,
             dataIndex: 'tick',
             width: 220,
             render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }} />
         },
 
         {
-            title: 'Path',
+            title: <Trans>Path</Trans>,
             dataIndex: 'pinCheck',
             render: (price, record) => {
                 return <Tooltip title={record.pinCheck.path}>path:{record.pinCheck.path && record.pinCheck.path.replace(/(.{5}).+(.{3})/, "$1...$2")}</Tooltip>
             }
         },
         {
-            title: 'Difficulty Level',
+            title: <Trans>Difficulty Level</Trans>,
             dataIndex: 'level',
             render: (item, record) => {
                 return record.pinCheck.lvl || '--'
             }
         },
         {
-            title: 'Count',
+            title: <Trans>Count</Trans>,
             dataIndex: 'count',
             render: (item, record) => {
                 return record.pinCheck.count || '--'
             }
         },
         {
-            title: 'Mint Limit',
+            title: <Trans>Mint Limit</Trans>,
             dataIndex: 'mintCount',
 
         },
         {
-            title: 'Amount Per Mint',
+            title: <Trans>Amount Per Mint</Trans>,
             dataIndex: 'amtPerMint',
 
         },
         {
-            title: 'Decimals',
+            title: <Trans>Decimals</Trans>,
             dataIndex: 'decimals',
 
         },
         {
-            title: 'Premine Count',
+            title: <Trans>Premine Count</Trans>,
             dataIndex: 'premineCount',
 
         },
         {
-            title: 'Holders',
+            title: <Trans>Holders</Trans>,
             dataIndex: 'holders',
             align: 'center',
             render: (item, record) => {
@@ -101,20 +95,20 @@ export default () => {
 
         },
         {
-            title: 'Type',
+            title: <Trans>Type</Trans>,
             dataIndex: 'deployState',
             render: (item) => {
-                return <>{item === 1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item === 0 ? 'Pending' : 'Failure'}</span>}</>
+                return <>{item === 1 ? <Trans>Confirmed</Trans> : <span style={{ color: '#FF5252' }}><Trans>{item === 0 ? 'Pending' : 'Failure'}</Trans></span>}</>
             }
         },
         {
-            title: "Time",
+            title: <Trans>Time</Trans>,
             dataIndex: "timestamp",
             key: "timestamp",
             render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
         },
         {
-            title: "Hash",
+            title: <Trans>Hash</Trans>,
             dataIndex: "txId",
             key: "txId",
             render: (text, record) => (
@@ -138,8 +132,8 @@ export default () => {
     ];
 
     const getMinSort = () => {
-        const TypeIndex = columns.findIndex(item => item.title === 'Type');
-        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.title !== 'Type')]
+        const TypeIndex = columns.findIndex(item => item.dataIndex === 'deployState');
+        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.dataIndex !== 'deployState')]
     }
     return (
         <>
@@ -158,7 +152,7 @@ export default () => {
                         pageSize: size,
                         current: page + 1,
                         total,
-                        onChange: (page,pageSize) => {
+                        onChange: (page, pageSize) => {
 
                             setLoading(true);
                             setPage(page - 1);

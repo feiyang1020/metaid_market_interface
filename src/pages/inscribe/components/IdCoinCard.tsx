@@ -8,6 +8,7 @@ import { Card, Descriptions, Tooltip, Typography } from "antd"
 import LiqPerMintNotice from "@/components/LiqPerMintNotice"
 import { getMetaIdUrlByNet } from "@/config"
 import { openWindowTarget } from "@/utils/utlis"
+import Trans from "@/components/Trans"
 type Props = {
     mintMrc20Info: API.IdCoin
 }
@@ -42,23 +43,23 @@ export default ({ mintMrc20Info }: Props) => {
                 // },
                 {
                     key: 'Ticker',
-                    label: 'Ticker',
+                    label: <Trans>Ticker</Trans>,
                     children: <span style={{ color: '#F68819', fontWeight: 'bold' }}>{mintMrc20Info.tick}</span>
                 },
 
                 {
                     key: 'Follow',
-                    label: <span>Followers Limit <Tooltip title={<p>Followers Limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
+                    label: <span><Trans>Followers Limit</Trans> <Tooltip title={<p><Trans>Followers Limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）</Trans></p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
                     children: <NumberFormat value={mintMrc20Info.followersLimit} />
                 },
                 {
                     key: 'amtPerMint',
-                    label: 'Amount Per Mint',
+                    label: <Trans>Amount Per Mint</Trans>,
                     children: <NumberFormat value={mintMrc20Info.amtPerMint} />
                 },
                 {
                     key: 'totalSupply',
-                    label: <span>Total Supply <Tooltip title={<p>The total amount of this token will be minted.</p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
+                    label: <span><Trans>Total Supply</Trans> <Tooltip title={<p><Trans>The total amount of this token will be minted.</Trans></p>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
                     children: <NumberFormat value={mintMrc20Info.totalSupply} />
                 },
                 // {
@@ -74,18 +75,18 @@ export default ({ mintMrc20Info }: Props) => {
 
                 {
                     key: 'Pool',
-                    label: 'Pool',
+                    label: <Trans>Pool</Trans>,
                     children: <NumberFormat value={mintMrc20Info.pool} decimal={8} isBig suffix=' BTC'/>
                 },
                 {
                     key: 'Message',
-                    label: 'Message',
+                    label: <Trans>Message</Trans>,
                     children: <IdCoinMessage info={mintMrc20Info.metaData}></IdCoinMessage>
 
                 },
                 {
                     key: 'Foliqllow',
-                    label: <span>Liquidity Per Mint <Tooltip title={<LiqPerMintNotice/>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
+                    label: <span><Trans>Liquidity Per Mint</Trans> <Tooltip title={<LiqPerMintNotice/>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip> </span>,
                     children: <NumberFormat value={mintMrc20Info.liquidityPerMint} suffix={' BTC'} isBig decimal={8} />
                 },
                 // {

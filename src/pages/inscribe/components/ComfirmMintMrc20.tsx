@@ -5,6 +5,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Col, Collapse, Divider, Row, Space, Tooltip, Typography } from "antd";
 import './comfirmMintIdCoin.less'
 import MRC20Icon from "@/components/MRC20Icon";
+import Trans from "@/components/Trans";
 export type MintMrc20ComfrimParams = {
     order: API.MintMRC20PreRes,
     commitGas: number | string,
@@ -34,19 +35,19 @@ export default ({ show, onClose, params, submiting, handleSubmit }: Props) => {
             label: <DescItem
                 dark
                 style={{ padding: 0 }}
-                label={<Space> Gas <Tooltip title="Gas = Commit Gas + Reveal Gas"> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>}
+                label={<Space> Gas <Tooltip title={<Trans>Gas = Commit Gas + Reveal Gas</Trans>}> <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} /></Tooltip></Space>}
                 value={<NumberFormat value={Number(params.commitGas) + Number(params.order.revealGas)} isBig decimal={8} minDig={8} suffix=' BTC' />}
             />,
             children: <div>
-                <DescItem dark label="Commit Gas" value={<NumberFormat value={params.commitGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
-                <DescItem dark label="Reveal  Gas" value={<NumberFormat value={params.order.revealGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+                <DescItem dark label={<Trans>Commit Gas</Trans>} value={<NumberFormat value={params.commitGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+                <DescItem dark label={<Trans>Reveal Gas</Trans>} value={<NumberFormat value={params.order.revealGas} isBig decimal={8} minDig={8} suffix=' BTC' />} />
 
             </div>
         },
     ]
 
     return <Popup
-        title="Confirm Mint"
+        title={<Trans>Confirm Mint</Trans>}
         modalWidth={452}
         show={show}
         onClose={onClose}
@@ -64,16 +65,16 @@ export default ({ show, onClose, params, submiting, handleSubmit }: Props) => {
             </div>
             <Divider style={{ margin: '2px 0' }} />
             <Collapse ghost items={items} style={{ width: '100%' }} />
-            <DescItem dark label="Service Fee" value={<NumberFormat value={params.order.serviceFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+            <DescItem dark label={<Trans>Service Fee</Trans>} value={<NumberFormat value={params.order.serviceFee} isBig decimal={8} minDig={8} suffix=' BTC' />} />
             <Divider style={{ margin: '2px 0' }} />
-            <DescItem label="You Will Spend" value={<NumberFormat value={params.order.totalFee + Number(params.commitGas) - Number(params.order.revealOutValue)} isBig decimal={8} minDig={8} suffix=' BTC' />} />
-            <DescItem label="Available Balance" value={<NumberFormat value={userBal} minDig={8} suffix=' BTC' />} />
+            <DescItem label={<Trans>You Will Spend</Trans>} value={<NumberFormat value={params.order.totalFee + Number(params.commitGas) - Number(params.order.revealOutValue)} isBig decimal={8} minDig={8} suffix=' BTC' />} />
+            <DescItem label={<Trans>Available Balance</Trans>} value={<NumberFormat value={userBal} minDig={8} suffix=' BTC' />} />
             <Row gutter={[24, 24]} style={{ marginTop: 24, width: '80%' }}>
                 <Col span={12}>
-                    <Button size='large' type="link" block onClick={onClose}>Cancel</Button>
+                    <Button size='large' type="link" block onClick={onClose}>{<Trans>Cancel</Trans>}</Button>
                 </Col>
                 <Col span={12}>
-                    <Button size='large' type='primary' loading={submiting} block onClick={handleSubmit}>Confirm</Button>
+                    <Button size='large' type='primary' loading={submiting} block onClick={handleSubmit}>{<Trans>Confirm</Trans>}</Button>
                 </Col>
             </Row>
         </div>

@@ -1,7 +1,7 @@
 import { Button, Card, Checkbox, Col, Modal, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
-import { useModel, useMatch, history } from "umi";
+import { useModel, useMatch, history, FormattedMessage } from "umi";
 import "./index.less";
 import { broadcastBTCTx, broadcastTx, checkPinUtxoInfo, deployCommit, deployMRC20Pre, getIdCoinInfo, getIdCoinMintOrder, getMrc20AddressShovel, getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, mintIdCoinCommit, mintIdCoinPre, mintMrc20Commit, mintMrc20Pre, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
@@ -10,7 +10,7 @@ import { buildDeployMRC20Psbt, commitMintMRC20PSBT, transferMRC20PSBT } from "@/
 import { ArrowRightOutlined, DownOutlined, FileTextOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
 import btcIcon from "@/assets/logo_btc@2x.png";
-import { formatSat } from "@/utils/utlis";
+import { formatMessage, formatSat } from "@/utils/utlis";
 import PopLvl from "@/components/PopLvl";
 import DeployComfirm, { DeployComfirmProps, defaultDeployComfirmProps } from "./DeployComfirm";
 import MRC20DetailCard from "./MRC20DetailCard";
@@ -25,6 +25,7 @@ import idCoin from "@/pages/mrc20/idCoin";
 import Decimal from "decimal.js";
 import ComfirmTransfer, { TransferComfrimParams } from "./ComfirmTransfer";
 import ComfirmMintMrc20, { MintMrc20ComfrimParams } from "./ComfirmMintMrc20";
+import Trans from "@/components/Trans";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -52,6 +53,7 @@ export interface MRC20TransferParams {
 }
 export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const match = useMatch('/inscribe/:tab/:tick');
+    const [activeKey, setActiveKey] = useState<string[]>([]);
 
     const { sm } = useBreakpoint();
     const [form] = Form.useForm();
@@ -303,9 +305,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 history.push('/mrc20History')
 
             },
-            title: "Deploy",
-            tip: "Successful",
-            okText: 'OK',
+            title: <Trans>Deploy</Trans>,
+            tip: <Trans>Successful</Trans>,
+            okText: <Trans>OK</Trans>,
             txs: [{
                 label: 'Reveal TxId',
                 txid: commitRes.data.revealTxId
@@ -317,7 +319,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 <div className="inscribeSuccess">
                     <div className="tips">
                         <InfoCircleOutlined />
-                        <span>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</span>
+                        <span><Trans>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</Trans></span>
                     </div>
                 </div>
             ),
@@ -362,9 +364,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     history.push('/mrc20History?tab=ID-Coins Mint')
 
                 },
-                title: "Mint",
-                tip: "Successful",
-                okText: 'OK',
+                title: <Trans>Mint</Trans>,
+                tip: <Trans>Successful</Trans>,
+                okText: <Trans>OK</Trans>,
                 txs: [
                     {
                         label: 'Commit TxId',
@@ -384,7 +386,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     <div className="inscribeSuccess">
                         <div className="tips">
                             <InfoCircleOutlined />
-                            <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
+                            <span><Trans>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</Trans></span>
                         </div>
                     </div>
                 ),
@@ -410,8 +412,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 form.setFieldValue('type', 'transfer')
 
             },
-            title: title,
-            tip: "Successful",
+            title: <Trans>{title}</Trans>,
+            tip: <Trans>Successful</Trans>,
             txs: [{
                 label: 'Reveal TxId',
                 txid: ret.revealTxId
@@ -456,7 +458,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     }
                 }
                 if ((Number(payload.decimals) + (BigInt(payload.amtPerMint) * BigInt(payload.mintCount)).toString().length) > 20) {
-                    message.error('The decimals, Amount Per Mint, and Mint Limit values must not exceed 20 digits')
+                    message.error(formatMessage('The decimals, Amount Per Mint, and Mint Limit values must not exceed 20 digits'))
                     return
                 }
 
@@ -703,9 +705,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     history.push('/mrc20History?tab=Mint')
 
                 },
-                title: "Mint",
-                tip: "Successful",
-                okText: 'OK',
+                title: <Trans>Mint</Trans>,
+                tip: <Trans>Successful</Trans>,
+                okText: <Trans>OK</Trans>,
                 txs: [
                     {
                         label: 'Reveal TxId',
@@ -720,7 +722,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     <div className="inscribeSuccess">
                         <div className="tips">
                             <InfoCircleOutlined />
-                            <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
+                            <span><Trans>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</Trans></span>
                         </div>
                     </div>
                 ),
@@ -730,7 +732,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         } catch (e: any) {
             if (e.message === 'Insufficient funds to reach the target amount') {
-                message.error('No available UTXOs. Please wait for existing transactions to be confirmed.');
+                message.error(formatMessage('No available UTXOs. Please wait for existing transactions to be confirmed.'));
 
             } else {
                 message.error(e.message)
@@ -800,9 +802,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             history.push('/mrc20History?tab=Mint')
 
                         },
-                        title: "Mint",
-                        tip: "Successful",
-                        okText: 'OK',
+                        title: <Trans>Mint</Trans>,
+                        tip: <Trans>Successful</Trans>,
+                        okText: <Trans>SucceOKssful</Trans>,
                         txs: [
                             {
                                 label: 'Reveal TxId',
@@ -817,7 +819,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             <div className="inscribeSuccess">
                                 <div className="tips">
                                     <InfoCircleOutlined />
-                                    <span>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</span>
+                                    <span><Trans>Current minting transaction status is Pending. Please wait for the minting transaction to be confirmed before transferring or trading this token.</Trans></span>
                                 </div>
                             </div>
                         ),
@@ -858,7 +860,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                     }
                 }
                 if (totalAmount < amount) {
-                    throw new Error('No available UTXOs. Please wait for existing transactions to be confirmed. ')
+                    throw new Error(formatMessage('No available UTXOs. Please wait for existing transactions to be confirmed.'))
                 }
 
                 const params: API.TransferMRC20PreReq = {
@@ -878,7 +880,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 if (code !== 0) throw new Error(message);
 
                 const { rawTx, revealPrePsbtRaw } = await transferMRC20PSBT(data, feeRate, btcAddress, network);
-                console.log(revealPrePsbtRaw, 'revealPrePsbtRaw', rawTx);
+
                 const ret = await transferMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } });
                 if (ret.code !== 0) throw new Error(ret.message);
                 await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
@@ -955,11 +957,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                 }}
                 form={form}
             >
-                <Form.Item label="Type" name="type" rules={[{ required: true }]}>
+                <Form.Item label={<Trans>Type</Trans>} name="type" rules={[{ required: true }]}>
                     <Radio.Group className="customRadio">
-                        <Radio value="deploy" className="customRadioItem">Deploy</Radio>
-                        <Radio value="mint" className="customRadioItem">Mint</Radio>
-                        <Radio value="transfer" className="customRadioItem">Transfer</Radio>
+                        <Radio value="deploy" className="customRadioItem"><Trans>Deploy</Trans></Radio>
+                        <Radio value="mint" className="customRadioItem"><Trans>Mint</Trans></Radio>
+                        <Radio value="transfer" className="customRadioItem"><Trans>Transfer</Trans></Radio>
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item noStyle shouldUpdate={(prev, cur) => prev.type !== cur.type}>
@@ -968,18 +970,16 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             const type = getFieldValue('type');
                             if (type === 'deploy') {
                                 return <>
-                                    <Form.Item label="Ticker" name="deployTicker"
+                                    <Form.Item label={<Trans>Ticker</Trans>} name="deployTicker"
                                         rules={[{ required: true }, { type: 'string', min: 2, max: 24 }, { pattern: new RegExp(/^[a-zA-Z0-9\-]*$/), message: "No Space or Special Characters Allowed" }, () => ({
                                             async validator(_, value) {
                                                 if (!value || value.length < 2) {
                                                     return Promise.resolve();
                                                 }
-                                                if (value.toUpperCase() === 'WUKONG') {
-                                                    return Promise.reject(new Error('This tick already exists.'));
-                                                }
+
                                                 const { data } = await getMrc20Info(network, { tick: value.toUpperCase() });
                                                 if (data && data.mrc20Id) {
-                                                    return Promise.reject(new Error('This tick already exists.'));
+                                                    return Promise.reject(new Error(formatMessage('This tick already exists.')));
                                                 }
 
                                             },
@@ -989,14 +989,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Input
                                             size="large"
                                             maxLength={24}
-                                            placeholder="2~24 Charaters"
+                                            placeholder={formatMessage('2-24 characters')}
                                         />
                                     </Form.Item>
 
 
 
 
-                                    <Form.Item rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: 'Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).' }]} label="Mint Limit" name="deployMaxMintCount"
+                                    <Form.Item rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: formatMessage('Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).') }]} label={formatMessage('Mint Limit')} name="deployMaxMintCount"
 
                                     >
                                         <InputNumber
@@ -1006,12 +1006,12 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                             precision={0}
                                             addonAfter={
-                                                <Tooltip title="Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).">
+                                                <Tooltip title={<Trans>Total number of minting transactions allowed. Min: 1, Max: 1,000,000,000,000 （1e12).</Trans>}>
                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                 </Tooltip>}
                                         />
                                     </Form.Item>
-                                    <Form.Item rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: 'Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).' }]} label="Amount Per Mint" name="deployAmountPerMint"
+                                    <Form.Item rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: formatMessage('Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).') }]} label={formatMessage('Amount Per Mint')} name="deployAmountPerMint"
                                     // help={<div style={{ textAlign: 'left',color:'rgba(255, 255, 255, 0.6)',fontSize:14 }}> TotalSupply: </div>}
                                     >
                                         <InputNumber
@@ -1021,7 +1021,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                             // max={1000000000000}
                                             precision={0}
                                             addonAfter={
-                                                <Tooltip title="Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).">
+                                                <Tooltip title={<Trans>Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).</Trans>}>
                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                 </Tooltip>
                                             }
@@ -1029,14 +1029,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                     </Form.Item>
                                     <Row gutter={[0, 0]}>
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
-                                            Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} />
+                                            <Trans>Total Supply</Trans>: <NumberFormat value={totalSupply} isBig decimal={0} />
                                         </Col>
                                     </Row>
 
-                                    <Collapse className="collapse" style={{ padding: 0 }} ghost items={[
+                                    <Collapse className="collapse" activeKey={activeKey} onChange={setActiveKey} style={{ padding: 0 }} ghost items={[
                                         {
                                             key: '1',
-                                            label: <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}><div className="collapsePanel"> More Options<div
+                                            label: <Row gutter={[0, 0]}> <Col offset={sm ? 4 : 0} span={sm ? 20 : 24}><div className="collapsePanel">{!activeKey.includes('1') ? <Trans>Show More Options</Trans> : <Trans>Hide More Options</Trans>} <div
                                                 className="collapseIcon"
                                             >
                                                 <DownOutlined /></div>
@@ -1044,27 +1044,27 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                             showArrow: false,
                                             children: <>
-                                                <Form.Item label="Token Name" name="deployTokenName"
+                                                <Form.Item label={<Trans>Token Name</Trans>} name="deployTokenName"
                                                     rules={[{ type: 'string', min: 1, max: 48 }]}
                                                 >
                                                     <Input
                                                         size="large"
                                                         maxLength={48}
-                                                        placeholder="less than 48 charaters"
+                                                        placeholder={formatMessage('less than 48 charaters')}
                                                         addonAfter={
-                                                            <Tooltip title="Full name of the token. Length: 1-48 characters.">
+                                                            <Tooltip title={<Trans>Full name of the token. Length: 1-48 characters.</Trans>}>
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
                                                     />
                                                 </Form.Item>
-                                                <Form.Item label="Icon" name="deployIcon"
+                                                <Form.Item label={<Trans>Icon</Trans>} name="deployIcon"
 
                                                 >
                                                     <Input
                                                         size="large"
                                                         addonAfter={
-                                                            <Tooltip title="Optional. Format: 'metafile://pinid'. You should inscribe your icon file first, then paste the metafile protocol URI here.">
+                                                            <Tooltip title={<Trans>Optional. Format: 'metafile://pinid'. You should inscribe your icon file first, then paste the metafile protocol URI here.</Trans>}>
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
@@ -1081,8 +1081,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             }
                                                         },
                                                     }}>
-                                                    <Form.Item label="Decimals" name="deployDecimals"
-                                                        rules={[{ max: 12, min: 0, type: 'number', message: 'Decimal Places: Min 0, Max 12. Default is 8.' }]}
+                                                    <Form.Item label={<Trans>Decimals</Trans>} name="deployDecimals"
+                                                        rules={[{ max: 12, min: 0, type: 'number', message: formatMessage('Decimal Places: Min 0, Max 12. Default is 8.') }]}
                                                     >
                                                         <InputNumber
                                                             size="large"
@@ -1091,7 +1091,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                             // max={12}
                                                             precision={0}
                                                             addonAfter={
-                                                                <Tooltip title="Decimal Places: Min 0, Max 12. Default is 8.">
+                                                                <Tooltip title={formatMessage('Decimal Places: Min 0, Max 12. Default is 8.')}>
                                                                     <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                                 </Tooltip>
                                                             }
@@ -1105,9 +1105,9 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         if (!value || getFieldValue('deployMaxMintCount') >= value) {
                                                             return Promise.resolve();
                                                         }
-                                                        return Promise.reject(new Error('Premine Count cannot be greater than Mint Limit !'));
+                                                        return Promise.reject(new Error(formatMessage('Premine Count cannot be greater than Mint Limit !')));
                                                     },
-                                                })]} label="Premine Count" name="deployPremineCount"
+                                                })]} label={<Trans>Premine Count</Trans>} name="deployPremineCount"
 
                                                 >
                                                     <InputNumber
@@ -1117,7 +1117,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                         precision={0}
                                                         addonAfter={
-                                                            <Tooltip title="Pre-Minted Count. Value must be ≥ 0 and ≤ Mint Limit. If this Token is a fair launch, please enter 0.">
+                                                            <Tooltip title={<Trans>Pre-Minted Count. Value must be ≥ 0 and ≤ Mint Limit. If this Token is a fair launch, please enter 0.</Trans>}>
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip>
                                                         }
@@ -1126,13 +1126,13 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 {
                                                     _deployPremineCount > 0 && <Row gutter={[0, 0]} style={{ marginBottom: 20 }}>
                                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24} style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
-                                                            Total Pre-Minted Token Amount: : <NumberFormat value={totalPreMint} isBig decimal={0} /><br />
-                                                            These tokens will be in your wallet once deployment is confirmed.
+                                                            <Trans>Total Pre-Minted Token Amount</Trans>:  <NumberFormat value={totalPreMint} isBig decimal={0} /><br />
+                                                            <Trans>These tokens will be in your wallet once deployment is confirmed.</Trans>
                                                         </Col>
                                                     </Row>
                                                 }
 
-                                                <Form.Item label="Begin Height" name="deployBeginHeight"
+                                                <Form.Item label={<Trans>Begin Height</Trans>} name="deployBeginHeight"
 
                                                 >
                                                     <InputNumber
@@ -1144,7 +1144,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                     />
                                                 </Form.Item>
-                                                <Form.Item label="End Height" name="deployEndHeight"
+                                                <Form.Item label={<Trans>End Height</Trans>} name="deployEndHeight"
 
                                                 >
                                                     <InputNumber
@@ -1157,30 +1157,30 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                 </Form.Item>
                                                 <Row gutter={[0, 0]}>
                                                     <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
-                                                        <Popover title='PIN Payment Settings Explanation:' content={<Typography style={{ maxWidth: '400px' }}>
+                                                        <Popover title={<Trans>PIN Payment Settings Explanation:</Trans>} content={<Typography style={{ maxWidth: '400px' }}>
                                                             <Typography.Paragraph>
-                                                                If the deployer sets the PIN Payment Settings, each minting transaction will be checked to ensure that the specified amount of BTC has been paid to the designated address. If the requirements are not met, the minting will be invalid.
+                                                                <Trans>If the deployer sets the PIN Payment Settings, each minting transaction will be checked to ensure that the specified amount of BTC has been paid to the designated address. If the requirements are not met, the minting will be invalid.</Trans>
                                                             </Typography.Paragraph>
                                                             <ul>
                                                                 <li>
                                                                     <Typography.Text code strong>
-                                                                        Pay To
-                                                                    </Typography.Text>: The address to which the payment must be made during minting.
+                                                                        <Trans>Pay To</Trans>
+                                                                    </Typography.Text>: <Trans>The address to which the payment must be made during minting.</Trans>
                                                                 </li>
                                                                 <li>
-                                                                    <Typography.Text code strong>Pay Amount:</Typography.Text>
-                                                                    The amount of BTC that must be transferred to the Pay To address during minting.
+                                                                    <Typography.Text code strong><Trans>Pay Amount</Trans>:</Typography.Text>
+                                                                    <Trans>The amount of BTC that must be transferred to the Pay To address during minting.</Trans>
                                                                 </li>
 
                                                             </ul>
                                                         </Typography>}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: 4, justifyContent: "center" }}>
-                                                                PIN Payment Settings<QuestionCircleOutlined />
+                                                                <Trans>PIN Payment Settings</Trans><QuestionCircleOutlined />
                                                             </div>
                                                         </Popover>
                                                     </Col>
                                                 </Row>
-                                                <Form.Item label="Pay To" name="deployPayTo"
+                                                <Form.Item label={<Trans>Pay To</Trans>} name="deployPayTo"
                                                     rules={[]}
                                                 >
                                                     <Input
@@ -1190,7 +1190,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                     />
                                                 </Form.Item>
-                                                <Form.Item label="Pay Amount" name="deployPayAmount"
+                                                <Form.Item label={<Trans>Pay Amount</Trans>} name="deployPayAmount"
                                                     rules={[{
                                                         min: 1e-8,
                                                         type: 'number',
@@ -1209,43 +1209,43 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                                 <Row gutter={[0, 0]}>
                                                     <Col offset={sm ? 4 : 0} span={sm ? 20 : 24} style={{ marginBottom: 20 }}>
-                                                        <Popover title='PoP Difficulty Settings' content={<Typography style={{ maxWidth: '400px' }}>
+                                                        <Popover title={<Trans>PoP Difficulty Settings</Trans>} content={<Typography style={{ maxWidth: '400px' }}>
                                                             <Typography.Paragraph>
-                                                                MRC-20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC-20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.
+                                                                <Trans>MRC-20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC-20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.</Trans>
                                                             </Typography.Paragraph>
                                                             <Typography.Paragraph>
 
-                                                                The difficulty setting has four parameters:
+                                                                <Trans>The difficulty setting has four parameters:</Trans>
 
                                                             </Typography.Paragraph>
                                                             <ul>
                                                                 <li>
                                                                     <Typography.Text code strong>
-                                                                        difficulty level
-                                                                    </Typography.Text>: The difficulty level determines that a PIN of the corresponding or higher difficulty level is required to be eligible to mint MRC-20.
+                                                                        <Trans>difficulty level</Trans>
+                                                                    </Typography.Text>: <Trans>The difficulty level determines that a PIN of the corresponding or higher difficulty level is required to be eligible to mint MRC-20.</Trans>
                                                                 </li>
                                                                 <li>
-                                                                    <Typography.Text code strong>path</Typography.Text>
-                                                                    : determines that a PIN with the corresponding path is required to be eligible to mint MRC-20.
+                                                                    <Typography.Text code strong><Trans>path</Trans></Typography.Text>
+                                                                    : <Trans>determines that a PIN with the corresponding path is required to be eligible to mint MRC-20.</Trans>
                                                                 </li>
                                                                 <li>
-                                                                    <Typography.Text code strong>count</Typography.Text>
-                                                                    : one needs to provide the corresponding number of PINs that meet the difficulty criteria to be eligible to mint MRC-20.
+                                                                    <Typography.Text code strong><Trans>count</Trans></Typography.Text>
+                                                                    : <Trans>one needs to provide the corresponding number of PINs that meet the difficulty criteria to be eligible to mint MRC-20.</Trans>
                                                                 </li>
                                                                 <li>
-                                                                    <Typography.Text code strong>creator</Typography.Text>
-                                                                    :one needs to provide PINs of certain creators to be eligible to mint MRC-20.
+                                                                    <Typography.Text code strong><Trans>creator</Trans></Typography.Text>
+                                                                    :<Trans>one needs to provide PINs of certain creators to be eligible to mint MRC-20.</Trans>
                                                                 </li>
                                                             </ul>
                                                         </Typography>}>
-                                                            PoP Difficulty Settings <QuestionCircleOutlined /><br />
-                                                            <span style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>(Leave them blank if you are not sure what they are. )</span>
+                                                            <Trans>PoP Difficulty Settings</Trans> <QuestionCircleOutlined /><br />
+                                                            <span style={{ textAlign: 'left', color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>(<Trans>Leave them blank if you are not sure what they are.</Trans> )</span>
                                                         </Popover>
                                                     </Col>
                                                 </Row>
 
 
-                                                <Form.Item rules={[]} label="Creator" name="deployCreator"
+                                                <Form.Item rules={[]} label={<Trans>Creator</Trans>} name="deployCreator"
 
                                                 >
                                                     <Input
@@ -1253,7 +1253,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         style={{ width: '100%' }}
                                                     />
                                                 </Form.Item>
-                                                <Form.Item rules={[]} label="Path" name="deployPath"
+                                                <Form.Item rules={[]} label={<Trans>Path</Trans>} name="deployPath"
 
                                                 >
                                                     <Input
@@ -1261,7 +1261,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                         style={{ width: '100%' }}
                                                     />
                                                 </Form.Item>
-                                                <Form.Item rules={[]} label="Difficulty Level" name="deployDifficultyLevel"
+                                                <Form.Item rules={[]} label={<Trans>Difficulty Level</Trans>} name="deployDifficultyLevel"
 
                                                 >
                                                     <Select style={{ textAlign: 'left' }} size="large" options={
@@ -1274,7 +1274,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     </Select>
                                                 </Form.Item>
 
-                                                <Form.Item rules={[]} label="Count" name="deployCount"
+                                                <Form.Item rules={[]} label={<Trans>Count</Trans>} name="deployCount"
 
                                                 >
                                                     <InputNumber
@@ -1296,7 +1296,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             }
                             if (type === 'transfer') {
                                 return <>
-                                    <Form.Item label="Token" name="transferTickerId"
+                                    <Form.Item label={<Trans>Token</Trans>} name="transferTickerId"
                                         rules={[{ required: true }]}
                                     >
                                         <Select
@@ -1304,7 +1304,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                             showSearch
 
                                             style={{ textAlign: 'left' }} size="large"
-                                            placeholder="Select a token"
+                                            placeholder={formatMessage("Select a token")}
                                             options={list.map(item => {
                                                 return { label: <div><span style={{ color: 'var(--primary)' }}>{item.balance}</span> {item.tick}</div>, value: item.mrc20Id }
                                             })}
@@ -1312,14 +1312,14 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
                                         </Select>
                                     </Form.Item>
-                                    <Form.Item label="Amount" name="amount" rules={[{ required: true }, { min: new Decimal(1).div(Math.pow(10, transferPrecision)).toNumber(), type: 'number', }]}>
+                                    <Form.Item label={<Trans>Amount</Trans>} name="amount" rules={[{ required: true }, { min: new Decimal(1).div(Math.pow(10, transferPrecision)).toNumber(), type: 'number', }]}>
                                         <InputNumber
                                             size="large"
                                             style={{ width: '100%' }}
                                             precision={transferPrecision}
                                         />
                                     </Form.Item>
-                                    <Form.Item label="Recipient Address" name="recipient" rules={[{ required: true }]}>
+                                    <Form.Item label={<Trans>Recipient Address</Trans>} name="recipient" rules={[{ required: true }]}>
                                         <Input
                                             size="large"
                                         />
@@ -1328,8 +1328,8 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                             if (type === 'mint') {
                                 return <>
 
-                                    <Form.Item label="Ticker / Token ID" name="tickerId" rules={[{ required: true }]} validateStatus={mintInfoStatus}
-                                        help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}>This Ticker / Token ID does not correspond to any MRC-20; Please re-enter.</div> : <></>} >
+                                    <Form.Item label={formatMessage('Ticker / Token ID')} name="tickerId" rules={[{ required: true }]} validateStatus={mintInfoStatus}
+                                        help={mintInfoStatus === 'error' ? <div style={{ textAlign: 'left' }}><Trans>This Ticker / Token ID does not correspond to any MRC-20; Please re-enter.</Trans></div> : <></>} >
                                         <Input
                                             size="large"
                                             onChange={handleMintTokenIDChange}
@@ -1339,11 +1339,11 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}> <Spin spinning={mintInfoLoading} style={{ minHeight: 100 }}>
 
                                             {
-                                                IdCoinInfo && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><IdCoinCard mintMrc20Info={IdCoinInfo} /></>
+                                                IdCoinInfo && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}><Trans>Detail</Trans></div><IdCoinCard mintMrc20Info={IdCoinInfo} /></>
                                             }
 
                                             {
-                                                (!IdCoinInfo && mintMrc20Info) && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}>Detail</div><MRC20DetailCard mintMrc20Info={mintMrc20Info} /></>
+                                                (!IdCoinInfo && mintMrc20Info) && <> <div style={{ color: 'var(--primary)', marginBottom: 20 }}><Trans>Detail</Trans></div><MRC20DetailCard mintMrc20Info={mintMrc20Info} /></>
                                             }
                                         </Spin>
                                         </Col>
@@ -1355,7 +1355,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <Collapse ghost defaultActiveKey={1} style={{ padding: 0, marginBottom: 20 }} expandIconPosition='end' items={
                                                         [{
                                                             key: 1,
-                                                            label: <div style={{ textAlign: 'left' }}>PINs {mintMrc20Info.pinCheck.count && `(Select  ${mintMrc20Info.pinCheck.count} PINs)`}  <Tooltip title="MRC-20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC-20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.">
+                                                            label: <div style={{ textAlign: 'left' }}><Trans>PINs</Trans> {mintMrc20Info.pinCheck.count && <>(<FormattedMessage id="Select PINs" values={{ count: mintMrc20Info.pinCheck.count }} />)</>}  <Tooltip title={<Trans>MRC-20 has a unique and innovative difficulty setting called PoP (Proof of PIN). Users can generate and obtain an NFT called a PIN by generating MetaID interaction transactions. Each PIN has corresponding attributes, including rarity, path, etc. The deployer can decide that during the MRC-20 minting process, users need to provide corresponding PIN proofs to obtain minting eligibility.</Trans>}>
                                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                                             </Tooltip></div>,
                                                             children: <Form.Item label='' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="pins" rules={[{ required: true }]}
@@ -1375,7 +1375,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     }></Collapse>
                                                 </Col></Row> : <Row gutter={[0, 0]}>
                                                 <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}><div className="noPins" onClick={() => { history.push('/market/PIN') }}><FileTextOutlined style={{ fontSize: 36 }} /><div>
-                                                    No eligible PIN. Go get one.
+                                                    <Trans>No eligible PIN. Go get one.</Trans>
                                                 </div></div></Col></Row>
                                         }
                                     </>}
@@ -1383,7 +1383,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                         <Col offset={sm ? 5 : 0} span={sm ? 19 : 24}>
                                             {
                                                 (IdCoinInfo && addressMintState === 0) && <> <Card style={{ marginBottom: 20, border: '1px solid #D4F66B' }} styles={{ body: { padding: '10px 15px', textAlign: "left", color: '#D4F66B', fontSize: 12 } }}>
-                                                    To mint the ID Coin, you need to become a follower of the Deployer. We will help you complete the follow and mint the ID Coin.
+                                                    <Trans>To mint the ID Coin, you need to become a follower of the Deployer. We will help you complete the follow and mint the ID Coin.</Trans>
                                                 </Card></>
                                             }
                                         </Col>
@@ -1416,7 +1416,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         type="primary"
                         onClick={connect}
                     >
-                        Connect Wallet
+                        <Trans>Connect Wallet</Trans>
                     </Button>
                 ) : (
                     <Button
@@ -1429,7 +1429,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         className="submit"
                         disabled={mintMrc20Info && mintMrc20Info.mintable === false}
                     >
-                        {submitBtnText}
+                        <Trans>{submitBtnText||''}</Trans>
                     </Button>
                 )}
             </Col>

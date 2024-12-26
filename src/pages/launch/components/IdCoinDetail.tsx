@@ -9,10 +9,11 @@ import IdCoinMessage from "@/components/IdCoinMessage";
 import { history } from 'umi'
 import { ArrowRightOutlined, RightOutlined } from "@ant-design/icons";
 import IDCoinAllMessage from "@/components/IdCoinMessage/IDCoinAllMessage";
+import Trans from "@/components/Trans";
 type Props = {
     idCoid: API.IdCoin | undefined
 }
-const DescItem = ({ label, value, dark }: { label: string, dark?: boolean, value: React.ReactNode }) => {
+const DescItem = ({ label, value, dark }: { label: string|React.ReactNode, dark?: boolean, value: React.ReactNode }) => {
     return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0px 23px', lineHeight: '52px', background: 'rgba(25, 27, 24, 0.84)', borderRadius: 8 }}>
         <div style={{ fontSize: '16px', color: dark ? 'rgba(255, 255, 255, 0.5)' : '#fff' }}>{label}</div>
         <div style={{ fontSize: '16px' }}>{value}</div>
@@ -39,7 +40,7 @@ export default ({ idCoid }: Props) => {
                                 <div style={{ display: 'flex', gap: 4, justifyContent: "center", flexDirection: 'column', alignItems: "center" }}>
                                     <Typography.Text className="ticker"><NumberFormat value={idCoid.followersCount} /> </Typography.Text>
                                     <div>
-                                        Followers
+                                       <Trans>Followers</Trans> 
                                     </div>
                                 </div>
                                 <Button shape='circle' type="text" style={{ background: '#21251A' }} onClick={() => { history.push(`/idCoin/${idCoid.tick}`) }}>
@@ -52,8 +53,8 @@ export default ({ idCoid }: Props) => {
                 </div>
                 <div>
                     <div className="mint colorPrimary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
-                        <span>Minted : <NumberFormat value={idCoid.totalMinted} />  </span>
-                        <span>Supply : <NumberFormat value={idCoid.totalSupply} /> </span>
+                        <span><Trans>Minted</Trans> : <NumberFormat value={idCoid.totalMinted} />  </span>
+                        <span><Trans>Supply</Trans> : <NumberFormat value={idCoid.totalSupply} /> </span>
                     </div>
                     <div className="slider" style={{ marginTop: 0 }}>
                         <Progress percent={Number(idCoid.supply / idCoid.totalSupply) * 100} showInfo={false} />
@@ -69,36 +70,36 @@ export default ({ idCoid }: Props) => {
             <Card bordered={false} >
                 <Row gutter={[20, 20]}>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(idCoid.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Trans>Total Volume</Trans>} value={formatSat(idCoid.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoid.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Trans>Market Cap</Trans>} value={formatSat(idCoid.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={idCoid.floorPrice} isBig decimal={8} tiny suffix=' BTC' precision={12} />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Trans>Floor Price</Trans>} formatter={() => <NumberFormat value={idCoid.floorPrice} isBig decimal={8} tiny suffix=' BTC' precision={12} />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + idCoid.tick) }}>Holders <RightOutlined style={{ fontSize: 10 }} /></Space>} value={idCoid.holders} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + idCoid.tick) }}>{<Trans>Holders</Trans>} <RightOutlined style={{ fontSize: 10 }} /></Space>} value={idCoid.holders} />
                     </Col>
                 </Row>
             </Card>
         </Col>
         <Col md={12} xs={24} >
-            <DescItem label="Ticker" value={idCoid.tick} />
+            <DescItem label={<Trans>Ticker</Trans>} value={idCoid.tick} />
         </Col>
         <Col md={12} xs={24} >
-            <DescItem label="Followers Limit" value={<NumberFormat value={idCoid.followersLimit} />} />
+            <DescItem label={<Trans>Followers Limit</Trans>} value={<NumberFormat value={idCoid.followersLimit} />} />
         </Col>
         <Col md={12} xs={24} >
-            <DescItem label="Amount Per Mint" value={<NumberFormat value={idCoid.amtPerMint} />} />
+            <DescItem label={<Trans>Amount Per Mint</Trans>} value={<NumberFormat value={idCoid.amtPerMint} />} />
         </Col>
         <Col md={12} xs={24} >
-            <DescItem label="Liquidity Per Mint" value={<NumberFormat value={idCoid.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
+            <DescItem label={<Trans>Liquidity Per Mint</Trans>} value={<NumberFormat value={idCoid.liquidityPerMint} isBig decimal={8} suffix=' BTC' />} />
         </Col>
         <Col span={24} >
 
             <div style={{ padding: '20px 23px', background: 'rgba(25, 27, 24, 0.84)', borderRadius: 8 }}>
-                <div style={{ fontSize: '16px', color: '#fff' }}>Message</div>
+                <div style={{ fontSize: '16px', color: '#fff' }}>{<Trans>Message</Trans>}</div>
                 <div style={{ fontSize: '16px', lineHeight: 1.2, marginTop: 16 }}><IDCoinAllMessage info={idCoid.metaData} /></div>
             </div>
 
@@ -114,7 +115,7 @@ export default ({ idCoid }: Props) => {
                 icon={<ArrowRightOutlined style={{  transform: 'rotate(-0.125turn)' }}/>}
                 iconPosition='end'
             >
-                View Details Page  
+               <Trans>View Details Page</Trans> 
             </Button></Col>
     </Row >
 }

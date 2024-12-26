@@ -125,7 +125,7 @@ export default function Layout() {
             </div>
             <div className="navWrap">
               {connected ? (
-                <Space>
+                <Space align='center'>
                   <Button
                     type="link"
                     onClick={() => {

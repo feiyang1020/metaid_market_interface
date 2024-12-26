@@ -290,8 +290,8 @@ export default () => {
             <div className="label"><Trans>Total Price</Trans></div>
             <div className="aciotns">
                 <div className="prices">
-                    <div className="sats"><NumberFormat value={totalStas} suffix=" BTC" /></div>
-                    <USDPrice value={totalStas} decimals={0} />
+                    <div className="sats"><NumberFormat value={totalStas} suffix=" BTC" /><USDPrice value={totalStas} decimals={0} /></div>
+                    
                 </div>
                 {connected ? (
                     <Button

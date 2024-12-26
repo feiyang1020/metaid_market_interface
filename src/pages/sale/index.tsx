@@ -21,6 +21,7 @@ import JSONView from "@/components/JSONView";
 import ListForMRC20 from "@/components/ListForMRC20";
 import NumberFormat from "@/components/NumberFormat";
 import ListForPin from "./components/ListForPin";
+import Trans from "@/components/Trans";
 const { useBreakpoint } = Grid;
 const items = ["PIN", 'MRC-20', 'ID-Coins'];
 export default () => {
@@ -34,7 +35,7 @@ export default () => {
           history.back();
         }}
       >
-        <LeftOutlined /> List For Sale
+        <LeftOutlined /> <Trans>List For Sale</Trans>
       </div>
       <div className="saleContent">
         <div className="tabs">
@@ -46,7 +47,7 @@ export default () => {
                 onClick={() => setTab(item)}
                 size={screens.md ? "large" : "small"}
               >
-                {item}
+                <Trans>{item}</Trans>
               </Button>
             ))}
           </Space>

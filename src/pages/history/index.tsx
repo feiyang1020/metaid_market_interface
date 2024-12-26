@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import JSONView from "@/components/JSONView";
 import useIntervalAsync from "@/hooks/useIntervalAsync";
 import { getContent, getOrders } from "@/services/api";
+import Trans from "@/components/Trans";
 const items = ["Activity", "Buy", "Sell"];
 export default () => {
   const { btcAddress, network } = useModel("wallet");
@@ -81,7 +82,7 @@ export default () => {
   }, [orders, tab, btcAddress]);
   const columns: TableProps<API.Order>["columns"] = [
     {
-      title: "PIN",
+      title: <Trans>PIN</Trans>,
       dataIndex: "assetNumber",
       key: "assetNumber",
       render: (text, record) => {
@@ -100,32 +101,32 @@ export default () => {
       },
     },
     {
-      title: "Path",
+      title: <Trans>Path</Trans>,
       dataIndex: "Path",
       key: "Path",
       ellipsis: true,
       render: (_, record) => record.info.path,
     },
     {
-      title: "POP",
+      title: <Trans>POP</Trans>,
       dataIndex: "assetPop",
       key: "assetPop",
     },
     {
-      title: "Price",
+      title: <Trans>Price</Trans>,
       dataIndex: "sellPriceAmount",
       key: "sellPriceAmount",
       render: (text, record) => <>{formatSat(text)} BTC</>,
     },
     {
-      title: "Type",
+      title: <Trans>Type</Trans>,
       dataIndex: "Type",
       key: "Type",
       render: (_, record) =>
-        record.buyerAddress === btcAddress ? "Buy" : "Sell",
+        <Trans>{record.buyerAddress === btcAddress ? "Buy" : "Sell"}</Trans>,
     },
     {
-      title: "From",
+      title: <Trans>From</Trans>,
       dataIndex: "sellerAddress",
       key: "sellerAddress",
       render: (text, record) => (
@@ -135,7 +136,7 @@ export default () => {
       ),
     },
     {
-      title: "To",
+      title: <Trans>To</Trans>,
       dataIndex: "buyerAddress",
       key: "buyerAddress",
       render: (text, record) => (
@@ -145,13 +146,13 @@ export default () => {
       ),
     },
     {
-      title: "Time",
+      title: <Trans>Time</Trans>,
       dataIndex: "dealTime",
       key: "dealTime",
       render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
     },
     {
-      title: "Hash",
+      title: <Trans>Hash</Trans>,
       dataIndex: "txId",
       key: "txId",
       render: (text, record) => (
@@ -179,7 +180,7 @@ export default () => {
           history.back();
         }}
       >
-        <LeftOutlined /> Transaction History
+        <LeftOutlined /><Trans>Transaction History</Trans> 
       </div>
       <div className="tableWrap">
         <div className="tabs">
@@ -194,7 +195,7 @@ export default () => {
                 size="large"
                 disabled={item === "PINs"}
               >
-                {item}
+                <Trans>{item}</Trans>
               </Button>
             ))}
           </Space>

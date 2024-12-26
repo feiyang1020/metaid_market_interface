@@ -14,6 +14,7 @@ import PopLvl from "@/components/PopLvl";
 import { buildRefundIdCoinPsbt } from "@/utils/idcoin";
 import { addUtxoSafe } from "@/utils/psbtBuild";
 import IdCoinItem from "@/components/Mrc20List/IdCoinItem";
+import Trans from "@/components/Trans";
 const { useBreakpoint } = Grid;
 export default () => {
     const { btcAddress, network, authParams, feeRate } = useModel("wallet");
@@ -70,7 +71,7 @@ export default () => {
                 },
             });
             if (commitRes.code !== 0) throw new Error(commitRes.message);
-            message.success('Refund success');
+            message.success(<Trans>Refund success</Trans>);
             await addUtxoSafe(btcAddress, [{ txId: commitRes.data.txId, vout: 0 }, { txId: commitRes.data.txId, vout: 1 }]);
             await fetchOrders();
         } catch (err: any) {
@@ -85,7 +86,7 @@ export default () => {
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
         {
-            title: 'Ticker',
+            title: <Trans>Ticker</Trans>,
             dataIndex: 'tick',
             width: 220,
             render: (_, record) => <IdCoinItem info={{ tick: record.tick, tickId: record.tickId, avatar: record.deployerUserInfo&&record.deployerUserInfo.avatar }} />
@@ -113,17 +114,17 @@ export default () => {
         //     }
         // },
         {
-            title: 'Followers Limit',
+            title: <Trans>Followers Limit</Trans>,
             dataIndex: 'followersLimit',
 
         },
         {
-            title: 'Amount Per Mint',
+            title: <Trans>Amount Per Mint</Trans>,
             dataIndex: 'amtPerMint',
 
         },
         {
-            title: 'Liquidity Per Mint',
+            title: <Trans>Liquidity Per Mint</Trans>,
             dataIndex: 'liquidityPerMint',
             render: (item) => {
                 return <NumberFormat value={item} isBig decimal={8} suffix=' BTC' />
@@ -140,21 +141,21 @@ export default () => {
 
         // },
         {
-            title: 'Type',
+            title: <Trans>Type</Trans>,
             dataIndex: 'mintState',
             align: 'center',
             render: (item, record) => {
 
                 return <>{
                     item === 1 ?
-                        <>Confirmed</> :
+                        <Trans>Confirmed</Trans> :
                         item === 0 ?
                             <span style={{ color: '#FF5252' }}>
-                                Pending
+                                 <Trans>Pending</Trans> 
                             </span> :
                             item === 2 ?
                                 <Space style={{ color: '#FF5252' }}>
-                                    Failure <Button loading={refundOrderId === record.orderId} size="small" type='link' onClick={(e) => { e.stopPropagation(); handleRefund(record) }}>Refund</Button>
+                                    <Trans>Failure</Trans>  <Button loading={refundOrderId === record.orderId} size="small" type='link' onClick={(e) => { e.stopPropagation(); handleRefund(record) }}><Trans>Refund</Trans></Button>
                                 </Space> :
                                 item === 3 ?
                                     <Tooltip title={record.refundTxId}>
@@ -168,7 +169,7 @@ export default () => {
                                                     : `https://mempool.space/tx/${record.refundTxId}`
                                             }
                                         >
-                                            Refunded
+                                           <Trans>Refunded</Trans> 
                                         </a>
                                     </Tooltip>
                                     :
@@ -177,13 +178,13 @@ export default () => {
             }
         },
         {
-            title: "Time",
+            title: <Trans>Time</Trans>,
             dataIndex: "timestamp",
             key: "timestamp",
             render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
         },
         {
-            title: "Hash",
+            title: <Trans>Hash</Trans>,
             dataIndex: "txId",
             key: "txId",
             render: (text, record) => (
@@ -207,8 +208,8 @@ export default () => {
 
     ];
     const getMinSort = () => {
-        const TypeIndex = columns.findIndex(item => item.title === 'Type');
-        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.title !== 'Type')]
+        const TypeIndex = columns.findIndex(item => item.dataIndex === 'mintState');
+        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.dataIndex !== 'mintState')]
     }
     return (
         <>

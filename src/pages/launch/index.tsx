@@ -20,6 +20,8 @@ import safeIcon from '@/assets/safe.svg';
 import userIcon from '@/assets/user.svg';
 import idCoinIcon from '@/assets/idCoin.svg';
 import down from '@/assets/chevron-down.svg';
+import Trans from '@/components/Trans';
+import { formatMessage } from '@/utils/utlis';
 const { useBreakpoint } = Grid;
 export default () => {
     const [form] = Form.useForm();
@@ -128,8 +130,8 @@ export default () => {
                     history.push('/mrc20History?tab=ID-Coins Deploy')
 
                 },
-                title: "Launch",
-                tip: "Successful",
+                title: <Trans>Launch</Trans>,
+                tip: <Trans>Successful</Trans>,
                 okText: 'OK',
                 txs: [{
                     label: 'Reveal TxId',
@@ -144,7 +146,7 @@ export default () => {
 
                         <div className="tips">
                             <InfoCircleOutlined />
-                            <span>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</span>
+                            <span><Trans>Current deployment transaction status is Pending. Please wait for the deployment transaction to be confirmed before minting this token.</Trans></span>
                         </div>
                     </div>
                 ),
@@ -194,7 +196,7 @@ export default () => {
                 false,
                 false
             )
-            console.log(fee)
+
             setFields({ tick, followersNum, amountPerMint, liquidityPerMint, gasFee: fee })
             setOrder(data)
             setComfirmVisible(true)
@@ -229,10 +231,11 @@ export default () => {
                                 key: '1',
                                 label: <div className='collapseLabel'>
                                     <div className="title">
-                                        ID Coin: Tokenize Your Influence
+                                        <Trans>ID Coin: Tokenize Your Influence</Trans>
                                     </div>
                                     <div className="subTitle">
-                                        Launch a Liquid Personal Token Just for Your Followers
+                                        <Trans>Launch a Liquid Personal Token Just for Your Followers</Trans>
+
                                     </div>
 
                                 </div>,
@@ -243,18 +246,18 @@ export default () => {
                                         <div className="item">
                                             <img src={idCoinIcon} alt="" className='icon' />
                                             <div>
-                                                ID Coin is an MRC-20 token deployment & minting use case example from metaid.market, showcasing MRC-20's possibilities.
+                                                <Trans>ID Coin is an MRC-20 token deployment & minting use case example from metaid.market, showcasing MRC-20's possibilities.</Trans>
                                             </div>
                                         </div>
                                         <div className="item">
                                             <div className="icon">99</div>
                                             <div>
-                                                Only 99 deployments available for now.
+                                                <Trans>Only 99 deployments available for now.</Trans>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="tip">
-                                        This is an experimental feature, be aware of potential risks.
+                                        <Trans>This is an experimental feature, be aware of potential risks.</Trans>
                                     </div>
                                 </>,
 
@@ -283,7 +286,7 @@ export default () => {
 
                             </div>
 
-                            <div className="name">{userName || 'Unnamed'}</div>
+                            <div className="name"><Trans>{userName || 'Unnamed'}</Trans></div>
                             <div className="metaid">Metaid:{metaid ? metaid.replace(/(\w{6})\w+(\w{3})/, "$1...") : '--'}</div>
                         </div>
 
@@ -308,60 +311,58 @@ export default () => {
 
                             <Row gutter={[24, 0]}>
                                 <Col md={12} xs={24} >
-                                    <Form.Item label="Ticker" name='tick'
+                                    <Form.Item label={<Trans>Ticker</Trans>} name='tick'
                                         rules={[{ required: true }, { type: 'string', min: 2, max: 24 }, { pattern: new RegExp(/^[a-zA-Z0-9\-]*$/), message: "No Space or Special Characters Allowed" }, () => ({
                                             async validator(_, value) {
                                                 if (!value || value.length < 2) {
                                                     return Promise.resolve();
                                                 }
-                                                if (value.toUpperCase() === 'WUKONG') {
-                                                    return Promise.reject(new Error('This tick already exists.'));
-                                                }
+
                                                 const { data } = await getIdCoinInfo(network, { tick: value.toUpperCase() });
                                                 if (data && data.mrc20Id) {
-                                                    return Promise.reject(new Error('This tick already exists.'));
+                                                    return Promise.reject(new Error(formatMessage('This tick already exists.')));
                                                 }
 
                                             },
                                         })]}
                                         validateTrigger="onBlur" className='formItem'>
-                                        <Input placeholder="2~24 Charaters" />
+                                        <Input placeholder={formatMessage("2~24 Charaters")} />
                                     </Form.Item>
                                 </Col>
                                 <Col md={12} xs={24} >
-                                    <Form.Item label="Followers Limit" name='followersNum' rules={[{ required: true }, { type: 'number', min: 1, max: 1000000000000, message: '1-1e12 ' }]} className='formItem'>
+                                    <Form.Item label={<Trans>Followers Limit</Trans>} name='followersNum' rules={[{ required: true }, { type: 'number', min: 1, max: 1000000000000, message: '1-1e12 ' }]} className='formItem'>
                                         <InputNumber precision={0} placeholder="Followers Limit" style={{ width: '100%' }} controls={false} addonAfter={
-                                            <Tooltip title="Followers Limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）">
+                                            <Tooltip title={<Trans>Followers Limit：Limit on the total number of followers. The minimum number of followers is 1, while the maximum number can reach 1,000,000,000,000（1e12）</Trans>}>
                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                             </Tooltip>
                                         } />
                                     </Form.Item>
                                 </Col>
                                 <Col md={12} xs={24} >
-                                    <Form.Item label="Amount Per Mint" name='amountPerMint' rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: '1-1e12 ' }]} className='formItem'>
+                                    <Form.Item label={<Trans>Amount Per Mint</Trans>} name='amountPerMint' rules={[{ required: true }, { max: 1000000000000, min: 1, type: 'number', message: '1-1e12 ' }]} className='formItem'>
                                         <InputNumber precision={0} placeholder="Amount Per Mint" style={{ width: '100%' }} addonAfter={
-                                            <Tooltip title="Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).">
+                                            <Tooltip title={<Trans>Amount of tokens minted per transaction. Min: 1, Max: 1,000,000,000,000 （1e12).</Trans>}>
                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                             </Tooltip>
                                         } controls={false} />
 
                                     </Form.Item>
-                                    <div className='totalSupply'> Total Supply: <NumberFormat value={totalSupply} isBig decimal={0} /></div>
+                                    <div className='totalSupply'> <Trans>Total Supply</Trans>: <NumberFormat value={totalSupply} isBig decimal={0} /></div>
 
                                 </Col>
                                 <Col md={12} xs={24} >
-                                    <Form.Item label="Liquidity Per Mint" name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 0.0001, max: 10, message: '0.0001-10 BTC' }]} className='formItem'>
+                                    <Form.Item label={<Trans>Liquidity Per Mint</Trans>} name='liquidityPerMint' rules={[{ required: true }, { type: 'number', min: 0.0001, max: 10, message: '0.0001-10 BTC' }]} className='formItem'>
                                         <InputNumber precision={8} formatter={(value) => `${value} BTC`} parser={(value) => value?.replace(' BTC', '') as unknown as number} placeholder="Liquidity Per Mint" style={{ width: '100%' }} controls={false} addonAfter={
                                             <Tooltip title={<LiqPerMintNotice />}>
                                                 <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
                                             </Tooltip>
                                         } />
                                     </Form.Item>
-                                    <div className='totalSupply'> Initial Price   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' BTC' /></div>
+                                    <div className='totalSupply'> <Trans>Initial Price</Trans>   <NumberFormat value={InitialPrice} isBig decimal={0} suffix=' BTC' /></div>
                                 </Col>
                                 <Col md={24} xs={24} >
-                                    <Form.Item label="Message" name='description' className='formItem' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} rules={[{ max: 500, type: 'string' }]} >
-                                        <Input.TextArea  style={{ textAlign: 'start' }} placeholder="Leave your message to your followers." />
+                                    <Form.Item label={<Trans>Message</Trans>} name='description' className='formItem' labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} rules={[{ max: 500, type: 'string' }]} >
+                                        <Input.TextArea style={{ textAlign: 'start' }} placeholder={formatMessage("Leave your message to your followers.")} />
                                     </Form.Item>
                                 </Col>
                                 {/* <Col md={24} xs={24} >
@@ -384,7 +385,7 @@ export default () => {
                                 onClick={connect}
                                 style={{ height: 48 }}
                             >
-                                Connect Wallet
+                                <Trans>Connect Wallet</Trans>
                             </Button>
                         ) : (
                             <Button
@@ -397,21 +398,21 @@ export default () => {
                                 className="submit"
                                 disabled={checkAddrCanDeploy?.canDeploy ? false : true}
                             >
-                                {checkAddrCanDeploy?.canDeploy ? 'Launch' : checkAddrCanDeploy?.msg}
+                                <Trans>{checkAddrCanDeploy?.canDeploy ? 'Launch' : checkAddrCanDeploy?.msg}</Trans>
                             </Button>
                         )}
                     </Col>
                     <Row className='requirement' gutter={[6, 6]}>
                         <Col span={24} className="title">
-                            Requirement
+                            <Trans>Requirement</Trans>
                         </Col>
                         <Col md={12} xs={24} className='item' >
                             <img src={safeIcon} alt="" />
-                            ID Coin Deployment: Users w/{'>'}5 MetalD PINs
+                            <Trans>{`ID Coin Deployment: Users w/${'>'}5 MetalD PINs`}</Trans>
                         </Col>
                         <Col md={12} xs={24} className='item' >
                             <img src={userIcon} alt="" />
-                            ID Coin Minting: Only followers of deployer can mint
+                            <Trans>ID Coin Minting: Only followers of deployer can mint</Trans>
                         </Col>
                     </Row>
                 </div>}

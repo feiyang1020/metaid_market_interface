@@ -11,6 +11,7 @@ import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import PopLvl from "@/components/PopLvl";
+import Trans from "@/components/Trans";
 const { useBreakpoint } = Grid;
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
@@ -45,14 +46,14 @@ export default () => {
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
         {
-            title: 'Ticker',
+            title: <Trans>Ticker</Trans>,
             dataIndex: 'tick',
             width: 220,
             render: (_, record) => <Item info={{ tick: record.tick, mrc20Id: record.tickId, metaData: record.metaData }}
             />
         },
         {
-            title: 'Deployer',
+            title: <Trans>Deployer</Trans>,
             dataIndex: 'deployer',
             width: 220,
             render: (_, record) => <div className="detail">
@@ -62,7 +63,7 @@ export default () => {
         },
 
         {
-            title: 'Path',
+            title: <Trans>Path</Trans>,
             dataIndex: 'pinCheck',
             width: 200,
             render: (price, record) => {
@@ -91,7 +92,7 @@ export default () => {
         //     width: 200,
         // },
         {
-            title: 'Amount Per Mint',
+            title: <Trans>Amount Per Mint</Trans>,
             dataIndex: 'amtPerMint',
             width: 200,
         },
@@ -106,15 +107,15 @@ export default () => {
         //     width: 200,
         // },
         {
-            title: 'Type',
+            title: <Trans>Type</Trans>,
             dataIndex: 'mintState',
             width: 100,
             render: (item) => {
-                return <>{item === 1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item === 0 ? 'Pending' : 'Failure'}</span>}</>
+                return <>{item === 1 ? <Trans>Confirmed</Trans> : <span style={{ color: '#FF5252' }}><Trans>{item === 0 ? 'Pending' : 'Failure'}</Trans></span>}</>
             }
         },
         {
-            title: 'PIN',
+            title: <Trans>PIN</Trans>,
             dataIndex: 'Pin',
             width: 200,
             render: (item, record) => {
@@ -124,14 +125,14 @@ export default () => {
         },
 
         {
-            title: "Time",
+            title: <Trans>Time</Trans>,
             dataIndex: "timestamp",
             key: "timestamp",
             width: 200,
             render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
         },
         {
-            title: "Hash",
+            title: <Trans>Hash</Trans>,
             dataIndex: "txId",
             key: "txId",
             width: 200,
@@ -156,8 +157,8 @@ export default () => {
 
     ];
     const getMinSort = () => {
-        const TypeIndex = columns.findIndex(item => item.title === 'Type');
-        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.title !== 'Type')]
+        const TypeIndex = columns.findIndex(item => item.dataIndex === 'mintState');
+        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.dataIndex !== 'mintState')]
     }
     return (
         <>

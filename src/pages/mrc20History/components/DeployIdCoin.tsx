@@ -10,6 +10,7 @@ import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Item from "@/components/Mrc20List/Item";
 import IdCoinItem from "@/components/Mrc20List/IdCoinItem";
+import Trans from "@/components/Trans";
 const { useBreakpoint } = Grid;
 export default () => {
     const { btcAddress, network, authParams } = useModel("wallet");
@@ -48,7 +49,7 @@ export default () => {
 
     const columns: TableProps<API.Mrc20InscribeOrder>["columns"] = [
         {
-            title: 'Ticker',
+            title: <Trans>Ticker</Trans>,
             dataIndex: 'tick',
             width: 220,
             render: (_, record) => <IdCoinItem info={{ tick: record.tick, tickId: record.tickId, avatar: record.deployerUserInfo&&record.deployerUserInfo.avatar }} />
@@ -76,17 +77,17 @@ export default () => {
         //     }
         // },
         {
-            title: 'Followers Limit',
+            title:<Trans>Followers Limit</Trans> ,
             dataIndex: 'followersLimit',
 
         },
         {
-            title: 'Amount Per Mint',
+            title:<Trans>Amount Per Mint</Trans> ,
             dataIndex: 'amtPerMint',
 
         },
         {
-            title: 'Liquidity Per Mint',
+            title:<Trans>Liquidity Per Mint</Trans> ,
             dataIndex: 'liquidityPerMint',
             render: (item) => {
                 return <NumberFormat value={item} isBig decimal={8} suffix=' BTC' />
@@ -94,7 +95,7 @@ export default () => {
 
         },
         {
-            title: 'Holders',
+            title:<Trans>Holders</Trans> ,
             dataIndex: 'holders',
             align: 'center',
             render: (item, record) => {
@@ -113,20 +114,20 @@ export default () => {
 
         // },
         {
-            title: 'Type',
+            title:<Trans>Type</Trans> ,
             dataIndex: 'deployState',
             render: (item) => {
-                return <>{item === 1 ? 'Confirmed' : <span style={{ color: '#FF5252' }}>{item === 0 ? 'Pending' : 'Failure'}</span>}</>
+                return <>{item === 1 ? <Trans>Confirmed</Trans> : <span style={{ color: '#FF5252' }}><Trans>{item === 0 ? 'Pending' : 'Failure'}</Trans></span>}</>
             }
         },
         {
-            title: "Time",
+            title:<Trans>Time</Trans> ,
             dataIndex: "timestamp",
             key: "timestamp",
             render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
         },
         {
-            title: "Hash",
+            title:<Trans>Hash</Trans> ,
             dataIndex: "txId",
             key: "txId",
             render: (text, record) => (
@@ -149,8 +150,8 @@ export default () => {
 
     ];
     const getMinSort = () => {
-        const TypeIndex = columns.findIndex(item => item.title === 'Type');
-        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.title !== 'Type')]
+        const TypeIndex = columns.findIndex(item => item.dataIndex === 'deployState');
+        return [columns[0], columns[TypeIndex], ...columns.slice(1).filter(item => item.dataIndex !== 'deployState')]
     }
     return (
         <>
