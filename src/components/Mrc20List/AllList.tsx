@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import AllCard from "./AllCard";
 import Sorter from "../Sorter";
 import dayjs from "dayjs";
+import Trans from "../Trans";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.MRC20Info>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -76,7 +77,7 @@ export default () => {
     // }, [fetchData]);
     const columns: TableColumnsType<API.MRC20Info> = [
         {
-            title: 'Token',
+            title: <Trans>Token</Trans>,
             dataIndex: 'tick',
             render: (_, record) => {
                 return <Item info={record} />
@@ -85,7 +86,7 @@ export default () => {
             width: 220
         },
         {
-            title: 'Price',
+            title:  <Trans>Price</Trans>,
             dataIndex: 'price',
             sorter: true,
             align: 'center',
@@ -94,7 +95,7 @@ export default () => {
             }
         },
         {
-            title: 'Change 24H',
+            title: <Trans>Change 24H</Trans>,
             dataIndex: 'change24h',
             sorter: true,
             align: 'center',
@@ -103,7 +104,7 @@ export default () => {
             }
         },
         {
-            title: 'Market Cap',
+            title: <Trans>Market Cap</Trans>,
             dataIndex: 'marketCap',
             sorter: true,
             align: 'center',
@@ -112,7 +113,7 @@ export default () => {
             }
         },
         {
-            title: 'Total Supply',
+            title: <Trans>Total Supply</Trans>,
             dataIndex: 'totalSupply',
             sorter: true,
             align: 'center',
@@ -121,7 +122,7 @@ export default () => {
             }
         },
         {
-            title: 'Holders',
+            title: <Trans>Holders</Trans>,
             dataIndex: 'holders',
             align: 'center',
             sorter: true,

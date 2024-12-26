@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import MintingCard from "./MintingCard";
 import { handlePrecent } from "@/utils/utlis";
 import Sorter from "../Sorter";
+import Trans from "../Trans";
 const { useBreakpoint } = Grid;
 type OnChange = NonNullable<TableProps<API.MRC20Info>['onChange']>;
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -83,7 +84,7 @@ export default () => {
     };
     const columns: TableColumnsType<API.MRC20Info> = [
         {
-            title: 'Token',
+            title: <Trans>Token</Trans>,
             dataIndex: 'tick',
             // fixed: 'left',
             // width: 200,
@@ -92,7 +93,7 @@ export default () => {
             }
         },
         {
-            title: 'Deployer',
+            title: <Trans>Deployer</Trans>,
             dataIndex: 'deployerUserInfo',
             // width: 160,
             render: (deployerUserInfo, record) => {
@@ -108,7 +109,7 @@ export default () => {
         },
 
         {
-            title: 'Minted',
+            title: <Trans>Minted</Trans>,
             dataIndex: 'totalMinted',
             sorter: true,
             width: 160,
@@ -118,7 +119,7 @@ export default () => {
             }
         },
         {
-            title: 'Holders',
+            title: <Trans>Holders</Trans>,
             dataIndex: 'holders',
             sorter: true,
             width: 160,
@@ -128,7 +129,7 @@ export default () => {
             }
         },
         {
-            title: 'Condition',
+            title: <Trans>Condition</Trans>,
             dataIndex: 'pinCheck',
             align:'center',
             width: 170,
@@ -139,7 +140,7 @@ export default () => {
             }
         },
         {
-            title: 'Premine',
+            title: <Trans>Premine</Trans>,
             dataIndex: 'Premine',
             // sorter: true,
             width: 200,
@@ -148,7 +149,7 @@ export default () => {
                 const rate = Number(record.premineCount) / Number(record.mintCount) * 100
                 return <div className="premine">
                     {
-                        Number(record.premineCount) === 0 ? 'Fair Launch' :
+                        Number(record.premineCount) === 0 ? <Trans>Fair Launch</Trans> :
                             rate < 1 ? '<1%' : <NumberFormat value={rate} floor suffix='%' precision={4} />
 
                     }
@@ -156,7 +157,7 @@ export default () => {
             }
         },
         {
-            title: 'Time',
+            title: <Trans>Time</Trans>,
             dataIndex: 'deployTime',
             sorter: true,
             align: 'center',
@@ -166,7 +167,7 @@ export default () => {
             }
         },
         {
-            title: 'Progress%',
+            title: <Trans>Progress%</Trans>,
             dataIndex: 'progress',
             sorter: true,
             width: 200,
@@ -187,7 +188,7 @@ export default () => {
             // fixed: 'right',
             width: 80,
             render: (_, record) => {
-                return <Button size='small' onClick={(e) => { e.stopPropagation(); history.push('/inscribe/MRC-20/' + record.tick) }} type='primary'>Mint</Button>
+                return <Button size='small' onClick={(e) => { e.stopPropagation(); history.push('/inscribe/MRC-20/' + record.tick) }} type='primary'><Trans>Mint</Trans></Button>
             }
         },
 

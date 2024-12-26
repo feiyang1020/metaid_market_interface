@@ -1,4 +1,5 @@
 import SortArrow from "../SortArrow";
+import Trans from "../Trans";
 import "./index.less";
 
 type Props = {
@@ -28,7 +29,7 @@ export default ({ sorters, sortKey, sortType, setSortKey, setSortType, className
                 className="sortItem"
                 onClick={() => handleSort(sorter.key)}
             >
-                {sorter.label}{" "}
+                <Trans>{sorter.label}</Trans>{" "}
                 <SortArrow
                     status={
                         sortKey === sorter.key
