@@ -31,10 +31,11 @@ export default defineConfig({
   model: {},
   request: {},
   locale: {
-    default: "zh-CN",
+    default: "en-US",
     baseSeparator: "-",
     antd: true,
-    baseNavigator: false,
+    baseNavigator: true,
+    useLocalStorage: true,
   },
   jsMinifier: "none",
   define: {
