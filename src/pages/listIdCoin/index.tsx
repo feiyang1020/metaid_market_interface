@@ -25,12 +25,13 @@ import NumberFormat from "@/components/NumberFormat";
 import { listMrc20Order } from "@/utils/mrc20";
 import MRC20Icon from "@/components/MRC20Icon";
 import Decimal from "decimal.js";
+import Trans from "@/components/Trans";
 const items = ["PIN", 'MRC-20', 'ID-Coins'];
 export default () => {
     const { btcAddress, connect, connected, network, authParams } =
         useModel("wallet");
     const match = useMatch('/list/:assetType/:tick');
-    const [idCoin, setIdCoin] = useState<API.IdCoin|API.MRC20TickInfo>();
+    const [idCoin, setIdCoin] = useState<API.IdCoin | API.MRC20TickInfo>();
     const [showListBtn, setShowListBtn] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
     const [list, setList] = useState<API.MRC20Info[]>([]);
@@ -46,14 +47,14 @@ export default () => {
         if (!match || !match.params.tick) return;
         const params: any = {};
         params.tick = match.params.tick
-        if(match.params.assetType === 'idCoins'){
+        if (match.params.assetType === 'idCoins') {
             const { data } = await getIdCoinInfo(network, params);
             setIdCoin(data);
-        }else{
+        } else {
             const { data } = await getMrc20Info(network, params);
             setIdCoin(data);
         }
-        
+
     }, [match, network])
     const fetchUserUtxo = useCallback(async () => {
         try {
@@ -136,7 +137,6 @@ export default () => {
             confirmed: true
         }
         const psbtRaw = await listMrc20Order(utxo, Number(new Decimal(price).times(1e8).toFixed(0)), network, btcAddress);
-        console.log('psbtRaw', psbtRaw)
         const { code, message } = await sellMRC20Order(network, { assetType: 'mrc20', tickId: mrc20Id, address: btcAddress, psbtRaw }, {
             headers: {
                 ...authParams,
@@ -174,8 +174,8 @@ export default () => {
             show: true,
             onClose: () => setSuccessProp(DefaultSuccessProps),
             onDown: () => setSuccessProp(DefaultSuccessProps),
-            title: "List For Sale",
-            tip: "Successful",
+            title: <Trans>List For Sale</Trans>,
+            tip: <Trans>Successful</Trans>,
             children: <div className="saleSuccess"></div>,
         });
         setSellPrices({});
@@ -191,7 +191,7 @@ export default () => {
                     history.back();
                 }}
             >
-                <LeftOutlined /> List For Sale
+                <LeftOutlined /> <Trans>List For Sale</Trans>
             </div>
             <div className="saleContent">
                 <div className="idCoins">
@@ -217,8 +217,8 @@ export default () => {
 
                 </div>
 
-                {match&& <ListForMRC20 tag={match.params.assetType==='idCoins'?'ID-Coins':'MRC-20'} tick={match.params.tick}></ListForMRC20>}
-               
+                {match && <ListForMRC20 tag={match.params.assetType === 'idCoins' ? 'ID-Coins' : 'MRC-20'} tick={match.params.tick}></ListForMRC20>}
+
             </div>
 
 

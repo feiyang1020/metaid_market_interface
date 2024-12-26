@@ -4,7 +4,7 @@ import { getMrc20AddressUtxo, getMrc20Info, getUserMrc20List, sellMRC20Order, tr
 import { useEffect, memo, useState, useCallback, useMemo } from "react"
 import { Button, Card, ConfigProvider, Descriptions, InputNumber, List, message } from "antd"
 import { CheckOutlined } from "@ant-design/icons"
-import { formatSat } from "@/utils/utlis"
+import { formatMessage, formatSat } from "@/utils/utlis"
 import { listMrc20Order, transferMRC20PSBT } from "@/utils/mrc20"
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "../SuccessModal"
 import MRC20Icon from "../MRC20Icon"
@@ -14,6 +14,8 @@ import { getPkScriprt } from "@/utils/orders"
 import { addUtxoSafe } from "@/utils/psbtBuild"
 import Item from "@/components/Mrc20List/Item";
 import './index.less'
+import Trans from "../Trans"
+import USDPrice from "../USDPrice"
 
 const tags: Record<string, string> = {
     "MRC-20": "",
@@ -194,7 +196,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
             }
         }
         if (totalAmount < amount) {
-            throw new Error('No available UTXOs. Please wait for existing transactions to be confirmed. ')
+            throw new Error(formatMessage('No available UTXOs. Please wait for existing transactions to be confirmed.'))
         }
 
         const params: API.TransferMRC20PreReq = {
@@ -214,7 +216,6 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
         if (code !== 0) throw new Error(message);
 
         const { rawTx, revealPrePsbtRaw } = await transferMRC20PSBT(data, feeRate, btcAddress, network);
-        console.log(revealPrePsbtRaw, 'revealPrePsbtRaw', rawTx);
         const ret = await transferMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } });
         if (ret.code !== 0) throw new Error(ret.message);
         await addUtxoSafe(btcAddress, [{ txId: ret.data.commitTxId, vout: 1 }])
@@ -279,8 +280,8 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
             show: true,
             onClose: () => setSuccessProp(DefaultSuccessProps),
             onDown: () => setSuccessProp(DefaultSuccessProps),
-            title: "List For Sale",
-            tip: "Successful",
+            title: <Trans>List For Sale</Trans>,
+            tip: <Trans>Successful</Trans>,
             children: <div className="saleSuccess"></div>,
         });
         setSellPrices({});
@@ -337,17 +338,17 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                             [
                                                 {
                                                     key: '1',
-                                                    label: 'Available',
+                                                    label: <Trans>Available</Trans>,
                                                     children: <NumberFormat value={item.avlBalance} precision={item.decimals} suffix={` ${item.tick}`} />
                                                 },
                                                 {
                                                     key: '2',
-                                                    label: 'Listed',
+                                                    label: <Trans>Listed</Trans>,
                                                     children: <NumberFormat value={item.listedBalance} precision={item.decimals} suffix={` ${item.tick}`} />
                                                 },
                                                 {
                                                     key: '3',
-                                                    label: 'Unconfirmed',
+                                                    label: <Trans>Unconfirmed</Trans>,
                                                     children: <NumberFormat value={item.unconfirmedBalance} precision={item.decimals} suffix={` ${item.tick}`} />
                                                 },
                                             ]
@@ -358,7 +359,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                             <div className="inputGroup">
                                 <div className="inputWrap">
                                     <div className="label">
-                                        Quantity
+                                        <Trans>Quantity</Trans>
                                     </div>
                                     <InputNumber
                                         onChange={(value) => onAmountInputChange(item.mrc20Id, value)}
@@ -367,7 +368,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                         value={sellAmounts[item.mrc20Id]}
                                         // suffix={item.tick}
                                         precision={Number(item.decimals)}
-                                        placeholder="Quantity"
+                                        placeholder={formatMessage('Quantity')}
                                         disabled={Number(item.avlBalance) === 0}
                                         // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
                                         max={item.avlBalance}
@@ -380,15 +381,15 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
 
                                 <div className="inputWrap">
                                     <div className="label">
-                                        Price
+                                        <Trans>Price</Trans>
                                     </div>
                                     <InputNumber
                                         onChange={(value) => onInputChange(item.mrc20Id, value)}
                                         controls={false}
                                         className="input"
                                         value={sellPrices[item.mrc20Id]}
-                                        suffix="BTC"
-                                        placeholder="Price"
+                                        suffix={<>BTC </>}
+                                        placeholder={formatMessage('Price')}
                                         disabled={Number(item.avlBalance) === 0}
                                         // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
                                         min={0.00002}
@@ -396,6 +397,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                             !checkList.includes(item.mrc20Id) && handleCheck(item.mrc20Id);
                                         }}
                                     />
+
                                 </div>
                             </div>
 
@@ -410,10 +412,10 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
             )}
         />
         <div className="totalPrice">
-            <div className="label">Total Price</div>
+            <div className="label"><Trans>Total Price</Trans></div>
             <div className="aciotns">
                 <div className="prices">
-                    <div className="sats"><NumberFormat value={totalStas} suffix=" BTC" /> </div>
+                    <div className="sats"><NumberFormat value={totalStas} suffix=" BTC" /> <USDPrice value={totalStas} decimals={0} /> </div>
                     {/* <div className="btc">{formatSat(totalStas)}BTC</div> */}
                 </div>
                 {connected ? (
@@ -423,11 +425,11 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                         onClick={handleSale}
                         loading={submiting}
                     >
-                        List For Sale
+                        <Trans>List For Sale</Trans>
                     </Button>
                 ) : (
                     <Button type="primary" onClick={connect}>
-                        Connect Wallet
+                        <Trans>Connect Wallet</Trans>
                     </Button>
                 )}
             </div>

@@ -1,6 +1,7 @@
 import { Button } from "antd";
 import Popup from "../ResponPopup";
 import './index.less'
+import Trans from "../Trans";
 type Props = {
     show: boolean
     onClose: () => void
@@ -21,11 +22,14 @@ export default ({ show, onClose, handleCancel, submiting }: Props) => {
     >
         <div className="cancelWrap">
             <div className="title">
-                Are your sure you want to cancel your listing？
+                <Trans>
+                    Are your sure you want to cancel your listing？
+                </Trans>
+
             </div>
             <div className="subTitle">
-                This order may still be filled, if it was previously purchased but
-                not completed on the blockchain.
+                <Trans>This order may still be filled, if it was previously purchased but not completed on the blockchain.</Trans>
+                
             </div>
             <div className="buttons">
                 <Button
@@ -35,7 +39,7 @@ export default ({ show, onClose, handleCancel, submiting }: Props) => {
                     }}
                     block
                 >
-                    Close
+                    <Trans>Close</Trans>
                 </Button>
                 <Button
                     type="primary"
@@ -45,7 +49,7 @@ export default ({ show, onClose, handleCancel, submiting }: Props) => {
                     loading={submiting}
                     block
                 >
-                    Cancel listing
+                   <Trans>Cancel listing</Trans> 
                 </Button>
             </div>
         </div>

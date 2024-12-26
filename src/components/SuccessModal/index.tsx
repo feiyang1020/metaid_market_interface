@@ -3,6 +3,7 @@ import Popup from "../ResponPopup";
 import successIcon from "@/assets/status_img_hook.svg";
 import './index.less'
 import SuccessTx from "../SuccessTx";
+import Trans from "../Trans";
 export type SuccessProps = {
   show: boolean;
   onClose: () => void;
@@ -10,7 +11,7 @@ export type SuccessProps = {
   tip: string | React.ReactNode;
   title?: string | React.ReactNode;
   children: React.ReactNode;
-  okText?: string;
+  okText?: string|React.ReactNode;
   txs?: {
     label: string;
     txid: string;
@@ -33,7 +34,7 @@ export default ({
   tip,
   children,
   onDown,
-  okText = 'Done',
+  okText = <Trans>Done</Trans>,
   txs = []
 }: SuccessProps) => {
   return (

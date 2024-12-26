@@ -18,6 +18,7 @@ import { getCreatePinFeeByNet, getMetaIdUrlByNet, getOrdersTradeUrlByNet } from 
 import copy from 'copy-to-clipboard';
 import { addUtxoSafe } from '@/utils/psbtBuild';
 import ConfirmRedeem from '@/components/ConfirmRedeem';
+import Trans from '@/components/Trans';
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -168,7 +169,7 @@ export default () => {
     }
     const copyLink = () => {
         copy(window.location.href)
-        message.success('Link copied to clipboard')
+        message.success(<Trans>Link copied to clipboard</Trans>)
     }
     return <div className='IdCoinPage'>
         <div
@@ -178,7 +179,7 @@ export default () => {
                 // shareX()
             }}
         >
-            <LeftOutlined /> Back
+            <LeftOutlined /> <Trans>Back</Trans>
         </div>
         {
             idCoin && <div className='IdCoinInfo'>
@@ -194,21 +195,21 @@ export default () => {
                                 <Typography.Title level={4} style={{ margin: 0, color: '#fff', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
                                     <div onClick={() => { window.open(getMetaIdUrlByNet(network) + idCoin.deployerMetaId) }}>
                                         {idCoin.tick}
-                                    </div> <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={idCoin.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow() }} type='link'> {idCoin.isFollowing ? 'Following' : 'Follow'}</Button>
+                                    </div> <Button style={{ height: 24, fontSize: 10 }} shape="round" disabled={idCoin.isFollowing} size='small' onClick={(e) => { e.stopPropagation(); handleFollow() }} type='link'> <Trans>{idCoin.isFollowing ? 'Following' : 'Follow'}</Trans></Button>
                                 </Typography.Title>
                                 <Typography.Text copyable={{ text: idCoin.deployerMetaId }} className="metaid"> MetaID: {idCoin.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</Typography.Text>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
                                 <Typography.Text className="ticker"><NumberFormat value={idCoin.followersCount} /> </Typography.Text>
                                 <div>
-                                    Followers
+                                   <Trans>Followers</Trans> 
                                 </div>
                             </div>
 
                         </div>
                         <div className="mint colorPrimary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 20 }}>
-                            <span>Minted : <NumberFormat value={idCoin.totalMinted} />  </span>
-                            <span>Supply : <NumberFormat value={idCoin.totalSupply} /> </span>
+                            <span><Trans>Minted</Trans> : <NumberFormat value={idCoin.totalMinted} />  </span>
+                            <span><Trans>Supply</Trans> : <NumberFormat value={idCoin.totalSupply} /> </span>
                         </div>
                         <div className="slider" style={{ marginTop: 0 }}>
                             <Progress percent={Number(idCoin.supply / idCoin.totalSupply) * 100} showInfo={false} />
@@ -221,16 +222,16 @@ export default () => {
                 </Card>
                 <Row gutter={[20, 20]} style={{ width: 474 }} className='stats'>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(idCoin.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Trans>Total Volume</Trans>} value={formatSat(idCoin.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(idCoin.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Trans>Market Cap</Trans>} value={formatSat(idCoin.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap', overflow: 'hidden' }} title="Floor Price" formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' precision={12} />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16, whiteSpace: 'nowrap', overflow: 'hidden' }} title={<Trans>Floor Price</Trans>} formatter={() => <NumberFormat value={idCoin.floorPrice} isBig decimal={8} tiny suffix=' BTC' precision={12} />} />
                     </Col>
                     <Col xs={12} sm={12} md={6} lg={6} xl={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + idCoin.tick) }}>Holders <RightOutlined style={{ fontSize: 10 }} /></Space>} value={idCoin.holders} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + idCoin.tick) }}><Trans>Holders</Trans> <RightOutlined style={{ fontSize: 10 }} /></Space>} value={idCoin.holders} />
                     </Col>
                 </Row>
                 <Row gutter={[20, 20]}>
@@ -238,17 +239,17 @@ export default () => {
                         <Card bordered={false} styles={{ body: { padding: '24px 16px' } }} style={{ background: 'rgba(27, 27, 27, 0.5)', minWidth: 328, borderRadius: 16 }}>
                             <div className="ordersWrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <div className='orders'>
-                                    <img src={orders} alt="" /> <Tooltip title='You can trade ID-coin on the third-party DEX Orders.exchange, which we have partnered with. Orders.exchange and this marketplace are two separate and independent applications.'><QuestionCircleOutlined /></Tooltip>
+                                    <img src={orders} alt="" /> <Tooltip title={<Trans>You can trade ID-coin on the third-party DEX Orders.exchange, which we have partnered with. Orders.exchange and this marketplace are two separate and independent applications.</Trans>}><QuestionCircleOutlined /></Tooltip>
                                 </div>
-                                <a href={getOrdersTradeUrlByNet(network, idCoin.tick, btcAddress)} style={{ borderBottom: '1px solid #D4F66B' }} target={openWindowTarget()}>Trade</a>
+                                <a href={getOrdersTradeUrlByNet(network, idCoin.tick, btcAddress)} style={{ borderBottom: '1px solid #D4F66B' }} target={openWindowTarget()}><Trans>Trade</Trans></a>
                             </div>
 
                             <div className='tradeInfo'>
                                 <div className="item">
-                                    <NumberFormat prefix={<>Pool <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} tiny />
+                                    <NumberFormat prefix={<><Trans>Pool</Trans> <img src={btcIcon} /> {' '}</>} value={idCoin.ordersPool} isBig decimal={8} tiny />
                                 </div>
                                 <div className="item">
-                                    <NumberFormat prefix={<>Price <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} tiny />
+                                    <NumberFormat prefix={<><Trans>Price</Trans> <img src={btcIcon} /></>} value={idCoin.ordersPrice} isBig decimal={8} tiny />
                                 </div>
 
                             </div>
@@ -267,7 +268,7 @@ export default () => {
                                 },
                             }}
                         >
-                            <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}>List For Sale </Button>
+                            <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/idCoins/' + idCoin.tick) }}><Trans>List For Sale</Trans> </Button>
                         </ConfigProvider>
                     }
 
@@ -282,7 +283,7 @@ export default () => {
                                 },
                             }}
                         >
-                            <Button loading={loading} type='primary' disabled={!showListBtn} block onClick={() => { setShowRedeem(true) }}>Redeem for BTC </Button>
+                            <Button loading={loading} type='primary' disabled={!showListBtn} block onClick={() => { setShowRedeem(true) }}><Trans>Redeem for BTC</Trans> </Button>
                         </ConfigProvider>
                     }
 
@@ -292,18 +293,18 @@ export default () => {
 
                     {
                         idCoin.mintable && <div className='mintBtn'>
-                            <Button type='primary' block onClick={() => { history.push('/inscribe/MRC-20/' + idCoin.tick) }}>Mint</Button>
+                            <Button type='primary' block onClick={() => { history.push('/inscribe/MRC-20/' + idCoin.tick) }}><Trans>Mint</Trans></Button>
                         </div>
                     }
 
 
                     <Popover content={<div className='sharePop' >
                         <div className="item" onClick={copyLink}>
-                            <LinkOutlined /> Copy link
+                            <LinkOutlined /> <Trans>Copy link</Trans>
                         </div>
                         <Divider className='shareDivider' />
                         <div className="item" onClick={shareX}>
-                            <XOutlined /> Share on X
+                            <XOutlined /> <Trans>Share on X</Trans>
                         </div>
                     </div>} title="">
                         <Button type='text' icon={<ShareAltOutlined />} ></Button>
@@ -332,22 +333,22 @@ export default () => {
             {idCoin && <Tabs size='small' style={{ marginTop: 22 }} defaultActiveKey="1" items={[
                 {
                     key: '1',
-                    label: 'Listed',
+                    label: <Trans>Listed</Trans>,
                     children: <Listed mrc20Id={idCoin.mrc20Id || ''} metaData={idCoin ? switchAvatarToMetaDataIcon(idCoin.deployerUserInfo.avatar) : ''} />,
                 },
                 {
                     key: '2',
-                    label: 'Activity',
+                    label: <Trans>Activity</Trans>,
                     children: <Activeity mrc20Id={idCoin.mrc20Id || ''} />,
                 },
                 {
                     key: '3',
-                    label: 'My Activity',
+                    label: <Trans>My Activity</Trans>,
                     children: <Activeity mrc20Id={idCoin.mrc20Id || ''} showMy />,
                 },
                 {
                     key: '4',
-                    label: 'My Listed',
+                    label: <Trans>My Listed</Trans>,
                     children: <Listed mrc20Id={idCoin.mrc20Id || ''} showMy  metaData={idCoin ? switchAvatarToMetaDataIcon(idCoin.deployerUserInfo.avatar) : ''}/>,
                 },
             ]} />}

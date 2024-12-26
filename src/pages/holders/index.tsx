@@ -10,6 +10,7 @@ import { getTickHolders } from "@/services/api";
 import NumberFormat from "@/components/NumberFormat";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import MetaIDUser from "@/components/MetaIDUser";
+import Trans from "@/components/Trans";
 
 export default () => {
   const match = useMatch('/holders/:tick');
@@ -25,7 +26,7 @@ export default () => {
     setLoading(true);
     const { code, message, data } = await getTickHolders(network, {
       tick: _tick,
-      cursor: cursor*size,
+      cursor: cursor * size,
       size,
     });
     if (code !== 0) return;
@@ -41,34 +42,34 @@ export default () => {
   }, [fetchData]);
   const columns: TableProps<API.Holder>["columns"] = [
     {
-      title: "Name",
+      title: <Trans>Name</Trans>,
       dataIndex: "name",
       key: "name",
       width: 300,
       render: (text, record, index) => {
-        return <div style={{display:'flex',alignItems:'center',gap:12}}>
+        return <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div className="order">
             {cursor * size + index + 1}
           </div>
-          <MetaIDUser name={record.userInfo&&record.userInfo.name||''} avatar={record.userInfo&&record.userInfo.avatar} address={record.address} metaid={record.metaId} />
+          <MetaIDUser name={record.userInfo && record.userInfo.name || ''} avatar={record.userInfo && record.userInfo.avatar} address={record.address} metaid={record.metaId} />
 
         </div>
       }
     },
 
     {
-      title: "Address",
+      title: <Trans>Address</Trans>,
       dataIndex: "address",
       key: "address",
       align: "center",
       render: (text) => {
         return (
-          <Typography.Text style={{ color: "#fff" ,whiteSpace:'nowrap'}} copyable={{ text }}>{text.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</Typography.Text>
+          <Typography.Text style={{ color: "#fff", whiteSpace: 'nowrap' }} copyable={{ text }}>{text.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}</Typography.Text>
         )
       },
     },
     {
-      title: "Quantity",
+      title:<Trans>Quantity</Trans> ,
       dataIndex: "balance",
       key: "balance",
       align: "center",
@@ -77,7 +78,7 @@ export default () => {
       }
     },
     {
-      title: "Proportion%",
+      title:<Trans>Proportion%</Trans> ,
       dataIndex: "proportion",
       key: "proportion",
       align: "center",
@@ -94,19 +95,19 @@ export default () => {
           history.back();
         }}
       >
-        <LeftOutlined /> Holders
+        <LeftOutlined /> <Trans>Holders</Trans>
       </div>
       <div className="tableWrap">
 
         <Table
-         
+
           rowKey={"address"}
           loading={loading}
           columns={columns}
           dataSource={list}
           pagination={{
             position: ['bottomCenter'],
-            onChange: (page,pageSize) => {
+            onChange: (page, pageSize) => {
               setCursor(page - 1);
               setSize(pageSize || 10);
             },

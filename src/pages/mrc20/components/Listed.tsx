@@ -12,6 +12,8 @@ import NumberFormat from "@/components/NumberFormat";
 import MRC20Icon from "@/components/MRC20Icon";
 import CancelListing from "@/components/CancelListing";
 import Sorter from "@/components/Sorter";
+import Trans from "@/components/Trans";
+import USDPrice from "@/components/USDPrice";
 type Props = {
     mrc20Id: string,
     metaData: string,
@@ -64,7 +66,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
             if (ret.code !== 0) throw new Error(ret.message);
             setLoading(true);
             await fetchOrders();
-            message.success("Successfully canceled listing");
+            message.success(<Trans>Successfully canceled listing</Trans>);
             setCancelModalVisible(false);
             setCurOrder(undefined);
         } catch (err: any) {
@@ -141,7 +143,8 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
 
                                 <div className="price ">
                                     <img src={btc} className="btcLogo" alt="" />{" "}
-                                    <span>{formatSat(item.priceAmount)} BTC</span>
+                                    <span>{formatSat(item.priceAmount)} BTC <USDPrice value={item.priceAmount} decimals={8} /></span>
+                                    
                                 </div>
 
                                 <div className="btn animation-slide-bottom">
@@ -161,7 +164,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
 
                                             }}
                                         >
-                                            {btcAddress === item.sellerAddress ? 'Cancel Listing' : 'Buy'}
+                                             <Trans>{btcAddress === item.sellerAddress ? 'Cancel Listing' : 'Buy'}</Trans>
                                         </Button>
                                     ) : (
                                         <Button
@@ -170,7 +173,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
                                             block
                                             onClick={connect}
                                         >
-                                            Connect Wallet
+                                            <Trans>Connect Wallet</Trans>
                                         </Button>
                                     )}
                                 </div>

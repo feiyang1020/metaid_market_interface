@@ -1,5 +1,6 @@
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import NumberFormat from "@/components/NumberFormat";
+import Trans from "@/components/Trans";
 import { getMrc20Orders } from "@/services/api";
 import { SyncOutlined } from "@ant-design/icons";
 import { ConfigProvider, Table, TableColumnsType, Tag, Tooltip } from "antd";
@@ -35,18 +36,18 @@ export default ({ mrc20Id, showMy = false }: Props) => {
 
   const columns: TableColumnsType<API.Mrc20Order> = [
     {
-      title: 'Ticker',
+      title: <Trans>Ticker</Trans>,
       dataIndex: 'tick',
       render: (tick, record) => {
         return <div className="tickInfo">
           <span className="tickName">{record.tick}</span>
-          {record.blockHeight === 0 && <Tag icon={<SyncOutlined spin />} color="processing">In progress</Tag>}
+          {record.blockHeight === 0 && <Tag icon={<SyncOutlined spin />} color="processing"><Trans>In progress</Trans></Tag>}
         </div>
       }
     },
 
     {
-      title: 'Price',
+      title: <Trans>Price</Trans>,
       dataIndex: 'tokenPriceRate',
 
       render: (price, record) => {
@@ -54,7 +55,7 @@ export default ({ mrc20Id, showMy = false }: Props) => {
       }
     },
     {
-      title: 'Total Price',
+      title: <Trans>Total Price</Trans>,
       dataIndex: 'priceAmount',
 
       render: (priceAmount, record) => {
@@ -62,7 +63,7 @@ export default ({ mrc20Id, showMy = false }: Props) => {
       }
     },
     {
-      title: 'Quantity',
+      title: <Trans>Quantity</Trans>,
       dataIndex: 'amount',
 
       render: (amount, record) => {
@@ -70,14 +71,14 @@ export default ({ mrc20Id, showMy = false }: Props) => {
       }
     },
     {
-      title: 'Type',
+      title: <Trans>Type</Trans>,
       dataIndex: 'buyerAddress',
       render: (item) => {
-        return btcAddress === item ? 'Buy' : 'Sell'
+        return <Trans>{btcAddress === item ? 'Buy' : 'Sell'}</Trans>
       }
     },
     {
-      title: "From",
+      title: <Trans>From</Trans>,
       dataIndex: "sellerAddress",
       key: "sellerAddress",
       render: (text, record) => (
@@ -88,7 +89,7 @@ export default ({ mrc20Id, showMy = false }: Props) => {
       ),
     },
     {
-      title: "To",
+      title: <Trans>To</Trans>,
       dataIndex: "buyerAddress",
       key: "buyerAddress",
       render: (text, record) => (
@@ -99,13 +100,13 @@ export default ({ mrc20Id, showMy = false }: Props) => {
       ),
     },
     {
-      title: "Time",
+      title: <Trans>Time</Trans>,
       dataIndex: "dealTime",
       key: "dealTime",
       render: (text) => dayjs(text).format("YYYY/MM/DD,HH:mm"),
     },
     {
-      title: "Hash",
+      title:<Trans>Hash</Trans> ,
       dataIndex: "txId",
       key: "txId",
       render: (text, record) => (

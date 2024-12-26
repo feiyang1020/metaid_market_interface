@@ -8,6 +8,7 @@ import Popup from "@/components/ResponPopup";
 import { authTest, cancelMRC20Order, cancelOrder, getMrc20Orders } from "@/services/api";
 import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
+import Trans from "@/components/Trans";
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
   const [show, setShow] = useState<boolean>(false);
@@ -47,7 +48,7 @@ export default () => {
       if (ret.code !== 0) throw new Error(ret.message);
       setLoading(true);
       await fetchOrders();
-      message.success("Successfully canceled listing");
+      message.success(<Trans>Successfully canceled listing</Trans>);
       setShow(false);
       setCurOrder(undefined);
     } catch (err: any) {

@@ -10,6 +10,8 @@ import { Button, Card, ConfigProvider, InputNumber, List, message } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import level from "@/assets/level.svg";
 import PinContent from "./PinContent";
+import Trans from "@/components/Trans";
+import USDPrice from "@/components/USDPrice";
 
 export default () => {
     const size = 50;
@@ -163,8 +165,8 @@ export default () => {
             show: true,
             onClose: () => setSuccessProp(DefaultSuccessProps),
             onDown: () => setSuccessProp(DefaultSuccessProps),
-            title: "List For Sale",
-            tip: "Successful",
+            title: <Trans>List For Sale</Trans>,
+            tip: <Trans>Successful</Trans>,
             children: <div className="saleSuccess"></div>,
         });
         setSellPrices({});
@@ -252,7 +254,7 @@ export default () => {
                                 </div>
                                 {(item.pinStatus === -9 || item.info.genesisHeight === 0) && (
                                     <div className="pinStatus">
-                                        Pending{" "}
+                                        <Trans>Pending</Trans>{" "}
                                         <LoadingOutlined
                                             style={{ fontSize: 14, color: "#FF8F1F" }}
                                             spin
@@ -285,11 +287,11 @@ export default () => {
         )}
     />
         <div className="totalPrice">
-            <div className="label">Total Price</div>
+            <div className="label"><Trans>Total Price</Trans></div>
             <div className="aciotns">
                 <div className="prices">
                     <div className="sats"><NumberFormat value={totalStas} suffix=" BTC" /></div>
-                    {/* <div className="btc">{formatSat(totalStas)}BTC</div> */}
+                    <USDPrice value={totalStas} decimals={0} />
                 </div>
                 {connected ? (
                     <Button
@@ -298,11 +300,11 @@ export default () => {
                         onClick={handleSale}
                         loading={submiting}
                     >
-                        List For Sale
+                        <Trans>List For Sale</Trans>
                     </Button>
                 ) : (
                     <Button type="primary" onClick={connect}>
-                        Connect Wallet
+                        <Trans>Connect Wallet</Trans>
                     </Button>
                 )}
             </div>

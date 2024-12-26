@@ -14,6 +14,7 @@ import MRC20Icon from '@/components/MRC20Icon';
 import { formatSat } from '@/utils/utlis';
 import btcIcon from "@/assets/logo_btc@2x.png";
 import copy from 'copy-to-clipboard';
+import Trans from '@/components/Trans';
 const { useBreakpoint } = Grid;
 const items: TabsProps['items'] = [
     {
@@ -31,7 +32,7 @@ const items: TabsProps['items'] = [
         label: 'My Activity',
         children: 'Content of Tab Pane 3',
     },
-];
+]
 
 export default () => {
     const screens = useBreakpoint();
@@ -91,7 +92,7 @@ export default () => {
     }
     const copyLink = () => {
         copy(window.location.href)
-        message.success('Link copied to clipboard')
+        message.success(<Trans>Link copied to clipboard</Trans>)
     }
     return <div className='mrc20Page'>
         <div
@@ -100,7 +101,7 @@ export default () => {
                 history.back();
             }}
         >
-            <LeftOutlined /> Back
+            <LeftOutlined /> <Trans>Back</Trans>
         </div>
         {
             mrc20Info && <div className='mrc20Info'>
@@ -126,15 +127,15 @@ export default () => {
                             </div>
 
                             <div className="detail">
-                                <span className='avatars'><span className='metaid'>Deployer</span><MetaIdAvatar size={20} avatar={mrc20Info.deployerUserInfo && mrc20Info.deployerUserInfo.avatar} /> {mrc20Info.deployerUserInfo && mrc20Info.deployerUserInfo.name || mrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
+                                <span className='avatars'><span className='metaid'><Trans>Deployer</Trans></span><MetaIdAvatar size={20} avatar={mrc20Info.deployerUserInfo && mrc20Info.deployerUserInfo.avatar} /> {mrc20Info.deployerUserInfo && mrc20Info.deployerUserInfo.name || mrc20Info.deployerAddress.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}</span>
                                 <span className='metaid'>MetaID : {mrc20Info.deployerMetaId.replace(/(\w{6})\w+(\w{5})/, "$1...")}</span>
                             </div>
                         </div>
 
 
                         <div className="mint colorPrimary">
-                            <span>Minted : <NumberFormat value={mrc20Info.totalMinted} /> (Mint Limit: <NumberFormat value={mrc20Info.mintCount} />) </span>
-                            <span>Supply : <NumberFormat value={mrc20Info.totalSupply} /> </span>
+                            <span><Trans>Minted</Trans> : <NumberFormat value={mrc20Info.totalMinted} /> (<Trans>Mint Limit</Trans>: <NumberFormat value={mrc20Info.mintCount} />) </span>
+                            <span><Trans>Supply</Trans> : <NumberFormat value={mrc20Info.totalSupply} /> </span>
                         </div>
                         <div className="slider">
                             <Progress percent={Number(mrc20Info.supply / mrc20Info.totalSupply) * 100} showInfo={false} />
@@ -147,10 +148,10 @@ export default () => {
 
                     <Divider type={screens.md ? 'vertical' : 'horizontal'} style={{ height: screens.md ? 75 : 1 }} />
                     <div className="desc">
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Total Volume" value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Market Cap" value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title="Floor Price" formatter={() => <NumberFormat value={mrc20Info.floorPrice} isBig decimal={8} tiny suffix=' BTC' precision={12} />} />
-                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + mrc20Info.tick) }}>Holders <RightOutlined style={{ fontSize: 10 }} /></Space>} value={mrc20Info.holders} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Trans>Total Volume</Trans>} value={formatSat(mrc20Info.totalVolume)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Trans>Market Cap</Trans>} value={formatSat(mrc20Info.marketCap)} prefix={<img style={{ width: 16, height: 16 }} src={btcIcon}></img>} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Trans>Floor Price</Trans>} formatter={() => <NumberFormat value={mrc20Info.floorPrice} isBig decimal={8} tiny suffix=' BTC' precision={12} />} />
+                        <Statistic valueStyle={{ display: 'flex', alignItems: 'center', fontSize: 16 }} title={<Space size={4} style={{ cursor: 'pointer' }} onClick={() => { history.push('/holders/' + mrc20Info.tick) }}><Trans>Holders</Trans> <RightOutlined style={{ fontSize: 10 }} /></Space>} value={mrc20Info.holders} />
                     </div>
                 </div>
                 <Space>
@@ -164,7 +165,7 @@ export default () => {
                             },
                         }}
                     >
-                        <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/mrc20/' + mrc20Info.tick) }}>List For Sale </Button>
+                        <Button loading={loading} disabled={!showListBtn} block onClick={() => { history.push('/list/mrc20/' + mrc20Info.tick) }}><Trans>List For Sale</Trans></Button>
                     </ConfigProvider>}
 
 
@@ -173,18 +174,18 @@ export default () => {
 
                     {
                         mrc20Info.mintable && <div className='mintBtn'>
-                            <Button type='primary' block onClick={() => { history.push('/inscribe/MRC-20/' + mrc20Info.tick) }}>Mint</Button>
+                            <Button type='primary' block onClick={() => { history.push('/inscribe/MRC-20/' + mrc20Info.tick) }}><Trans>Mint</Trans></Button>
                         </div>
                     }
 
 
                     <Popover content={<div className='sharePop' >
                         <div className="item" onClick={copyLink}>
-                            <LinkOutlined /> Copy link
+                            <LinkOutlined /> <Trans>Copy link</Trans>
                         </div>
                         <Divider className='shareDivider' />
                         <div className="item" onClick={shareX}>
-                            <XOutlined /> Share on X
+                            <XOutlined /> <Trans>Share on X</Trans>
                         </div>
                     </div>} title="">
                         <Button type='text' icon={<ShareAltOutlined />} ></Button>
@@ -214,23 +215,23 @@ export default () => {
             {mrc20Info && <Tabs size='small' style={{ marginTop: 22 }} defaultActiveKey="1" items={[
                 {
                     key: '1',
-                    label: 'Listed',
-                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} metaData={mrc20Info.metaData||''} />,
+                    label: <Trans>Listed</Trans>,
+                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} metaData={mrc20Info.metaData || ''} />,
                 },
                 {
                     key: '2',
-                    label: 'Activity',
+                    label: <Trans>Activity</Trans>,
                     children: <Activeity mrc20Id={mrc20Info.mrc20Id || ''} />,
                 },
                 {
                     key: '3',
-                    label: 'My Activity',
+                    label: <Trans>My Activity</Trans>,
                     children: <Activeity mrc20Id={mrc20Info.mrc20Id || ''} showMy />,
                 },
                 {
                     key: '4',
-                    label: 'My Listed',
-                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} showMy metaData={mrc20Info.metaData||''} />,
+                    label: <Trans>My Listed</Trans>,
+                    children: <Listed mrc20Id={mrc20Info.mrc20Id || ''} showMy metaData={mrc20Info.metaData || ''} />,
                 },
             ]} />}
         </ConfigProvider>

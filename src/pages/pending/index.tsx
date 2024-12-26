@@ -10,6 +10,7 @@ import { cancelOrder, getContent, getOrders } from "@/services/api";
 import JSONView from "@/components/JSONView";
 import Mrc20Order from "./components/Mrc20Order";
 import useIntervalAsync from "@/hooks/useIntervalAsync";
+import Trans from "@/components/Trans";
 const items = ["PIN", 'MRC-20'];
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
@@ -94,7 +95,7 @@ export default () => {
       if (ret.code !== 0) throw new Error(ret.message);
       setLoading(true);
       await updateOrders();
-      message.success("Successfully canceled listing");
+      message.success(<Trans>Successfully canceled listing</Trans>);
       setShow(false);
       setCurOrder(undefined);
     } catch (err: any) {

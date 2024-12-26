@@ -8,6 +8,7 @@ import { redeemIdCoinCommit, redeemIdCoinPre } from "@/services/api";
 import { buildRedeemPsbt } from "@/utils/idcoin";
 import { addUtxoSafe } from "@/utils/psbtBuild";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "../SuccessModal";
+import Trans from "../Trans";
 
 type Props = {
     show: boolean;
@@ -59,7 +60,7 @@ export default ({ show, onClose, goOrders, idCoin, amount, btcPrice, handelRedee
         setSubmiting(true)
         try {
             const { commitTxRaw, revealPrePsbtRaw } = await buildRedeemPsbt(redeemOrder, network, btcAddress, feeRate)
-            console.log(commitTxRaw, revealPrePsbtRaw, "ret in redeem")
+
             const commitRes = await redeemIdCoinCommit(network, {
                 orderId: redeemOrder.orderId,
                 commitTxRaw,
@@ -87,9 +88,9 @@ export default ({ show, onClose, goOrders, idCoin, amount, btcPrice, handelRedee
                     onClose()
 
                 },
-                title: "Redeem",
-                tip: "Successful",
-                okText: 'OK',
+                title: <Trans>Redeem</Trans>,
+                tip: <Trans>Successful</Trans>,
+                okText: <Trans>OK</Trans>,
                 txs: [{
                     label: 'Reveal TxId',
                     txid: commitRes.data.revealTxId
@@ -99,7 +100,7 @@ export default ({ show, onClose, goOrders, idCoin, amount, btcPrice, handelRedee
                 }],
                 children: (
                     <div className="inscribeSuccess">
-                       
+
                     </div>
                 ),
             });
@@ -124,15 +125,15 @@ export default ({ show, onClose, goOrders, idCoin, amount, btcPrice, handelRedee
         className="redeemModal"
     >
         <div className="modelTitle">
-            Confirm Redeem Liquidity
+            <Trans>Confirm Redeem Liquidity</Trans>
         </div>
-        <div className="tip">You are about to destroy your ID Coin to redeem liquidity. This operation is irreversible and your ID Coin will be burned.</div>
+        <div className="tip"><Trans>You are about to destroy your ID Coin to redeem liquidity. This operation is irreversible and your ID Coin will be burned.</Trans></div>
         <Spin spinning={loading}>
 
 
             <div className="cardComfire">
                 <div className="title">
-                    Do you confirm?
+                    <Trans>Do you confirm?</Trans>
                 </div>
                 <Descriptions column={1}
                     labelStyle={{ color: '#FFFFFF', display: 'flex', alignItems: 'center' }}
@@ -141,20 +142,20 @@ export default ({ show, onClose, goOrders, idCoin, amount, btcPrice, handelRedee
 
                         {
                             key: 'Ticker',
-                            label: 'Burn ID Coin',
+                            label: <Trans>Burn ID Coin</Trans>,
                             children: <span style={{ color: '#F68819', fontWeight: 'bold' }}>{idCoin.tick}</span>
                         },
 
 
                         {
                             key: 'btcPrice',
-                            label: 'Amount',
+                            label: <Trans>Amount</Trans>,
                             children: <NumberFormat value={amount} />
                         },
 
                         {
                             key: 'Pool',
-                            label: 'Redeem BTC',
+                            label: <Trans>Redeem BTC</Trans>,
                             children: <NumberFormat value={redeemOrder && redeemOrder.priceAmount || '--'} decimal={8} isBig suffix=' BTC' />
                         },
 
@@ -162,7 +163,8 @@ export default ({ show, onClose, goOrders, idCoin, amount, btcPrice, handelRedee
             </div>
         </Spin>
         <div className="tip2">
-            Alternatively, you can go to Orders.exchange to trade at more reasonable prices.
+            <Trans>Alternatively, you can go to Orders.exchange to trade at more reasonable prices.</Trans>
+
         </div>
 
         <ConfigProvider
@@ -176,11 +178,11 @@ export default ({ show, onClose, goOrders, idCoin, amount, btcPrice, handelRedee
             }}
         >
             <Button onClick={goOrders} size='large' block style={{ marginTop: 35 }}>
-                Go To Orders.Exchange
+                <Trans>Go To Orders.Exchange</Trans>
             </Button>
         </ConfigProvider>
         <Button type="primary" onClick={redeem} disabled={!redeemOrder} size='large' style={{ marginTop: 20 }} block>
-            Confiirm Redeem
+            <Trans>Confiirm Redeem</Trans>
         </Button>
     </Popup>
         <SuccessModal {...successProp} />
