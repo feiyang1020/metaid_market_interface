@@ -12,7 +12,7 @@ import MetaName from "@/components/MetaName";
 import Trans from "@/components/Trans";
 
 const { useBreakpoint } = Grid;
-const items = ['MRC-20', "PIN", 'MetaName'];
+const items = ['MRC-20', "PIN"];
 
 
 export default () => {
