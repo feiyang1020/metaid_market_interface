@@ -173,7 +173,7 @@ export default ({ order, show, onClose }: Props) => {
         onClose: () => setSuccessProp(DefaultSuccessProps),
         onDown: () => setSuccessProp(DefaultSuccessProps),
         title: <Trans>Buy</Trans>,
-        tip:<Trans>Payment Successful</Trans>,
+        tip: <Trans>Payment Successful</Trans>,
         children: (
           <div className="buyMRCSuccess">
             <div className="orderInfo">
@@ -291,7 +291,7 @@ export default ({ order, show, onClose }: Props) => {
                 <div className="label"><Trans>Available Balance</Trans></div>
 
                 <div className="value">
-                  {userBalInfo && formatSat(userBalInfo.total)} BTC
+                  {userBal} BTC
                 </div>
               </div>
             </Spin>

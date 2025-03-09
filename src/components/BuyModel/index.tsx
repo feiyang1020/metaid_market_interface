@@ -353,7 +353,7 @@ export default ({ order, show, onClose }: Props) => {
                 <div className="label"><Trans>Available Balance</Trans></div>
 
                 <div className="value">
-                  {userBalInfo && formatSat(userBalInfo.total)} BTC
+                  {userBal} BTC
                 </div>
               </div>
             </Spin>

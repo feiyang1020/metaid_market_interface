@@ -105,7 +105,15 @@ export default () => {
     setAddressType(
       determineAddressInfo(_btcConnector.wallet.address).toUpperCase()
     );
-    const bal = await _btcConnector.wallet.getBalance();
+    // const bal = await _btcConnector.wallet.getBalance();
+    const utxos = await window.metaidwallet.btc.getUtxos();
+    const bal = (utxos ?? [])?.reduce(
+      (acc, cur) => {
+        acc.total += cur.satoshis;
+        return acc;
+      },
+      { total: 0 }
+    );
     setUserBal(formatSat(bal.total));
     setAvatar(
       _btcConnector.user.avatar
@@ -238,7 +246,15 @@ export default () => {
           determineAddressInfo(_btcConnector.wallet.address).toUpperCase()
         );
         try {
-          const bal = await _btcConnector.wallet.getBalance();
+          // const bal = await _btcConnector.wallet.getBalance();
+          const utxos = await window.metaidwallet.btc.getUtxos();
+          const bal = (utxos ?? [])?.reduce(
+            (acc, cur) => {
+              acc.total += cur.satoshis;
+              return acc;
+            },
+            { total: 0 }
+          );
           setUserBal(formatSat(bal.total));
         } catch (err) {
           console.log(err, "getBalance");
