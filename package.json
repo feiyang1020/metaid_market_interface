@@ -31,5 +31,10 @@
     "@types/react-dom": "^18.0.11",
     "@umijs/plugins": "^4.2.5",
     "typescript": "^5.0.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "elliptic": "^6.6.1"
+    }
   }
 }
