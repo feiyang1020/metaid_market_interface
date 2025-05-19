@@ -66,20 +66,36 @@ export default () => {
             items={items}
             tabBarExtraContent={<div className="search">
 
-                <Input
-                    variant="filled"
+                <Input.Search
+                    // variant="filled"
                     style={{ borderRadius: 20 }}
                     placeholder={formatMessage("Search...")}
-                    value={searchWord}
-                    onChange={(e) => {
+                    // value={searchWord}
+                    // onChange={(e) => {
+                    //     setIdCoinPage(0)
+                    //     setAllPage(0)
+                    //     setMintingPage(0)
+                    //     setSearchWord(e.target.value)
+                    // }}
+                    allowClear
+                    // enterButton
+                     variant="borderless"
+
+                    onSearch={(value) => {
+                        setIdCoinPage(0)
+                        setAllPage(0)
+                        setMintingPage(0)
+                        setSearchWord(value)
+                    }}
+                    onPressEnter={(e) => {
                         setIdCoinPage(0)
                         setAllPage(0)
                         setMintingPage(0)
                         setSearchWord(e.target.value)
                     }}
-                    suffix={
-                        <SearchOutlined style={{ color: '#D8D8D8' }} />
-                    }
+                    // suffix={
+                    //     <SearchOutlined style={{ color: '#D8D8D8' }} />
+                    // }
                 />
             </div>}
         />
