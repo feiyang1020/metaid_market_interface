@@ -238,7 +238,7 @@ export default function Layout() {
                     </Dropdown>
                   </Space>
                 ) : (
-                  <Button type="primary" onClick={connect}>
+                  <Button type="primary" onClick={connect} loading={initializing}>
                     <Trans>Connect</Trans>
                   </Button>
                 )}
