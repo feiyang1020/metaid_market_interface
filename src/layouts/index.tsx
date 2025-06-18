@@ -12,6 +12,7 @@ import {
   Dropdown,
   DropdownProps,
   Space,
+  Spin,
   message,
   theme,
 } from "antd";
@@ -79,7 +80,8 @@ export default function Layout() {
     feeRate,
     feeRateType,
     setFeeRateModelVisible,
-    network
+    network,
+    initializing
   } = useModel("wallet");
   const { pathname } = useLocation();
   const [editViseble, setEditVisible] = useState<boolean>(false)
@@ -123,124 +125,126 @@ export default function Layout() {
               </div>
 
             </div>
-            <div className="navWrap">
-              {connected ? (
-                <Space align='center'>
-                  <Button
-                    type="link"
-                    onClick={() => {
-                      history.push("/sale");
-                    }}
-                    className="listforsale"
-                  >
-                    <Trans>List For Sale</Trans>
-                  </Button>
-                  <div className="feerate" style={{ display: "flex", alignItems: 'center', gap: 4, fontSize: 14, cursor: 'pointer' }} onClick={() => {
-                    setFeeRateModelVisible(true)
-                  }}>
-                    <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4F66B' }}></div>
-                    <div>
-                      Gas <span className="colorPrimary"><NumberFormat prefix={<Trans>{feeRateType}</Trans>} value={feeRate} /> </span>
-                    </div>
-                  </div>
-                  <Dropdown
-                    arrow
-                    dropdownRender={() => (
-                      <div className="walletInfo" onClick={(e) => { e.stopPropagation(); handleMenuClick(e) }}>
-                        <div className="userInfo">
-                          <Avatar
-                            src={
-                              <img src={avatar || defaultAvatar} alt="avatar" />
-                            }
-                            style={{ minWidth: 46, minHeight: 46 }}
-                          ></Avatar>
-                          <div className="nameWrap">
-                            <div className="name">
-                              {userName ||
-                                (btcAddress &&
-                                  btcAddress.replace(
-                                    /(\w{4})\w+(\w{3})/,
-                                    "$1...$2"
-                                  ))}
-
-                            </div>
-                            {metaid && (
-                              <div className="metaId">
-                                MetaID:
-                                {metaid.replace(/(\w{6})\w+(\w{3})/, "$1...")}
-                              </div>
-                            )}
-                          </div>
-                          <Button size="small" icon={<EditOutlined />} type="link" onClick={() => setEditVisible(true)}>
-
-                          </Button>
-                        </div>
-                        <div className="links">
-                          <div
-                            className="item forsale"
-                            onClick={() => {
-                              history.push("/sale");
-                            }}
-                          >
-                            <div className="path"><Trans>List For Sale</Trans></div>
-                            <RightOutlined />
-                          </div>
-                          <div
-                            className="item"
-                            onClick={() => {
-                              history.push("/history");
-                            }}
-                          >
-                            <div className="path"><Trans>Transaction History</Trans></div>
-                            <RightOutlined />
-                          </div>
-                          <div
-                            className="item"
-                            onClick={() => {
-                              history.push("/pending");
-                            }}
-                          >
-                            <div className="path"><Trans>My Listing</Trans> </div>
-                            <RightOutlined />
-                          </div>
-                          <div
-                            className="item"
-                            onClick={() => {
-                              history.push("/mrc20History");
-                            }}
-                          >
-                            <div className="path"><Trans>My MRC-20</Trans></div>
-                            <RightOutlined />
-                          </div>
-                        </div>
-                        <div className="disConnect" onClick={disConnect}>
-                          <Trans>Disconnect</Trans> 
-                        </div>
+            <Spin spinning={initializing}>
+              <div className="navWrap">
+                {connected ? (
+                  <Space align='center'>
+                    <Button
+                      type="link"
+                      onClick={() => {
+                        history.push("/sale");
+                      }}
+                      className="listforsale"
+                    >
+                      <Trans>List For Sale</Trans>
+                    </Button>
+                    <div className="feerate" style={{ display: "flex", alignItems: 'center', gap: 4, fontSize: 14, cursor: 'pointer' }} onClick={() => {
+                      setFeeRateModelVisible(true)
+                    }}>
+                      <div className="dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4F66B' }}></div>
+                      <div>
+                        Gas <span className="colorPrimary"><NumberFormat prefix={<Trans>{feeRateType}</Trans>} value={feeRate} /> </span>
                       </div>
-                    )}
-                    placement="bottomRight"
-                    open={open}
-                    onOpenChange={handleOpenChange}
-                  >
-                    <div className="userInfo" onClick={handleMenuClick}>
-
-                      <Divider type='vertical' style={{ margin: 0 }} />
-                      <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
-                      <Avatar
-                        style={{ minWidth: 30, minHeight: 30 }}
-                        src={<img src={avatar || defaultAvatar} alt="avatar" />}
-                      ></Avatar>
-                      <DownOutlined />
                     </div>
-                  </Dropdown>
-                </Space>
-              ) : (
-                <Button type="primary" onClick={connect}>
-                  <Trans>Connect</Trans>
-                </Button>
-              )}
-              <SelectLang />
-            </div>
+                    <Dropdown
+                      arrow
+                      dropdownRender={() => (
+                        <div className="walletInfo" onClick={(e) => { e.stopPropagation(); handleMenuClick(e) }}>
+                          <div className="userInfo">
+                            <Avatar
+                              src={
+                                <img src={avatar || defaultAvatar} alt="avatar" />
+                              }
+                              style={{ minWidth: 46, minHeight: 46 }}
+                            ></Avatar>
+                            <div className="nameWrap">
+                              <div className="name">
+                                {userName ||
+                                  (btcAddress &&
+                                    btcAddress.replace(
+                                      /(\w{4})\w+(\w{3})/,
+                                      "$1...$2"
+                                    ))}
+
+                              </div>
+                              {metaid && (
+                                <div className="metaId">
+                                  MetaID:
+                                  {metaid.replace(/(\w{6})\w+(\w{3})/, "$1...")}
+                                </div>
+                              )}
+                            </div>
+                            <Button size="small" icon={<EditOutlined />} type="link" onClick={() => setEditVisible(true)}>
+
+                            </Button>
+                          </div>
+                          <div className="links">
+                            <div
+                              className="item forsale"
+                              onClick={() => {
+                                history.push("/sale");
+                              }}
+                            >
+                              <div className="path"><Trans>List For Sale</Trans></div>
+                              <RightOutlined />
+                            </div>
+                            <div
+                              className="item"
+                              onClick={() => {
+                                history.push("/history");
+                              }}
+                            >
+                              <div className="path"><Trans>Transaction History</Trans></div>
+                              <RightOutlined />
+                            </div>
+                            <div
+                              className="item"
+                              onClick={() => {
+                                history.push("/pending");
+                              }}
+                            >
+                              <div className="path"><Trans>My Listing</Trans> </div>
+                              <RightOutlined />
+                            </div>
+                            <div
+                              className="item"
+                              onClick={() => {
+                                history.push("/mrc20History");
+                              }}
+                            >
+                              <div className="path"><Trans>My MRC-20</Trans></div>
+                              <RightOutlined />
+                            </div>
+                          </div>
+                          <div className="disConnect" onClick={disConnect}>
+                            <Trans>Disconnect</Trans>
+                          </div>
+                        </div>
+                      )}
+                      placement="bottomRight"
+                      open={open}
+                      onOpenChange={handleOpenChange}
+                    >
+                      <div className="userInfo" onClick={handleMenuClick}>
+
+                        <Divider type='vertical' style={{ margin: 0 }} />
+                        <div className="bal"> <NumberFormat value={userBal} precision={4} suffix=' BTC' /></div>
+                        <Avatar
+                          style={{ minWidth: 30, minHeight: 30 }}
+                          src={<img src={avatar || defaultAvatar} alt="avatar" />}
+                        ></Avatar>
+                        <DownOutlined />
+                      </div>
+                    </Dropdown>
+                  </Space>
+                ) : (
+                  <Button type="primary" onClick={connect}>
+                    <Trans>Connect</Trans>
+                  </Button>
+                )}
+                <SelectLang />
+              </div>
+            </Spin>
           </div>
 
           <div className="content">
@@ -251,7 +255,7 @@ export default function Layout() {
             <span>MetaID.market@2024 All Rights Reserved</span>
             <span>
               <Link style={{ textDecoration: 'underline', color: '#fff' }} to="/about/fees" >
-              <Trans>About Fees</Trans> </Link>
+                <Trans>About Fees</Trans> </Link>
             </span>
           </div>
           <SetProfile show={false} editVisible={editViseble} onClose={() => { setEditVisible(false) }} />

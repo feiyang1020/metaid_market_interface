@@ -275,7 +275,7 @@ export default () => {
     //
     setTimeout(() => {
       init();
-    }, 500);
+    }, 1000);
   }, [init]);
 
   useEffect(() => {
