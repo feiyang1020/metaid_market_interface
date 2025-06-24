@@ -114,7 +114,7 @@ declare namespace API {
       contentTypeDetect: string;
       popLv: number;
       pinPath: string;
-      genesisHeight:number
+      genesisHeight: number;
     };
     textContent: string;
   };
@@ -547,5 +547,17 @@ declare namespace API {
     opAddress: string;
     opMetaId: string;
     mongoId: string;
+  };
+  type HotItem = {
+    tickId: string;
+    tick: string;
+    tokenName: string;
+    marketCap: number;
+    lastPrice: number;
+    change24H: string;
+    tradeCount: number;
+    holders: number;
+    metaData?: string;
+    tag: "id-coins" | "";
   };
 }

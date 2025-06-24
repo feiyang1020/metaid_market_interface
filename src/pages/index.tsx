@@ -10,6 +10,7 @@ import Mrc20List from "@/components/Mrc20List";
 import FilterForm from "@/components/FilterForm";
 import MetaName from "@/components/MetaName";
 import Trans from "@/components/Trans";
+import HotAndNew from "@/components/HotAndNew";
 
 const { useBreakpoint } = Grid;
 const items = ['MRC-20', "PIN"];
@@ -61,6 +62,7 @@ export default () => {
 
   return (
     <div className="indexPage ">
+      <HotAndNew />
       <div className="tabs">
         <Space>
           {items.map((item) => (
@@ -75,7 +77,7 @@ export default () => {
               size="large"
             >
               <Trans>{item}</Trans>
-              
+
             </Button>
           ))}
         </Space>
@@ -114,7 +116,7 @@ export default () => {
               ></SortArrow>
             </div>
             <div className="sortItem" onClick={() => handleSort("assetlevel")}>
-             <Trans>Level</Trans> {" "}
+              <Trans>Level</Trans> {" "}
               <SortArrow
                 status={
                   sortKey === "assetlevel"

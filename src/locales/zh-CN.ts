@@ -332,5 +332,8 @@ export default {
   'Transfer MRC-20': '转账MRC-20',
   'Set Profile': '设置资料',
   'Progress': '进度',
+  'Marketcap': '市值',
+  'HOT': '热门',
+  'NEW': '新品',
   
 };

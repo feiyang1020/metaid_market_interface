@@ -8,11 +8,11 @@ type Props = {
   style?: React.CSSProperties;
   size?: number;
 };
-export default ({ avatar, style, size }: Props) => {
+export default ({ avatar, style, size=40 }: Props) => {
   const { network } = useModel("wallet");
   return (
     <Avatar
-      style={{ ...style }}
+      style={{ ...style,minWidth: size, minHeight: size, width: size, height: size }}
       size={size}
       src={
         <img

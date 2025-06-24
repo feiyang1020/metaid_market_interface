@@ -997,3 +997,41 @@ export async function getMetaNameInfo(
     ...(options || {}),
   });
 }
+
+export async function getMrc20HotList(
+  network: API.Network,
+  params: {
+    timeRange?: number;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.HotItem>>(
+    `${getHost(network)}/api/v1/market/mrc20/hot-list`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
+
+export async function getMrc20NewList(
+  network: API.Network,
+  params: {
+    timeRange?: number;
+    cursor: number;
+    size: number;
+  },
+  options?: { [key: string]: any }
+) {
+  return request<API.ListRet<API.HotItem>>(
+    `${getHost(network)}/api/v1/market/mrc20/newest-list`,
+    {
+      method: "GET",
+      params,
+      ...(options || {}),
+    }
+  );
+}
