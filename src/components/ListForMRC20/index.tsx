@@ -16,6 +16,7 @@ import Item from "@/components/Mrc20List/Item";
 import './index.less'
 import Trans from "../Trans"
 import USDPrice from "../USDPrice"
+import btc from "@/assets/logo_btc@2x.png";
 
 const tags: Record<string, string> = {
     "MRC-20": "",
@@ -133,10 +134,10 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
 
     const totalStas = useMemo(() => {
         const total = checkList.reduce((a, b) => {
-            return a + sellPrices[b] || 0;
+            return a + (sellPrices[b] || 0) * (sellAmounts[b] || 0);
         }, 0);
         return total;
-    }, [checkList, sellPrices]);
+    }, [checkList, sellPrices, sellAmounts]);
 
     const listItem = async (mrc20Id: string, price: number, amount: number) => {
         if (!btcAddress) return
@@ -267,7 +268,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
             const order = list.find((item) => item.mrc20Id === checkList[i]);
             if (!order) continue
             try {
-                await listItem(order.mrc20Id, sellPrices[checkList[i]], sellAmounts[checkList[i]]);
+                await listItem(order.mrc20Id, sellPrices[checkList[i]] * sellAmounts[checkList[i]], sellAmounts[checkList[i]]);
             } catch (err: any) {
                 console.log(err);
                 message.error(` ${order!.tick}: ${err.message}`);
@@ -295,7 +296,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
         <List
             className="listWrap listMrc20"
             loading={loading}
-            grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }}
+            grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 4 }}
             dataSource={list}
             rowKey={"mrc20Id"}
             renderItem={(item) => (
@@ -381,7 +382,7 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
 
                                 <div className="inputWrap">
                                     <div className="label">
-                                        <Trans>Price</Trans>
+                                        <Trans>Per Price</Trans>
                                     </div>
                                     <InputNumber
                                         onChange={(value) => onInputChange(item.mrc20Id, value)}
@@ -389,14 +390,30 @@ const ListForMRC20 = ({ tag = 'MRC-20', tick = '' }: { tag?: string, tick?: stri
                                         className="input"
                                         value={sellPrices[item.mrc20Id]}
                                         suffix={<>BTC </>}
-                                        placeholder={formatMessage('Price')}
+                                        placeholder={formatMessage('Per Price')}
                                         disabled={Number(item.avlBalance) === 0}
                                         // min={(Number(item.amount) / 1e8) < 0.00002 ? 0.00002 : Number(new Decimal(item.amount).div(1e8).toFixed(8))}
-                                        min={0.00002}
+                                        // min={0.00002}
                                         onFocus={() => {
                                             !checkList.includes(item.mrc20Id) && handleCheck(item.mrc20Id);
                                         }}
                                     />
+
+                                </div>
+                            </div>
+                            <div className="inputGroup">
+                                <div className="inputWrap">
+                                    <div className="label">
+                                        <Trans>Total Price</Trans>
+                                    </div>
+
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'space-between', width: '100%', border: '1px solid #3A3A3A', padding: '8px', borderRadius: 8, boxSizing: 'border-box' }}>
+                                        <img src={btc} alt="BTC" className="btcIcon" style={{ width: 32, height: 32 }} />
+                                        <div>
+                                            <NumberFormat value={(sellPrices[item.mrc20Id] || 0) * (sellAmounts[item.mrc20Id] || 0)} suffix=" BTC" /> <USDPrice value={(sellPrices[item.mrc20Id] || 0) * (sellAmounts[item.mrc20Id] || 0)} />
+                                        </div>
+                                    </div>
+
 
                                 </div>
                             </div>

@@ -335,5 +335,6 @@ export default {
   'Marketcap': '市值',
   'HOT': '热门',
   'NEW': '新品',
+  'Per Price': '每个价格',
   
 };
