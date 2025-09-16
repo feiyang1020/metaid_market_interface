@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Col, Modal, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message, Space } from "antd";
+import { Button, Card, Checkbox, Col, Modal, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message, Space, Image } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useMatch, history, FormattedMessage } from "umi";
@@ -1073,7 +1073,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                                 <Button type="link" icon={<CloudUploadOutlined />} onClick={() => setUploadVisible(true)} />
                                                             </Space>
                                                         }
-                                                        suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' ? '-test' : ''}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
+                                                        suffix={_deployIcon ? <Image src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' ? '-test' : ''}.metaid.io/content/`)} width={24} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
                                                         placeholder="metafile://Your-Icon-Pinid"
                                                     />
                                                 </Form.Item>
