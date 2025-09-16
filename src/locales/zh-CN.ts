@@ -336,5 +336,7 @@ export default {
   'HOT': '热门',
   'NEW': '新品',
   'Per Price': '每个价格',
-  
+  'Upload Image': '上传图片',
+  'Select Network': '选择网络',
+
 };
