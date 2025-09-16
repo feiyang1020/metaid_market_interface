@@ -29,6 +29,9 @@ importers:
       antd:
         specifier: ^5.21.0
         version: 5.24.7(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      axios:
+        specifier: ^0.21.1
+        version: 0.21.4
       bignumber.js:
         specifier: ^9.1.2
         version: 9.2.1
@@ -50,6 +53,12 @@ importers:
       decimal.js:
         specifier: ^10.4.3
         version: 10.5.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      meta-contract:
+        specifier: 0.4.10
+        version: 0.4.10(encoding@0.1.13)
       react18-json-view:
         specifier: ^0.2.8
         version: 0.2.9(react@18.3.1)
@@ -1980,6 +1989,9 @@ packages:
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==, tarball: https://registry.npmjs.org/available-typed-arrays/-/available-typed-arrays-1.0.7.tgz}
     engines: {node: '>= 0.4'}
+
+  axios@0.21.4:
+    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==, tarball: https://registry.npmjs.org/axios/-/axios-0.21.4.tgz}
 
   axios@0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==, tarball: https://registry.npmjs.org/axios/-/axios-0.24.0.tgz}
@@ -3974,6 +3986,10 @@ packages:
 
   meta-contract@0.3.42:
     resolution: {integrity: sha512-CJ77fKTfNENAu7J0RiI/crSNmzpXH0if2wqx3PvPOg0ixPVTj5oCBBxFd14fNvNL7q9+mCtrxAbD5tzQ2wyNcg==, tarball: https://registry.npmjs.org/meta-contract/-/meta-contract-0.3.42.tgz}
+    engines: {node: '>=12.0.0'}
+
+  meta-contract@0.4.10:
+    resolution: {integrity: sha512-f/B9l/lrS83Il5GDj5gysJMfGA/6Elt4nN0IGhbz1uDot2ziUgeUmCwL7rVQkVutAtb2BGndIbkSI1mv53D7+Q==, tarball: https://registry.npmjs.org/meta-contract/-/meta-contract-0.4.10.tgz}
     engines: {node: '>=12.0.0'}
 
   methods@1.1.2:
@@ -8543,6 +8559,12 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
+  axios@0.21.4:
+    dependencies:
+      follow-redirects: 1.15.9
+    transitivePeerDependencies:
+      - debug
+
   axios@0.24.0:
     dependencies:
       follow-redirects: 1.15.9
@@ -10957,6 +10979,13 @@ snapshots:
   merge2@1.4.1: {}
 
   meta-contract@0.3.42(encoding@0.1.13):
+    dependencies:
+      mvc-scrypt: 0.1.2
+      node-fetch: 2.7.0(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
+  meta-contract@0.4.10(encoding@0.1.13):
     dependencies:
       mvc-scrypt: 0.1.2
       node-fetch: 2.7.0(encoding@0.1.13)

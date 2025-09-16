@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Col, Modal, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message } from "antd";
+import { Button, Card, Checkbox, Col, Modal, Collapse, ConfigProvider, Descriptions, Form, Grid, Input, InputNumber, Popover, Radio, Row, Select, Spin, Tooltip, Typography, message, Space } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 const { useBreakpoint } = Grid;
 import { useModel, useMatch, history, FormattedMessage } from "umi";
@@ -7,7 +7,7 @@ import { broadcastBTCTx, broadcastTx, checkPinUtxoInfo, deployCommit, deployMRC2
 import { SIGHASH_ALL, getPkScriprt } from "@/utils/orders";
 import { buildDeployMRC20Psbt, commitMintMRC20PSBT, transferMRC20PSBT } from "@/utils/mrc20";
 
-import { ArrowRightOutlined, DownOutlined, FileTextOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, CloudUploadOutlined, DownOutlined, FileTextOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import SuccessModal, { DefaultSuccessProps, SuccessProps } from "@/components/SuccessModal";
 import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatMessage, formatSat } from "@/utils/utlis";
@@ -26,6 +26,7 @@ import Decimal from "decimal.js";
 import ComfirmTransfer, { TransferComfrimParams } from "./ComfirmTransfer";
 import ComfirmMintMrc20, { MintMrc20ComfrimParams } from "./ComfirmMintMrc20";
 import Trans from "@/components/Trans";
+import UploadImg from "./UploadImg";
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -62,6 +63,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
     const _deployAmountPerMint = Form.useWatch('deployAmountPerMint', form);
     const _deployIcon = Form.useWatch('deployIcon', form);
     const _deployPremineCount = Form.useWatch('deployPremineCount', form);
+    const [uploadVisible, setUploadVisible] = useState(false);
     // transferTickerId
     const _transferTickerId = Form.useWatch('transferTickerId', form);
     const totalSupply = useMemo(() => {
@@ -1064,9 +1066,12 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                                                     <Input
                                                         size="large"
                                                         addonAfter={
-                                                            <Tooltip title={<Trans>Optional. Format: 'metafile://pinid'. You should inscribe your icon file first, then paste the metafile protocol URI here.</Trans>}>
-                                                                <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                                                            </Tooltip>
+                                                            <Space>
+                                                                <Tooltip title={<Trans>Optional. Format: 'metafile://pinid'. You should inscribe your icon file first, then paste the metafile protocol URI here.</Trans>}>
+                                                                    <QuestionCircleOutlined style={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                                </Tooltip>
+                                                                <Button type="link" icon={<CloudUploadOutlined />} onClick={() => setUploadVisible(true)} />
+                                                            </Space>
                                                         }
                                                         suffix={_deployIcon ? <img src={_deployIcon.replace('metafile://', `https://man${network === 'testnet' ? '-test' : ''}.metaid.io/content/`)} style={{ width: 24, height: 24, borderRadius: '50%' }} /> : <></>}
                                                         placeholder="metafile://Your-Icon-Pinid"
@@ -1429,7 +1434,7 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
                         className="submit"
                         disabled={mintMrc20Info && mintMrc20Info.mintable === false}
                     >
-                        <Trans>{submitBtnText||''}</Trans>
+                        <Trans>{submitBtnText || ''}</Trans>
                     </Button>
                 )}
             </Col>
@@ -1440,6 +1445,10 @@ export default ({ setTab }: { setTab: (tab: string) => void }) => {
 
         <ComfirmTransfer show={transferVisible} onClose={() => { setTransferVisible(false); setTransfeComfirmParams(undefined); setComfirming(false) }} params={transfeComfirmParams} submiting={submiting} handleSubmit={transferMrc20} />
         <ComfirmMintMrc20 show={mintVisible} onClose={() => { setMintVisible(false); setMintComfirmParams(undefined); setComfirming(false) }} params={mintComfirmParams} submiting={submiting} handleSubmit={mintMrc20} />
+        <UploadImg show={uploadVisible} onClose={() => { setUploadVisible(false) }} onSuccess={(pid) => {
+            form.setFieldValue('deployIcon', `${pid}`);
+            setUploadVisible(false);
+        }} />
     </div>
 
 } 

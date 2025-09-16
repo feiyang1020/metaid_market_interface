@@ -1,12 +1,12 @@
 import { useModel } from "umi";
-import { cancelMRC20Order, getMrc20OrderPsbt, getMrc20Orders } from "@/services/api";
+import { cancelMRC20Order, getMrc20AddressUtxo, getMrc20OrderPsbt, getMrc20Orders, transferMrc20Commit, transfertMrc20Pre } from "@/services/api";
 import { useCallback, useEffect, useState } from "react";
 import { Avatar, Button, Card, ConfigProvider, Divider, List, Tooltip, message } from "antd";
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import btc from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
 import "./index.less";
-import { buildBuyMrc20TakePsbt } from "@/utils/mrc20";
+import { buildBuyMrc20TakePsbt, transferMRC20PSBT } from "@/utils/mrc20";
 import BuyMrc20Modal from "@/components/BuyMrc20Modal";
 import NumberFormat from "@/components/NumberFormat";
 import MRC20Icon from "@/components/MRC20Icon";
@@ -14,13 +14,14 @@ import CancelListing from "@/components/CancelListing";
 import Sorter from "@/components/Sorter";
 import Trans from "@/components/Trans";
 import USDPrice from "@/components/USDPrice";
+import { getPkScriprt } from "@/utils/orders";
 type Props = {
     mrc20Id: string,
     metaData: string,
     showMy?: boolean
 }
 export default ({ mrc20Id, metaData, showMy = false }: Props) => {
-    const { network, connected, connect, btcAddress, authParams } = useModel('wallet')
+    const { network, connected, connect, btcAddress, authParams, feeRate } = useModel('wallet')
     const [list, setList] = useState<API.Mrc20Order[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [curOrder, setCurOrder] = useState<API.Mrc20Order>();
@@ -48,7 +49,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
             setTotal(0)
         }
         setLoading(false);
-    }, [mrc20Id, network, page, size, btcAddress, showMy,orderBy,sortType])
+    }, [mrc20Id, network, page, size, btcAddress, showMy, orderBy, sortType])
 
     const handleCancel = async () => {
         if (!curOrder || !btcAddress) return;
@@ -64,6 +65,47 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
                 }
             );
             if (ret.code !== 0) throw new Error(ret.message);
+            // transferMRC20
+            const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(curOrder.tickId), cursor: 0, size: 100 }, {
+                headers: {
+                    ...authParams,
+                },
+            });
+            if (utxoList.list.length === 0) throw new Error('No UTXO');
+            const selectedUtxos = [];
+            for (const utxo of utxoList.list) {
+                if (utxo.orderId !== curOrder.orderId) continue;
+                for (const tick of utxo.mrc20s) {
+                    selectedUtxos.push({
+                        utxoIndex: utxo.outputIndex,
+                        utxoTxId: utxo.txId,
+                        utxoOutValue: utxo.satoshi,
+                        tickerId: curOrder.tickId,
+                        amount: tick.amount,
+                        address: utxo.address,
+                        pkScript: utxo.scriptPk
+                    })
+                }
+            }
+            const params: API.TransferMRC20PreReq = {
+                networkFeeRate: feeRate,
+                tickerId: curOrder.tickId,
+                changeAddress: btcAddress,
+                changeOutValue: 546,
+                transfers: selectedUtxos,
+                mrc20Outs: [{ amount: String(curOrder.amountStr), address: btcAddress, outValue: 546, pkScript: getPkScriprt(btcAddress, network).toString('hex') }]
+            }
+
+            const { code, message: _msg, data } = await transfertMrc20Pre(network, params, {
+                headers: {
+                    ...authParams,
+                },
+            })
+            if (code !== 0) throw new Error(_msg);
+
+            const { rawTx, revealPrePsbtRaw } = await transferMRC20PSBT(data, feeRate, btcAddress, network);
+            const res = await transferMrc20Commit(network, { orderId: data.orderId, commitTxRaw: rawTx, commitTxOutIndex: 0, revealPrePsbtRaw }, { headers: { ...authParams } });
+
             setLoading(true);
             await fetchOrders();
             message.success(<Trans>Successfully canceled listing</Trans>);
@@ -144,7 +186,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
                                 <div className="price ">
                                     <img src={btc} className="btcLogo" alt="" />{" "}
                                     <span>{formatSat(item.priceAmount)} BTC <USDPrice value={item.priceAmount} decimals={8} /></span>
-                                    
+
                                 </div>
 
                                 <div className="btn animation-slide-bottom">
@@ -164,7 +206,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
 
                                             }}
                                         >
-                                             <Trans>{btcAddress === item.sellerAddress ? 'Cancel Listing' : 'Buy'}</Trans>
+                                            <Trans>{btcAddress === item.sellerAddress ? 'Cancel Listing' : 'Buy'}</Trans>
                                         </Button>
                                     ) : (
                                         <Button
@@ -183,7 +225,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
                 )}
                 rowKey={"orderId"}
                 pagination={{
-                    onChange: (page,pageSize) => {
+                    onChange: (page, pageSize) => {
                         setLoading(true);
                         setPage(page - 1);
                         setSize(pageSize || 12);
