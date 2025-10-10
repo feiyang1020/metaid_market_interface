@@ -35,7 +35,7 @@ export default () => {
             {
                 key: '3',
                 label: <Trans>Mint ID-Coins</Trans>,
-                children: <div><NumberFormat value={1999} isBig decimal={8} suffix=' BTC' /></div>
+                children: <div><NumberFormat value={0} isBig decimal={8} suffix=' BTC' /></div>
             },
             // {
             //     key: '3',
@@ -45,7 +45,7 @@ export default () => {
             {
                 key: '4',
                 label: <Trans>Follow And Mint ID-Coins</Trans>,
-                children: <div><NumberFormat value={1999} isBig decimal={8} suffix=' BTC' /></div>
+                children: <div><NumberFormat value={0} isBig decimal={8} suffix=' BTC' /></div>
             },
             {
                 key: '5',
@@ -55,7 +55,7 @@ export default () => {
             {
                 key: '6',
                 label: <Trans>Mint MRC-20</Trans>,
-                children: <div><NumberFormat value={1999} isBig decimal={8} suffix=' BTC' /></div>
+                children: <div><NumberFormat value={0} isBig decimal={8} suffix=' BTC' /></div>
             },
             {
                 key: '7',
@@ -65,7 +65,7 @@ export default () => {
             {
                 key: '8',
                 label: <Trans>Inscribe File/Pin/Buzz</Trans>,
-                children: <div><NumberFormat value={1999} isBig decimal={8} suffix=' BTC' /></div>
+                children: <div><NumberFormat value={0} isBig decimal={8} suffix=' BTC' /></div>
             },
             {
                 key: '8',
