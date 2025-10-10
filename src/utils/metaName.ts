@@ -35,7 +35,7 @@ export const createMetaName = async (
     options: {
       noBroadcast: "no",
       feeRate: Number(feeRate),
-      service: getCreatePinFeeByNet(curNetwork),
+      // service: getCreatePinFeeByNet(curNetwork),
     },
   });
   if(ret.status){

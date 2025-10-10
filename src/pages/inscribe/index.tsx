@@ -141,7 +141,7 @@ export default () => {
         options: {
           noBroadcast: "no",
           feeRate: Number(feeRate),
-          service: getCreatePinFeeByNet(network),
+          // service: getCreatePinFeeByNet(network),
         }
 
       });
@@ -229,7 +229,7 @@ export default () => {
         options: {
           noBroadcast: "no",
           feeRate: Number(feeRate),
-          service: getCreatePinFeeByNet(network),
+          // service: getCreatePinFeeByNet(network),
         },
 
       });
@@ -312,7 +312,7 @@ export default () => {
         options: {
           noBroadcast: "no",
           feeRate: Number(feeRate),
-          service: getCreatePinFeeByNet(network),
+          // service: getCreatePinFeeByNet(network),
         }
       }
       );
