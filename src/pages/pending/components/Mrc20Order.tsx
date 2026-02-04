@@ -11,6 +11,7 @@ import NumberFormat from "@/components/NumberFormat";
 import Trans from "@/components/Trans";
 import { getPkScriprt } from "@/utils/orders";
 import { transferMRC20PSBT } from "@/utils/mrc20";
+import { getMrc20Source } from "@/utils/doge";
 export default () => {
   const { btcAddress, network, authParams, feeRate } = useModel("wallet");
   const [show, setShow] = useState<boolean>(false);
@@ -29,7 +30,7 @@ export default () => {
   const fetchOrders = useCallback(async () => {
     setLoading(true);
 
-    const { data } = await getMrc20Orders(network, { assetType: 'mrc20', orderState: 1, address: btcAddress, sortKey: 'timestamp', sortType: -1, cursor: page * size, size });
+    const { data } = await getMrc20Orders(network, { assetType: 'mrc20', orderState: 1, address: btcAddress, sortKey: 'timestamp', sortType: -1, cursor: page * size, size, source: getMrc20Source() });
     if (data.list) {
       setList(data.list)
       setTotal(data.total);
@@ -53,7 +54,7 @@ export default () => {
       if (ret.code !== 0) throw new Error(ret.message);
 
       // transferMRC20
-      const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(curOrder.tickId), cursor: 0, size: 100 }, {
+      const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(curOrder.tickId), cursor: 0, size: 100, source: getMrc20Source() }, {
         headers: {
           ...authParams,
         },

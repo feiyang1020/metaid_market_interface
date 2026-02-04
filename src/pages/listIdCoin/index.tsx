@@ -1,5 +1,6 @@
 import Order from "@/components/Order";
 import { getIdCoinInfo, getMrc20AddressUtxo, getMrc20Info, sellMRC20Order, sellOrder } from "@/services/api";
+import { getMrc20Source } from "@/utils/doge";
 import { buildAskLimit } from "@/utils/orders";
 import { Button, Card, ConfigProvider, InputNumber, List, Space, Typography, message } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -51,7 +52,7 @@ export default () => {
             const { data } = await getIdCoinInfo(network, params);
             setIdCoin(data);
         } else {
-            const { data } = await getMrc20Info(network, params);
+            const { data } = await getMrc20Info(network, { ...params, source: getMrc20Source() });
             setIdCoin(data);
         }
 
@@ -59,7 +60,7 @@ export default () => {
     const fetchUserUtxo = useCallback(async () => {
         try {
             if (!idCoin || !btcAddress) throw new Error('no idCoin or btcAddress')
-            const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: idCoin.mrc20Id, cursor: 0, size: 100 }, {
+            const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: idCoin.mrc20Id, cursor: 0, size: 100, source: getMrc20Source() }, {
                 headers: {
                     ...authParams,
                 },

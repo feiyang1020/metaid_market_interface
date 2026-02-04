@@ -6,8 +6,8 @@ import {
   btcConnect,
 } from "@metaid/metaid";
 import { determineAddressInfo, formatSat } from "@/utils/utlis";
-import { getFeeRate } from "@/utils/mempool";
-import { curNetwork, getHostByNet } from "@/config";
+import { getFeeRate, getDogeFeeRate } from "@/utils/mempool";
+import { curNetwork, getHostByNet, DOGE_PRICE_USD } from "@/config";
 import useIntervalAsync from "@/hooks/useIntervalAsync";
 import { getBTCPrice } from "@/services/api";
 
@@ -36,7 +36,24 @@ export default () => {
   const [avatar, setAvatar] = useState<string>("");
   const [userName, setUserName] = useState<string>();
   const [authParams, setAuthParams] = useState<AuthParams>();
+  const [dogeAuthParams, setDogeAuthParams] = useState<AuthParams>(); // Doge 链专用认证参数
   const [initializing, setInitializing] = useState<boolean>(true);
+
+  // Doge 链相关状态
+  const [dogeAddress, setDogeAddress] = useState<string>();
+  const [dogePublicKey, setDogePublicKey] = useState<string>();
+  const [dogeUserBal, setDogeUserBal] = useState<string>("0");
+  const [dogeFeeRate, setDogeFeeRate] = useState<number>(0);
+  const [dogeFeeRates, setDogeFeeRates] = useState<
+    {
+      label: string;
+      value: number;
+      time: string;
+      icon: string;
+      activeIcon: string;
+    }[]
+  >([]);
+  const [dogePrice, setDogePrice] = useState<number>(DOGE_PRICE_USD);
 
   const [feeRates, setFeeRates] = useState<
     {
@@ -122,6 +139,63 @@ export default () => {
     );
     setMetaid(_btcConnector.user.metaid);
     setUserName(_btcConnector.user.name);
+
+    // 获取 Doge 链信息
+    try {
+      if (window.metaidwallet.doge) {
+        const _dogeAddress = await window.metaidwallet.doge.getAddress();
+        const _dogePublicKey = await window.metaidwallet.doge.getPublicKey();
+        setDogeAddress(_dogeAddress);
+        setDogePublicKey(_dogePublicKey);
+        
+        // 如果 Doge 公钥与 BTC 公钥不同，需要单独签名
+        if (_dogePublicKey !== publicKey) {
+          const dogePublicKeySign = await window.metaidwallet.doge.signMessage("metaid.market");
+          if (!dogePublicKeySign.status) {
+            setDogeAuthParams({ "X-Public-Key": _dogePublicKey, "X-Signature": dogePublicKeySign });
+            sessionStorage.setItem(
+              "dogeAuthParams",
+              JSON.stringify({
+                "X-Public-Key": _dogePublicKey,
+                "X-Signature": dogePublicKeySign,
+              })
+            );
+          }
+        } else {
+          // 公钥相同，使用 BTC 的认证参数
+          setDogeAuthParams({ "X-Public-Key": publicKey, "X-Signature": publicKeySign });
+          sessionStorage.setItem(
+            "dogeAuthParams",
+            JSON.stringify({
+              "X-Public-Key": publicKey,
+              "X-Signature": publicKeySign,
+            })
+          );
+        }
+        
+        // 获取 Doge 余额
+        const dogeUtxos = await window.metaidwallet.doge.getUtxos();
+        const dogeBal = (dogeUtxos ?? [])?.reduce(
+          (acc: { total: number }, cur: { satoshis: number }) => {
+            acc.total += cur.satoshis;
+            return acc;
+          },
+          { total: 0 }
+        );
+        setDogeUserBal(formatSat(dogeBal.total, 8)); // Doge 也是 8 位小数
+        // 保存 Doge 钱包信息
+        sessionStorage.setItem(
+          "dogeWalletParams",
+          JSON.stringify({
+            address: _dogeAddress,
+            pub: _dogePublicKey,
+          })
+        );
+      }
+    } catch (err) {
+      console.log("Doge wallet not available:", err);
+    }
+
     setInitializing(false);
   };
 
@@ -135,8 +209,15 @@ export default () => {
     setMetaid("");
     setUserName("");
     setAuthParams(undefined);
+    setDogeAuthParams(undefined);
+    // 清除 Doge 相关状态
+    setDogeAddress(undefined);
+    setDogePublicKey(undefined);
+    setDogeUserBal("0");
     sessionStorage.removeItem("walletParams");
     sessionStorage.removeItem("authParams");
+    sessionStorage.removeItem("dogeAuthParams");
+    sessionStorage.removeItem("dogeWalletParams");
   };
 
   const fetchFeeRate = useCallback(async () => {
@@ -175,9 +256,29 @@ export default () => {
     }
   }, [network]);
 
+  // 获取 Doge 费率
+  const fetchDogeFeeRateData = useCallback(async () => {
+    const ret = await getDogeFeeRate();
+    setDogeFeeRates(ret);
+    setDogeFeeRate((prev) => {
+      if (prev === 0) {
+        if (ret.length === 0) {
+          return Number(localStorage.getItem("mk_lastDogeFeeRate")) || 5000000;
+        }
+        return ret[1].value;
+      }
+      return prev;
+    });
+  }, []);
+
   const _setFeeRate = (_feeRate: number) => {
     localStorage.setItem("mk_lastFeeRate", _feeRate.toString());
     setFeeRate(_feeRate);
+  };
+
+  const _setDogeFeeRate = (_feeRate: number) => {
+    localStorage.setItem("mk_lastDogeFeeRate", _feeRate.toString());
+    setDogeFeeRate(_feeRate);
   };
 
   const init = useCallback(async () => {
@@ -259,6 +360,41 @@ export default () => {
         } catch (err) {
           console.log(err, "getBalance");
         }
+
+        // 恢复 Doge 钱包信息
+        try {
+          const dogeWalletParams = sessionStorage.getItem("dogeWalletParams");
+          if (dogeWalletParams && window.metaidwallet.doge) {
+            const _dogeWalletParams = JSON.parse(dogeWalletParams);
+            const _dogeAddress = await window.metaidwallet.doge.getAddress();
+            const _dogePublicKey = await window.metaidwallet.doge.getPublicKey();
+            if (_dogeAddress === _dogeWalletParams.address) {
+              setDogeAddress(_dogeAddress);
+              setDogePublicKey(_dogePublicKey);
+              // 恢复 Doge 认证参数
+              const dogeAuthParamsStr = sessionStorage.getItem("dogeAuthParams");
+              if (dogeAuthParamsStr) {
+                const _dogeAuthParams = JSON.parse(dogeAuthParamsStr) as AuthParams;
+                if (_dogeAuthParams["X-Public-Key"] === _dogePublicKey) {
+                  setDogeAuthParams(_dogeAuthParams);
+                }
+              }
+              // 获取 Doge 余额
+              const dogeUtxos = await window.metaidwallet.doge.getUtxos();
+              const dogeBal = (dogeUtxos ?? [])?.reduce(
+                (acc: { total: number }, cur: { satoshis: number }) => {
+                  acc.total += cur.satoshis;
+                  return acc;
+                },
+                { total: 0 }
+              );
+              setDogeUserBal(formatSat(dogeBal.total, 8));
+            }
+          }
+        } catch (err) {
+          console.log("Doge wallet restore error:", err);
+        }
+
         setAvatar(
           _btcConnector.user.avatar
             ? `${getHostByNet(network)}${_btcConnector.user.avatar}`
@@ -304,6 +440,7 @@ export default () => {
   const updateWalletInfo = useIntervalAsync(init, 60000);
   const updateFeeRate = useIntervalAsync(fetchFeeRate, 60000);
   const updateBTCPrice = useIntervalAsync(fetchBTCPrice, 60000);
+  const updateDogeFeeRate = useIntervalAsync(fetchDogeFeeRateData, 60000);
 
   return {
     btcAddress,
@@ -330,5 +467,15 @@ export default () => {
     setFeeRateModelVisible,
     feeRateModalVisible,
     btcPrice,
+    // Doge 相关导出
+    dogeAddress,
+    dogePublicKey,
+    dogeUserBal,
+    dogeFeeRate,
+    dogeFeeRates,
+    setDogeFeeRate: _setDogeFeeRate,
+    dogePrice,
+    setDogePrice,
+    dogeAuthParams,
   };
 };

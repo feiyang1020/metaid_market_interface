@@ -199,6 +199,22 @@ export async function getRawTx(
   });
 }
 
+// Doge 链获取原始交易
+export async function getDogeRawTx(
+  network: API.Network,
+  params: { txid: string },
+  options?: { [key: string]: any }
+) {
+  const { txid } = params;
+  // 使用 Metalet API 获取 Doge 原始交易
+  const url = `https://www.metalet.space/wallet-api/v4/doge/tx/raw`;
+  return request<API.Ret<{ hex: string }>>(url, {
+    method: "GET",
+    params: { net: 'livenet', txId: txid },
+    ...(options || {}),
+  });
+}
+
 export async function mintMrc20Pre(
   network: API.Network,
   params: API.MintMRC20PreReq,
@@ -279,10 +295,11 @@ export async function getMrc20Info(
   params: {
     tickId?: string;
     tick?: string;
+    source?: string; // 'mrc20-v2' for doge chain
   },
   options?: { [key: string]: any }
 ) {
-  return request<API.Ret<API.MRC20TickInfo>>(
+  return request<API.Ret<API.MRC20Info>>(
     `${getHost(network)}/api/v1/common/mrc20/tick/info`,
     {
       method: "GET",
@@ -336,6 +353,7 @@ export async function getMrc20AddressUtxo(
     tickId: string;
     cursor: number;
     size: number;
+    source?: string; // 'mrc20-v2' for doge chain
   },
   options?: { [key: string]: any }
 ) {
@@ -358,6 +376,7 @@ export async function getMrc20List(
     searchTick?: string;
     sortType?: number;
     orderBy?: string; //pinnumber/totalminted/holders/txcount
+    source?: string; // 'mrc20-v2' for doge chain
   },
   options?: { [key: string]: any }
 ) {
@@ -377,6 +396,7 @@ export async function getUserMrc20List(
     address?: string;
     cursor: number;
     size: number;
+    source?: string; // 'mrc20-v2' for doge chain
   },
   options?: { [key: string]: any }
 ) {
@@ -402,6 +422,8 @@ export async function sellMRC20Order(
     askType?: 0 | 1;
     coinAmountStr?: string;
     utxoOutValue?: number;
+    source?: string; // 'mrc20-v2' for doge chain
+    chain?: string; // 'doge' for doge chain
   },
   options?: { [key: string]: any }
 ) {
@@ -430,6 +452,7 @@ export async function getMrc20Orders(
     address?: string;
     cursor: number;
     size: number;
+    source?: string; // 'mrc20-v2' for doge chain
   },
   options?: { [key: string]: any }
 ) {
@@ -448,6 +471,8 @@ export async function getMrc20OrderPsbt(
   params: {
     orderId: string;
     buyerAddress: string;
+    source?: string; // 'mrc20-v2' for doge chain
+    chain?: string; // 'doge' or 'btc'
   },
   options?: { [key: string]: any }
 ) {
@@ -467,6 +492,7 @@ export async function buyMrc20OrderTake(
     orderId: string;
     takerPsbtRaw: string;
     networkFeeRate: number;
+    chain?: string; // 'doge' for doge chain
   },
   options?: { [key: string]: any }
 ) {
@@ -489,6 +515,7 @@ export async function cancelMRC20Order(
   network: API.Network,
   params: {
     orderId: string;
+    chain?: string; // 'doge' for doge chain
   },
   options?: { [key: string]: any }
 ) {
@@ -961,6 +988,32 @@ export async function fetchFeeRecommend(
       minimumFee: 0;
     }>
   >(`${getHost(network)}/api/v1/common/fee/recommended`, {
+    method: "GET",
+    ...(options || {}),
+  });
+}
+
+// Doge 费率获取
+export async function fetchDogeFeeRecommend(
+  options?: { [key: string]: any }
+): Promise<{
+  chain: string;
+  recommendFee: number;
+  fastestFee: number;
+  halfHourFee: number;
+  hourFee: number;
+  economyFee: number;
+  minimumFee: number;
+}> {
+  return request<{
+    chain: string;
+    recommendFee: number;
+    fastestFee: number;
+    halfHourFee: number;
+    hourFee: number;
+    economyFee: number;
+    minimumFee: number;
+  }>(`https://api.mvcscan.com/browser/v1/fees/recommended?chain=doge`, {
     method: "GET",
     ...(options || {}),
   });

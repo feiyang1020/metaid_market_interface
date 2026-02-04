@@ -1,5 +1,6 @@
 import usePageList from "@/hooks/usePageList"
 import { getMrc20List } from "@/services/api"
+import { getMrc20Source } from "@/utils/doge"
 import { ConfigProvider, Table, TableColumnsType, Grid, Tooltip, Slider, Progress, Button, List, message, TableProps } from "antd"
 import { useModel, history } from "umi"
 import NumberFormat from "../NumberFormat";
@@ -59,6 +60,7 @@ export default () => {
                 searchTick: searchWord,
                 orderBy,
                 sortType,
+                source: getMrc20Source(),
             });
             if (didCancel) return
             if (code !== 0) {

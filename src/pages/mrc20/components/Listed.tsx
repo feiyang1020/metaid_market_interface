@@ -8,6 +8,7 @@ import { formatSat } from "@/utils/utlis";
 import "./index.less";
 import { buildBuyMrc20TakePsbt, transferMRC20PSBT } from "@/utils/mrc20";
 import BuyMrc20Modal from "@/components/BuyMrc20Modal";
+import BuyDogeMrc20Modal from "@/pages/dogeMrc20/components/BuyDogeMrc20Modal";
 import NumberFormat from "@/components/NumberFormat";
 import MRC20Icon from "@/components/MRC20Icon";
 import CancelListing from "@/components/CancelListing";
@@ -15,13 +16,15 @@ import Sorter from "@/components/Sorter";
 import Trans from "@/components/Trans";
 import USDPrice from "@/components/USDPrice";
 import { getPkScriprt } from "@/utils/orders";
+import ChainIcon from "@/components/ChainIcon";
+import { getMrc20Source } from "@/utils/doge";
 type Props = {
     mrc20Id: string,
     metaData: string,
     showMy?: boolean
 }
 export default ({ mrc20Id, metaData, showMy = false }: Props) => {
-    const { network, connected, connect, btcAddress, authParams, feeRate } = useModel('wallet')
+    const { network, connected, connect, btcAddress, dogeAddress, authParams, feeRate } = useModel('wallet')
     const [list, setList] = useState<API.Mrc20Order[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [curOrder, setCurOrder] = useState<API.Mrc20Order>();
@@ -30,13 +33,14 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
     const [size, setSize] = useState<number>(12);
     const [cancelSubmiting, setCancelSubmiting] = useState<boolean>(false);
     const [buyModalVisible, setBuyModalVisible] = useState<boolean>(false);
+    const [dogeBuyModalVisible, setDogeBuyModalVisible] = useState<boolean>(false);
     const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
     const [orderBy, setOrderBy] = useState<string>('tokenPriceRate');
     const [sortType, setSortType] = useState<1 | -1>(1);
     const fetchOrders = useCallback(async () => {
         if (!mrc20Id || (showMy && !btcAddress)) return;
         setLoading(true);
-        const params: any = { assetType: 'mrc20', orderState: 1, sortKey: orderBy, sortType: sortType, tickId: mrc20Id, cursor: page * size, size };
+        const params: any = { assetType: 'mrc20', orderState: 1, sortKey: orderBy, sortType: sortType, tickId: mrc20Id, cursor: page * size, size, source: getMrc20Source() };
         if (showMy && btcAddress) {
             params.address = btcAddress
         }
@@ -66,7 +70,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
             );
             if (ret.code !== 0) throw new Error(ret.message);
             // transferMRC20
-            const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(curOrder.tickId), cursor: 0, size: 100 }, {
+            const { data: utxoList } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: String(curOrder.tickId), cursor: 0, size: 100, source: getMrc20Source() }, {
                 headers: {
                     ...authParams,
                 },
@@ -145,7 +149,7 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
 
                                             <span className="colorPrimary">
                                                 <NumberFormat value={item.tokenPriceRate} isBig decimal={8} tiny precision={12} />
-                                            </span> BTC/{item.tick}
+                                            </span> {item.chain === 'doge' ? 'DOGE' : 'BTC'}/{item.tick}
                                         </div>
 
 
@@ -184,8 +188,8 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
 
 
                                 <div className="price ">
-                                    <img src={btc} className="btcLogo" alt="" />{" "}
-                                    <span>{formatSat(item.priceAmount)} BTC <USDPrice value={item.priceAmount} decimals={8} /></span>
+                                    <ChainIcon chain={item.chain as API.Chain} size={20} />{" "}
+                                    <span>{formatSat(item.priceAmount)} {item.chain === 'doge' ? 'DOGE' : 'BTC'} <USDPrice value={item.priceAmount} decimals={8} chain={item.chain as API.Chain} /></span>
 
                                 </div>
 
@@ -196,17 +200,23 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
                                             style={{ height: 40 }}
                                             block
                                             onClick={() => {
-                                                if (btcAddress === item.sellerAddress) {
+                                                const isDoge = item.chain === 'doge';
+                                                const userAddress = isDoge ? dogeAddress : btcAddress;
+                                                if (userAddress === item.sellerAddress) {
                                                     setCurOrder({ ...item, metaData: metaData });
                                                     setCancelModalVisible(true);
                                                 } else {
                                                     setCurOrder({ ...item, metaData: metaData });
-                                                    setBuyModalVisible(true);
+                                                    if (isDoge) {
+                                                        setDogeBuyModalVisible(true);
+                                                    } else {
+                                                        setBuyModalVisible(true);
+                                                    }
                                                 }
 
                                             }}
                                         >
-                                            <Trans>{btcAddress === item.sellerAddress ? 'Cancel Listing' : 'Buy'}</Trans>
+                                            <Trans>{(item.chain === 'doge' ? dogeAddress : btcAddress) === item.sellerAddress ? 'Cancel Listing' : 'Buy'}</Trans>
                                         </Button>
                                     ) : (
                                         <Button
@@ -244,6 +254,15 @@ export default ({ mrc20Id, metaData, showMy = false }: Props) => {
             onClose={() => {
 
                 setBuyModalVisible(false);
+                setCurOrder(undefined);
+                fetchOrders()
+            }}
+        />
+        <BuyDogeMrc20Modal
+            order={curOrder}
+            show={dogeBuyModalVisible}
+            onClose={() => {
+                setDogeBuyModalVisible(false);
                 setCurOrder(undefined);
                 fetchOrders()
             }}

@@ -83,6 +83,23 @@ declare interface Window {
       tasks: TransferOutput[];
       broadcast: boolean;
     }) => Promise<TransferResponse>;
+    doge?: {
+      getAddress: () => Promise<string>;
+      getPublicKey: () => Promise<string>;
+      connect: () => Promise<{
+        address?: string;
+        pubKey?: string;
+        status?: string;
+      }>;
+      getBalance: () => Promise<{ total: number; confirmed: number; unconfirmed: number }>;
+      signMessage: (message: string) => Promise<string>;
+      signPsbt: (params: {
+        psbtHex: string;
+        options?: any;
+      }) => Promise<string | { status: string }>;
+      pushPsbt: (psbt: string) => Promise<string>;
+      getUtxos: (params?: any) => Promise<API.UTXO[]>;
+    };
   };
   METAID_MARKET_NETWORK: API.Network;
 }

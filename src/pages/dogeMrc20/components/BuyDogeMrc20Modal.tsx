@@ -1,3 +1,6 @@
+/**
+ * Doge MRC-20 购买弹窗
+ */
 import {
   Alert,
   Button,
@@ -9,40 +12,37 @@ import {
   message,
 } from "antd";
 import { useModel, history } from "umi";
-import Popup from "../ResponPopup";
+import Popup from "@/components/ResponPopup";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import btcIcon from "@/assets/logo_btc@2x.png";
 import { formatSat } from "@/utils/utlis";
-import "./index.less";
-import { BUY_PAY_INPUT_INDEX, SIGHASH_ALL, buildBuyTake } from "@/utils/orders";
-import { buyMrc20OrderTake, buyOrder, getMrc20OrderPsbt, getOrderPsbt } from "@/services/api";
+import "./BuyDogeMrc20Modal.less";
+import { getMrc20OrderPsbt, buyMrc20OrderTake } from "@/services/api";
 import { Psbt } from "bitcoinjs-lib";
 import SuccessModal, {
   DefaultSuccessProps,
   SuccessProps,
-} from "../SuccessModal";
-import { number } from "bitcoinjs-lib/src/script";
-import JSONView from "../JSONView";
-import { buildBuyMrc20TakePsbt, buyMrc20Order } from "@/utils/mrc20";
-import MRC20Icon from "../MRC20Icon";
-import { addUtxoSafe } from "@/utils/psbtBuild";
-import NumberFormat from "../NumberFormat";
-import Trans from "../Trans";
-import { getMrc20Source } from "@/utils/doge";
+} from "@/components/SuccessModal";
+import MRC20Icon from "@/components/MRC20Icon";
+import NumberFormat from "@/components/NumberFormat";
+import Trans from "@/components/Trans";
+import ChainIcon from "@/components/ChainIcon";
+import USDPrice from "@/components/USDPrice";
+import { getDogeSource } from "@/utils/doge";
+import { buildDogeBuyMrc20TakePsbt, buyDogeMrc20Order } from "@/utils/dogeMrc20";
+
 type Props = {
   order: API.Mrc20Order | undefined;
   show: boolean;
   onClose: () => void;
 };
+
 export default ({ order, show, onClose }: Props) => {
   const {
-    feeRate,
-    userBal,
+    dogeFeeRate,
+    dogeUserBal,
     network,
-    btcAddress,
     dogeAddress,
-    addressType,
-    authParams,
+    dogeAuthParams,
     connected,
   } = useModel("wallet");
   const [submiting, setSubmiting] = useState<boolean>(false);
@@ -62,12 +62,13 @@ export default ({ order, show, onClose }: Props) => {
     useState<SuccessProps>(DefaultSuccessProps);
 
   useEffect(() => {
-    if (connected && window.metaidwallet) {
-      window.metaidwallet.btc.getBalance().then((ret) => {
+    if (connected && window.metaidwallet?.doge) {
+      window.metaidwallet.doge.getBalance().then((ret: any) => {
         setUserBalInfo(ret);
       });
     }
   }, [network, connected]);
+
   useEffect(() => {
     if (!show) {
       setCalcing(false);
@@ -77,47 +78,39 @@ export default ({ order, show, onClose }: Props) => {
       setOrderWithPsbt(undefined);
     }
   }, [show]);
+
   const [buyPsbt, setBuyPsbt] = useState<Psbt>();
+
   const fetchTakePsbt = useCallback(async () => {
-    if (!order || !connected || !authParams) {
+    if (!order || !connected || !dogeAuthParams || !dogeAddress) {
       setOrderWithPsbt(undefined);
       return;
     }
-    // Use dogeAddress when order.chain is 'doge', otherwise use btcAddress
-    const isDoge = order.chain === 'doge';
-    const address = isDoge 
-      ? (dogeAddress || await window.metaidwallet.doge?.getAddress())
-      : await window.metaidwallet.btc.getAddress();
-    if (connected && window.metaidwallet) {
-      window.metaidwallet.btc.getBalance().then((ret) => {
-        setUserBalInfo(ret);
-      });
-    }
     if (order.orderState !== 1) return;
-    const { data, code, message } = await getMrc20OrderPsbt(
+    const { data, code, message: msg } = await getMrc20OrderPsbt(
       network,
       {
         orderId: order.orderId,
-        buyerAddress: address,
-        chain: isDoge ? 'doge' : 'btc',
-        source: getMrc20Source(),
+        buyerAddress: dogeAddress,
+        source: getDogeSource(),
+        chain: 'doge',
       },
       {
         headers: {
-          ...authParams,
+          ...dogeAuthParams,
         },
       }
     );
     if (code !== 0) {
-      setErrInfo(message);
+      setErrInfo(msg);
       return;
     }
     setOrderWithPsbt(data);
-  }, [network, order, connected, authParams, dogeAddress]);
+  }, [network, order, connected, dogeAuthParams, dogeAddress]);
+
   useEffect(() => {
     fetchTakePsbt();
   }, [fetchTakePsbt]);
-
 
   useEffect(() => {
     let didCancel = false;
@@ -125,16 +118,21 @@ export default ({ order, show, onClose }: Props) => {
       if (!orderWithPsbt || !connected || !userBalInfo) return;
       try {
         setCalcing(true);
-        if ((orderWithPsbt.priceAmount + orderWithPsbt.fee) > userBalInfo.total) {
+        if (orderWithPsbt.priceAmount + orderWithPsbt.fee > userBalInfo.total) {
           throw new Error("Insufficient balance");
         }
-        const { order, totalSpent, fee, error } = await buildBuyMrc20TakePsbt(orderWithPsbt, network, Number(feeRate), false, false);
-        console.log(order, totalSpent);
+        const { psbt, totalSpent, fee, error } = await buildDogeBuyMrc20TakePsbt(
+          orderWithPsbt,
+          network,
+          Number(dogeFeeRate),
+          false,
+          false
+        );
         if (didCancel) return;
         setCalcing(false);
         setTotalSpent(totalSpent);
         setErrInfo(error || undefined);
-        setBuyPsbt(order);
+        setBuyPsbt(psbt);
         setFee(fee);
       } catch (err: any) {
         console.log(err);
@@ -147,36 +145,41 @@ export default ({ order, show, onClose }: Props) => {
     return () => {
       didCancel = true;
     };
-  }, [orderWithPsbt, network, connected, feeRate, userBalInfo]);
+  }, [orderWithPsbt, network, connected, dogeFeeRate, userBalInfo]);
 
   const handleBuy = async () => {
-    if (!feeRate || !orderWithPsbt || !addressType || !connected || !order || !btcAddress)
+    if (
+      !dogeFeeRate ||
+      !orderWithPsbt ||
+      !connected ||
+      !order ||
+      !dogeAddress
+    )
       return;
     setSubmiting(true);
     try {
-      const isDoge = order.chain === 'doge';
-      const { rawTx, txOutputs } = await buyMrc20Order(orderWithPsbt, network, Number(feeRate),);
+      const { rawTx, txOutputs } = await buyDogeMrc20Order(
+        orderWithPsbt,
+        network,
+        Number(dogeFeeRate)
+      );
       const ret = await buyMrc20OrderTake(
         network,
         {
           orderId: order.orderId,
           takerPsbtRaw: rawTx,
-          networkFeeRate: Number(feeRate),
-          chain: isDoge ? 'doge' : 'btc',
+          networkFeeRate: Number(dogeFeeRate),
+          chain: 'doge',
         },
         {
           headers: {
-            ...authParams,
+            ...dogeAuthParams,
           },
         }
       );
       if (ret.code !== 0) {
         throw new Error(ret.message);
       }
-      await addUtxoSafe(btcAddress, [{
-        txId: ret.data.txId,
-        vout: txOutputs.length - 1,
-      }])
       onClose();
       setSuccessProp({
         show: true,
@@ -188,18 +191,30 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buyMRCSuccess">
             <div className="orderInfo">
               <div className="contetn">
-                <MRC20Icon size={80} tick={order.tick} metadata={order.metaData} />
+                <MRC20Icon
+                  size={80}
+                  tick={order.tick}
+                  metadata={order.metaData}
+                />
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>
-                {/* <div className="number">{order.tickId}</div> */}
               </div>
             </div>
             <div className="res">
               <div className="item">
-                <div className="label"><Trans>Transaction Price</Trans></div>
+                <div className="label">
+                  <Trans>Transaction Price</Trans>
+                </div>
                 <div className="value">
-                  <img src={btcIcon}></img> <NumberFormat value={totalSpent} isBig decimal={8} minDig={8} suffix=" BTC" />
+                  <ChainIcon chain="doge" size={20} />
+                  <NumberFormat
+                    value={totalSpent || 0}
+                    isBig
+                    decimal={8}
+                    minDig={8}
+                    suffix=" DOGE"
+                  />
                 </div>
               </div>
               <div className="item">
@@ -209,11 +224,7 @@ export default ({ order, show, onClose }: Props) => {
                     <a
                       style={{ color: "#fff", textDecoration: "underline" }}
                       target="_blank"
-                      href={
-                        network === "testnet"
-                          ? `https://mempool.space/testnet/tx/${ret.data.txId}`
-                          : `https://mempool.space/tx/${ret.data.txId}`
-                      }
+                      href={`https://dogechain.info/tx/${ret.data.txId}`}
                     >
                       {ret.data.txId.replace(/(\w{5})\w+(\w{5})/, "$1...$2")}
                     </a>
@@ -224,7 +235,7 @@ export default ({ order, show, onClose }: Props) => {
           </div>
         ),
       });
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
       message.error(err.message);
     }
@@ -246,7 +257,11 @@ export default ({ order, show, onClose }: Props) => {
           <div className="buyWrap">
             <div className="orderInfo">
               <div className="contetn">
-                <MRC20Icon size={80} tick={order.tick} metadata={order.metaData} />
+                <MRC20Icon
+                  size={80}
+                  tick={order.tick}
+                  metadata={order.metaData}
+                />
               </div>
               <div className="dess">
                 <div className="renu">#{order.tick}</div>
@@ -255,81 +270,100 @@ export default ({ order, show, onClose }: Props) => {
             </div>
             <div className="fees">
               <div className="feeItem">
-                <div className="label"><Trans>Price</Trans></div>
-                <div className="value"><NumberFormat value={order.priceAmount} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
+                <div className="label">
+                  <Trans>Price</Trans>
+                </div>
+                <div className="value">
+                  <NumberFormat
+                    value={order.priceAmount}
+                    isBig
+                    decimal={8}
+                    minDig={8}
+                    suffix=" DOGE"
+                  />
+                  <USDPrice
+                    value={order.priceAmount}
+                    decimals={8}
+                    chain="doge"
+                  />
+                </div>
               </div>
               <div className="feeItem">
                 <div className="label">
-                  <Trans>Taker Fee</Trans>{orderWithPsbt && orderWithPsbt.fee > 0 && `(${orderWithPsbt.feeRateStr}%)`}
+                  <Trans>Amount</Trans>
                 </div>
-                <div className="value"><NumberFormat value={orderWithPsbt && orderWithPsbt.fee} isBig decimal={8} minDig={8} suffix=" BTC" /></div>
+                <div className="value">{order.amountStr}</div>
               </div>
               <div className="feeItem">
-                <div className="label"><Trans>Transaction Fee</Trans></div>
+                <div className="label">
+                  <Trans>Service Fee</Trans>
+                </div>
                 <div className="value">
-                  <Spin spinning={calcing}><NumberFormat value={fee} isBig decimal={8} minDig={8} suffix=" BTC" /></Spin>
+                  {orderWithPsbt ? (
+                    <NumberFormat
+                      value={orderWithPsbt.fee}
+                      isBig
+                      decimal={8}
+                      suffix=" DOGE"
+                    />
+                  ) : (
+                    "--"
+                  )}
                 </div>
               </div>
               <div className="feeItem">
                 <div className="label">
                   <Trans>Network Fee</Trans>
                 </div>
-                <div className="value">{feeRate} sat/vB</div>
-              </div>
-            </div>
-
-            <Spin spinning={calcing}>
-              <div className="payInfo">
-                <div className="label"><Trans>You Pay</Trans></div>
                 <div className="value">
-                  <img src={btcIcon} alt="" className="btc" />
-                  <span>
-                    <NumberFormat value={totalSpent} isBig decimal={8} minDig={8} suffix=" BTC" />
-                  </span>
+                  {calcing ? (
+                    <Spin size="small" />
+                  ) : fee ? (
+                    <NumberFormat value={fee} isBig decimal={8} suffix=" DOGE" />
+                  ) : (
+                    "--"
+                  )}
                 </div>
               </div>
-              {errInfo && (
-                <Alert
-                  message={<Trans>{errInfo}</Trans>}
-                  type="error"
-                  showIcon
-                  style={{ marginTop: 10 }}
-                />
-              )}
-
-              <div className="avail">
-                <div className="label"><Trans>Available Balance</Trans></div>
-
+              <div className="feeItem total">
+                <div className="label">
+                  <Trans>Total</Trans>
+                </div>
                 <div className="value">
-                  {userBal} BTC
+                  {calcing ? (
+                    <Spin size="small" />
+                  ) : totalSpent ? (
+                    <>
+                      <ChainIcon chain="doge" size={20} />
+                      <NumberFormat
+                        value={totalSpent}
+                        isBig
+                        decimal={8}
+                        minDig={8}
+                        suffix=" DOGE"
+                      />
+                      <USDPrice value={totalSpent} decimals={8} chain="doge" />
+                    </>
+                  ) : (
+                    "--"
+                  )}
                 </div>
               </div>
-            </Spin>
-
-            <div className="btns">
-              <Button
-                style={{ height: 48 }}
-                className="item"
-                type="primary"
-                onClick={handleBuy}
-                loading={submiting}
-                disabled={Boolean(errInfo) || calcing}
-              >
-                <Trans>Confirm</Trans>
-              </Button>
-              <Button
-                style={{ height: 48 }}
-                className="item"
-                type="link"
-                onClick={onClose}
-              >
-                <Trans>Cancel</Trans>
-              </Button>
             </div>
+            {errInfo && <Alert type="error" message={errInfo} />}
+            <Button
+              type="primary"
+              block
+              size="large"
+              loading={submiting}
+              disabled={!!errInfo || calcing || !totalSpent}
+              onClick={handleBuy}
+            >
+              <Trans>Buy</Trans>
+            </Button>
           </div>
         </Popup>
       )}
-
       <SuccessModal {...successProp} />
     </>
   );

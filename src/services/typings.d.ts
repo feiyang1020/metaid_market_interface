@@ -1,5 +1,5 @@
 declare namespace API {
-  type Chain = "btc" | "mvc";
+  type Chain = "btc" | "mvc" | "doge";
   type Network = "testnet" | "mainnet";
   type Order = {
     assetId: string;

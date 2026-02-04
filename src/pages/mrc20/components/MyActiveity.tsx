@@ -1,6 +1,7 @@
 import MetaIdAvatar from "@/components/MetaIdAvatar";
 import NumberFormat from "@/components/NumberFormat";
 import { getMrc20Orders } from "@/services/api";
+import { getMrc20Source } from "@/utils/doge";
 import { ConfigProvider, Table, TableColumnsType, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
@@ -20,7 +21,7 @@ export default ({ mrc20Id }: Props) => {
         if (!mrc20Id || !btcAddress) return;
         setLoading(true);
 
-        const { data } = await getMrc20Orders(network, { assetType: 'mrc20', orderState: 3, sortKey: 'timestamp', address: btcAddress, sortType: -1, tickId: mrc20Id, cursor: page * size, size });
+        const { data } = await getMrc20Orders(network, { assetType: 'mrc20', orderState: 3, sortKey: 'timestamp', address: btcAddress, sortType: -1, tickId: mrc20Id, cursor: page * size, size, source: getMrc20Source() });
         if (data.list) {
             setList(data.list)
             setTotal(data.total);
@@ -39,7 +40,7 @@ export default ({ mrc20Id }: Props) => {
             dataIndex: 'tokenPriceRate',
             sorter: true,
             render: (price,record) => {
-              return <NumberFormat value={price} isBig decimal={8}  suffix={` BTC/${record.tick}`} />
+              return <NumberFormat value={price} isBig decimal={8}  suffix={` ${record.chain === 'doge' ? 'DOGE' : 'BTC'}/${record.tick}`} />
             }
           },
         {
@@ -81,21 +82,24 @@ export default ({ mrc20Id }: Props) => {
             title: "Hash",
             dataIndex: "txId",
             key: "txId",
-            render: (text, record) => (
-                <Tooltip title={text}>
-                    <a
-                        style={{ color: "#fff", textDecoration: "underline" }}
-                        target="_blank"
-                        href={
-                            network === "testnet"
-                                ? `https://mempool.space/testnet/tx/${text}`
-                                : `https://mempool.space/tx/${text}`
-                        }
-                    >
-                        {text.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
-                    </a>
-                </Tooltip>
-            ),
+            render: (text, record) => {
+                const explorerUrl = record.chain === 'doge' 
+                    ? `https://dogechain.info/tx/${text}`
+                    : network === "testnet"
+                        ? `https://mempool.space/testnet/tx/${text}`
+                        : `https://mempool.space/tx/${text}`;
+                return (
+                    <Tooltip title={text}>
+                        <a
+                            style={{ color: "#fff", textDecoration: "underline" }}
+                            target="_blank"
+                            href={explorerUrl}
+                        >
+                            {text.replace(/(\w{5})\w+(\w{3})/, "$1...$2")}
+                        </a>
+                    </Tooltip>
+                );
+            },
         },
     ]
 

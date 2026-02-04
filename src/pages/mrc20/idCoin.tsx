@@ -1,5 +1,6 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
 import { getIdCoinInfo, getMrc20AddressUtxo, getMrc20Info, redeemPreview } from '@/services/api';
+import { getMrc20Source } from '@/utils/doge';
 import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Card, Row, Col, Tooltip, Space, message, Popover } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useMatch, useModel, history, Link } from 'umi';
@@ -100,7 +101,7 @@ export default () => {
     const fetchUserUtxo = useCallback(async () => {
         try {
             if (!idCoin || !btcAddress) throw new Error('no idCoin or btcAddress')
-            const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: idCoin.mrc20Id, cursor: 0, size: 100 }, {
+            const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: idCoin.mrc20Id, cursor: 0, size: 100, source: getMrc20Source() }, {
                 headers: {
                     ...authParams,
                 },

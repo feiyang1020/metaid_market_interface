@@ -1,0 +1,33 @@
+@import '../listIdCoin/index.less';
+
+.listIdCoinPage {
+  .usdValue {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+  }
+  
+  .listCard {
+    &.selected {
+      border-color: #D4F66B;
+      background: rgba(212, 246, 107, 0.1);
+    }
+    
+    .checkIcon {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      color: #D4F66B;
+      font-size: 18px;
+    }
+    
+    .priceInput {
+      margin-top: 12px;
+    }
+  }
+  
+  .listActions {
+    margin-top: 24px;
+    text-align: center;
+  }
+}

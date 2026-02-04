@@ -15,6 +15,9 @@ export default defineConfig({
     { path: "/mrc20/:mrc20Id", component: "mrc20" },
     { path: "/idCoin/:tick", component: "mrc20/idCoin" },
     { path: "/list/:assetType/:tick", component: "listIdCoin" },
+    // Doge MRC-20 路由
+    { path: "/doge-mrc20/:mrc20Id", component: "dogeMrc20" },
+    { path: "/list-doge/:assetType/:tick", component: "listDogeIdCoin" },
     // { path: "/list/:assetType/:tick", component: "listIdCoin" },
     { path: "/inscribe/:tab", component: "inscribe" },
     { path: "/inscribe/:tab/:tick", component: "inscribe" },

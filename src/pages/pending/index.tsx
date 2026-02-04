@@ -9,9 +9,10 @@ import Popup from "@/components/ResponPopup";
 import { cancelOrder, getContent, getOrders } from "@/services/api";
 import JSONView from "@/components/JSONView";
 import Mrc20Order from "./components/Mrc20Order";
+import DogeMrc20Order from "./components/DogeMrc20Order";
 import useIntervalAsync from "@/hooks/useIntervalAsync";
 import Trans from "@/components/Trans";
-const items = ["PIN", 'MRC-20'];
+const items = ["PIN", 'MRC-20', 'Doge MRC-20'];
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
 
@@ -69,7 +70,7 @@ export default () => {
   );
   const updateOrders: any = useIntervalAsync(fetchOrders, 90000);
   const [show, setShow] = useState<boolean>(false);
-  const [tab, setTab] = useState<"PIN" | "MRC-20">("PIN");
+  const [tab, setTab] = useState<"PIN" | "MRC-20" | "Doge MRC-20">("PIN");
   const [submiting, setSubmiting] = useState<boolean>(false);
   const [curOrder, setCurOrder] = useState<API.Order>();
   const list = useMemo(() => {
@@ -224,7 +225,7 @@ export default () => {
               },
             }}
           />
-        </div> : <Mrc20Order />
+        </div> : tab === 'MRC-20' ? <Mrc20Order /> : <DogeMrc20Order />
       }
 
 

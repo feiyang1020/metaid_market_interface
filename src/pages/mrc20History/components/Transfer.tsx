@@ -9,6 +9,7 @@ import { authTest, cancelMRC20Order, cancelOrder, getMrc20Orders } from "@/servi
 import JSONView from "@/components/JSONView";
 import NumberFormat from "@/components/NumberFormat";
 import Trans from "@/components/Trans";
+import { getMrc20Source } from "@/utils/doge";
 
 export default () => {
   const { btcAddress, network, authParams } = useModel("wallet");
@@ -25,7 +26,7 @@ export default () => {
   const fetchOrders = useCallback(async () => {
     setLoading(true);
 
-    const { data } = await getMrc20Orders(network, { assetType: 'mrc20', orderState: 1, address: btcAddress, sortKey: 'timestamp', sortType: -1, cursor: page * size, size });
+    const { data } = await getMrc20Orders(network, { assetType: 'mrc20', orderState: 1, address: btcAddress, sortKey: 'timestamp', sortType: -1, cursor: page * size, size, source: getMrc20Source() });
     if (data.list) {
       setList(data.list)
       setTotal(data.total);

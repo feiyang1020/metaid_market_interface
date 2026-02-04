@@ -1,5 +1,6 @@
 import useIntervalAsync from '@/hooks/useIntervalAsync';
 import { getMrc20AddressUtxo, getMrc20Info } from '@/services/api';
+import { getMrc20Source } from '@/utils/doge';
 import { Avatar, Button, ConfigProvider, Divider, Progress, Statistic, Tabs, TabsProps, Typography, Grid, Space, Popover, message } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useMatch, useModel, history } from 'umi';
@@ -49,6 +50,7 @@ export default () => {
         } else {
             params.tick = match.params.mrc20Id
         }
+        params.source = getMrc20Source();
         const { data } = await getMrc20Info(network, params);
         setMrc20Info(data);
     }, [match, network])
@@ -57,7 +59,7 @@ export default () => {
     const fetchUserUtxo = useCallback(async () => {
         try {
             if (!mrc20Info || !btcAddress) throw new Error('no MRC20 or btcAddress')
-            const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: mrc20Info.mrc20Id, cursor: 0, size: 100 }, {
+            const { data: utxoList, code } = await getMrc20AddressUtxo(network, { address: btcAddress, tickId: mrc20Info.mrc20Id, cursor: 0, size: 100, source: getMrc20Source() }, {
                 headers: {
                     ...authParams,
                 },

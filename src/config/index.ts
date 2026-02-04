@@ -6,6 +6,12 @@ export const MAINNET_PIN_FEE_ADDRESS =
   "bc1pf4gj2uyjfytzzx3h06m977tvw6pl6hgy6kmgyle2757pcrrukr8s2srvy5";
 export const MAINNET_PIN_FEE_AMOUNT = "1999";
 export const TESTNET_PIN_FEE_AMOUNT = "1999";
+
+// Doge 链配置
+export const DOGE_DUST_LIMIT = 100000; // 0.001 DOGE in satoshis
+export const DOGE_DEFAULT_OUTPUT_VALUE = 1000000; // 0.01 DOGE in satoshis
+export const DOGE_PRICE_USD = 0.12; // 写死的 DOGE 价格，之后有接口再替换
+
 export const getHostByNet = (network: API.Network) => {
   if (network === "testnet") return TESTNET_CONTENT_HOST;
   return MAINNET_CONTENT_HOST;

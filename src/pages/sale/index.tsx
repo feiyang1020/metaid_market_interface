@@ -19,13 +19,14 @@ import SuccessModal, {
 } from "@/components/SuccessModal";
 import JSONView from "@/components/JSONView";
 import ListForMRC20 from "@/components/ListForMRC20";
+import ListForDogeMRC20 from "@/components/ListForDogeMRC20";
 import NumberFormat from "@/components/NumberFormat";
 import ListForPin from "./components/ListForPin";
 import Trans from "@/components/Trans";
 const { useBreakpoint } = Grid;
-const items = ["PIN", 'MRC-20', 'ID-Coins'];
+const items = ["PIN", 'MRC-20', 'ID-Coins', 'Doge MRC-20'];
 export default () => {
-  const [tab, setTab] = useState<"PIN" | "MRC-20" | 'ID-Coins'>("PIN");
+  const [tab, setTab] = useState<"PIN" | "MRC-20" | 'ID-Coins' | 'Doge MRC-20'>("PIN");
   const screens = useBreakpoint();
   return (
     <div className="salePage animation-slide-bottom">
@@ -58,6 +59,7 @@ export default () => {
         }
         {tab === "MRC-20" && <ListForMRC20 tag="MRC-20" />}
         {tab === "ID-Coins" && <ListForMRC20 tag="ID-Coins" />}
+        {tab === "Doge MRC-20" && <ListForDogeMRC20 tag="MRC-20" />}
       </div>
 
 
