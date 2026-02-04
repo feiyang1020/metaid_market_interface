@@ -120,16 +120,30 @@ export const listDogeMrc20Order = async (
   const ordinalPreTx = Transaction.fromHex(rawTx);
   const outputIndex = utxo.outputIndex ?? utxo.vout;
   
+  // 清除 witness 数据（如果有的话）
+  for (const output in ordinalPreTx.outs) {
+    try {
+      ordinalPreTx.setWitness(parseInt(output), []);
+    } catch (e: any) {}
+  }
+  
   // 创建 Ask PSBT
   const ask = new Psbt({ network: dogeNetwork });
   
   // Doge 使用 P2PKH，需要用 nonWitnessUtxo
-  // 添加一个假的输入用于 P2PKH 签名 workaround
+  // 添加一个假的输入用于 P2PKH 签名 workaround（使用 witnessUtxo 模式）
   const fakeTxid = "0000000000000000000000000000000000000000000000000000000000000000";
+  const fakeScript = Buffer.from(
+    "76a914000000000000000000000000000000000000000088ac",
+    "hex"
+  );
   ask.addInput({
     hash: fakeTxid,
     index: 0,
-    nonWitnessUtxo: ordinalPreTx.toBuffer(),
+    witnessUtxo: {
+      script: fakeScript,
+      value: 0,
+    },
     sighashType: SIGHASH_SINGLE_ANYONECANPAY,
   });
   
@@ -142,12 +156,8 @@ export const listDogeMrc20Order = async (
   });
   
   // 假输出
-  const fakeOutScript = Buffer.from(
-    "76a914000000000000000000000000000000000000000088ac",
-    "hex"
-  );
   ask.addOutput({
-    script: fakeOutScript,
+    script: fakeScript,
     value: 0,
   });
   
